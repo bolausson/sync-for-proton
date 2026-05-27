@@ -1,0 +1,24 @@
+# Release APKs live as GitHub Release assets, NOT in the git tree —
+# never commit the binaries (keeps the repo small and history clean).
+*.apk
+*.aab
+*.apks
+*.idsig
+
+# Never commit signing material to this public repo.
+*.jks
+*.keystore
+keystore.properties
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# Nextcloud sync artifacts (this repo lives under a Nextcloud folder)
+.sync-exclude.lst
+*_conflict-*
+.~lock.*
