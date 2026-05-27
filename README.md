@@ -17,7 +17,12 @@ privately; this repo contains downloads only.
 ## Install with Obtainium (recommended)
 
 [Obtainium](https://github.com/ImranR98/Obtainium) installs and auto-updates apps
-straight from GitHub releases:
+straight from GitHub releases. With Obtainium already installed, tap the button to add
+this app in one step:
+
+<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22me.proton.sync%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fbolausson%2Fsync-for-proton%22%2C%22author%22%3A%22bolausson%22%2C%22name%22%3A%22Sync%20for%20Proton%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%2C%22overrideSource%22%3Anull%7D"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Add to Obtainium" height="54"></a>
+
+Or add it manually:
 
 1. Install Obtainium.
 2. Tap **Add App** and paste this repo URL:
