@@ -8,6 +8,10 @@ This repository hosts **signed APK releases** for installing outside the Google 
 Store (e.g. on GrapheneOS or any de-Googled Android). The app source is maintained
 privately; this repo contains downloads only.
 
+[![Latest release](https://img.shields.io/github/v/release/bolausson/sync-for-proton?label=latest&sort=semver)](https://github.com/bolausson/sync-for-proton/releases/latest)
+
+**[⬇ Download the latest APK](https://github.com/bolausson/sync-for-proton/releases/latest/download/Sync-for-Proton.apk)** — a permanent link that always points to the newest release.
+
 ## Requirements
 
 - Android 10 (API 29) or newer
@@ -29,6 +33,17 @@ Or add it manually:
    `https://github.com/bolausson/sync-for-proton`
 3. Obtainium finds the latest release APK — tap **Install**.
 4. Future updates show up in Obtainium automatically.
+
+## Install from Uptodown
+
+Also available on [Uptodown](https://sync-provider-for-proton.en.uptodown.com/android), which can keep the app updated via the Uptodown app:
+
+<a href="https://sync-provider-for-proton.en.uptodown.com/android" title="Download Sync Provider for Proton on Uptodown">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://stc.utdstc.com/img/mediakit/download-aao-small-w.png">
+    <img src="https://stc.utdstc.com/img/mediakit/download-aao-small.png" alt="Download on Uptodown" height="54">
+  </picture>
+</a>
 
 ## Install manually
 
