@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Naročnina</string>
+    <string name="spp_subscribe_dialog_message">Naročite se v brskalniku in nato spodaj prilepite svoj ID naročnine (sub_…), da aktivirate sinhronizacijo v tej napravi.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktiviraj</string>
+    <string name="spp_subscribe_open_checkout">Naročite se v brskalniku</string>
+    <string name="spp_subscribe_validating">Preverjanje naročnine…</string>
+    <string name="spp_manage_dialog_title">Upravljaj naročnino</string>
+    <string name="spp_manage_action_update_payment">Posodobi način plačila</string>
+    <string name="spp_manage_action_cancel">Prekliči naročnino</string>
+    <string name="spp_manage_error">Strani za upravljanje ni bilo mogoče naložiti. Poskusite znova.</string>
+    <string name="spp_manage_note">Paddle bo zahteval e-poštni naslov, s katerim ste se naročili. Paddle v svojih e-poštnih sporočilih prodajalca navaja kot BEO.</string>
+    <string name="spp_manage_loading">Povezovanje s Paddle…</string>
+    <string name="spp_manage_unavailable">Storitev za naročnine ni na voljo. Poskusite znova pozneje.</string>
+    <string name="spp_manage_no_connection">Ni povezave. Preverite, ali je telefon povezan z internetom, in poskusite znova.</string>
+    <string name="spp_no_browser">Brskalnika ni bilo mogoče najti. Namestite ali omogočite brskalnik in poskusite znova.</string>
+</resources>

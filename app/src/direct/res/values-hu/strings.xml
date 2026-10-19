@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Előfizetés</string>
+    <string name="spp_subscribe_dialog_message">Fizessen elő a böngészőjében, majd illessze be alább az előfizetési azonosítóját (sub_…) a szinkronizálás aktiválásához ezen az eszközön.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktiválás</string>
+    <string name="spp_subscribe_open_checkout">Előfizetés a böngészőben</string>
+    <string name="spp_subscribe_validating">Előfizetés ellenőrzése…</string>
+    <string name="spp_manage_dialog_title">Előfizetés kezelése</string>
+    <string name="spp_manage_action_update_payment">Fizetési mód módosítása</string>
+    <string name="spp_manage_action_cancel">Előfizetés lemondása</string>
+    <string name="spp_manage_error">A kezelőoldal nem tölthető be. Próbálja újra.</string>
+    <string name="spp_manage_note">A Paddle el fogja kérni azt az e-mail-címet, amellyel előfizetett. A Paddle e-mailjeiben az eladó BEO néven szerepel.</string>
+    <string name="spp_manage_loading">Kapcsolódás a Paddle-hez…</string>
+    <string name="spp_manage_unavailable">Az előfizetési szolgáltatás nem érhető el. Próbálja újra később.</string>
+    <string name="spp_manage_no_connection">Nincs kapcsolat. Ellenőrizze, hogy a telefonja csatlakozik-e az internethez, majd próbálja újra.</string>
+    <string name="spp_no_browser">Nem található böngésző. Telepítsen vagy engedélyezzen egyet, majd próbálja újra.</string>
+</resources>

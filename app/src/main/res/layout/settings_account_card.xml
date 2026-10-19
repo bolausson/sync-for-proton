@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Calm redesign — one account, as a collapsible header card + grouped sub-cards
+  (ACCOUNT / CONTACTS / CALENDAR / advanced). ALL original view IDs and listeners
+  are preserved; this is a regroup + reskin, not a feature change.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/sfp_group_gap">
+
+    <!-- ═══════════════ HEADER CARD (collapsed state) ═══════════════ -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/sfp_radius_group">
+
+        <LinearLayout
+            android:id="@+id/account_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+            android:paddingVertical="@dimen/sfp_row_pad_v"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <FrameLayout
+                android:layout_width="@dimen/sfp_avatar_md"
+                android:layout_height="@dimen/sfp_avatar_md"
+                android:layout_marginEnd="14dp">
+
+                <View
+                    android:id="@+id/avatar_circle"
+                    android:layout_width="@dimen/sfp_avatar_md"
+                    android:layout_height="@dimen/sfp_avatar_md"
+                    android:background="@drawable/circle_avatar" />
+
+                <TextView
+                    android:id="@+id/avatar_letter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/account_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sfp_text"
+                    android:textSize="15.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/account_proton_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sfp_text_faint"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/account_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sfp_text_secondary"
+                    android:textSize="@dimen/sfp_text_row_sub" />
+            </LinearLayout>
+
+            <!-- Sync state indicator (28dp reserved; spinner / queued glyph) -->
+            <FrameLayout
+                android:id="@+id/sync_indicator"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="6dp"
+                android:visibility="gone">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/sync_indicator_progress"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:indicatorSize="16dp"
+                    app:trackThickness="2dp" />
+
+                <ImageView
+                    android:id="@+id/sync_indicator_queued"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sync_queued"
+                    android:alpha="0.55"
+                    android:visibility="gone"
+                    android:contentDescription="@string/label_sync_queued"
+                    app:tint="?attr/colorPrimary" />
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/expand_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_sfp_chevron_down"
+                app:tint="@color/sfp_text_faint"
+                android:contentDescription="@string/label_expand" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- ═══════════════ EXPANDABLE CONTENT (grouped sub-cards) ═══════════════ -->
+    <LinearLayout
+        android:id="@+id/account_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- ───────── ACCOUNT ───────── -->
+        <TextView
+            style="@style/TextAppearance.SyncForProton.SectionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="@dimen/sfp_group_gap"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sfp_group_account" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Display name -->
+                <LinearLayout
+                    android:id="@+id/row_alias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_display_name"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_display_name" style="@style/InfoIcon" />
+
+                    <TextView
+                        android:id="@+id/value_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="@dimen/sfp_text_row_value" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Check interval -->
+                <LinearLayout
+                    android:id="@+id/row_event_loop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_event_loop_interval"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_event_loop" style="@style/InfoIcon" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_event_loop_subtitle"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/value_event_loop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="@dimen/sfp_text_row_value" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Notification while syncing -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_notify_in_progress"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_notify_in_progress" style="@style/InfoIcon" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notify_in_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ───────── CONTACTS ───────── -->
+        <TextView
+            style="@style/TextAppearance.SyncForProton.SectionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="@dimen/sfp_group_gap"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sfp_group_contacts" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Sync contacts (master) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_contacts"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_sync_contacts" style="@style/InfoIcon" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/text_contacts_last_sync"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_sub" />
+
+                        <TextView
+                            android:id="@+id/text_contacts_last_fail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_danger"
+                            android:textSize="@dimen/sfp_text_row_sub"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_contacts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Notify on failure (contacts) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_notify_on_failure"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_notify_contacts" style="@style/InfoIcon" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notify_contacts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Which contacts sync. Opens its own screen: the rules are ordered and each has
+                     several parts, which is more than a settings row can hold. The value on the
+                     right states the effect, "All contacts" or "3 rules", so the card still says
+                     what is happening without being opened. -->
+                <LinearLayout
+                    android:id="@+id/row_contact_filters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_contact_filters"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_contact_filters" style="@style/InfoIcon" />
+
+                    <TextView
+                        android:id="@+id/value_contact_filters"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="@dimen/sfp_text_row_value" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Where a Proton display name lands when Proton has no first or last name.
+                     Sits next to the filter rules because both answer questions about the shape of
+                     what arrives, rather than about syncing itself. -->
+                <LinearLayout
+                    android:id="@+id/row_name_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_name_mode"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_name_mode" style="@style/InfoIcon" />
+
+                    <TextView
+                        android:id="@+id/value_name_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="@dimen/sfp_text_row_value" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Cleanup for names an earlier version already sent to Proton. Deliberately an
+                     action rather than a setting: it is the only part of this that writes to the
+                     account, so it happens when asked and never on its own. -->
+                <LinearLayout
+                    android:id="@+id/row_name_repair"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_name_repair"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_sfp_chevron_right"
+                        android:contentDescription="@null"
+                        app:tint="@color/sfp_text_faint" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Sync contacts now -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_sync_contacts"
+                        style="@style/Widget.SyncForProton.Button.Soft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="40dp"
+                        android:text="@string/btn_sync_contacts" />
+
+                    <ImageView android:id="@+id/info_btn_sync_contacts" style="@style/InfoIcon" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ───────── CALENDAR ───────── -->
+        <TextView
+            style="@style/TextAppearance.SyncForProton.SectionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="@dimen/sfp_group_gap"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sfp_group_calendar" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Sync calendar (master) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sync_calendar"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_sync_calendar" style="@style/InfoIcon" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/text_calendar_last_sync"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_sub" />
+
+                        <TextView
+                            android:id="@+id/text_calendar_last_fail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_danger"
+                            android:textSize="@dimen/sfp_text_row_sub"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Include external calendars -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_include_external_calendars"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_include_external" style="@style/InfoIcon" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_exclude_external"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Event range: All (radio) -->
+                <LinearLayout
+                    android:id="@+id/row_sync_mode_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <RadioButton
+                        android:id="@+id/radio_sync_mode_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_sync_mode_all"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_sync_mode_all" style="@style/InfoIcon" />
+                </LinearLayout>
+
+                <!-- Event range: Custom (radio) -->
+                <LinearLayout
+                    android:id="@+id/row_sync_mode_custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <RadioButton
+                        android:id="@+id/radio_sync_mode_custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_sync_mode_custom"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_sync_mode_custom" style="@style/InfoIcon" />
+                </LinearLayout>
+
+                <!-- Custom range (past/future), shown when mode = custom -->
+                <LinearLayout
+                    android:id="@+id/group_custom_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:paddingStart="44dp">
+
+                    <LinearLayout
+                        android:id="@+id/row_past_events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calendar_timeframe_past_title"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_past_events" style="@style/InfoIcon" />
+
+                        <TextView
+                            android:id="@+id/value_past_events"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_value" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/row_future_events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calendar_timeframe_future_title"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_future_events" style="@style/InfoIcon" />
+
+                        <TextView
+                            android:id="@+id/value_future_events"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_value" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Poll attendee RSVP status -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_poll_attendee_status"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_poll_attendee" style="@style/InfoIcon" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_poll_attendee_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Notify on failure (calendar) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_notify_on_failure"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_notify_calendar" style="@style/InfoIcon" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notify_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                <!-- Sync calendar now -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_sync_calendar"
+                        style="@style/Widget.SyncForProton.Button.Soft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="40dp"
+                        android:text="@string/btn_sync_calendar" />
+
+                    <ImageView android:id="@+id/info_btn_sync_calendar" style="@style/InfoIcon" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ───────── ADVANCED DISCLOSURE ───────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_advanced_disclosure"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="2dp"
+            android:text="@string/sfp_show_advanced"
+            android:textAllCaps="false"
+            android:textColor="@color/sfp_text_secondary"
+            app:icon="@drawable/ic_sfp_chevron_down"
+            app:iconTint="@color/sfp_text_secondary"
+            app:iconGravity="textStart" />
+
+        <LinearLayout
+            android:id="@+id/advanced_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/TextAppearance.SyncForProton.SectionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/sfp_group_email_attendees" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Send invites -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_send_email_invites"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_send_invites" style="@style/InfoIcon" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_send_invites"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                    <!-- Send updates -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_send_email_updates"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_send_updates" style="@style/InfoIcon" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_send_updates"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                    <!-- Send cancellations -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_send_email_cancellations"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_send_cancellations" style="@style/InfoIcon" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_send_cancellations"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                    <!-- Include event title in invite subject -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_invite_subject_include_title"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_invite_subject_title" style="@style/InfoIcon" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_invite_subject_include_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                    <!-- Contacts fallback full sync -->
+                    <LinearLayout
+                        android:id="@+id/row_contacts_fallback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dialog_title_contacts_fallback"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_contacts_fallback" style="@style/InfoIcon" />
+
+                        <TextView
+                            android:id="@+id/value_contacts_fallback"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_value" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                    <!-- Calendar fallback full sync -->
+                    <LinearLayout
+                        android:id="@+id/row_calendar_fallback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="@dimen/sfp_row_pad_v"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:layout_width="0dp"
+                        android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dialog_title_calendar_fallback"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_calendar_fallback" style="@style/InfoIcon" />
+
+                        <TextView
+                            android:id="@+id/value_calendar_fallback"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_value" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- ───────── ACTIONS ───────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/sfp_group_gap">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sync_now"
+                style="@style/Widget.SyncForProton.Button.Soft"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_sync_all_now" />
+
+            <ImageView android:id="@+id/info_btn_sync_now" style="@style/InfoIcon" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_reauth"
+                style="@style/Widget.SyncForProton.Button.Ghost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:minWidth="0dp"
+                android:text="@string/btn_reauthenticate" />
+
+            <ImageView android:id="@+id/info_btn_reauth" style="@style/InfoIcon" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_long_press_hint"
+            android:textColor="@color/sfp_text_faint"
+            android:textSize="11sp"
+            android:textAlignment="center"
+            android:layout_marginTop="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="2dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_remove_account"
+                style="@style/Widget.SyncForProton.Button.Danger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:text="@string/btn_remove" />
+
+            <ImageView android:id="@+id/info_btn_remove" style="@style/InfoIcon" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

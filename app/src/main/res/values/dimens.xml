@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Login & 2FA screens — applied programmatically because the
+         window-insets listener overwrites root padding. -->
+    <dimen name="login_screen_horizontal_padding">24dp</dimen>
+    <dimen name="login_screen_vertical_padding">32dp</dimen>
+
+    <!-- ===== Calm redesign: spacing, radii & type scale ===== -->
+    <!-- screen padding -->
+    <dimen name="sfp_screen_h">18dp</dimen>
+
+    <!-- corner radii -->
+    <dimen name="sfp_radius_hero">24dp</dimen>
+    <dimen name="sfp_radius_group">20dp</dimen>
+    <dimen name="sfp_radius_tile">16dp</dimen>
+    <dimen name="sfp_radius_field">14dp</dimen>
+    <dimen name="sfp_radius_button">15dp</dimen>
+    <dimen name="sfp_radius_avatar">14dp</dimen>
+    <dimen name="sfp_radius_pill">11dp</dimen>
+
+    <!-- spacing -->
+    <dimen name="sfp_group_gap">18dp</dimen>
+    <dimen name="sfp_row_pad_v">15dp</dimen>
+    <dimen name="sfp_row_pad_h">18dp</dimen>
+    <dimen name="sfp_card_pad">22dp</dimen>
+
+    <!-- control sizes -->
+    <dimen name="sfp_button_height">52dp</dimen>
+    <dimen name="sfp_field_height">52dp</dimen>
+    <dimen name="sfp_avatar_lg">52dp</dimen>
+    <dimen name="sfp_avatar_md">44dp</dimen>
+
+    <!-- type scale (sp) -->
+    <dimen name="sfp_text_screen_title">21sp</dimen>
+    <dimen name="sfp_text_hero_title">19sp</dimen>
+    <!-- section heading of a document (the licences screen), between the hero title and a row title -->
+    <dimen name="sfp_text_heading">17sp</dimen>
+    <dimen name="sfp_text_section_label">12.5sp</dimen>
+    <dimen name="sfp_text_row_title">15sp</dimen>
+    <dimen name="sfp_text_row_sub">12.5sp</dimen>
+    <dimen name="sfp_text_row_value">14.5sp</dimen>
+    <dimen name="sfp_text_button">15.5sp</dimen>
+</resources>

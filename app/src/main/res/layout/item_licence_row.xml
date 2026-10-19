@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One row of a notice table, drawn as a settings row: the library on the left, its version where a setting's value
+     sits, the licence under the name. One card runs over the whole table, so its rounded ends and the hairline are set
+     per row (LicencesActivity.bindRow). TalkBack reads the row as one unit, with the file's column names. -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:screenReaderFocusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+        android:paddingVertical="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hyphenationFrequency="none"
+                android:importantForAccessibility="no"
+                android:textColor="@color/sfp_text"
+                android:textSize="@dimen/sfp_text_row_title" />
+
+            <!-- Tabular figures, so the versions line up down the card. Capped, because one Go module's version is a
+                 34-character pseudo-version that would squeeze the name to a sliver. -->
+            <TextView
+                android:id="@+id/text_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:fontFeatureSettings="tnum"
+                android:gravity="end"
+                android:hyphenationFrequency="none"
+                android:importantForAccessibility="no"
+                android:maxWidth="140dp"
+                android:textColor="@color/sfp_text_secondary"
+                android:textSize="@dimen/sfp_text_row_value" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_licence"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hyphenationFrequency="none"
+                android:importantForAccessibility="no"
+                android:textColor="@color/sfp_text_secondary"
+                android:textSize="@dimen/sfp_text_row_sub" />
+
+            <!-- The Build column when it is not "both": the file's own "play only", at the end of the licence line. -->
+            <TextView
+                android:id="@+id/text_build"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/bg_licence_pill"
+                android:importantForAccessibility="no"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="1dp"
+                android:textColor="@color/sfp_text_secondary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Any further column, such as the Go modules' copyright line. -->
+        <TextView
+            android:id="@+id/text_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:hyphenationFrequency="none"
+            android:importantForAccessibility="no"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="@dimen/sfp_text_row_sub"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/sfp_row_pad_h"
+        android:background="@color/sfp_hairline" />
+</LinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    German (Sie-Form, matching the app's existing tone) for the direct-flavor
+    Paddle subscription UI.
+-->
+<resources>
+    <string name="spp_subscribe_dialog_title">Abonnement</string>
+    <string name="spp_subscribe_dialog_message">Schließen Sie das Abonnement in Ihrem Browser ab und fügen Sie dann unten Ihre Abo-ID (beginnt mit „sub_“) ein, um die Synchronisierung auf diesem Gerät zu aktivieren.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktivieren</string>
+    <string name="spp_subscribe_open_checkout">Im Browser abonnieren</string>
+    <string name="spp_subscribe_validating">Abonnement wird geprüft…</string>
+    <string name="spp_manage_dialog_title">Abonnement verwalten</string>
+    <string name="spp_manage_action_update_payment">Zahlungsmethode aktualisieren</string>
+    <string name="spp_manage_action_cancel">Abonnement kündigen</string>
+    <string name="spp_manage_error">Die Verwaltungsseite konnte nicht geladen werden. Bitte versuchen Sie es erneut.</string>
+    <string name="spp_manage_note">Paddle fragt nach der E-Mail-Adresse, mit der Sie das Abonnement abgeschlossen haben. In den E-Mails von Paddle wird BEO als Verkäufer genannt.</string>
+    <string name="spp_manage_loading">Paddle wird kontaktiert…</string>
+    <string name="spp_manage_unavailable">Der Abonnementdienst ist nicht verfügbar. Bitte versuchen Sie es später erneut.</string>
+    <string name="spp_manage_no_connection">Keine Verbindung. Prüfen Sie, ob Ihr Telefon online ist, und versuchen Sie es dann erneut.</string>
+    <string name="spp_no_browser">Kein Browser gefunden. Installieren oder aktivieren Sie einen und versuchen Sie es dann erneut.</string>
+</resources>

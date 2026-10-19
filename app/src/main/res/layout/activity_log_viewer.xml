@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/title_sync_logs"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationContentDescription="@string/btn_navigate_back"
+        app:titleTextAppearance="@style/TextAppearance.SyncForProton.ScreenTitle" />
+
+    <!-- Lens strip. Sits flush on top of the console because it changes what the console
+         SHOWS, which is a third job, distinct from the verbose row below (what gets captured)
+         and the action row at the bottom (what gets sent). Those three used to be conflated,
+         which is how a filter meant for reading ended up deciding what a support log
+         contained. The line count keeps the filtering visible: a reader can see at a glance
+         that the view is a subset and that the full log is larger. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/sfp_console_bar"
+        android:paddingStart="10dp"
+        android:paddingEnd="14dp"
+        android:paddingVertical="6dp">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/group_log_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_filter_sync"
+                style="@style/Widget.SyncForProton.Button.Segment"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/label_log_filter_sync" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_filter_all"
+                style="@style/Widget.SyncForProton.Button.Segment"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/label_log_filter_all" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- Next to the control it explains: which lines are drawn is not the same question
+             as which lines are recorded or sent, and that distinction is not self-evident
+             from two words on a segmented button. -->
+        <ImageView
+            android:id="@+id/info_log_filter"
+            style="@style/InfoIcon.Console" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Monospace, because it is a measurement of the console it labels. -->
+        <TextView
+            android:id="@+id/text_log_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textColor="@color/sfp_console_text_dim"
+            android:textSize="11.5sp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/log_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/sfp_console"
+        android:clipToPadding="false"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp" />
+
+    <!-- Verbose toggle controls what gets CAPTURED, so it stays separate from the lens strip
+         above and the actions below. It lives on this screen at all because Settings is
+         unreachable for anyone stuck at sign-in, which is exactly when the extra detail
+         matters. Effective immediately: SyncLog flips a volatile flag, no restart. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="10dp"
+        android:paddingVertical="4dp"
+        android:background="@color/sfp_surface">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_verbose_logging_title"
+            android:textColor="@color/sfp_text"
+            android:textSize="@dimen/sfp_text_row_title" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_verbose_logging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/sfp_hairline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/sfp_surface"
+        android:paddingBottom="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="6dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_auto_scroll"
+                style="@style/Widget.SyncForProton.Button.Ghost"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:minHeight="40dp"
+                android:text="@string/btn_auto_scroll"
+                android:textSize="12.5sp"
+                app:icon="@drawable/ic_vertical_align_bottom_24"
+                app:iconSize="16dp"
+                app:iconPadding="6dp"
+                app:iconGravity="textStart" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btn_clear"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_delete_24"
+                app:tint="@color/sfp_text_secondary"
+                android:contentDescription="@string/btn_clear_view" />
+
+            <ImageButton
+                android:id="@+id/btn_copy"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_content_copy_24"
+                app:tint="@color/sfp_text_secondary"
+                android:contentDescription="@string/btn_copy_debug_log" />
+
+            <ImageButton
+                android:id="@+id/btn_save"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_save_24"
+                app:tint="@color/sfp_text_secondary"
+                android:contentDescription="@string/btn_save_debug_log" />
+
+            <ImageButton
+                android:id="@+id/btn_export"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_share_24"
+                app:tint="@color/sfp_primary"
+                android:contentDescription="@string/btn_share_debug_log" />
+
+        </LinearLayout>
+
+        <!-- The sentence that removes the ambiguity. The filter above is a reading aid; these
+             buttons always send everything. Saying so here, where the choice is made, is far
+             cheaper than a support round-trip that discovers it. -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="2dp"
+            android:text="@string/label_share_sends_full_log"
+            android:textColor="@color/sfp_text_faint"
+            android:textSize="11.5sp" />
+    </LinearLayout>
+
+</LinearLayout>

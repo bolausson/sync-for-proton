@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Calm redesign — DARK palette. Same names as values/colors.xml. -->
+<resources>
+    <!-- Surfaces -->
+    <color name="sfp_window">#111118</color>
+    <color name="sfp_surface">#1C1C26</color>
+    <color name="sfp_surface_sunken">#15151D</color>
+    <color name="sfp_field">#25252F</color>
+    <color name="sfp_field_stroke">#21FFFFFF</color>
+    <color name="sfp_hairline">#17FFFFFF</color>
+
+    <!-- Accent (lightened for dark surfaces) -->
+    <color name="sfp_primary">#9D9CFF</color>
+    <color name="sfp_on_primary">#15151F</color>
+    <color name="sfp_primary_container">#262539</color>
+    <color name="sfp_on_primary_container">#C7C6FF</color>
+
+    <!-- Text -->
+    <color name="sfp_text">#F2F2F8</color>
+    <color name="sfp_text_secondary">#9C9CAD</color>
+    <color name="sfp_text_faint">#6E6E80</color>
+
+    <!-- Status -->
+    <color name="sfp_good">#3FD89B</color>
+    <color name="sfp_good_container">#13301F</color>
+    <color name="sfp_warn">#F0B45C</color>
+    <color name="sfp_warn_container">#332813</color>
+    <color name="sfp_danger">#FF6F57</color>
+
+    <!-- Brand accents -->
+    <color name="sfp_brand_green">#3FD89B</color>
+    <color name="sfp_brand_violet">#A6A4FF</color>
+</resources>

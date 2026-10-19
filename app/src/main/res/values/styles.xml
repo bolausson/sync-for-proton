@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tap-to-explain (i) affordance shown immediately after each option's label,
+         sized to sit inline with the label text (≈ the 14sp body rows). Quiet alpha
+         and colorControlNormal tint so it reads as a secondary cue; borderless ripple
+         for tap feedback. Click handling is wired in SyncSettingsActivity (bindInfo).
+         InfoIcon.Heading is the larger variant for the 17sp section-heading rows. -->
+    <style name="InfoIcon">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:layout_marginStart">6dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:src">@drawable/ic_info_outline</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:alpha">0.45</item>
+        <item name="android:tint">?attr/colorControlNormal</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:contentDescription">@string/label_info</item>
+    </style>
+
+    <style name="InfoIcon.Heading">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <!-- Small label above each control in the rule editor. The editor reads as a sentence down the
+         screen ("This rule ... Applies ... When ..."), and these are the connecting words, so they
+         are quiet and small rather than headings competing with the controls. -->
+    <style name="ContactFilterSectionLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/sfp_text_section_label</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textColor">@color/sfp_text_faint</item>
+    </style>
+
+    <!-- Variant for the log console strip. The strip is dark in both themes, so the tint is
+         a fixed console colour rather than ?attr/colorControlNormal, which follows the theme
+         and would go dark-on-dark in light mode. -->
+    <style name="InfoIcon.Console">
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:alpha">0.9</item>
+        <item name="android:tint">@color/sfp_console_text_dim</item>
+    </style>
+
+</resources>

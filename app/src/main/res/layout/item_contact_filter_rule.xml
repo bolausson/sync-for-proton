@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One rule in the chain.
+     The arrows sit in front rather than behind: order is the semantics here, first match wins, so
+     position is a property of the rule and belongs where the eye starts. They also exist for people
+     who cannot drag, which is why they are real buttons and not a long-press affordance. -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@color/sfp_surface"
+    android:paddingStart="4dp"
+    android:paddingEnd="@dimen/sfp_row_pad_h"
+    android:paddingVertical="6dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/btn_move_up"
+            android:layout_width="34dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sfp_chevron_up"
+            app:tint="@color/sfp_text_secondary"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/contact_filters_move_up" />
+
+        <ImageButton
+            android:id="@+id/btn_move_down"
+            android:layout_width="34dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sfp_chevron_down"
+            app:tint="@color/sfp_text_secondary"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/contact_filters_move_down" />
+    </LinearLayout>
+
+    <!-- Position. Monospace so the numbers form a column the eye can run down, which is what makes
+         "checked in order" legible at a glance. -->
+    <TextView
+        android:id="@+id/text_position"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:fontFamily="monospace"
+        android:textColor="@color/sfp_text_faint"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/sfp_text"
+            android:textSize="@dimen/sfp_text_row_title" />
+
+        <!-- Verdict and direction in words rather than a chip: one line doing one job, and it reads
+             as a sentence fragment the user could have written. -->
+        <TextView
+            android:id="@+id/text_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="@dimen/sfp_text_row_sub" />
+    </LinearLayout>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_enabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

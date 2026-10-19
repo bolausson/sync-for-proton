@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Συνδρομή</string>
+    <string name="spp_subscribe_dialog_message">Κάντε συνδρομή στο πρόγραμμα περιήγησής σας και, στη συνέχεια, επικολλήστε παρακάτω το αναγνωριστικό συνδρομής σας (sub_…) για να ενεργοποιήσετε τον συγχρονισμό σε αυτή τη συσκευή.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Ενεργοποίηση</string>
+    <string name="spp_subscribe_open_checkout">Συνδρομή στο πρόγραμμα περιήγησης</string>
+    <string name="spp_subscribe_validating">Έλεγχος της συνδρομής σας…</string>
+    <string name="spp_manage_dialog_title">Διαχείριση συνδρομής</string>
+    <string name="spp_manage_action_update_payment">Ενημέρωση τρόπου πληρωμής</string>
+    <string name="spp_manage_action_cancel">Ακύρωση συνδρομής</string>
+    <string name="spp_manage_error">Δεν ήταν δυνατή η φόρτωση της σελίδας διαχείρισης. Δοκιμάστε ξανά.</string>
+    <string name="spp_manage_note">Το Paddle θα ζητήσει τη διεύθυνση email που χρησιμοποιήσατε για τη συνδρομή. Στα email του Paddle ο πωλητής αναφέρεται ως BEO.</string>
+    <string name="spp_manage_loading">Επικοινωνία με το Paddle…</string>
+    <string name="spp_manage_unavailable">Η υπηρεσία συνδρομών δεν είναι διαθέσιμη. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="spp_manage_no_connection">Δεν υπάρχει σύνδεση. Ελέγξτε αν το τηλέφωνό σας είναι συνδεδεμένο στο διαδίκτυο και δοκιμάστε ξανά.</string>
+    <string name="spp_no_browser">Δεν βρέθηκε πρόγραμμα περιήγησης. Εγκαταστήστε ή ενεργοποιήστε ένα και δοκιμάστε ξανά.</string>
+</resources>

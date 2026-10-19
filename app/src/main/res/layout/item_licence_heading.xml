@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A heading of the notice, in sentence case as written: they name libraries and paths, which capitals would garble.
+     Size and weight per level are set in LicencesActivity.bindHeading. No hyphenation anywhere on this screen: a
+     hyphen the text does not have reads as part of a legal text. -->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:accessibilityHeading="true"
+    android:hyphenationFrequency="none"
+    android:lineSpacingExtra="2dp"
+    android:textColor="@color/sfp_text" />

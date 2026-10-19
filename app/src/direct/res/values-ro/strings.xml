@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abonament</string>
+    <string name="spp_subscribe_dialog_message">Abonează-te în browser, apoi lipește mai jos ID-ul abonamentului tău (sub_…) pentru a activa sincronizarea pe acest dispozitiv.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Activează</string>
+    <string name="spp_subscribe_open_checkout">Abonează-te în browser</string>
+    <string name="spp_subscribe_validating">Se verifică abonamentul…</string>
+    <string name="spp_manage_dialog_title">Gestionează abonamentul</string>
+    <string name="spp_manage_action_update_payment">Actualizează metoda de plată</string>
+    <string name="spp_manage_action_cancel">Anulează abonamentul</string>
+    <string name="spp_manage_error">Pagina de gestionare nu a putut fi încărcată. Încearcă din nou.</string>
+    <string name="spp_manage_note">Paddle îți va cere adresa de e-mail cu care te-ai abonat. În e-mailurile de la Paddle, vânzătorul apare sub numele BEO.</string>
+    <string name="spp_manage_loading">Se contactează Paddle…</string>
+    <string name="spp_manage_unavailable">Serviciul de abonamente nu este disponibil. Încearcă din nou mai târziu.</string>
+    <string name="spp_manage_no_connection">Nu există conexiune. Verifică dacă telefonul este conectat la internet, apoi încearcă din nou.</string>
+    <string name="spp_no_browser">Nu s-a găsit niciun browser. Instalează sau activează unul, apoi încearcă din nou.</string>
+</resources>

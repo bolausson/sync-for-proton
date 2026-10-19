@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/sfp_window">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/title_contact_filters"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationContentDescription="@string/btn_navigate_back"
+        app:titleTextAppearance="@style/TextAppearance.SyncForProton.ScreenTitle" />
+
+    <!-- Empty state. An empty list here is not a blank slate to apologise for, it is the correct
+         and safe default (everything syncs), so it says so plainly and offers the two ways in. -->
+    <LinearLayout
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_filters_empty_title"
+            android:textColor="@color/sfp_text"
+            android:textSize="@dimen/sfp_text_hero_title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:id="@+id/empty_body"
+            android:text="@string/contact_filters_empty_body"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="@dimen/sfp_text_row_sub" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rules_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/sfp_hairline" />
+
+    <!-- The fall-through. Permanently last and never draggable, because it is not a rule: it is
+         what happens when no rule matched. Without it on screen, a list of "sync if in group X"
+         rules looks like it should already work, and silently does nothing. -->
+    <LinearLayout
+        android:id="@+id/row_fallthrough"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/sfp_surface"
+        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+        android:paddingVertical="14dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_filters_fallthrough"
+            android:textColor="@color/sfp_text"
+            android:textSize="@dimen/sfp_text_row_title" />
+
+        <TextView
+            android:id="@+id/value_fallthrough"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/sfp_primary"
+            android:textSize="@dimen/sfp_text_row_value" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:layout_marginStart="@dimen/sfp_row_pad_h"
+        android:background="@color/sfp_hairline" />
+
+    <!-- The dry run. Sits with the fall-through rather than with the create buttons, because both
+         rows answer the same question: what does this whole chain do to my address book. -->
+    <LinearLayout
+        android:id="@+id/row_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/sfp_surface"
+        android:paddingHorizontal="@dimen/sfp_row_pad_h"
+        android:paddingVertical="14dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_filter_preview"
+            android:textColor="@color/sfp_text"
+            android:textSize="@dimen/sfp_text_row_title" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_sfp_chevron_right"
+            android:contentDescription="@null"
+            app:tint="@color/sfp_text_faint" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/sfp_surface"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_templates"
+            style="@style/Widget.SyncForProton.Button.Ghost"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/contact_filters_templates" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_rule"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_filters_add" />
+    </LinearLayout>
+
+</LinearLayout>

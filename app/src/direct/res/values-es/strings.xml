@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Suscripción</string>
+    <string name="spp_subscribe_dialog_message">Suscríbete en tu navegador y luego pega aquí abajo tu ID de suscripción (sub_…) para activar la sincronización en este dispositivo.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Activar</string>
+    <string name="spp_subscribe_open_checkout">Suscribirse en el navegador</string>
+    <string name="spp_subscribe_validating">Comprobando tu suscripción…</string>
+    <string name="spp_manage_dialog_title">Gestionar suscripción</string>
+    <string name="spp_manage_action_update_payment">Actualizar método de pago</string>
+    <string name="spp_manage_action_cancel">Cancelar suscripción</string>
+    <string name="spp_manage_error">No se pudo cargar la página de gestión. Inténtalo de nuevo.</string>
+    <string name="spp_manage_note">Paddle te pedirá la dirección de correo que usaste para suscribirte. En los correos de Paddle, el vendedor aparece como BEO.</string>
+    <string name="spp_manage_loading">Contactando con Paddle…</string>
+    <string name="spp_manage_unavailable">El servicio de suscripción no está disponible. Inténtalo de nuevo más tarde.</string>
+    <string name="spp_manage_no_connection">Sin conexión. Comprueba que tu teléfono está conectado a Internet y luego inténtalo de nuevo.</string>
+    <string name="spp_no_browser">No se ha encontrado ningún navegador. Instala o activa uno y luego inténtalo de nuevo.</string>
+</resources>

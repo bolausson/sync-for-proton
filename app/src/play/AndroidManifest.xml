@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    play-flavor-only manifest additions.
+    Google Play Billing requires this permission; it must NOT appear in the
+    direct (Obtainium/Paddle) build. Manifest merger unions this with the main
+    manifest for the play flavor only.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+</manifest>

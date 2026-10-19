@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Segment fill. Unselected is the console bar itself, so only the selected segment reads
+     as a surface at all: the control should look like one lit cell, not two buttons. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/sfp_console_selected" android:state_checked="true" />
+    <item android:color="@android:color/transparent" />
+</selector>

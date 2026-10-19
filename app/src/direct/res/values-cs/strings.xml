@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Předplatné</string>
+    <string name="spp_subscribe_dialog_message">Předplaťte si službu v prohlížeči a poté níže vložte své ID předplatného (sub_…) pro aktivaci synchronizace na tomto zařízení.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktivovat</string>
+    <string name="spp_subscribe_open_checkout">Předplatit v prohlížeči</string>
+    <string name="spp_subscribe_validating">Ověřování předplatného…</string>
+    <string name="spp_manage_dialog_title">Spravovat předplatné</string>
+    <string name="spp_manage_action_update_payment">Aktualizovat platební metodu</string>
+    <string name="spp_manage_action_cancel">Zrušit předplatné</string>
+    <string name="spp_manage_error">Stránku správy se nepodařilo načíst. Zkuste to znovu.</string>
+    <string name="spp_manage_note">Paddle vás požádá o e-mailovou adresu, kterou jste použili při objednání předplatného. Paddle ve svých e-mailech uvádí jako prodejce BEO.</string>
+    <string name="spp_manage_loading">Připojování k Paddle…</string>
+    <string name="spp_manage_unavailable">Služba předplatného není dostupná. Zkuste to znovu později.</string>
+    <string name="spp_manage_no_connection">Žádné připojení. Zkontrolujte, zda je telefon připojen k internetu, a zkuste to znovu.</string>
+    <string name="spp_no_browser">Nebyl nalezen žádný prohlížeč. Nainstalujte nebo povolte prohlížeč a zkuste to znovu.</string>
+</resources>

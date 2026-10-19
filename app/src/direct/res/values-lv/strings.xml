@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abonements</string>
+    <string name="spp_subscribe_dialog_message">Abonējiet savā pārlūkprogrammā un pēc tam ielīmējiet zemāk savu abonementa ID (sub_…), lai aktivizētu sinhronizāciju šajā ierīcē.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktivizēt</string>
+    <string name="spp_subscribe_open_checkout">Abonēt pārlūkprogrammā</string>
+    <string name="spp_subscribe_validating">Notiek abonementa pārbaude…</string>
+    <string name="spp_manage_dialog_title">Pārvaldīt abonementu</string>
+    <string name="spp_manage_action_update_payment">Atjaunināt maksājuma metodi</string>
+    <string name="spp_manage_action_cancel">Atcelt abonementu</string>
+    <string name="spp_manage_error">Pārvaldības lapu neizdevās ielādēt. Mēģiniet vēlreiz.</string>
+    <string name="spp_manage_note">Paddle prasīs e-pasta adresi, kuru izmantojāt abonēšanai. Paddle e-pastos pārdevējs ir norādīts kā BEO.</string>
+    <string name="spp_manage_loading">Notiek saziņa ar Paddle…</string>
+    <string name="spp_manage_unavailable">Abonementu pakalpojums nav pieejams. Lūdzu, vēlāk mēģiniet vēlreiz.</string>
+    <string name="spp_manage_no_connection">Nav savienojuma. Pārbaudiet, vai jūsu tālrunis ir tiešsaistē, un pēc tam mēģiniet vēlreiz.</string>
+    <string name="spp_no_browser">Netika atrasta neviena pārlūkprogramma. Instalējiet vai iespējojiet kādu pārlūkprogrammu un pēc tam mēģiniet vēlreiz.</string>
+</resources>

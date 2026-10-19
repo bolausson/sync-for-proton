@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abbonament</string>
+    <string name="spp_subscribe_dialog_message">Abbona fil-browser tiegħek, imbagħad waħħal hawn taħt l-ID tal-abbonament tiegħek (sub_…) biex tattiva s-sinkronizzazzjoni fuq dan l-apparat.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Attiva</string>
+    <string name="spp_subscribe_open_checkout">Abbona fil-browser</string>
+    <string name="spp_subscribe_validating">Qed niċċekkjaw l-abbonament tiegħek…</string>
+    <string name="spp_manage_dialog_title">Immaniġġja l-abbonament</string>
+    <string name="spp_manage_action_update_payment">Aġġorna l-metodu ta\' pagament</string>
+    <string name="spp_manage_action_cancel">Ikkanċella l-abbonament</string>
+    <string name="spp_manage_error">Il-paġna ta\' mmaniġġjar ma setgħetx tinxteħet. Erġa\' pprova.</string>
+    <string name="spp_manage_note">Paddle se jitolbok l-indirizz tal-email li użajt biex tabbona. Fl-emails ta\' Paddle, il-bejjiegħ jidher bħala BEO.</string>
+    <string name="spp_manage_loading">Qed nikkuntattjaw lil Paddle…</string>
+    <string name="spp_manage_unavailable">Is-servizz tal-abbonament mhux disponibbli. Jekk jogħġbok erġa\' pprova iktar tard.</string>
+    <string name="spp_manage_no_connection">M\'hemmx konnessjoni. Iċċekkja li t-telefon tiegħek huwa online, imbagħad erġa\' pprova.</string>
+    <string name="spp_no_browser">Ma nstab l-ebda browser. Installa jew attiva wieħed, imbagħad erġa\' pprova.</string>
+</resources>

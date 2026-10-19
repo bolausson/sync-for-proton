@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Calm redesign — LIGHT palette. Dark equivalents in values-night/colors.xml. -->
+<resources>
+    <!-- Surfaces -->
+    <color name="sfp_window">#F1F0F7</color>
+    <color name="sfp_surface">#FFFFFF</color>
+    <color name="sfp_surface_sunken">#F1F0F7</color>
+    <color name="sfp_field">#F4F4FA</color>
+    <color name="sfp_field_stroke">#1F14142D</color>
+    <color name="sfp_hairline">#1414142D</color>
+
+    <!-- Accent (refined indigo) -->
+    <color name="sfp_primary">#5A57E6</color>
+    <color name="sfp_on_primary">#FFFFFF</color>
+    <color name="sfp_primary_container">#ECEBFD</color>
+    <color name="sfp_on_primary_container">#5A57E6</color>
+
+    <!-- Text -->
+    <color name="sfp_text">#191922</color>
+    <color name="sfp_text_secondary">#6B6B7B</color>
+    <color name="sfp_text_faint">#9D9DAD</color>
+
+    <!-- Status -->
+    <color name="sfp_good">#16A06B</color>
+    <color name="sfp_good_container">#E4F5EC</color>
+    <color name="sfp_warn">#D98A22</color>
+    <color name="sfp_warn_container">#FAEFDA</color>
+    <color name="sfp_danger">#D8553F</color>
+
+    <!-- Brand accents used on icons/avatars -->
+    <color name="sfp_brand_green">#1FB07A</color>
+    <color name="sfp_brand_violet">#6E6BF0</color>
+
+    <!-- Console. The log panel stays dark in both themes so the level colours keep their
+         meaning, so these are fixed values with no values-night counterpart. Named rather
+         than inlined because the filter strip has to sit flush against the panel and match it. -->
+    <color name="sfp_console">#15151D</color>
+    <color name="sfp_console_bar">#1B1B25</color>
+    <color name="sfp_console_stroke">#2E2E3C</color>
+    <color name="sfp_console_text">#CCCCCC</color>
+    <color name="sfp_console_text_dim">#8A8A9B</color>
+    <color name="sfp_console_selected">#2E2C63</color>
+    <color name="sfp_console_text_selected">#E9E8FF</color>
+</resources>

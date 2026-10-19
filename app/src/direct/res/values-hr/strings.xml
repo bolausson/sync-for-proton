@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Pretplata</string>
+    <string name="spp_subscribe_dialog_message">Pretplatite se u svom pregledniku, a zatim u nastavku zalijepite svoj ID pretplate (sub_…) kako biste aktivirali sinkronizaciju na ovom uređaju.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktiviraj</string>
+    <string name="spp_subscribe_open_checkout">Pretplata u pregledniku</string>
+    <string name="spp_subscribe_validating">Provjera pretplate…</string>
+    <string name="spp_manage_dialog_title">Upravljaj pretplatom</string>
+    <string name="spp_manage_action_update_payment">Ažuriraj način plaćanja</string>
+    <string name="spp_manage_action_cancel">Otkaži pretplatu</string>
+    <string name="spp_manage_error">Stranicu za upravljanje nije moguće učitati. Pokušajte ponovno.</string>
+    <string name="spp_manage_note">Paddle će zatražiti adresu e-pošte koju ste koristili za pretplatu. Paddle u svojim porukama e-pošte navodi prodavatelja kao BEO.</string>
+    <string name="spp_manage_loading">Povezivanje s Paddleom…</string>
+    <string name="spp_manage_unavailable">Usluga pretplate nije dostupna. Pokušajte ponovno kasnije.</string>
+    <string name="spp_manage_no_connection">Nema veze s poslužiteljem. Provjerite je li vaš telefon povezan s internetom, a zatim pokušajte ponovno.</string>
+    <string name="spp_no_browser">Nije pronađen nijedan preglednik. Instalirajte ili omogućite preglednik, a zatim pokušajte ponovno.</string>
+</resources>

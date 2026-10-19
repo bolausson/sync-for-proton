@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Tellimus</string>
+    <string name="spp_subscribe_dialog_message">Telli oma brauseris ja seejärel kleebi allapoole oma tellimuse ID (sub_…), et aktiveerida sünkroonimine selles seadmes.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktiveeri</string>
+    <string name="spp_subscribe_open_checkout">Telli brauseris</string>
+    <string name="spp_subscribe_validating">Tellimuse kontrollimine…</string>
+    <string name="spp_manage_dialog_title">Halda tellimust</string>
+    <string name="spp_manage_action_update_payment">Uuenda makseviisi</string>
+    <string name="spp_manage_action_cancel">Tühista tellimus</string>
+    <string name="spp_manage_error">Haldamise lehte ei õnnestunud laadida. Proovi uuesti.</string>
+    <string name="spp_manage_note">Paddle küsib e-posti aadressi, mida tellimisel kasutasite. Paddle\'i e-kirjades on müüjana märgitud BEO.</string>
+    <string name="spp_manage_loading">Ühenduse loomine Paddle\'iga…</string>
+    <string name="spp_manage_unavailable">Tellimusteenus pole saadaval. Palun proovige hiljem uuesti.</string>
+    <string name="spp_manage_no_connection">Ühendus puudub. Kontrollige, kas telefon on internetiga ühendatud, ja proovige seejärel uuesti.</string>
+    <string name="spp_no_browser">Brauserit ei leitud. Installige või lubage mõni brauser ja proovige seejärel uuesti.</string>
+</resources>

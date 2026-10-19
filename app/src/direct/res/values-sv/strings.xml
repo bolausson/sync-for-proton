@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Prenumeration</string>
+    <string name="spp_subscribe_dialog_message">Prenumerera i din webbläsare och klistra sedan in ditt prenumerations-ID (sub_…) nedan för att aktivera synkronisering på den här enheten.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktivera</string>
+    <string name="spp_subscribe_open_checkout">Prenumerera i webbläsaren</string>
+    <string name="spp_subscribe_validating">Kontrollerar din prenumeration…</string>
+    <string name="spp_manage_dialog_title">Hantera prenumeration</string>
+    <string name="spp_manage_action_update_payment">Uppdatera betalmetod</string>
+    <string name="spp_manage_action_cancel">Avsluta prenumeration</string>
+    <string name="spp_manage_error">Hanteringssidan kunde inte laddas. Försök igen.</string>
+    <string name="spp_manage_note">Paddle frågar efter e-postadressen som du använde för prenumerationen. I mejl från Paddle står BEO som säljare.</string>
+    <string name="spp_manage_loading">Kontaktar Paddle…</string>
+    <string name="spp_manage_unavailable">Prenumerationstjänsten är inte tillgänglig. Försök igen senare.</string>
+    <string name="spp_manage_no_connection">Ingen anslutning. Kontrollera att din telefon är online och försök sedan igen.</string>
+    <string name="spp_no_browser">Ingen webbläsare hittades. Installera eller aktivera en och försök sedan igen.</string>
+</resources>

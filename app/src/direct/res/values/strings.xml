@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    direct-flavor-only strings (Paddle web-checkout subscription UI).
+    Not present in the play flavor.
+-->
+<resources>
+    <string name="spp_subscribe_dialog_title">Subscription</string>
+    <string name="spp_subscribe_dialog_message">Subscribe in your browser, then paste your subscription ID (starts with \"sub_\") below to activate sync on this device.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Activate</string>
+    <string name="spp_subscribe_open_checkout">Subscribe in browser</string>
+    <string name="spp_subscribe_validating">Checking your subscription…</string>
+    <string name="spp_manage_dialog_title">Manage subscription</string>
+    <string name="spp_manage_action_update_payment">Update payment method</string>
+    <string name="spp_manage_action_cancel">Cancel subscription</string>
+    <string name="spp_manage_error">Couldn\'t load the management page. Please try again.</string>
+    <!-- Under the subscription card's buttons that open Paddle's customer portal. BEO is the seller's
+         trading name in Paddle's emails: keep it as it is. -->
+    <string name="spp_manage_note">Paddle will ask for the email address you used to subscribe. Paddle\'s emails name the seller as BEO.</string>
+    <string name="spp_manage_loading">Contacting Paddle…</string>
+    <string name="spp_manage_unavailable">The subscription service is unavailable. Please try again later.</string>
+    <string name="spp_manage_no_connection">No connection. Check that your phone is online, then try again.</string>
+    <string name="spp_no_browser">No browser found. Install or enable one, then try again.</string>
+</resources>

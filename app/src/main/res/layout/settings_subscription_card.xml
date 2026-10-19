@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="?attr/colorControlNormal"
+    app:cardBackgroundColor="?attr/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/icon_subscription"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:src="@android:drawable/ic_lock_lock"
+                android:contentDescription="@string/label_subscription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_subscription"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:alpha="0.85" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_subscription_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/label_subscription_none"
+            android:textSize="13sp"
+            android:alpha="0.7"
+            android:lineSpacingExtra="2dp" />
+
+        <LinearLayout
+            android:id="@+id/subscription_button_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="-8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_subscription_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="36dp"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_subscription_manage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="36dp"
+                android:text="@string/btn_manage_subscription"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+        <!-- Direct version only: how Paddle's portal signs the customer in (BillingUi.manageNote). Below the
+             buttons on screen, but read right after the status line, before the buttons it explains. -->
+        <TextView
+            android:id="@+id/text_subscription_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:accessibilityTraversalAfter="@id/text_subscription_status"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="@dimen/sfp_text_row_sub"
+            android:lineSpacingExtra="2dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

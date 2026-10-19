@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Síntiús</string>
+    <string name="spp_subscribe_dialog_message">Liostáil i do bhrabhsálaí, ansin greamaigh d\'aitheantas síntiúis (sub_…) thíos chun sioncronú a chumasú ar an ngléas seo.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Gníomhachtaigh</string>
+    <string name="spp_subscribe_open_checkout">Liostáil sa bhrabhsálaí</string>
+    <string name="spp_subscribe_validating">Do shíntiús á sheiceáil…</string>
+    <string name="spp_manage_dialog_title">Bainistigh síntiús</string>
+    <string name="spp_manage_action_update_payment">Nuashonraigh modh íocaíochta</string>
+    <string name="spp_manage_action_cancel">Cealaigh síntiús</string>
+    <string name="spp_manage_error">Níorbh fhéidir leathanach na bainistíochta a lódáil. Bain triail eile as.</string>
+    <string name="spp_manage_note">Iarrfaidh Paddle ort an seoladh ríomhphoist a d\'úsáid tú chun liostáil. I ríomhphoist Paddle, tugtar BEO ar an díoltóir.</string>
+    <string name="spp_manage_loading">Ag dul i dteagmháil le Paddle…</string>
+    <string name="spp_manage_unavailable">Níl an tseirbhís síntiúis ar fáil. Bain triail eile as níos déanaí le do thoil.</string>
+    <string name="spp_manage_no_connection">Gan nasc. Seiceáil go bhfuil do ghuthán ar líne, ansin bain triail eile as.</string>
+    <string name="spp_no_browser">Níor aimsíodh aon bhrabhsálaí. Suiteáil nó cumasaigh ceann, ansin bain triail eile as.</string>
+</resources>

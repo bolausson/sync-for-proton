@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/sfp_window">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationContentDescription="@string/btn_navigate_back"
+        app:titleTextAppearance="@style/TextAppearance.SyncForProton.ScreenTitle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/sfp_row_pad_h">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/contact_filter_edit_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Reads as a sentence: this rule DOES x, in DIRECTION y, when CONDITIONS hold. The
+                 three controls are stacked in that order so the screen can be read straight down. -->
+            <TextView style="@style/ContactFilterSectionLabel"
+                android:text="@string/contact_filter_edit_action" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/group_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_action_sync"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_filters_action_sync" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_action_exclude"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_filters_action_exclude" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView style="@style/ContactFilterSectionLabel"
+                android:text="@string/contact_filter_edit_direction" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/group_direction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dir_download"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="@string/contact_filters_direction_download" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dir_upload"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="@string/contact_filters_direction_upload" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dir_both"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="@string/contact_filters_direction_both" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView style="@style/ContactFilterSectionLabel"
+                android:text="@string/contact_filter_edit_conditions" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/group_match"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_match_all"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_filter_match_all" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_match_any"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_filter_match_any" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <LinearLayout
+                android:id="@+id/conditions_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_condition"
+                style="@style/Widget.SyncForProton.Button.Ghost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/contact_filter_add_condition" />
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/sfp_hairline" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete_rule"
+                style="@style/Widget.SyncForProton.Button.Ghost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/sfp_danger"
+                android:text="@string/contact_filters_delete" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/sfp_surface"
+        android:padding="10dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_preview"
+            style="@style/Widget.SyncForProton.Button.Ghost"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/contact_filter_preview" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_filter_save" />
+    </LinearLayout>
+
+</LinearLayout>

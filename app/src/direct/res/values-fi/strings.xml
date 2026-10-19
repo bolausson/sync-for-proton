@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Tilaus</string>
+    <string name="spp_subscribe_dialog_message">Tee tilaus selaimessasi ja liitä sitten tilaustunnuksesi (sub_…) alle aktivoidaksesi synkronoinnin tällä laitteella.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktivoi</string>
+    <string name="spp_subscribe_open_checkout">Tilaa selaimessa</string>
+    <string name="spp_subscribe_validating">Tarkistetaan tilaustasi…</string>
+    <string name="spp_manage_dialog_title">Hallinnoi tilausta</string>
+    <string name="spp_manage_action_update_payment">Päivitä maksutapa</string>
+    <string name="spp_manage_action_cancel">Peruuta tilaus</string>
+    <string name="spp_manage_error">Hallintasivua ei voitu ladata. Yritä uudelleen.</string>
+    <string name="spp_manage_note">Paddle kysyy sähköpostiosoitetta, jolla teit tilauksen. Paddlen sähköposteissa myyjänä näkyy BEO.</string>
+    <string name="spp_manage_loading">Otetaan yhteyttä Paddleen…</string>
+    <string name="spp_manage_unavailable">Tilauspalvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.</string>
+    <string name="spp_manage_no_connection">Ei yhteyttä. Tarkista, että puhelimesi on verkossa, ja yritä sitten uudelleen.</string>
+    <string name="spp_no_browser">Selainta ei löytynyt. Asenna tai ota käyttöön jokin selain ja yritä sitten uudelleen.</string>
+</resources>

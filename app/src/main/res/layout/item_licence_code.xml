@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A run of lines of a NOTICE file or licence text, on a white sheet that spans the block's runs (the background
+     and the end padding are set per run in LicencesActivity.bindCode). Monospace because these texts are laid out in
+     columns; simple line breaking, so a wrap never moves a word the text did not move. -->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:breakStrategy="simple"
+    android:fontFamily="monospace"
+    android:hyphenationFrequency="none"
+    android:lineSpacingExtra="2dp"
+    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+    android:textColor="@color/sfp_text"
+    android:textSize="@dimen/sfp_text_row_sub" />

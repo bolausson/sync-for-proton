@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Subskrypcja</string>
+    <string name="spp_subscribe_dialog_message">Wykup subskrypcję w przeglądarce, a następnie wklej poniżej swój identyfikator subskrypcji (sub_…), aby aktywować synchronizację na tym urządzeniu.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktywuj</string>
+    <string name="spp_subscribe_open_checkout">Subskrybuj w przeglądarce</string>
+    <string name="spp_subscribe_validating">Sprawdzanie subskrypcji…</string>
+    <string name="spp_manage_dialog_title">Zarządzaj subskrypcją</string>
+    <string name="spp_manage_action_update_payment">Zaktualizuj metodę płatności</string>
+    <string name="spp_manage_action_cancel">Anuluj subskrypcję</string>
+    <string name="spp_manage_error">Nie udało się załadować strony zarządzania. Spróbuj ponownie.</string>
+    <string name="spp_manage_note">Paddle poprosi o adres e-mail użyty przy wykupieniu subskrypcji. Paddle w swoich e-mailach podaje BEO jako sprzedawcę.</string>
+    <string name="spp_manage_loading">Łączenie z Paddle…</string>
+    <string name="spp_manage_unavailable">Usługa subskrypcji jest niedostępna. Spróbuj ponownie później.</string>
+    <string name="spp_manage_no_connection">Brak połączenia. Sprawdź, czy telefon jest połączony z internetem, a następnie spróbuj ponownie.</string>
+    <string name="spp_no_browser">Nie znaleziono przeglądarki. Zainstaluj lub włącz przeglądarkę, a następnie spróbuj ponownie.</string>
+</resources>

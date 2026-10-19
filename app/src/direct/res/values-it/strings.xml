@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abbonamento</string>
+    <string name="spp_subscribe_dialog_message">Abbonati dal tuo browser, poi incolla qui sotto il tuo ID abbonamento (sub_…) per attivare la sincronizzazione su questo dispositivo.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Attiva</string>
+    <string name="spp_subscribe_open_checkout">Abbonati nel browser</string>
+    <string name="spp_subscribe_validating">Verifica dell\'abbonamento in corso…</string>
+    <string name="spp_manage_dialog_title">Gestisci abbonamento</string>
+    <string name="spp_manage_action_update_payment">Aggiorna metodo di pagamento</string>
+    <string name="spp_manage_action_cancel">Annulla abbonamento</string>
+    <string name="spp_manage_error">Impossibile caricare la pagina di gestione. Riprova.</string>
+    <string name="spp_manage_note">Paddle ti chiederà l\'indirizzo email che hai usato per abbonarti. Nelle email di Paddle il venditore è indicato come BEO.</string>
+    <string name="spp_manage_loading">Connessione a Paddle in corso…</string>
+    <string name="spp_manage_unavailable">Il servizio di abbonamento non è disponibile. Riprova più tardi.</string>
+    <string name="spp_manage_no_connection">Nessuna connessione. Controlla che il tuo telefono sia connesso a Internet, poi riprova.</string>
+    <string name="spp_no_browser">Nessun browser trovato. Installane o attivane uno, poi riprova.</string>
+</resources>

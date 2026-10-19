@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A paragraph or a bullet of the notice. Underlined links in the accent colour: the accent and the secondary text
+     are too close in lightness for colour alone to mark a link. -->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hyphenationFrequency="none"
+    android:lineSpacingExtra="3dp"
+    android:textColor="@color/sfp_text_secondary"
+    android:textColorLink="@color/sfp_primary"
+    android:textSize="@dimen/sfp_text_row_value" />

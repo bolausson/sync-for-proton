@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="sync_interval"
+        android:title="@string/sync_interval_title"
+        android:entries="@array/sync_interval_entries"
+        android:entryValues="@array/sync_interval_values"
+        android:defaultValue="3600" />
+
+</PreferenceScreen>

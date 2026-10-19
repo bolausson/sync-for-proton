@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Prenumerata</string>
+    <string name="spp_subscribe_dialog_message">Užsiprenumeruokite savo naršyklėje, tada įklijuokite žemiau savo prenumeratos ID (sub_…), kad suaktyvintumėte sinchronizavimą šiame įrenginyje.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktyvinti</string>
+    <string name="spp_subscribe_open_checkout">Prenumeruoti naršyklėje</string>
+    <string name="spp_subscribe_validating">Tikrinama jūsų prenumerata…</string>
+    <string name="spp_manage_dialog_title">Tvarkyti prenumeratą</string>
+    <string name="spp_manage_action_update_payment">Atnaujinti mokėjimo būdą</string>
+    <string name="spp_manage_action_cancel">Atšaukti prenumeratą</string>
+    <string name="spp_manage_error">Nepavyko įkelti tvarkymo puslapio. Bandykite dar kartą.</string>
+    <string name="spp_manage_note">Paddle paprašys el. pašto adreso, kurį naudojote užsiprenumeruodami. Paddle el. laiškuose pardavėjas nurodomas kaip BEO.</string>
+    <string name="spp_manage_loading">Susisiekiama su Paddle…</string>
+    <string name="spp_manage_unavailable">Prenumeratos paslauga nepasiekiama. Bandykite dar kartą vėliau.</string>
+    <string name="spp_manage_no_connection">Nėra ryšio. Patikrinkite, ar telefonas prijungtas prie interneto, ir bandykite dar kartą.</string>
+    <string name="spp_no_browser">Naršyklė nerasta. Įdiekite arba įjunkite naršyklę ir bandykite dar kartą.</string>
+</resources>

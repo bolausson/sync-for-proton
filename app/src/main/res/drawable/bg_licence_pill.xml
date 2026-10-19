@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The "play only" label of the licences screen: a neutral pill, since it states a fact rather than asks for anything. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/sfp_surface_sunken" />
+    <corners android:radius="@dimen/sfp_radius_pill" />
+</shape>

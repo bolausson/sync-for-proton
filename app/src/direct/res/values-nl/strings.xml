@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abonnement</string>
+    <string name="spp_subscribe_dialog_message">Neem een abonnement in je browser en plak hieronder je abonnements-ID (sub_…) om synchronisatie op dit apparaat te activeren.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Activeren</string>
+    <string name="spp_subscribe_open_checkout">Abonneren in browser</string>
+    <string name="spp_subscribe_validating">Je abonnement wordt gecontroleerd…</string>
+    <string name="spp_manage_dialog_title">Abonnement beheren</string>
+    <string name="spp_manage_action_update_payment">Betaalmethode bijwerken</string>
+    <string name="spp_manage_action_cancel">Abonnement opzeggen</string>
+    <string name="spp_manage_error">De beheerpagina kon niet worden geladen. Probeer het opnieuw.</string>
+    <string name="spp_manage_note">Paddle vraagt naar het e-mailadres waarmee het abonnement is afgesloten. In e-mails van Paddle staat BEO als verkoper.</string>
+    <string name="spp_manage_loading">Contact opnemen met Paddle…</string>
+    <string name="spp_manage_unavailable">De abonnementsdienst is niet beschikbaar. Probeer het later opnieuw.</string>
+    <string name="spp_manage_no_connection">Geen verbinding. Controleer of de telefoon online is en probeer het dan opnieuw.</string>
+    <string name="spp_no_browser">Geen browser gevonden. Installeer een browser of schakel er een in en probeer het dan opnieuw.</string>
+</resources>

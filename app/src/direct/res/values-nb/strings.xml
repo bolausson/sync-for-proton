@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Abonnement</string>
+    <string name="spp_subscribe_dialog_message">Tegn et abonnement i nettleseren din, og lim deretter inn abonnements-ID-en din (sub_…) nedenfor for å aktivere synkronisering på denne enheten.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Aktiver</string>
+    <string name="spp_subscribe_open_checkout">Abonner i nettleseren</string>
+    <string name="spp_subscribe_validating">Kontrollerer abonnementet ditt…</string>
+    <string name="spp_manage_dialog_title">Administrer abonnement</string>
+    <string name="spp_manage_action_update_payment">Oppdater betalingsmetode</string>
+    <string name="spp_manage_action_cancel">Si opp abonnementet</string>
+    <string name="spp_manage_error">Administrasjonssiden kunne ikke lastes. Prøv på nytt.</string>
+    <string name="spp_manage_note">Paddle ber om e-postadressen du brukte da du tegnet abonnementet. I e-poster fra Paddle står selgeren oppført som BEO.</string>
+    <string name="spp_manage_loading">Kontakter Paddle…</string>
+    <string name="spp_manage_unavailable">Abonnementstjenesten er ikke tilgjengelig. Prøv igjen senere.</string>
+    <string name="spp_manage_no_connection">Ingen tilkobling. Sjekk at telefonen er på nett, og prøv deretter igjen.</string>
+    <string name="spp_no_browser">Ingen nettleser funnet. Installer eller aktiver én, og prøv deretter igjen.</string>
+</resources>

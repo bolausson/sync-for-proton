@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Network -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Contacts -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <!-- Calendar -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
+    <!-- Sync -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <!-- Required for ContentResolver.isSyncActive() / addStatusChangeListener — feeds
+         the live "syncing now" indicator in the settings UI. Normal-protection level,
+         no runtime prompt. -->
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+
+    <!-- Accounts -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+
+    <!-- Notifications (auth expiry alerts) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Google Play Billing (com.android.vending.BILLING) is declared in the
+         play flavor manifest only (src/play/AndroidManifest.xml), so the direct
+         build carries no Play-billing permission. -->
+
+    <application
+        android:name=".ProtonSyncApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/sync_for_proton"
+        android:roundIcon="@mipmap/sync_for_proton_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:localeConfig="@xml/locale_config"
+        android:theme="@style/Theme.SyncForProton">
+
+        <!-- Authenticator service (account framework) -->
+        <service
+            android:name=".account.AuthenticatorService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- Address book authenticator (separate account type for contacts) -->
+        <service
+            android:name=".account.AddressBookAuthenticatorService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator_address_book" />
+        </service>
+
+        <!-- Contacts sync service -->
+        <service
+            android:name=".contacts.ContactsSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter_contacts" />
+            <meta-data
+                android:name="android.provider.CONTACTS_STRUCTURE"
+                android:resource="@xml/contacts" />
+        </service>
+
+        <!-- Calendar sync service -->
+        <service
+            android:name=".calendar.CalendarSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter_calendar" />
+        </service>
+
+        <!-- Conflict resolution receiver -->
+        <receiver
+            android:name=".contacts.ConflictResolutionReceiver"
+            android:exported="false" />
+
+        <!-- Bulk-deletion safety prompt actions (Keep on Proton / Delete on Proton) -->
+        <receiver
+            android:name=".calendar.BulkDeletionReceiver"
+            android:exported="false" />
+
+        <!-- Server→local deletion safety prompt actions (Delete from phone / Keep on phone) -->
+        <receiver
+            android:name=".RemoteDeletionReceiver"
+            android:exported="false" />
+
+        <!-- Event collision prompt actions (Keep Proton's / Keep mine) -->
+        <receiver
+            android:name=".calendar.EventConflictReceiver"
+            android:exported="false" />
+
+        <!-- Login activity -->
+        <activity
+            android:name=".account.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SyncForProton">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Sync settings activity (also handles account preferences from system Settings) -->
+        <activity
+            android:name=".settings.SyncSettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SyncForProton">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- CAPTCHA verification activity -->
+        <activity
+            android:name=".account.CaptchaActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SyncForProton" />
+
+        <!-- Log viewer activity -->
+        <activity
+            android:name=".settings.LogViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SyncForProton" />
+
+        <!-- Local data-backup settings (calendars + contacts → .ics/.vcf) -->
+        <activity
+            android:name=".settings.BackupSettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".settings.SyncSettingsActivity"
+            android:theme="@style/Theme.SyncForProton" />
+
+        <!-- Contact filter rules: which contacts reach this phone -->
+        <activity
+            android:name=".settings.ContactFilterRulesActivity"
+            android:exported="false"
+            android:parentActivityName=".settings.SyncSettingsActivity"
+            android:theme="@style/Theme.SyncForProton" />
+        <activity
+            android:name=".settings.ContactFilterRuleEditorActivity"
+            android:exported="false"
+            android:parentActivityName=".settings.ContactFilterRulesActivity"
+            android:theme="@style/Theme.SyncForProton" />
+
+        <!-- Third-party licences: THIRD-PARTY-NOTICES.md, bundled from the repository root at build time -->
+        <activity
+            android:name=".settings.LicencesActivity"
+            android:label="@string/link_third_party_licences"
+            android:exported="false"
+            android:parentActivityName=".settings.SyncSettingsActivity"
+            android:theme="@style/Theme.SyncForProton" />
+
+        <!-- FileProvider for log export -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+    </application>
+
+</manifest>

@@ -1,22 +1,23 @@
 # Sync for Proton
 
 **Sync for Proton** syncs your Proton Contacts and Proton Calendar into Android's
-native contacts & calendar, so they work everywhere on your phone — the dialer,
+native contacts and calendar, so they work everywhere on your phone: the dialer,
 lock screen, smartwatch, and any calendar or contacts app. No Google account required.
 
 This repository hosts **signed APK releases** for installing outside the Google Play
-Store (e.g. on GrapheneOS or any de-Googled Android). The app source is maintained
-privately; this repo contains downloads only.
+Store (for example on GrapheneOS or any de-Googled Android), and the **source code of
+each release**. Development happens in a private repository; every release adds one
+commit here with exactly the source that release was built from.
 
 [![Latest release](https://img.shields.io/github/v/release/bolausson/sync-for-proton?label=latest&sort=semver)](https://github.com/bolausson/sync-for-proton/releases/latest)
 
-**[⬇ Download the latest APK](https://github.com/bolausson/sync-for-proton/releases/latest/download/Sync-for-Proton.apk)** — a permanent link that always points to the newest release.
+**[⬇ Download the latest APK](https://github.com/bolausson/sync-for-proton/releases/latest/download/Sync-for-Proton.apk)**: a permanent link that always points to the newest release.
 
 ## Requirements
 
 - Android 10 (API 29) or newer
 - A Proton account
-- A subscription — **7-day free trial**, then €2.39 / month or €23.99 / year (see *Subscribing* below)
+- A subscription: **7-day free trial**, then €2.39 / month or €23.99 / year (see *Subscribing* below)
 
 ## Install with Obtainium (recommended)
 
@@ -31,7 +32,7 @@ Or add it manually:
 1. Install Obtainium.
 2. Tap **Add App** and paste this repo URL:
    `https://github.com/bolausson/sync-for-proton`
-3. Obtainium finds the latest release APK — tap **Install**.
+3. Obtainium finds the latest release APK. Tap **Install**.
 4. Future updates show up in Obtainium automatically.
 
 ## Install from Uptodown
@@ -57,17 +58,66 @@ This build is paid via the web (no Google Play Billing):
 1. Subscribe at **<https://apps.olausson.de/sync_provider_for_proton/checkout.html>**
    (monthly or yearly; 7-day free trial).
 2. After payment, the page shows your **subscription ID** (starts with `sub_`). Copy it.
-3. In the app: **Settings → Subscription → Subscribe / Manage**, paste the ID, tap **Activate**.
-4. Keep the subscription ID somewhere safe (a password manager) — you'll need it to
+3. In the app, open **Settings** and tap the subscription button (**Start 7-day free trial**,
+   or **Renew** after a subscription ended), paste the ID and tap **Activate**.
+4. Keep the subscription ID somewhere safe, such as a password manager. You'll need it to
    re-activate after reinstalling or on another device.
 
 Manage or cancel anytime via the link in your Paddle receipt email.
 
 ## Updates & signing
 
-APKs are signed with a stable key; Obtainium recognises updates by signature. This build
-uses a **different signing key than the Google Play version**, so you can't switch between
-the two without uninstalling first.
+APKs are signed with a stable key, and Android installs an update only if it carries the
+same signature; Obtainium picks up new releases from this repository. This build uses a
+**different signing key than the Google Play version**, so you can't switch between the two
+without uninstalling first.
+
+## Source code
+
+The source is published from version 2.0.0 on. From then, each release tag points at the
+commit holding that release's source; tags of earlier releases point at commits that hold
+only a README. To compare, check out the tag of the version you have installed:
+`git checkout v<version>`.
+
+This repository is generated from the development repository at each release, so pull
+requests cannot be merged here. Please report problems as issues instead.
+
+### Building from source
+
+You need a JDK to start the Gradle wrapper, and the Android SDK; the command-line tools
+are enough once you have accepted their licences (`sdkmanager --licenses`). On the first
+run Gradle downloads itself, the JetBrains JDK 21 it builds with, the SDK platform and
+build tools it needs, NDK 27.3.13750724 (a large download, used to strip the prebuilt native
+library), and the libraries.
+
+1. Point Gradle at your SDK, either with the `ANDROID_HOME` environment variable or with
+   a `local.properties` file containing `sdk.dir=/path/to/Android/Sdk`.
+2. Build a debug APK of the version sold outside Google Play:
+   `./gradlew assembleDirectDebug` (on Windows: `gradlew.bat assembleDirectDebug`).
+   The APK lands in `app/build/outputs/apk/direct/debug/`.
+3. Run the unit tests with `./gradlew testDirectDebugUnitTest`. Seven time-zone tests stand in
+   for a phone with outdated rules, so they need the JDK's time-zone data to predate 2026d
+   (JetBrains JDK 21.0.10 has 2025b); on a JDK with newer data they are skipped.
+
+Release builds (`assembleDirectRelease`) come out unsigned, because the signing key is
+not part of this repository. A build you make yourself is signed with a different key
+from the published APK, so Android treats it as a different app and it cannot update an
+installed copy.
+
+OpenPGP runs in GopenPGP, a Go library, through a small binding that the build uses as the
+prebuilt `app/libs/gopenpgpbridge.aar`. The binding's source and build script are in
+`native/gopenpgp-bridge/`; GopenPGP and its dependencies are fetched at the versions its
+`go.mod` pins.
+
+## Licence
+
+The source is available under the [PolyForm Shield License 1.0.0](LICENSE.md). You may
+read, build, change and use it for any purpose except providing a product that competes
+with it, or with another product its licensor provides using it; the licence text decides.
+It is not an open-source licence.
+
+Third-party components keep their own licences: see
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ## Links
 

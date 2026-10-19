@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sync for Proton</string>
+    <string name="account_type_label">Proton Calendar</string>
+    <string name="account_type_address_book" translatable="false">me.proton.sync.address_book</string>
+    <string name="account_title_address_book">Proton Contacts</string>
+    <string name="login_title">Sign in to Proton</string>
+    <string name="hint_username">Email or username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_sign_in">Sign in</string>
+    <string name="sync_interval_title">Sync interval</string>
+    <string name="settings_title">Settings</string>
+    <string name="error_login_failed">Login failed. Please check your credentials.</string>
+    <string name="error_empty_credentials">Please enter username and password.</string>
+    <string name="error_login_name_taken">An account on this phone is already called %1$s, and it was added with a different sign-in name. Rename that account in the settings first, or sign in with the name it was added with.</string>
+    <string name="error_account_name_taken">Another account on this phone is already called %1$s.</string>
+    <string name="error_network">Network error. Please try again.</string>
+    <string name="error_invalid_totp">Please enter a valid 6-digit code.</string>
+    <string name="error_2fa_failed">Two-factor verification failed. Please try again.</string>
+    <string name="label_2fa_prompt">Enter the 6-digit code from your authenticator app.</string>
+    <string name="hint_totp_code">Authentication code</string>
+    <string name="btn_verify">Verify</string>
+    <string name="label_mailbox_password_prompt">This account uses a separate mailbox password. Please enter it to unlock your data.</string>
+    <string name="hint_mailbox_password">Mailbox password</string>
+    <string name="btn_unlock">Unlock</string>
+    <string name="error_mailbox_password_empty">Please enter your mailbox password.</string>
+    <string name="error_mailbox_password_wrong">That mailbox password did not unlock your keys. Please try again.</string>
+    <string name="error_unlock_failed">Could not unlock your Proton data. Please sign in again.</string>
+    <string name="error_pqc_keys_unsupported">This account has an encryption key this app cannot read. Your password is correct, so signing in again will not help. Check for an app update, or send a report from the app\'s settings.</string>
+    <string name="error_fido2_not_supported">Your account uses a hardware security key (FIDO2). Sync for Proton currently supports authenticator-app codes (TOTP) only. Please add a TOTP code in Proton\'s web settings as a backup, then sign in here.</string>
+    <string name="version_label" translatable="false">v2.0.0</string>
+
+    <!-- Legal footer (settings, just above the brand/version line) -->
+    <string name="link_privacy_policy">Privacy Policy</string>
+    <string name="link_terms_conditions">Terms &amp; Conditions</string>
+    <!-- Also the title of the screen it opens, which lists the third-party software and its licences -->
+    <string name="link_third_party_licences">Third-party licences</string>
+    <string name="btn_navigate_back">Back</string>
+    <string name="footer_link_separator" translatable="false">·</string>
+    <string name="url_privacy_policy" translatable="false">https://apps.olausson.de/privacy-policy.txt</string>
+    <string name="url_terms_conditions" translatable="false">https://apps.olausson.de/terms-and-conditions.txt</string>
+
+    <!-- Calm redesign: account-card group labels + new rows -->
+    <string name="sfp_group_account">Account</string>
+    <string name="sfp_group_contacts">Contacts</string>
+    <string name="sfp_group_calendar">Calendar</string>
+    <string name="sfp_event_loop_subtitle">How often to look for remote changes</string>
+    <string name="sfp_show_advanced">Show email &amp; advanced options</string>
+    <string name="sfp_hide_advanced">Hide email &amp; advanced options</string>
+    <string name="sfp_group_email_attendees">Email to attendees</string>
+
+    <!-- Calm redesign: overview hero + quick-tools -->
+    <string name="sfp_section_accounts">Accounts</string>
+    <string name="sfp_section_app">App &amp; data</string>
+    <string name="sfp_hero_ok">Everything\'s synced</string>
+    <string name="sfp_hero_warn">Sync needs attention</string>
+    <string name="sfp_hero_subtitle_ok">All enabled accounts are up to date</string>
+    <string name="sfp_hero_subtitle_warn">One or more accounts need a sync or sign-in</string>
+    <string name="sfp_sync_all_now">Sync all now</string>
+    <string name="sfp_tile_logs">Sync log</string>
+    <string name="sfp_tile_backup">Backup</string>
+    <string name="sfp_tile_battery">Battery</string>
+    <string name="sfp_stat_contacts">contacts</string>
+    <string name="sfp_stat_events">events</string>
+
+    <!-- Calm redesign: sign-in screen -->
+    <string name="sfp_login_title">Sign in to Proton</string>
+    <string name="sfp_login_subtitle">Your password is never sent to Proton: sign-in uses SRP.</string>
+    <string name="sfp_login_reassurance">Proton\'s own encryption · zero tracking</string>
+
+    <!-- First-run "Import accounts & settings" restore (login screen) -->
+    <string name="btn_import_accounts">Import accounts &amp; settings</string>
+    <string name="sfp_login_import_hint">Moving from another install or device? Restore from a backup file.</string>
+
+    <!-- Calm redesign: empty / first-run state -->
+    <string name="sfp_empty_title">Your Proton life, on your phone</string>
+    <string name="sfp_empty_subtitle">Securely sync your Proton Contacts and Calendar to every app on your device.</string>
+    <string name="sfp_empty_contacts_desc">Two-way sync of names, numbers, photos and groups.</string>
+    <string name="sfp_empty_calendar_desc">Two-way sync of events, reminders and recurrences.</string>
+    <string name="sfp_empty_private_title">Private by design</string>
+    <string name="sfp_empty_private_desc">Proton\'s own encryption. No analytics, no tracking.</string>
+    <string name="sfp_empty_connect">Connect Proton account</string>
+    <string name="sfp_empty_disclaimer">Independent client · not affiliated with Proton AG</string>
+    <string name="btn_calibrate_photo_size" translatable="false">Calibrate photo size limit (debug)</string>
+    <string name="btn_simulate_vanished" translatable="false">Simulate vanished events (debug)</string>
+    <string name="label_debug_section" translatable="false">Debug</string>
+    <string name="dialog_calibrate_photo_title" translatable="false">Calibrate Proton photo size limit</string>
+    <string name="dialog_calibrate_photo_message" translatable="false">This will create a temporary contact named ZZ_Photo_Calibration_… on the selected Proton account, upload it about ten times with progressively smaller photos, and delete it when done. About 30 seconds. The result is written to the sync log.\n\nProceed?</string>
+    <string name="dialog_calibrate_photo_running" translatable="false">Calibrating… see Sync Log for progress</string>
+    <string name="dialog_calibrate_photo_done_title" translatable="false">Calibration complete</string>
+    <string name="sync_contacts">Contacts</string>
+    <string name="sync_calendar">Calendar</string>
+    <string name="calendar_timeframe_title">Calendar sync range</string>
+    <string name="calendar_timeframe_past_title">Past events</string>
+    <string name="calendar_timeframe_future_title">Future events</string>
+    <string name="exclude_external_calendars_title">Exclude external calendars</string>
+    <string name="exclude_external_calendars_summary">Skip subscribed/imported calendars (e.g. from Google)</string>
+
+    <!-- Layout: settings_account_card.xml -->
+    <string name="label_expand">Expand</string>
+    <string name="label_display_name">Display name</string>
+    <string name="label_event_loop_interval">Event loop interval</string>
+    <string name="label_fallback_full_sync">Fallback full sync</string>
+    <string name="label_notify_on_failure">Notify on failure</string>
+    <string name="btn_sync_contacts">Sync contacts</string>
+    <string name="label_include_external_calendars">Include external calendars</string>
+    <string name="label_poll_attendee_status">Poll attendee status</string>
+    <string name="label_send_email_invites">Send email invites</string>
+    <string name="label_send_email_updates">Send email updates</string>
+    <string name="label_send_email_cancellations">Send email cancellations</string>
+    <string name="label_invite_subject_include_title">Include event title in invite subject</string>
+    <string name="btn_sync_calendar">Sync calendar</string>
+    <string name="btn_sync_all_now">Sync all now</string>
+    <string name="label_long_press_hint">Long press any sync button for forced full re-sync</string>
+    <string name="btn_reauthenticate">Re-authenticate</string>
+    <string name="btn_remove">Remove</string>
+
+    <!-- Layout: activity_settings.xml -->
+    <string name="btn_add_another_account">Add another Proton account</string>
+    <string name="btn_sync_all_accounts">Sync all accounts</string>
+    <string name="btn_sync_now">Sync now</string>
+    <string name="label_sync_all_long_press_hint">Long-press for forced full re-sync</string>
+    <string name="dialog_title_full_resync_all">Full re-sync (%1$d accounts)</string>
+    <string name="dialog_message_full_resync_all">Choose sync direction for all accounts:\n\nRemote → Local: Delete local data and re-download from Proton.\n\nLocal → Remote: Upload all local data to Proton (overwrites remote).</string>
+    <plurals name="toast_sync_all_started">
+        <item quantity="one">Sync started for %d account</item>
+        <item quantity="other">Sync started for %d accounts</item>
+    </plurals>
+    <string name="label_background_sync_title">Background sync not working?</string>
+    <string name="btn_open_battery_settings">Open battery settings</string>
+    <string name="label_diagnostics_title">Diagnostics</string>
+    <string name="btn_view_sync_logs">View sync logs</string>
+    <string name="label_verbose_logging_title">Verbose logging</string>
+    <string name="label_file_logging_title">Save logs to a file</string>
+    <string name="label_timezone_updates_title">Update time zones online</string>
+    <string name="sfp_timezone_updates_summary">When on, current time zone rules come from www.tzurl.org, which sees your IP address and the time zones your events use. When off, the phone\'s own time zone data is used.</string>
+    <string name="sfp_timezone_data_outdated">This phone\'s time zone data is out of date (version %1$s).</string>
+    <string name="btn_choose_log_folder">Change folder</string>
+    <string name="label_log_folder_path">Saving to: %1$s</string>
+    <string name="btn_send_report">Send report to developer</string>
+    <string name="send_report_subject">Sync for Proton report: v%1$s</string>
+    <string name="send_report_body_template">App version: %1$s\nVerbose logging: %2$s\nDevice: %3$s %4$s (Android %5$s)\n\nWhat were you doing when this happened? (please describe briefly)\n\n\nLogs are attached.</string>
+    <string name="send_report_chooser_title">Send report</string>
+    <string name="toast_send_report_failed">Could not open mail app: %s</string>
+
+    <!-- Layout: activity_log_viewer.xml -->
+    <string name="title_sync_logs">Sync log</string>
+    <string name="btn_auto_scroll">Auto-scroll</string>
+
+    <!-- SyncSettingsActivity.kt -->
+    <string name="btn_sign_in_with_proton">Sign in with Proton</string>
+    <string name="label_authentication_required">Authentication required</string>
+    <string name="label_syncing_status">Syncing: %s</string>
+    <string name="label_sync_disabled">Sync disabled</string>
+    <string name="label_never">Never</string>
+    <string name="label_off">Off</string>
+    <string name="label_all">All</string>
+    <string name="label_manual_only">Manual only</string>
+    <string name="dialog_title_display_name">Display name</string>
+    <string name="dialog_message_display_name">Choose a new display name for this account. Used in Settings → Manage accounts and on the contact \"Account\" subtitle.</string>
+    <string name="dialog_hint_display_name">Display name</string>
+    <string name="toast_display_name_blank">Display name cannot be empty.</string>
+    <string name="toast_display_name_taken">An account named \"%s\" already exists.</string>
+    <string name="toast_display_name_renamed">Display name updated to \"%s\".</string>
+    <string name="toast_display_name_failed">Could not update display name. Please try again.</string>
+    <string name="dialog_title_display_name_recovery">Restore display name?</string>
+    <string name="dialog_message_display_name_recovery">Your custom display name for this account may have been overwritten in a previous update. Set it now?</string>
+    <string name="btn_set_display_name">Set name</string>
+    <string name="btn_skip">Skip</string>
+    <string name="dialog_title_sync_failed">Sync failed</string>
+    <string name="dialog_label_sync_last_failure">Last failure: %s</string>
+    <string name="dialog_label_sync_reason">Reason: %s</string>
+    <string name="dialog_title_past_events">Past events</string>
+    <string name="dialog_title_future_events">Future events</string>
+    <string name="dialog_title_event_loop_interval">Event loop interval</string>
+    <string name="dialog_title_contacts_fallback">Contacts fallback full sync</string>
+    <string name="dialog_title_calendar_fallback">Calendar fallback full sync</string>
+    <string name="dialog_title_remove_account">Remove account</string>
+    <string name="dialog_message_remove_account">Remove %s?\n\nAll synced contacts and calendar events will be deleted from this device.</string>
+    <string name="dialog_title_full_resync">Full re-sync (%s)</string>
+    <string name="dialog_message_full_resync">Choose sync direction:\n\nRemote → Local: Delete local %1$s and re-download from Proton.\n\nLocal → Remote: Upload all local %2$s to Proton (overwrites remote).</string>
+    <string name="btn_remote_to_local">Remote → Local</string>
+    <string name="btn_local_to_remote">Local → Remote</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="dialog_message_enter_value">Enter value in %s:</string>
+    <string name="label_days">days</string>
+    <string name="label_minutes">minutes</string>
+    <string name="toast_contacts_sync_started">Contacts sync started</string>
+    <string name="toast_calendar_sync_started">Calendar sync started</string>
+    <string name="toast_sync_started">Sync started</string>
+    <string name="toast_sync_nothing_enabled">Nothing to sync: contacts and calendar are switched off</string>
+    <string name="toast_redownloading">Re-downloading %s from Proton…</string>
+    <string name="toast_uploading">Uploading local %s to Proton…</string>
+    <string name="toast_resync_failed">Re-sync failed: %s</string>
+    <string name="toast_preparing_resync">Preparing re-sync, this can take a few seconds…</string>
+    <string name="toast_resync_in_flight">Re-sync already running, please wait</string>
+    <string name="label_contacts_lower">contacts</string>
+    <string name="label_calendar_lower">calendar</string>
+    <string name="label_all_data">all data</string>
+    <string name="dialog_title_battery">Enable unrestricted battery</string>
+    <string name="dialog_message_battery">For reliable background sync, please set battery usage to \"Unrestricted\" on the next screen.\n\nGo to Battery → Unrestricted.</string>
+    <string name="btn_open_settings">Open settings</string>
+    <string name="btn_later">Later</string>
+    <string name="label_custom_suffix">, custom</string>
+    <string name="label_days_format">%d days</string>
+    <string name="label_joiner">" &amp; "</string>
+
+    <!-- SyncNotificationHelper.kt -->
+    <string name="notification_channel_sync_failures">Sync failures</string>
+    <string name="notification_channel_sync_description">Notifications when calendar or contact sync fails</string>
+    <string name="notification_sync_failed_title">%s sync failed</string>
+    <string name="notification_action_view_details">View Details</string>
+    <!-- Aggregated "events Proton rejected and we gave up on" notification -->
+    <string name="notification_events_rejected_title">Some events couldn\'t sync</string>
+    <string name="notification_events_rejected_summary">These events on %1$s were rejected by Proton and skipped:</string>
+    <string name="notification_contacts_rejected_title">Some contacts couldn\'t sync</string>
+    <string name="notification_contacts_rejected_summary">These new contacts on %1$s could not be saved to Proton. For now they exist only on this phone:</string>
+    <string name="notification_contacts_rejected_unnamed">(no name)</string>
+    <string name="notification_contacts_rejected_local_reason">could not be prepared for upload on this phone</string>
+    <string name="notification_events_rejected_guests_create">guests can only be invited on calendars you own. The event was kept on this phone only; remove the guests or move it to one of your own calendars to sync it.</string>
+    <string name="notification_events_rejected_guests_update">only the owner of this shared calendar can change events that have guests, so this change was not saved to Proton.</string>
+    <string name="notification_events_rejected_delete">this account cannot delete it on Proton, so it comes back to this phone with the next sync.</string>
+    <string name="notification_events_rejected_personal">your reminders or colour could not be saved to Proton, so for now they apply on this phone only. Change them again to retry.</string>
+    <string name="notification_contacts_too_large_title">Some contacts are too large for this phone</string>
+    <string name="notification_contacts_too_large_summary">These contacts on %1$s are too large for Android\'s contact storage. They remain complete on Proton:</string>
+    <string name="notification_contacts_too_large_outdated">this phone keeps an older version</string>
+    <string name="notification_contacts_too_large_missing">not on this phone</string>
+    <string name="notification_events_rejected_line" translatable="false">• %1$s: %2$s</string>
+    <string name="notification_channel_sync_progress">Sync in progress</string>
+    <string name="notification_channel_sync_progress_description">Silent ongoing notification while sync is running</string>
+    <string name="notification_channel_alerts">Sync alerts</string>
+    <string name="notification_channel_alerts_description">Important safety alerts that need your decision</string>
+    <string name="notification_bulk_delete_title">Large calendar change detected</string>
+    <string name="notification_bulk_delete_body">%1$d calendar events vanished from this phone (%2$s). To protect your data they were NOT deleted from Proton. Keep them on your phone, or delete them from Proton too?</string>
+    <string name="notification_bulk_delete_keep">Keep on Proton</string>
+    <string name="notification_bulk_delete_delete">Delete on Proton</string>
+    <!-- Server→local deletion confirmation (RemoteDeletionGuard). Shown when many items vanished
+         from Proton at once; the user decides whether to remove them from the phone too.
+         %1$d is the number of items, %2$s is the account name. -->
+    <string name="remote_deletion_title">Items removed from Proton</string>
+    <string name="remote_deletion_body_contacts">%1$d contacts are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</string>
+    <string name="remote_deletion_body_calendar">%1$d calendar events are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</string>
+    <string name="remote_deletion_delete">Delete from phone</string>
+    <string name="remote_deletion_keep">Keep on phone</string>
+    <!-- Contact filter removals. Separate from the strings above because those say the items are
+         gone from Proton, which is false here: the contacts are untouched on Proton and only stop
+         being copied to this phone. -->
+    <string name="contact_filter_removal_title">Contact rules would remove contacts</string>
+    <string name="contact_filter_removal_body">Your contact rules no longer match %1$d contacts on this phone (%2$s). They are still in your Proton account and will not be deleted there. Remove them from this phone, or keep them?</string>
+    <string name="contact_filter_removal_keep">Keep on phone</string>
+
+    <!-- Contact filter rules: entry row, list screen -->
+    <string name="label_contact_filters">Which contacts sync</string>
+    <string name="info_contact_filters_body">Proton creates a contact for everyone you exchange email with, so your phone fills with entries you never added. Rules let you decide which contacts reach this phone. They are checked in order and the first one that matches decides, so the order matters. Anything no rule matches is handled by the setting at the bottom of the list. Contacts are never deleted from your Proton account: a rule only stops them being copied here, and you are always asked before anything is removed from the phone.</string>
+    <string name="contact_filters_value_all">All contacts</string>
+    <string name="contact_filters_value_filtered">Filtered</string>
+    <string name="title_contact_filters">Contact filters</string>
+    <string name="contact_filters_empty_title">No rules yet</string>
+    <string name="contact_filters_empty_none">No contact in this Proton account reaches your phone, because the setting below says not to sync anything a rule has not claimed. Add a rule to let some through.</string>
+    <string name="contact_filters_empty_body">Every contact in this Proton account syncs to your phone. Add a rule to change that.</string>
+    <string name="contact_filters_add">Add rule</string>
+    <string name="contact_filters_templates">Use a template</string>
+    <string name="contact_filters_fallthrough">Everything else</string>
+    <string name="contact_filters_action_sync">Sync</string>
+    <string name="contact_filters_action_exclude">Don\'t sync</string>
+    <string name="contact_filters_direction_download">From Proton</string>
+    <string name="contact_filters_direction_upload">To Proton</string>
+    <string name="contact_filters_direction_both">Both ways</string>
+    <string name="contact_filters_move_up">Move up</string>
+    <string name="contact_filters_move_down">Move down</string>
+    <string name="contact_filters_delete">Delete</string>
+    <string name="contact_filters_saved">Rules saved. They take effect on the next sync.</string>
+    <!-- Templates -->
+    <string name="contact_filter_tpl_auto_created">Contacts Proton created automatically</string>
+    <string name="contact_filter_tpl_auto_created_desc">Excludes contacts that have only a display name and an email address, with no first or last name. That is the shape Proton gives a contact it creates from an email you exchanged.</string>
+    <string name="contact_filter_tpl_only_email">Contacts with only an email address</string>
+    <string name="contact_filter_tpl_only_email_desc">Excludes contacts that have nothing but an email address, not even a name.</string>
+    <string name="contact_filter_tpl_name_and_email">Contacts with only a name and an email</string>
+    <string name="contact_filter_tpl_name_and_email_desc">Excludes contacts with no phone number, address or other details. This also catches contacts you entered yourself, so check the preview.</string>
+    <string name="contact_filter_tpl_in_any_group">Only sync contacts that are in a group</string>
+    <string name="contact_filter_tpl_in_any_group_desc">Syncs contacts belonging to at least one Proton group, and sets everything else to not sync.</string>
+    <string name="notification_sync_in_progress_title">Syncing: %s</string>
+    <string name="notification_sync_in_progress_contacts">Contacts</string>
+    <string name="notification_sync_in_progress_calendar">Calendar</string>
+    <string name="notification_sync_in_progress_both">Contacts and calendar</string>
+    <!-- Notification body when determinate progress is available, e.g. "Calendar: uploading 124/600".
+         %1$s is the type label (Contacts/Calendar), %2$s is the localized phase fragment. -->
+    <string name="notification_sync_progress_body">%1$s: %2$s</string>
+    <string name="notification_sync_phase_uploading">uploading %1$d/%2$d</string>
+    <string name="notification_sync_phase_downloading">downloading %1$d/%2$d</string>
+    <string name="notification_sync_phase_scanning">scanning %1$d/%2$d</string>
+    <string name="notification_sync_phase_decrypting">decrypting %1$d/%2$d</string>
+    <string name="label_sync_queued">Queued for sync</string>
+    <string name="label_notify_in_progress">Show notification while syncing</string>
+    <string name="error_no_internet">No internet connection. Sync will retry automatically.</string>
+    <string name="error_timeout">Could not reach the server. Check your internet connection.</string>
+    <string name="error_session_expired">Your session has expired. Please sign in again.</string>
+    <string name="error_too_many_requests">Too many requests. Sync will retry later.</string>
+    <string name="error_server_error">Proton server error. Sync will retry automatically.</string>
+    <string name="error_request_rejected">Sync request was rejected by the server.</string>
+    <string name="error_ssl">Secure connection failed. Check your network.</string>
+    <string name="error_connection_interrupted">Connection was interrupted. Sync will retry.</string>
+    <string name="error_unexpected">Sync encountered an unexpected error.</string>
+
+    <!-- ProtonSyncApp.kt -->
+    <string name="notification_channel_auth">Authentication</string>
+    <string name="notification_channel_auth_description">Sign-in required notifications</string>
+    <string name="notification_channel_conflict">Sync Conflicts</string>
+    <string name="notification_channel_conflict_description">Contact conflict resolution</string>
+    <string name="notification_auth_title">Sync for Proton: Sign in required</string>
+    <string name="notification_auth_message">Session expired for %s. Tap to sign in again.</string>
+    <string name="notification_decrypt_failed_title">Sync for Proton: Could not unlock data</string>
+    <string name="notification_decrypt_failed_message">Could not decrypt %s. Tap to sign in again: you may need to enter your mailbox password.</string>
+
+    <!-- LoginActivity.kt -->
+    <string name="dialog_title_account_name">Account display name</string>
+    <string name="dialog_message_account_name">Choose a name for this account. This is shown in Android settings and contacts.</string>
+    <string name="btn_continue">Continue</string>
+    <string name="toast_signed_in_as">Signed in as %s</string>
+    <string name="toast_reauth_success">Re-authenticated successfully</string>
+    <string name="error_captcha_cancelled">CAPTCHA verification cancelled</string>
+
+    <!-- LogViewerActivity.kt -->
+    <string name="toast_logs_copied">Logs copied to clipboard</string>
+    <string name="toast_export_failed">Export failed: %s</string>
+    <string name="toast_log_saved">Log saved</string>
+    <string name="toast_save_failed">Save failed: %s</string>
+    <string name="label_export_logs_chooser">Export logs</string>
+
+    <!-- Language selector -->
+    <string name="label_language">Language</string>
+    <string name="label_language_auto">Auto (system default)</string>
+
+    <!-- Info-dialog bodies. Each settings row shows an (i) icon that opens a dialog
+         titled with the option's label and bodied with one of these explanations.
+         Several options share a body where the explanation is identical. -->
+    <string name="btn_info_dismiss">Got it</string>
+    <string name="label_info">More information</string>
+    <string name="info_language_body">Sets the language used for this app\'s own screens. \"Auto\" follows your phone\'s system language. This only changes the app interface, it does not translate your synced calendar events or contacts.</string>
+    <string name="info_display_name_body">The name shown for this account in Android Settings → Accounts and in calendar/contact app pickers. It\'s only a local label; changing it does not affect your Proton account.\n\nNote: Samsung Calendar and Samsung Contacts ignore custom account names and always show their own label (e.g. \"Proton\"). Your chosen name may not appear there, this is a Samsung limitation we can\'t change. Other apps (Google Calendar/Contacts) show it normally.</string>
+    <string name="info_event_loop_body">How often the app checks Proton in the background for remote changes to your contacts and calendar. Shorter intervals surface changes faster but use more battery and data. This is separate from manual sync, which you can trigger any time with the sync buttons.</string>
+    <string name="info_notify_in_progress_body">Shows a silent, ongoing notification while a sync runs, with live progress (scanning, downloading, decrypting). It sits at the bottom of the notification shade and never makes a sound. Turn it off if you\'d rather sync run invisibly.</string>
+    <string name="info_sync_contacts_body">When on, your Proton contacts sync two-way with Android\'s contacts: changes on either side are merged.\n\nNote: Samsung Contacts shows contacts under a single \"Proton contacts\" account label and hides the email subtitle for third-party accounts like ours, a hard-coded Samsung limitation we can\'t change. Google Contacts and most other apps display them normally.</string>
+    <string name="info_fallback_full_sync_body">How often the app does a complete re-check instead of a fast incremental sync. A full sync catches anything an incremental pass might miss (e.g. changes made while offline) at the cost of more time and data. Leave at the default unless you suspect items aren\'t syncing.</string>
+    <string name="info_notify_on_failure_body">Shows a notification if a sync fails (e.g. network error or expired session). Tap it for a plain-language reason and a link to the logs. Turn it off if you don\'t want to be alerted about transient failures.</string>
+    <string name="info_sync_calendar_body">When on, your Proton calendars sync into Android\'s calendar, so events appear in Google Calendar, Samsung Calendar and any other calendar app. Two-way: edits you make on the phone upload back to Proton for calendars you own.</string>
+    <string name="info_include_external_calendars_body">Proton can hold subscribed calendars (e.g. an external ICS feed) and holiday calendars. These are read-only on Proton\'s side. When off, the app skips them and syncs only your own editable calendars. Turn on if you also want those read-only calendars mirrored to your phone.</string>
+    <string name="info_sync_mode_body">\"All events\" syncs your entire calendar history and all future events, best if you want everything on your phone (the first sync of a large calendar can take several minutes). \"Custom range\" syncs only a window of days around today, keeping large calendars fast and light. Events outside the window aren\'t downloaded.</string>
+    <string name="info_sync_range_window_body">How many days before and after today to sync when \"Custom range\" is selected. Larger windows show more of your calendar but take longer to sync. Has no effect in \"All events\" mode.</string>
+    <string name="info_poll_attendee_body">When on, the app periodically re-checks events that have attendees to detect accept/decline/tentative responses. Proton\'s change feed doesn\'t report RSVP changes, so this needs extra API calls, only worth enabling if you rely on seeing attendees\' responses on your phone.</string>
+    <string name="info_send_invites_body">When you add attendees to an event on your phone, email them an invitation. Off by default: turn on only if you want the app to email participants on your behalf.</string>
+    <string name="info_send_updates_body">Email attendees when you change the details (time, location, etc.) of an event they\'re invited to. Off by default.</string>
+    <string name="info_send_cancellations_body">Email attendees when you delete an event they\'re invited to, so their calendars remove it too. Off by default.</string>
+    <string name="info_invite_subject_title_body">When sending invitation emails, put the event\'s title in the email subject line so recipients recognize it at a glance. Off by default for privacy: email subjects aren\'t encrypted in standard mail transport, so the title would be visible to mail servers along the route.</string>
+    <string name="info_background_sync_body">Android may pause background sync to save battery, which can delay or stop automatic syncing. Excluding this app from battery optimization keeps scheduled syncs running reliably. Use the button to open the system battery settings for the app.</string>
+    <string name="info_verbose_logging_body">Captures extra diagnostic detail (auth state, key unlock, sync internals) in the log, helpful when reporting a problem. It may include account email addresses and calendar names, so only share logs with the developer. Leave off for normal use.</string>
+    <string name="info_file_logging_body">Writes the app log to a timestamped text file (sync-for-proton-log-….txt) in a folder you choose. The app otherwise keeps its log in memory only, so turn this on to capture a problem that is hard to reproduce. A new file is created each time the app starts; it may contain account email addresses and calendar names, so only share it with the developer. Leave off for normal use.</string>
+    <string name="info_timezone_updates_text">Event times depend on time zone rules, and countries change these rules from time to time. Android keeps them in the phone\'s time zone data, which arrives with system updates. A phone that no longer gets them, for example an older Android version or a phone without Google Play system updates, keeps the old rules, and events in places whose rules have changed since then can show at the wrong time.\n\nTime zone data on this phone: version %1$s\n\nWhen off (the default), the app uses the phone\'s own time zone data and sends nothing to www.tzurl.org.\n\nWhen on, the app downloads the current rules for each time zone your events use from www.tzurl.org, a third-party service, at most once per time zone each time the app starts, and uses them only if they are newer than the phone\'s own. www.tzurl.org then sees your IP address and the names of those time zones, for example Europe/Berlin. Nothing else about your events or accounts is sent. If www.tzurl.org cannot be reached, the phone\'s own data is used. Repeating events are still calculated from the phone\'s own data.\n\nAfter a change, events already on the phone are checked and corrected at the next sync.</string>
+    <string name="tz_data_version_unknown">unknown</string>
+    <string name="tz_outdated_title">Time zone data is out of date</string>
+    <string name="tz_outdated_body">The time zone data on this phone is version %1$s and no longer seems to be updated. Events in places that have changed their clock rules since then can show at the wrong time.\n\nTurn on \"%2$s\" to use current rules from www.tzurl.org instead. The app then sends requests to https://www.tzurl.org, which sees your IP address and the names of the time zones your events use, for example Europe/Berlin. Nothing else about your events or accounts is sent. Repeating events are still calculated from the phone\'s own data.\n\nYou can change this at any time on this screen.</string>
+    <string name="tz_outdated_turn_on">Turn on</string>
+    <string name="tz_outdated_keep_off">Keep off</string>
+    <string name="info_btn_sync_contacts_body">Runs a contacts sync for this account right now, instead of waiting for the next scheduled check. Long-press for a full re-sync where you can choose the direction (Remote → Local or Local → Remote).</string>
+    <string name="info_btn_sync_calendar_body">Runs a calendar sync for this account right now, instead of waiting for the next scheduled check. Long-press for a full re-sync where you can choose the direction (Remote → Local or Local → Remote).</string>
+    <string name="info_btn_sync_now_body">Syncs both contacts and calendar for this account right now. Long-press to open the forced full re-sync dialog, where you can choose to overwrite the phone from Proton (Remote → Local) or Proton from the phone (Local → Remote).</string>
+    <string name="info_btn_reauth_body">Signs in to this Proton account again: use it if sync stops with a session-expired or authentication error. Your synced data stays in place; this only refreshes the login.</string>
+    <string name="info_btn_remove_body">Removes this Proton account from the app and deletes its synced contacts and calendars from this device. Your data on Proton is not touched. You can add the account again at any time.</string>
+    <string name="info_btn_sync_all_accounts_body">Syncs contacts and calendar for every Proton account on this device right now. Long-press to open the forced full re-sync dialog for all accounts at once.</string>
+
+    <!-- Subscription / Google Play Billing -->
+    <string name="label_subscription">Subscription</string>
+    <string name="label_subscription_none">Free for 7 days, then billing starts unless you cancel.</string>
+    <string name="label_subscription_trial">Free trial: %1$d days left</string>
+    <string name="label_subscription_active">Active, renews %1$s</string>
+    <string name="label_subscription_ends">Ends on %1$s</string>
+    <string name="label_subscription_pauses">Pauses on %1$s</string>
+    <string name="label_subscription_expired">Subscription expired: renew to resume sync.</string>
+    <string name="label_subscription_paused">Subscription paused: sync is off until the subscription is resumed.</string>
+    <string name="label_subscription_unpaid">Payment failed: update payment method to turn sync back on.</string>
+    <string name="notification_payment_failed_title">Subscription payment failed</string>
+    <string name="btn_update_payment_method">Update payment method</string>
+    <string name="label_subscription_grace">Payment issue: update payment method to keep syncing.</string>
+    <string name="btn_start_trial">Start 7-day free trial</string>
+    <string name="btn_upgrade">Upgrade</string>
+    <string name="btn_renew">Renew</string>
+    <string name="btn_manage_subscription">Manage subscription</string>
+    <string name="dialog_title_choose_plan">Choose your plan: 7-day free trial included</string>
+    <string name="plan_monthly_title">Monthly: %1$s</string>
+    <string name="plan_monthly_subtitle">Free for 7 days, then %1$s/month</string>
+    <string name="plan_annual_title">Annual: %1$s</string>
+    <string name="plan_annual_subtitle">Free for 7 days, then %1$s/year</string>
+    <string name="plan_picker_disclosure">You can cancel anytime in Google Play → Subscriptions. No charge before day 7.</string>
+    <string name="dialog_title_choose_plan_plain">Choose your plan</string>
+    <string name="plan_monthly_price">%1$s/month</string>
+    <string name="plan_annual_price">%1$s/year</string>
+    <string name="plan_picker_disclosure_plain">You can cancel anytime in Google Play → Subscriptions.</string>
+    <string name="label_subscription_required">A subscription is required to sync.</string>
+    <string name="btn_choose_plan">Choose a plan</string>
+    <string name="error_billing_unavailable">Google Play billing is not available</string>
+    <string name="error_purchase_failed">Purchase failed: please try again</string>
+    <string name="sync_disabled_no_subscription">Sync paused: subscription required</string>
+
+    <!-- Sync range mode (v1.4.12+) -->
+    <string name="label_sync_mode_all">All events</string>
+    <string name="label_sync_mode_custom">Custom range</string>
+
+    <!-- String arrays -->
+    <string-array name="calendar_past_entries">
+        <item>1 month</item>
+        <item>3 months</item>
+        <item>6 months</item>
+        <item>1 year</item>
+        <item>2 years</item>
+        <item>Custom (days)…</item>
+    </string-array>
+
+    <string-array name="calendar_past_values" translatable="false">
+        <item>30</item>
+        <item>90</item>
+        <item>180</item>
+        <item>365</item>
+        <item>730</item>
+        <item>custom</item>
+    </string-array>
+
+    <string-array name="calendar_future_entries">
+        <item>3 months</item>
+        <item>6 months</item>
+        <item>1 year</item>
+        <item>2 years</item>
+        <item>Custom (days)…</item>
+    </string-array>
+
+    <string-array name="calendar_future_values" translatable="false">
+        <item>90</item>
+        <item>180</item>
+        <item>365</item>
+        <item>730</item>
+        <item>custom</item>
+    </string-array>
+
+    <!-- Event loop interval options (min 15m per WorkManager) -->
+    <string-array name="sync_interval_entries">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>4 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+        <item>Manual only</item>
+    </string-array>
+
+    <string-array name="sync_interval_values" translatable="false">
+        <item>900</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>7200</item>
+        <item>14400</item>
+        <item>21600</item>
+        <item>43200</item>
+        <item>86400</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Backup & restore (.sppbackup export/import) -->
+    <string name="backup_section_title">Backup &amp; restore</string>
+    <string name="info_backup_body">Export your settings to a file you can import on another phone, or after switching between the Google Play and direct versions. Settings-only backups are safe to store anywhere. A full backup can also include your accounts and login credentials so you don\'t have to sign in again, it is protected with a password you choose.</string>
+    <string name="backup_btn_export_settings">Export settings…</string>
+    <string name="backup_btn_import_settings">Import settings…</string>
+    <string name="backup_export_title">Export backup</string>
+    <string name="backup_btn_export">Export</string>
+    <string name="backup_include_accounts">Include accounts &amp; credentials</string>
+    <string name="backup_explainer_settings_only">Your settings and preferences only. Safe to store anywhere.</string>
+    <string name="backup_explainer_full">⚠️ Includes your Proton login credentials. Anyone with this file and its password can access your Proton contacts &amp; calendar. Choose a strong password and keep the file safe.</string>
+    <string name="backup_explainer_subscription">Your subscription ID is included too, so sync stays activated after a restore.</string>
+    <string name="backup_passphrase_hint">Password (min. 8 characters)</string>
+    <string name="backup_passphrase_confirm_hint">Confirm password</string>
+    <string name="backup_error_passphrase_short">Password must be at least 8 characters</string>
+    <string name="backup_error_passphrase_mismatch">Passwords don\'t match</string>
+    <string name="backup_export_success">Backup exported</string>
+    <string name="backup_export_failed_title">Export failed</string>
+    <string name="backup_export_failed_body">The backup could not be written. Please try again.</string>
+    <string name="backup_import_title">Import backup</string>
+    <string name="backup_btn_import">Import</string>
+    <string name="backup_import_passphrase_title">Enter password</string>
+    <string name="backup_import_passphrase_body">This backup is password-protected. Enter the password it was exported with.</string>
+    <string name="backup_btn_unlock">Unlock</string>
+    <string name="backup_preflight_settings_only">This backup contains settings only.</string>
+    <plurals name="backup_preflight_accounts">
+        <item quantity="one">This backup contains %d account and settings.</item>
+        <item quantity="other">This backup contains %d accounts and settings.</item>
+    </plurals>
+    <string name="backup_preflight_flavor_mismatch">This backup is from the \"%1$s\" version. Your subscription is not carried over: you\'ll re-establish it in this version.</string>
+    <string name="backup_preflight_subscription">It also contains your subscription ID, which is used if this phone has none yet.</string>
+    <string name="backup_collision_title">Accounts already exist</string>
+    <string name="backup_collision_body">These accounts are already set up on this device:\n\n%1$s\n\nOverwrite them with the backup, or skip them and keep what\'s here?</string>
+    <string name="backup_btn_overwrite">Overwrite</string>
+    <string name="backup_btn_skip">Skip</string>
+    <string name="backup_import_done_title">Import complete</string>
+    <string name="backup_import_done_body">Imported: %1$d\nOverwritten: %2$d\nSkipped: %3$d\nFailed: %4$d</string>
+    <string name="backup_import_done_settings">Settings restored.</string>
+    <string name="backup_import_done_empty">There was nothing to import.</string>
+    <string name="backup_import_failed_title">Import failed</string>
+    <string name="backup_error_wrong_format">This file is not a Sync for Proton backup.</string>
+    <string name="backup_error_unsupported_version">This backup was made by a newer version of the app. Please update and try again.</string>
+    <string name="backup_error_wrong_passphrase">Wrong password, or the file is corrupt.</string>
+    <string name="backup_error_bad_file">The backup file could not be read.</string>
+
+    <!-- ============ Local data backup (calendars + contacts → .ics/.vcf) ============ -->
+    <string name="backup_data_title">Data backups</string>
+    <string name="backup_data_button">Back up calendars &amp; contacts…</string>
+    <string name="backup_data_intro">Save copies of your Proton calendars and contacts to a folder on this device, so you always have an independent copy you can restore. Backups are read straight from Proton.</string>
+    <string name="backup_enable_auto">Automatic backups</string>
+
+    <string name="backup_section_folder">Backup folder</string>
+    <string name="backup_choose_folder">Choose folder</string>
+    <string name="backup_folder_none">No folder selected yet.</string>
+    <string name="backup_folder_current">Folder: %1$s</string>
+    <string name="backup_need_folder_body">Choose a folder to store your backups in first.</string>
+
+    <string name="backup_section_schedule">Schedule</string>
+    <string name="backup_interval_label">Back up every</string>
+    <string name="backup_unit_days">days</string>
+    <string name="backup_default_interval" translatable="false">7</string>
+    <string name="backup_retention_label">Keep the last</string>
+    <string name="backup_unit_runs">backups</string>
+    <string name="backup_default_retention" translatable="false">14</string>
+
+    <string name="backup_section_contents">What to back up</string>
+    <string name="backup_include_calendars_label">Calendars (.ics)</string>
+    <string name="backup_include_contacts_label">Contacts (.vcf)</string>
+
+    <string name="backup_section_encryption">Encryption</string>
+    <string name="backup_encrypt_label">Encrypt backups</string>
+    <string name="backup_encrypt_explainer">Each backup becomes a single password-protected file you can open anywhere with standard OpenPGP/GnuPG (gpg). Without encryption, your data is saved as plain files.</string>
+    <string name="backup_set_passphrase">Set password</string>
+    <string name="backup_passphrase_set">Password set ✓</string>
+    <string name="backup_passphrase_not_set">No password set yet.</string>
+    <string name="backup_passphrase_warning">Keep this password safe: if you lose it, the encrypted backup cannot be recovered.</string>
+    <string name="backup_btn_save">Save</string>
+    <string name="backup_toast_set_passphrase_first">Set an encryption password first.</string>
+    <string name="backup_test_passphrase">Test password</string>
+    <string name="backup_test_passphrase_title">Test backup password</string>
+    <string name="backup_test_passphrase_body">Enter your backup password to check that you remember it correctly. Nothing is changed, and no backup is decrypted.</string>
+    <string name="backup_btn_test">Check</string>
+    <string name="backup_test_passphrase_correct">Correct! That is your backup password.</string>
+    <string name="backup_test_passphrase_wrong">That is not your backup password.</string>
+
+    <string name="backup_run_now">Back up now</string>
+    <string name="backup_running">Backing up…</string>
+    <string name="backup_last_never">No backup yet.</string>
+    <string name="backup_last_run">Last backup: %1$s, %2$s</string>
+
+    <string name="backup_decrypt_action">Decrypt a backup…</string>
+    <string name="backup_decrypt_body">Pick an encrypted backup file (.gpg) and enter its password. The contents will be saved, decrypted, into your backup folder.</string>
+    <string name="backup_decrypting">Decrypting…</string>
+    <string name="backup_decrypt_done">Decrypted into \"%1$s\" in your backup folder.</string>
+    <string name="backup_decrypt_failed">Could not decrypt this file.</string>
+    <string name="backup_restore_hint">To restore: import an .ics into Proton Calendar (Settings → Import) and a .vcf into Proton Contacts. Encrypted backups can also be opened on a computer with: gpg --decrypt file.gpg</string>
+
+    <string name="backup_result_success">Backed up %1$d calendar(s), %2$d event(s) and %3$d contact(s).</string>
+    <string name="backup_result_skipped">Skipped: the source returned no data, so the last good backup was kept.</string>
+    <string name="backup_result_failed">Backup failed: %1$s</string>
+    <string name="backup_result_folder_lost">Backup folder is no longer accessible.</string>
+    <string name="backup_notif_success_title">Backup complete</string>
+    <string name="backup_notif_skipped_title">Backup skipped</string>
+    <string name="backup_notif_skipped_body">The data came back empty, so your last good backup was kept untouched.</string>
+    <string name="backup_notif_failed_title">Backup failed</string>
+    <string name="backup_notif_folder_lost_title">Backup folder unavailable</string>
+    <string name="backup_notif_folder_lost_body">Sync for Proton can no longer write to your chosen backup folder. Open the app and pick the folder again.</string>
+    <string name="notification_channel_backup">Data backups</string>
+    <string name="notification_channel_backup_description">Results of automatic calendar and contact backups.</string>
+
+    <string name="backup_reminder_title">Keep a backup of your data</string>
+    <string name="backup_reminder_body">Software can have bugs and people can make mistakes! Make backups!\n\nYour calendars and contacts live on Proton, but it\'s wise to keep your own copies too. Sync for Proton can save them to this device automatically. You can export from the Proton website any time as well.</string>
+    <string name="backup_reminder_enable">Set up backups</string>
+    <string name="backup_reminder_proton_export">Proton web export</string>
+    <string name="backup_reminder_later">Later</string>
+    <string name="backup_reminder_dont_remind">I knowingly choose not to use backups. Don\'t remind me again.</string>
+    <string name="backup_reminder_optout_title">Turn off backup reminders?</string>
+    <string name="backup_reminder_optout_body">Are you sure you don\'t want to set up backups? You won\'t keep your own backups of your calendars and contacts, and we won\'t remind you about this again!</string>
+    <string name="backup_reminder_optout_confirm">Yes, stop reminding me</string>
+    <string name="backup_reminder_optout_cancel">No, keep reminding me</string>
+
+    <string name="backup_result_incomplete">Backed up %1$d calendar(s), %2$d event(s) and %3$d contact(s), but some items couldn\'t be read (locked keys or a network error), so the backup may be incomplete. Check the sync logs, then try again.</string>
+    <string name="backup_notif_incomplete_title">Backup may be incomplete</string>
+
+    <!-- Collision prompt: event changed on the phone AND in Proton since the last sync -->
+    <string name="notification_conflict_title">Event changed in two places</string>
+    <string name="notification_conflict_body">“%1$s” was edited on this phone and in Proton Calendar. Which version should be kept?</string>
+    <string name="notification_conflict_body_shared">“%1$s” was edited on this phone, and by %2$s in Proton Calendar. Keeping your version will replace theirs.</string>
+    <string name="notification_conflict_keep_remote">Keep Proton\'s</string>
+    <string name="notification_conflict_keep_local">Keep mine</string>
+    <string name="notification_conflict_untitled_event">(no title)</string>
+    <string name="notification_contact_conflict_title">Contact changed in two places</string>
+    <string name="notification_contact_conflict_body">The contact “%1$s” was edited on this phone and in Proton. Which version should be kept? If you skip, both stay as they are until your next manual sync.</string>
+    <string name="notification_contact_conflict_unnamed">(no name)</string>
+    <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
+    <string name="label_log_filter_sync">Sync</string>
+    <string name="label_log_filter_all">All</string>
+    <string name="label_log_count">%1$d of %2$d lines</string>
+    <string name="label_share_sends_full_log">Sharing always sends the full debug log</string>
+    <string name="btn_clear_view">Clear view</string>
+    <string name="btn_copy_debug_log">Copy debug log</string>
+    <string name="btn_save_debug_log">Save debug log</string>
+    <string name="btn_share_debug_log">Share debug log</string>
+    <string name="toast_log_too_large_to_copy">Log is too large to copy. Use Share or Save instead.</string>
+    <string name="label_log_filter_title">Sync or All</string>
+    <string name="info_log_filter_body">Chooses which lines appear on this screen. Sync shows what the sync did, plus every warning and error. All adds the technical detail: keys, sign-in, network and calendar internals.\n\nThis changes only what you see. The app records everything either way, and Copy, Save and Share always send the complete debug log.</string>
+    <string name="contact_filter_edit_name">Rule name</string>
+    <string name="contact_filter_edit_action">This rule</string>
+    <string name="contact_filter_edit_direction">Applies</string>
+    <string name="contact_filter_edit_conditions">When</string>
+    <string name="contact_filter_match_all">All conditions</string>
+    <string name="contact_filter_match_any">Any condition</string>
+    <string name="contact_filter_add_condition">Add condition</string>
+    <string name="contact_filter_preview">Test rules</string>
+    <string name="contact_filter_save">Save</string>
+    <string name="contact_filter_edit_title_new">New rule</string>
+    <string name="contact_filter_edit_title">Edit rule</string>
+    <string name="contact_filter_condition_field">Field</string>
+    <string name="contact_filter_condition_op">Test</string>
+    <string name="contact_filter_condition_value">Value</string>
+    <string name="contact_filter_condition_remove">Remove condition</string>
+
+    <!-- Where a Proton display name goes when Proton has no first or last name for the contact. -->
+    <string name="label_name_mode">Contacts with only a display name</string>
+    <string name="name_mode_title">Contacts with only a display name</string>
+    <string name="name_mode_info">Proton creates a contact for everyone you exchange email with, and those have a display name and nothing else. Android will not store a name it cannot complete, so it splits one out of the display name: an address like app@example.com becomes the first name app@example and the surname com, and the name your phone then shows is app@example com, with the dot turned into a space.\n\nChoosing a field yourself leaves Android nothing to invent. Only contacts that have no first or last name on Proton are affected, and nothing is ever changed on Proton.</string>
+    <string name="name_mode_android">Let Android decide</string>
+    <string name="name_mode_android_desc">Current behaviour. Android splits the display name and may show it wrongly.</string>
+    <string name="name_mode_nickname">Nickname</string>
+    <string name="name_mode_nickname_desc">Name shown correctly. First and last name stay empty, which is what Proton actually holds.</string>
+    <string name="name_mode_given">First name</string>
+    <string name="name_mode_given_desc">Name shown correctly, with the whole display name in the first name.</string>
+    <string name="name_mode_family">Last name</string>
+    <string name="name_mode_family_desc">Name shown correctly, with the whole display name in the last name.</string>
+    <string name="name_mode_changed">Changed. Your contacts are updated on the next sync.</string>
+    <string name="label_name_repair">Check for invented names</string>
+    <string name="name_repair_scanning">Checking your Proton contacts…</string>
+    <string name="name_repair_none">No contact on Proton has a name that Android invented.</string>
+    <string name="name_repair_found">%1$d contacts on Proton have a first and last name that Android made up by splitting their email address. An earlier version of this app sent those names to Proton.\n\nRemove them? Nothing else about the contacts changes, and their display name stays as it is.</string>
+    <string name="name_repair_action">Remove the invented names</string>
+    <string name="name_repair_done">%1$d contacts repaired.</string>
+    <string name="name_repair_partial">%1$d contacts repaired, %2$d left alone.</string>
+    <string name="name_repair_failed">Could not check your contacts: %1$s</string>
+    <string name="contact_filter_condition_values_hint">One value per line</string>
+    <string name="contact_filter_condition_number">Number</string>
+    <string name="contact_filter_condition_fields">Fields</string>
+    <string name="contact_filter_condition_choose_fields">Choose fields</string>
+    <string name="contact_filter_condition_negate">Match the opposite</string>
+    <string name="contact_filter_condition_not">not (%1$s)</string>
+    <string name="contact_filter_condition_needs_value">Enter at least one value, one per line.</string>
+    <string name="contact_filter_condition_needs_number">Enter a number for this test.</string>
+    <string name="contact_filter_condition_needs_fields">Choose at least one field.</string>
+    <string name="contact_filter_needs_condition">Add at least one condition, or this rule will never match anything.</string>
+    <string name="contact_filter_needs_name">Give the rule a name so you can recognise it in the list.</string>
+    <string name="contact_filter_delete_confirm">Delete this rule?</string>
+    <string name="contact_filter_preview_running">Checking your contacts…</string>
+    <string name="contact_filter_preview_result">Of the %1$d contacts checked on this phone, these rules would keep %2$d and remove %3$d.</string>
+    <string name="contact_filter_preview_none">These rules would not remove any contacts.</string>
+    <string name="contact_filter_preview_undecided">%1$d cannot be checked on the phone, because this rule looks at details only Proton keeps. The next sync decides those, and still asks before removing anything.</string>
+    <string name="contact_filter_preview_empty">There are no contacts on this phone for this account yet.</string>
+    <string name="contact_filter_preview_title">Test result</string>
+    <string name="contact_filter_preview_failed">Could not check your contacts: %1$s</string>
+    <string name="contact_filter_preview_reading">Reading your Proton contacts…</string>
+    <string name="contact_filter_preview_progress">Checking contact %1$d of %2$d…</string>
+    <string name="contact_filter_preview_server_result">Of %1$d contacts in this Proton account, these rules would sync %2$d.</string>
+    <string name="contact_filter_preview_removed_heading">Taken off this phone (%1$d):</string>
+    <string name="contact_filter_preview_skipped_heading">Not copied to this phone (%1$d):</string>
+    <string name="contact_filter_preview_and_more">…and %1$d more.</string>
+    <string name="contact_filter_preview_show_all">Show all</string>
+    <string name="contact_filter_preview_unreadable">%1$d could not be read, and would be left alone.</string>
+    <string name="contact_filter_preview_offline">Proton could not be reached, so this test could only use what is already on the phone.</string>
+    <string name="contact_filter_preview_nothing_removed">Nothing would be taken off this phone.</string>
+
+    <!-- Contact filter: field and operator names shown in the rule editor. -->
+    <string name="filter_field_proton_id">Proton ID</string>
+    <string name="filter_field_display_name">Display name</string>
+    <string name="filter_field_uid">Contact UID</string>
+    <string name="filter_field_size_bytes">Card size in bytes</string>
+    <string name="filter_field_create_time">Created</string>
+    <string name="filter_field_modify_time">Last changed</string>
+    <string name="filter_field_groups">Groups</string>
+    <string name="filter_field_group_count">Number of groups</string>
+    <string name="filter_field_formatted_name">Display name</string>
+    <string name="filter_field_given_name">First name</string>
+    <string name="filter_field_family_name">Last name</string>
+    <string name="filter_field_additional_names">Middle name</string>
+    <string name="filter_field_name_prefix">Name prefix</string>
+    <string name="filter_field_name_suffix">Name suffix</string>
+    <string name="filter_field_phonetic_first">Phonetic first name</string>
+    <string name="filter_field_phonetic_middle">Phonetic middle name</string>
+    <string name="filter_field_phonetic_last">Phonetic last name</string>
+    <string name="filter_field_nickname">Nickname</string>
+    <string name="filter_field_email">Email address</string>
+    <string name="filter_field_email_type">Email label</string>
+    <string name="filter_field_phone">Phone number</string>
+    <string name="filter_field_phone_type">Phone label</string>
+    <string name="filter_field_address_street">Street</string>
+    <string name="filter_field_address_locality">City</string>
+    <string name="filter_field_address_region">Region</string>
+    <string name="filter_field_address_postal_code">Postcode</string>
+    <string name="filter_field_address_country">Country</string>
+    <string name="filter_field_address_type">Address label</string>
+    <string name="filter_field_organization">Organisation</string>
+    <string name="filter_field_title">Job title</string>
+    <string name="filter_field_role">Role</string>
+    <string name="filter_field_note">Note</string>
+    <string name="filter_field_url">Website</string>
+    <string name="filter_field_related">Related person</string>
+    <string name="filter_field_birthday">Birthday</string>
+    <string name="filter_field_anniversary">Anniversary</string>
+    <string name="filter_field_custom_date">Other date</string>
+    <string name="filter_field_sip">SIP address</string>
+    <string name="filter_field_photo">Photo</string>
+    <string name="filter_field_populated_fields">Fields with content</string>
+    <string name="filter_field_structured_name">Any part of the name</string>
+    <string name="filter_op_exists">has any value</string>
+    <string name="filter_op_equals">is</string>
+    <string name="filter_op_not_equals">is not</string>
+    <string name="filter_op_contains">contains</string>
+    <string name="filter_op_starts_with">starts with</string>
+    <string name="filter_op_ends_with">ends with</string>
+    <string name="filter_op_matches_regex">matches pattern</string>
+    <string name="filter_op_in_set">is any of</string>
+    <string name="filter_op_contains_all">includes all of</string>
+    <string name="filter_op_count_eq">count is</string>
+    <string name="filter_op_count_gte">count is at least</string>
+    <string name="filter_op_count_lte">count is at most</string>
+    <string name="filter_op_only">are only</string>
+    <string name="filter_field_other_content">Other information</string>
+    <!-- The counting tests read differently on a field that is itself a number. -->
+    <string name="filter_op_num_eq">is</string>
+    <string name="filter_op_num_gte">is at least</string>
+    <string name="filter_op_num_lte">is at most</string>
+    <string name="filter_op_exactly">are exactly</string>
+
+    <!-- Asked when a sync switch is turned off: the data already on the phone does not leave with it. -->
+    <string name="remove_synced_calendar_title">Remove these calendars from this phone?</string>
+    <string name="remove_synced_calendar_body">Calendar sync is now off, so nothing further will be downloaded. The calendars already on this phone stay until you remove them. Removing them deletes them from this phone only; your calendars in Proton are not touched. You can also remove them later in the Android account settings, and if you turn calendar sync back on they will be created again.</string>
+    <string name="remove_synced_calendar_done">Removed %1$d event(s) from this phone</string>
+    <string name="remove_synced_contacts_title">Remove these contacts from this phone?</string>
+    <string name="remove_synced_contacts_body">Contact sync is now off, so nothing further will be downloaded. The contacts already on this phone stay until you remove them. Removing them deletes them from this phone only; your contacts in Proton are not touched. You can also remove them later in the Android account settings, and if you turn contact sync back on they will be added again.</string>
+    <string name="remove_synced_contacts_done">Removed %1$d contact(s) from this phone</string>
+    <string name="remove_synced_keep">Keep them</string>
+    <string name="remove_synced_remove">Remove</string>
+
+    <!-- Shown once, right after an account is added, so the first sync is a choice and not a surprise. -->
+    <string name="setup_choose_title">What should this account sync?</string>
+    <string name="setup_choose_body">Both are off to begin with, so nothing is copied to this phone until you say so. You can change this at any time.</string>
+    <string name="setup_choose_save">Start syncing</string>
+    <string name="setup_choose_none">Not now</string>
+
+    <!-- Shown when no account has either sync type switched on, so the green "all done" cannot
+         appear to somebody who has just signed in and not yet chosen what to sync. -->
+    <string name="sfp_hero_nothing_enabled">Nothing is syncing yet</string>
+    <string name="sfp_hero_subtitle_nothing_enabled">Choose contacts, calendar or both in the account below</string>
+
+    <!-- Enabled but nothing has completed yet, so the green "all done" cannot claim a result
+         before any sync has actually run. -->
+    <string name="sfp_hero_awaiting_first_sync">Waiting for the first sync</string>
+    <string name="sfp_hero_subtitle_awaiting_first_sync">Nothing has been copied to this phone yet</string>
+
+    <!-- A forced resync deletes before it rebuilds, so it must not touch a switched-off type.
+         %1$s is the type name or names, e.g. "Calendar" or "Contacts & Calendar". -->
+    <string name="toast_resync_skipped">Nothing to resync: sync is off for %1$s</string>
+</resources>

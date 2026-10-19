@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Calm redesign — sign-in. Vertically centred: orbit mark + title/subtitle, outlined
+  fields with leading icons, filled "Sign in", a reassurance line, version footer.
+  All original IDs (input_*, btn_login, text_error, progress_bar, *_fields) preserved.
+  LoginActivity applies system-bar + design padding to the root.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="62dp"
+        android:layout_height="62dp"
+        android:src="@drawable/ic_brand_orbit"
+        android:layout_marginBottom="18dp"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sfp_login_title"
+        android:textColor="@color/sfp_text"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:letterSpacing="-0.01"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="28dp"
+        android:text="@string/sfp_login_subtitle"
+        android:textColor="@color/sfp_text_secondary"
+        android:textSize="14.5sp"
+        android:textAlignment="center" />
+
+    <!-- Login fields group -->
+    <LinearLayout
+        android:id="@+id/login_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_sfp_mail"
+            app:startIconTint="@color/sfp_text_secondary"
+            app:boxCornerRadiusTopStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusTopEnd="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomEnd="@dimen/sfp_radius_field">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_username"
+                android:inputType="textEmailAddress"
+                android:autofillHints="username"
+                android:importantForAutofill="yes" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_sfp_lock"
+            app:startIconTint="@color/sfp_text_secondary"
+            app:endIconMode="password_toggle"
+            app:boxCornerRadiusTopStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusTopEnd="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomEnd="@dimen/sfp_radius_field">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:importantForAutofill="yes" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <!-- 2FA fields group (hidden until needed) -->
+    <LinearLayout
+        android:id="@+id/totp_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_2fa_prompt"
+            android:textColor="@color/sfp_text"
+            android:textSize="15sp"
+            android:layout_marginBottom="14dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_sfp_key"
+            app:startIconTint="@color/sfp_text_secondary"
+            app:boxCornerRadiusTopStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusTopEnd="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomEnd="@dimen/sfp_radius_field">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_totp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_totp_code"
+                android:inputType="number"
+                android:maxLength="6"
+                android:autofillHints="smsOTPCode"
+                android:importantForAutofill="yes" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <!-- Mailbox password fields group (hidden until needed; legacy two-password accounts) -->
+    <LinearLayout
+        android:id="@+id/mailbox_password_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_mailbox_password_prompt"
+            android:textColor="@color/sfp_text"
+            android:textSize="15sp"
+            android:layout_marginBottom="14dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_sfp_lock"
+            app:startIconTint="@color/sfp_text_secondary"
+            app:endIconMode="password_toggle"
+            app:boxCornerRadiusTopStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusTopEnd="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomStart="@dimen/sfp_radius_field"
+            app:boxCornerRadiusBottomEnd="@dimen/sfp_radius_field">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_mailbox_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_mailbox_password"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:importantForAutofill="yes" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_login"
+        style="@style/Widget.SyncForProton.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_sign_in" />
+
+    <TextView
+        android:id="@+id/text_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/sfp_danger"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:indeterminateTint="@color/sfp_primary"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="7dp"
+            android:src="@drawable/ic_sfp_shield"
+            app:tint="@color/sfp_good"
+            android:contentDescription="@string/sfp_login_reassurance" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sfp_login_reassurance"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="12.5sp" />
+    </LinearLayout>
+
+    <!-- First-run only: restore accounts + settings from a .sppbackup before signing in
+         (e.g. migrating between the Play and direct builds, or to a new phone). A quiet
+         Ghost action subordinate to "Sign in"; LoginActivity shows it only when there are
+         no accounts yet and hides it once the 2FA / mailbox-password steps appear. -->
+    <LinearLayout
+        android:id="@+id/import_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="28dp"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_import_settings"
+            style="@style/Widget.SyncForProton.Button.Ghost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_import_accounts"
+            app:icon="@drawable/ic_vertical_align_bottom_24"
+            app:iconGravity="textStart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/sfp_login_import_hint"
+            android:textColor="@color/sfp_text_faint"
+            android:textSize="12.5sp"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+    <!-- Diagnostics, deliberately always visible. A user who cannot get past this screen has no
+         other route to the logs: LoginActivity is the launcher, and the Settings entry that
+         normally opens the viewer needs an account to exist first. That left exactly the people
+         with a login problem unable to produce the log line explaining it. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_view_logs"
+        style="@style/Widget.SyncForProton.Button.Quiet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_view_sync_logs"
+        app:icon="@drawable/ic_sfp_list"
+        app:iconGravity="textStart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="@string/version_label"
+        android:textColor="@color/sfp_text_faint"
+        android:textSize="12sp" />
+
+</LinearLayout>

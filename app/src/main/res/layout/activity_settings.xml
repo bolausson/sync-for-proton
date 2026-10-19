@@ -1,0 +1,1000 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Calm redesign — overview. Static header children of settings_container (count = 3,
+  must match staticHeaderCount in SyncSettingsActivity): subscription card, status hero,
+  ACCOUNTS label. Account cards are inserted before the last child (the footer). Buttons
+  the hero/quick-tools replace are kept (visibility=gone) so existing wiring still binds;
+  the new controls delegate to them via performClick().
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/settings_title"
+            app:titleTextAppearance="@style/TextAppearance.SyncForProton.ScreenTitle" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/main_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="32dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/sfp_screen_h"
+            android:paddingTop="8dp">
+
+            <!-- [0] Subscription banner -->
+            <include
+                android:id="@+id/subscription_card"
+                layout="@layout/settings_subscription_card" />
+
+            <!-- [1] Status hero -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.SyncForProton.Card.Hero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/sfp_card_pad">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/hero_status_box"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginEnd="14dp"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="@dimen/sfp_radius_tile"
+                            app:cardBackgroundColor="@color/sfp_good_container">
+
+                            <ImageView
+                                android:id="@+id/hero_status_icon"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_status_check"
+                                android:contentDescription="@string/sfp_hero_ok" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/hero_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sfp_hero_ok"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_hero_title"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/hero_subtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sfp_hero_subtitle_ok"
+                                android:textColor="@color/sfp_text_secondary"
+                                android:textSize="13.5sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Stat tiles -->
+                    <LinearLayout
+                        android:id="@+id/hero_stats_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="15dp"
+                            app:cardBackgroundColor="@color/sfp_surface_sunken">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_sfp_contacts"
+                                    app:tint="@color/sfp_brand_green"
+                                    android:contentDescription="@string/sfp_stat_contacts" />
+
+                                <TextView
+                                    android:id="@+id/hero_contacts_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:text="-"
+                                    android:textColor="@color/sfp_text"
+                                    android:textSize="22sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sfp_stat_contacts"
+                                    android:textColor="@color/sfp_text_secondary"
+                                    android:textSize="12.5sp" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="15dp"
+                            app:cardBackgroundColor="@color/sfp_surface_sunken">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_sfp_calendar"
+                                    app:tint="@color/sfp_brand_violet"
+                                    android:contentDescription="@string/sfp_stat_events" />
+
+                                <TextView
+                                    android:id="@+id/hero_events_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:text="-"
+                                    android:textColor="@color/sfp_text"
+                                    android:textSize="22sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sfp_stat_events"
+                                    android:textColor="@color/sfp_text_secondary"
+                                    android:textSize="12.5sp" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_hero_sync_all"
+                        style="@style/Widget.SyncForProton.Button.Soft"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/sfp_sync_all_now"
+                        app:icon="@drawable/ic_sfp_sync"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- [2] ACCOUNTS section label -->
+            <TextView
+                style="@style/TextAppearance.SyncForProton.SectionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="@dimen/sfp_group_gap"
+                android:layout_marginBottom="9dp"
+                android:text="@string/sfp_section_accounts" />
+
+            <!-- Account cards are inserted here programmatically (before the footer) -->
+
+            <!-- [last] Footer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_account"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_add_another_account"
+                    app:icon="@drawable/ic_sfp_plus"
+                    app:iconGravity="textStart" />
+
+                <!-- Quick-tools row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/sfp_group_gap">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/tile_logs"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="15dp">
+
+                            <ImageView
+                                android:layout_width="21dp"
+                                android:layout_height="21dp"
+                                android:src="@drawable/ic_sfp_history"
+                                app:tint="@color/sfp_primary"
+                                android:contentDescription="@string/sfp_tile_logs" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="@string/sfp_tile_logs"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/tile_backup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="15dp">
+
+                            <ImageView
+                                android:layout_width="21dp"
+                                android:layout_height="21dp"
+                                android:src="@drawable/ic_sfp_cloud"
+                                app:tint="@color/sfp_primary"
+                                android:contentDescription="@string/sfp_tile_backup" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="@string/sfp_tile_backup"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/tile_battery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="15dp">
+
+                            <ImageView
+                                android:layout_width="21dp"
+                                android:layout_height="21dp"
+                                android:src="@drawable/ic_sfp_battery"
+                                app:tint="@color/sfp_primary"
+                                android:contentDescription="@string/sfp_tile_battery" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="@string/sfp_tile_battery"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- APP & DATA group -->
+                <TextView
+                    style="@style/TextAppearance.SyncForProton.SectionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="@dimen/sfp_group_gap"
+                    android:layout_marginBottom="9dp"
+                    android:text="@string/sfp_section_app" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Language -->
+                        <LinearLayout
+                            android:id="@+id/row_language"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                            android:paddingVertical="@dimen/sfp_row_pad_v"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:layout_width="0dp"
+                        android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_language"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_language" style="@style/InfoIcon" />
+
+                            <TextView
+                                android:id="@+id/value_language"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/sfp_text_secondary"
+                                android:textSize="@dimen/sfp_text_row_value" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp"
+                            android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                        <!-- Update time zones online (device-wide; the two-line row of the account card) -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                            android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/label_timezone_updates_title"
+                                        android:textColor="@color/sfp_text"
+                                        android:textSize="@dimen/sfp_text_row_title" />
+
+                                    <ImageView android:id="@+id/info_timezone_updates" style="@style/InfoIcon" />
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sfp_timezone_updates_summary"
+                                    android:textColor="@color/sfp_text_secondary"
+                                    android:textSize="@dimen/sfp_text_row_sub" />
+
+                                <!-- Only while this phone's tz data looks stuck and the switch is off
+                                     (SyncSettingsActivity.refreshTimeZoneUpdatesUi). The account card's
+                                     text_contacts_last_fail idiom, in the row title's colour: it stands out
+                                     from the grey subtitle above and meets WCAG AA in both themes, which
+                                     sfp_warn (2.76:1 on white) and sfp_danger (3.97:1) do not at this size. -->
+                                <TextView
+                                    android:id="@+id/text_timezone_data_outdated"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/sfp_text"
+                                    android:textSize="@dimen/sfp_text_row_sub"
+                                    android:visibility="gone" />
+                            </LinearLayout>
+
+                            <!-- The switch has no text of its own, so TalkBack needs its name here. -->
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_timezone_updates"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/label_timezone_updates_title" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp"
+                            android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                        <!-- Verbose logging -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                            android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                            <TextView
+                                android:layout_width="0dp"
+                        android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_verbose_logging_title"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_verbose_logging" style="@style/InfoIcon" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_verbose_logging"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/label_verbose_logging_title" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp"
+                            android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
+                        <!-- Save logs to file (for GrapheneOS / logcat-blocked ROMs) -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                            android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_file_logging_title"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_file_logging" style="@style/InfoIcon" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_file_logging"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/label_file_logging_title" />
+                        </LinearLayout>
+
+                        <!-- Chosen log folder + change button (shown only while file logging is on) -->
+                        <LinearLayout
+                            android:id="@+id/row_log_folder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"
+                            android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                            android:paddingBottom="@dimen/sfp_row_pad_v">
+
+                            <TextView
+                                android:id="@+id/text_log_folder"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/sfp_text_secondary"
+                                android:textSize="@dimen/sfp_text_row_value" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_choose_log_folder"
+                                style="@style/Widget.SyncForProton.Button.Ghost"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="0dp"
+                                android:text="@string/btn_choose_log_folder" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Settings export / import / report -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_export_backup"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/backup_btn_export_settings"
+                    app:icon="@drawable/ic_vertical_align_bottom_24"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_import_backup"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/backup_btn_import_settings"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_send_report"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_send_report"
+                    app:icon="@drawable/ic_sfp_mail"
+                    app:iconGravity="textStart" />
+
+                <!-- Debug section — shown only on debug builds (toggled in onCreate) -->
+                <TextView
+                    android:id="@+id/label_debug_section"
+                    style="@style/TextAppearance.SyncForProton.SectionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="@dimen/sfp_group_gap"
+                    android:layout_marginBottom="9dp"
+                    android:text="@string/label_debug_section"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_calibrate_photo_size"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_calibrate_photo_size"
+                    android:visibility="gone"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_simulate_vanished"
+                    style="@style/Widget.SyncForProton.Button.Ghost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_simulate_vanished"
+                    android:visibility="gone"
+                    app:iconGravity="textStart" />
+
+                <!-- Legal footer: tappable Privacy · Terms, sitting one tone above the
+                     fainter brand/version line so the cluster reads as a quiet foot. Each link is a 48dp touch
+                     target with its text centred in it, so the row starts 12dp closer to keep the look. -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/link_privacy_policy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:text="@string/link_privacy_policy"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:paddingVertical="4dp"
+                        android:text="@string/footer_link_separator"
+                        android:textColor="@color/sfp_text_faint"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/link_terms_conditions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:text="@string/link_terms_conditions"
+                        android:textColor="@color/sfp_text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- The licences, the same kind of link on a line of its own: as a third beside those two it would run
+                     off a narrow phone in English, and off most phones once translated. -->
+                <TextView
+                    android:id="@+id/link_third_party_licences"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="4dp"
+                    android:text="@string/link_third_party_licences"
+                    android:textColor="@color/sfp_text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/sfp_text_faint"
+                    android:textSize="12sp" />
+
+                <!-- ===== Hidden: replaced by hero / quick-tools, kept for binding + delegation ===== -->
+                <LinearLayout
+                    android:id="@+id/row_sync_all_accounts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_sync_all_accounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_sync_all_accounts" />
+
+                    <ImageView android:id="@+id/info_btn_sync_all_accounts" style="@style/InfoIcon" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_sync_all_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_sync_all_long_press_hint"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_data_backups"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/backup_data_button"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_view_logs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_view_sync_logs"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_battery_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_open_battery_settings"
+                    android:visibility="gone" />
+
+                <ImageView android:id="@+id/info_backup" style="@style/InfoIcon" android:visibility="gone" />
+                <ImageView android:id="@+id/info_background_sync" style="@style/InfoIcon" android:visibility="gone" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Empty / first-run state (shown when no accounts; toggled in SyncSettingsActivity) -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:minHeight="600dp"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="40dp">
+
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:src="@drawable/ic_brand_orbit"
+                android:contentDescription="@string/app_name" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="@string/sfp_empty_title"
+                android:textColor="@color/sfp_text"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.02"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="28dp"
+                android:text="@string/sfp_empty_subtitle"
+                android:textColor="@color/sfp_text_secondary"
+                android:textSize="14.5sp"
+                android:textAlignment="center"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- Feature tiles -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginEnd="14dp"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="11dp"
+                        app:cardBackgroundColor="@color/sfp_surface_sunken">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sfp_contacts"
+                            app:tint="@color/sfp_brand_green"
+                            android:contentDescription="@string/sfp_group_contacts" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_group_contacts"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="15.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_empty_contacts_desc"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginEnd="14dp"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="11dp"
+                        app:cardBackgroundColor="@color/sfp_surface_sunken">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sfp_calendar"
+                            app:tint="@color/sfp_brand_violet"
+                            android:contentDescription="@string/sfp_group_calendar" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_group_calendar"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="15.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_empty_calendar_desc"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="@dimen/sfp_radius_tile">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginEnd="14dp"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="11dp"
+                        app:cardBackgroundColor="@color/sfp_surface_sunken">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sfp_shield"
+                            app:tint="@color/sfp_good"
+                            android:contentDescription="@string/sfp_empty_private_title" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_empty_private_title"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="15.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sfp_empty_private_desc"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_empty_connect"
+                style="@style/Widget.SyncForProton.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="@string/sfp_empty_connect"
+                app:icon="@drawable/ic_sfp_plus"
+                app:iconGravity="textStart" />
+
+            <!-- Restore accounts + settings from a .sppbackup instead of signing in fresh
+                 (e.g. migrating between the Play and direct builds). Mirrors the login
+                 screen's affordance; subordinate Ghost action below the primary Connect. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_empty_import"
+                style="@style/Widget.SyncForProton.Button.Ghost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_import_accounts"
+                app:icon="@drawable/ic_vertical_align_bottom_24"
+                app:iconGravity="textStart" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/sfp_login_import_hint"
+                android:textColor="@color/sfp_text_faint"
+                android:textSize="12.5sp"
+                android:textAlignment="center" />
+
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/sfp_empty_disclaimer"
+                android:textColor="@color/sfp_text_faint"
+                android:textSize="11.5sp"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

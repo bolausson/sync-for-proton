@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status check used in the Overview hero. Pre-tinted with sfp_good. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="30dp"
+    android:height="30dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/sfp_good">
+
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M12,2 A10,10 0 1,0 12,22 A10,10 0 1,0 12,2 Z M12,4 A8,8 0 1,1 12,20 A8,8 0 1,1 12,4 Z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M10.6,14.2 L8,11.6 L6.6,13 L10.6,17 L17.4,10.2 L16,8.8 Z" />
+</vector>

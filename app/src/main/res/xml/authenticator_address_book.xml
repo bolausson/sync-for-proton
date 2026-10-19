@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<account-authenticator
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="me.proton.sync.address_book"
+    android:icon="@mipmap/sync_for_proton"
+    android:smallIcon="@mipmap/sync_for_proton"
+    android:label="@string/account_title_address_book"
+    android:customTokens="true" />

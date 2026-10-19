@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_subscribe_dialog_title">Абонамент</string>
+    <string name="spp_subscribe_dialog_message">Абонирайте се в браузъра си, след което поставете по-долу идентификатора на абонамента си (sub_…), за да активирате синхронизирането на това устройство.</string>
+    <string name="spp_subscribe_hint">sub_…</string>
+    <string name="spp_subscribe_save">Активиране</string>
+    <string name="spp_subscribe_open_checkout">Абониране в браузъра</string>
+    <string name="spp_subscribe_validating">Проверка на абонамента ви…</string>
+    <string name="spp_manage_dialog_title">Управление на абонамента</string>
+    <string name="spp_manage_action_update_payment">Актуализиране на метода на плащане</string>
+    <string name="spp_manage_action_cancel">Отмяна на абонамента</string>
+    <string name="spp_manage_error">Страницата за управление не може да бъде заредена. Опитайте отново.</string>
+    <string name="spp_manage_note">Paddle ще поиска имейл адреса, с който сте се абонирали. В имейлите от Paddle продавачът е посочен като BEO.</string>
+    <string name="spp_manage_loading">Свързване с Paddle…</string>
+    <string name="spp_manage_unavailable">Услугата за абонаменти е недостъпна. Моля, опитайте отново по-късно.</string>
+    <string name="spp_manage_no_connection">Няма връзка. Проверете дали телефонът ви е свързан с интернет, след което опитайте отново.</string>
+    <string name="spp_no_browser">Не е намерен браузър. Инсталирайте или активирайте такъв, след което опитайте отново.</string>
+</resources>

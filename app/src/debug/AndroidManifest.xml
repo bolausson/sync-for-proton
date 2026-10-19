@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Debug builds only: adb entry point for debug commands. DUMP-protected: only the shell can start it.
+             No task affinity, so it never becomes the root of the app's task: Android brings a task whose root
+             matches an identical start to the front instead of starting the activity, dropping every second command. -->
+        <activity
+            android:name="me.proton.sync.debug.DebugCommandActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:permission="android.permission.DUMP"
+            android:theme="@android:style/Theme.NoDisplay" />
+    </application>
+</manifest>
