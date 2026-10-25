@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Síntiús</string>
-    <string name="spp_subscribe_dialog_message">Liostáil i do bhrabhsálaí, ansin greamaigh d\'aitheantas síntiúis (sub_…) thíos chun sioncronú a chumasú ar an ngléas seo.</string>
+    <string name="spp_btn_enter_subscription_id">Cuir isteach aitheantas síntiúis</string>
+    <string name="spp_subscribe_dialog_title">Cuir isteach aitheantas síntiúis</string>
+    <string name="spp_subscribe_dialog_message">Greamaigh d\'aitheantas síntiúis (tosaíonn sé le sub_ agus taispeántar é ar an leathanach tar éis na híocaíochta) nó an t-aitheantas idirbhirt ó shonrasc Paddle (tosaíonn sé le txn_). Ar chaill tú an dá cheann? Tá nasc \"Manage subscription\" chuig do shíntiús i ríomhphost admhála Paddle (i ríomhphoist Paddle, tugtar BEO ar an díoltóir). Mura féidir leat aon aitheantas a aimsiú fós, tapáil \"Seol tuairisc chuig an bhforbróir\" sna Socruithe. Ní oibríonn síntiús Google Play ach i leagan Google Play den aip seo.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Gníomhachtaigh</string>
-    <string name="spp_subscribe_open_checkout">Liostáil sa bhrabhsálaí</string>
     <string name="spp_subscribe_validating">Do shíntiús á sheiceáil…</string>
+    <string name="spp_subscribe_activated">Síntiús gníomhachtaithe.</string>
+    <string name="spp_subscribe_error_not_found">Níor aimsíodh aon síntiús leis an aitheantas seo. Seiceáil an t-aitheantas agus bain triail eile as.</string>
+    <string name="spp_subscribe_error_wrong_product">Baineann an t-aitheantas síntiúis seo le haip eile.</string>
+    <string name="spp_subscribe_error_cancelled">Cealaíodh an síntiús seo. Liostáil arís chun aitheantas síntiúis nua a fháil.</string>
+    <string name="spp_subscribe_error_kept_current">Tá an síntiús sin ar sos nó gan íoc, mar sin coinníonn an fón seo a shíntiús reatha.</string>
+    <string name="spp_subscribe_error_play_order">Is uimhir ordaithe Google Play í seo. Ní oibríonn síntiús Google Play ach i leagan Google Play den aip.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Tá an t-aitheantas idirbhirt seo neamhiomlán nó tá botún clóscríofa ann. Cóipeáil arís é.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Níor aimsíodh aon cheannach leis an aitheantas idirbhirt seo. Seiceáil an t-aitheantas, nó cuir isteach an t-aitheantas síntiúis a thosaíonn le sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Baineann an ceannach seo le haip eile.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Níl síntiús ag an gceannach seo fós. Má tá tú díreach tar éis íoc, bain triail eile as i gceann nóiméid. Mura bhfuil, cuir isteach an t-aitheantas síntiúis a thosaíonn le sub_.</string>
+    <string name="spp_subscribe_error_email">Is seoladh ríomhphoist é seo. Tosaíonn d\'aitheantas síntiúis le \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Tá an t-aitheantas síntiúis seo neamhiomlán nó tá botún clóscríofa ann. Cóipeáil arís é.</string>
+    <string name="spp_subscribe_error_not_an_id">Ní aitheantas síntiúis é seo. Tosaíonn aitheantais síntiúis le \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Tá níos mó ná aitheantas amháin anseo. Ná cuir isteach ach ceann amháin.</string>
     <string name="spp_manage_dialog_title">Bainistigh síntiús</string>
     <string name="spp_manage_action_update_payment">Nuashonraigh modh íocaíochta</string>
     <string name="spp_manage_action_cancel">Cealaigh síntiús</string>

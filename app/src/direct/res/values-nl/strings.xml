@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abonnement</string>
-    <string name="spp_subscribe_dialog_message">Neem een abonnement in je browser en plak hieronder je abonnements-ID (sub_…) om synchronisatie op dit apparaat te activeren.</string>
+    <string name="spp_btn_enter_subscription_id">Abonnements-ID invoeren</string>
+    <string name="spp_subscribe_dialog_title">Abonnements-ID invoeren</string>
+    <string name="spp_subscribe_dialog_message">Plak je abonnements-ID (die begint met sub_ en staat op de pagina die na het afrekenen verschijnt) of de transactie-ID van de factuur van Paddle (die begint met txn_). Allebei kwijt? De e-mail met het betaalbewijs van Paddle bevat een link “Manage subscription” naar je abonnement (in e-mails van Paddle staat BEO als verkoper). Kun je nog steeds geen ID vinden, tik dan in Instellingen op “Rapport sturen naar ontwikkelaar”. Een Google Play-abonnement werkt alleen in de Google Play-versie van deze app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activeren</string>
-    <string name="spp_subscribe_open_checkout">Abonneren in browser</string>
     <string name="spp_subscribe_validating">Je abonnement wordt gecontroleerd…</string>
+    <string name="spp_subscribe_activated">Abonnement geactiveerd.</string>
+    <string name="spp_subscribe_error_not_found">Er is geen abonnement met deze ID gevonden. Controleer de ID en probeer het opnieuw.</string>
+    <string name="spp_subscribe_error_wrong_product">Deze abonnements-ID hoort bij een andere app.</string>
+    <string name="spp_subscribe_error_cancelled">Dit abonnement is opgezegd. Neem opnieuw een abonnement om een nieuwe abonnements-ID te krijgen.</string>
+    <string name="spp_subscribe_error_kept_current">Dat abonnement is gepauzeerd of onbetaald, dus deze telefoon houdt zijn huidige abonnement.</string>
+    <string name="spp_subscribe_error_play_order">Dit is een Google Play-bestelnummer. Een Google Play-abonnement werkt alleen in de Google Play-versie van de app.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Deze transactie-ID is onvolledig of bevat een typfout. Kopieer de ID opnieuw.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Er is geen aankoop met deze transactie-ID gevonden. Controleer de ID of voer de abonnements-ID in die met sub_ begint.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Deze aankoop hoort bij een andere app.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Deze aankoop heeft nog geen abonnement. Als je net hebt betaald, probeer het dan over een minuut opnieuw. Voer anders de abonnements-ID in die met sub_ begint.</string>
+    <string name="spp_subscribe_error_email">Dit is een e-mailadres. Je abonnements-ID begint met “sub_”.</string>
+    <string name="spp_subscribe_error_mistyped">Deze abonnements-ID is onvolledig of bevat een typfout. Kopieer de ID opnieuw.</string>
+    <string name="spp_subscribe_error_not_an_id">Dit is geen abonnements-ID. Abonnements-ID\'s beginnen met “sub_”.</string>
+    <string name="spp_subscribe_error_several_ids">Dit bevat meer dan één ID. Voer er maar één in.</string>
     <string name="spp_manage_dialog_title">Abonnement beheren</string>
     <string name="spp_manage_action_update_payment">Betaalmethode bijwerken</string>
     <string name="spp_manage_action_cancel">Abonnement opzeggen</string>

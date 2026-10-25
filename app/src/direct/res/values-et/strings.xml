@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Tellimus</string>
-    <string name="spp_subscribe_dialog_message">Telli oma brauseris ja seejärel kleebi allapoole oma tellimuse ID (sub_…), et aktiveerida sünkroonimine selles seadmes.</string>
+    <string name="spp_btn_enter_subscription_id">Sisesta tellimuse ID</string>
+    <string name="spp_subscribe_dialog_title">Sisesta tellimuse ID</string>
+    <string name="spp_subscribe_dialog_message">Kleepige oma tellimuse ID (see algab eesliitega sub_ ja seda näidatakse pärast maksmist avaneval lehel) või Paddle\'i arvel olev tehingu ID (see algab eesliitega txn_). Kaotasite mõlemad? Paddle\'i kviitungi e-kirjas on link \"Manage subscription\", mis viib teie tellimuseni (Paddle\'i e-kirjades on müüjana märgitud BEO). Kui te ikka ühtegi ID-d ei leia, puudutage jaotises Seaded nuppu \"Saada aruanne arendajale\". Google Play tellimus töötab ainult selle rakenduse Google Play versioonis.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiveeri</string>
-    <string name="spp_subscribe_open_checkout">Telli brauseris</string>
     <string name="spp_subscribe_validating">Tellimuse kontrollimine…</string>
+    <string name="spp_subscribe_activated">Tellimus aktiveeritud.</string>
+    <string name="spp_subscribe_error_not_found">Selle ID-ga tellimust ei leitud. Kontrollige ID-d ja proovige uuesti.</string>
+    <string name="spp_subscribe_error_wrong_product">See tellimuse ID kuulub teisele rakendusele.</string>
+    <string name="spp_subscribe_error_cancelled">See tellimus on tühistatud. Uue tellimuse ID saamiseks tellige uuesti.</string>
+    <string name="spp_subscribe_error_kept_current">See tellimus on peatatud või tasumata, seega jääb sellesse telefoni praegune tellimus.</string>
+    <string name="spp_subscribe_error_play_order">See on Google Play ostu number. Google Play tellimus töötab ainult rakenduse Google Play versioonis.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">See tehingu ID on puudulik või sisaldab trükiviga. Kopeerige see uuesti.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Selle tehingu ID-ga ostu ei leitud. Kontrollige ID-d või sisestage tellimuse ID, mis algab eesliitega sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">See ost kuulub teisele rakendusele.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Sellel ostul pole veel tellimust. Kui te just maksite, proovige minuti pärast uuesti. Vastasel juhul sisestage tellimuse ID, mis algab eesliitega sub_.</string>
+    <string name="spp_subscribe_error_email">See on e-posti aadress. Teie tellimuse ID algab eesliitega \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">See tellimuse ID on puudulik või sisaldab trükiviga. Kopeerige see uuesti.</string>
+    <string name="spp_subscribe_error_not_an_id">See ei ole tellimuse ID. Tellimuse ID-d algavad eesliitega \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">See sisaldab rohkem kui ühte ID-d. Sisestage ainult üks.</string>
     <string name="spp_manage_dialog_title">Halda tellimust</string>
     <string name="spp_manage_action_update_payment">Uuenda makseviisi</string>
     <string name="spp_manage_action_cancel">Tühista tellimus</string>

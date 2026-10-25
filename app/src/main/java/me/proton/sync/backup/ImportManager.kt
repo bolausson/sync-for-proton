@@ -11,8 +11,10 @@ import me.proton.sync.BuildConfig
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.account.AccountSession
 import me.proton.sync.account.AccountSessionManager
+import me.proton.sync.billing.SubscriptionGate
 import me.proton.sync.crypto.SecureStorage
 import me.proton.sync.db.SyncDatabase
 import org.json.JSONObject
@@ -232,12 +234,22 @@ object ImportManager {
         if (restoreSettings) {
             settingsRestored = writeSettings(context, payload.settings)
         }
+        // The backup carries every account's intervals and fallback switches, skipped ones included,
+        // and they were written after provisioning armed anything.
+        if (settingsRestored) SyncScheduling.reconcileAll(context)
 
-        // Now that settings (intervals, modes…) are in place, kick an initial sync per account.
-        for (name in provisioned) {
-            val account = Account(name, ProtonSyncApp.ACCOUNT_TYPE)
-            val abAccount = Account(name, ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
-            AccountProvisioner.requestImmediateSync(account, abAccount)
+        // Now that settings (intervals, modes…) are in place, kick an initial sync per account. Only
+        // while the subscription lets sync run, because the gate drops them otherwise: BackupFlowController
+        // restores the subscription after this returns, and an id taken from the backup activates it a
+        // moment later. The subscription observer's catch-up sync then runs them.
+        if (SubscriptionGate.isSyncAllowedCached(context)) {
+            for (name in provisioned) {
+                val account = Account(name, ProtonSyncApp.ACCOUNT_TYPE)
+                val abAccount = Account(name, ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
+                AccountProvisioner.requestImmediateSync(account, abAccount)
+            }
+        } else if (provisioned.isNotEmpty()) {
+            SyncLog.i(TAG, "Import: first sync of ${provisioned.size} account(s) waits for the subscription; it is requested when the subscription turns active")
         }
 
         SyncLog.i(TAG, "Import: imported=$imported overwritten=$overwritten skipped=$skipped failed=$failed settings=$settingsRestored")
@@ -367,11 +379,18 @@ object ImportManager {
             SyncLog.w(TAG, "Provider wipe for '$displayName' partially failed: ${e.message}")
         }
 
-        // Drop cached per-calendar sync ranges so the next sync does a full fetch.
+        // Drop cached per-calendar sync ranges so the next sync does a full fetch. And the last sync times:
+        // the data they describe is gone, and a kept one told the subscription catch-up (with Android's
+        // automatic sync off) that this account had synced, so its first sync after an inactive restore
+        // was never asked for (SyncScheduling.catchUpRequest).
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val rangePrefix = SyncPreferences.lastSyncRangeKey(displayName, "")
         prefs.edit().apply {
             prefs.all.keys.filter { it.startsWith(rangePrefix) }.forEach { remove(it) }
+            for (type in listOf("contacts", "calendar")) {
+                remove(SyncPreferences.lastSyncKey(displayName, type))
+                remove(SyncPreferences.lastSyncFailedKey(displayName, type))
+            }
             apply()
         }
     }

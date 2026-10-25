@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Suscripción</string>
-    <string name="spp_subscribe_dialog_message">Suscríbete en tu navegador y luego pega aquí abajo tu ID de suscripción (sub_…) para activar la sincronización en este dispositivo.</string>
+    <string name="spp_btn_enter_subscription_id">Introducir ID de suscripción</string>
+    <string name="spp_subscribe_dialog_title">Introducir ID de suscripción</string>
+    <string name="spp_subscribe_dialog_message">Pega tu ID de suscripción (empieza por sub_ y aparece en la página que se muestra tras el pago) o el ID de transacción de la factura de Paddle (empieza por txn_). ¿Has perdido los dos? El correo con el recibo de Paddle incluye un enlace \"Manage subscription\" a tu suscripción (en los correos de Paddle, el vendedor aparece como BEO). Si sigues sin encontrar ningún ID, toca \"Enviar informe al desarrollador\" en Configuración. Una suscripción de Google Play solo funciona en la versión de Google Play de esta aplicación.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activar</string>
-    <string name="spp_subscribe_open_checkout">Suscribirse en el navegador</string>
     <string name="spp_subscribe_validating">Comprobando tu suscripción…</string>
+    <string name="spp_subscribe_activated">Suscripción activada.</string>
+    <string name="spp_subscribe_error_not_found">No se ha encontrado ninguna suscripción con este ID. Comprueba el ID e inténtalo de nuevo.</string>
+    <string name="spp_subscribe_error_wrong_product">Este ID de suscripción pertenece a otra aplicación.</string>
+    <string name="spp_subscribe_error_cancelled">Esta suscripción se ha cancelado. Suscríbete de nuevo para obtener un nuevo ID de suscripción.</string>
+    <string name="spp_subscribe_error_kept_current">Esa suscripción está en pausa o impagada, así que este teléfono mantiene su suscripción actual.</string>
+    <string name="spp_subscribe_error_play_order">Esto es un número de pedido de Google Play. Una suscripción de Google Play solo funciona en la versión de Google Play de la aplicación.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Este ID de transacción está incompleto o tiene una errata. Cópialo de nuevo.</string>
+    <string name="spp_subscribe_error_transaction_not_found">No se ha encontrado ninguna compra con este ID de transacción. Comprueba el ID o introduce el ID de suscripción que empieza por sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Esta compra pertenece a otra aplicación.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Esta compra todavía no tiene suscripción. Si acabas de pagar, inténtalo de nuevo dentro de un minuto. Si no, introduce el ID de suscripción que empieza por sub_.</string>
+    <string name="spp_subscribe_error_email">Esto es una dirección de correo. Tu ID de suscripción empieza por \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Este ID de suscripción está incompleto o tiene una errata. Cópialo de nuevo.</string>
+    <string name="spp_subscribe_error_not_an_id">Esto no es un ID de suscripción. Los ID de suscripción empiezan por \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Esto contiene más de un ID. Introduce solo uno.</string>
     <string name="spp_manage_dialog_title">Gestionar suscripción</string>
     <string name="spp_manage_action_update_payment">Actualizar método de pago</string>
     <string name="spp_manage_action_cancel">Cancelar suscripción</string>

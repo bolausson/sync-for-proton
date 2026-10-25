@@ -6,6 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,9 +31,11 @@ import javax.inject.Singleton
  * flavor — no Google Play Billing.
  *
  * The Paddle subscription id (`sub_xxx`) is the license key: the user buys via web
- * checkout, then pastes the id into settings ([applyLicense]). We validate it against
- * the stateless license proxy at [LICENSE_BASE_URL]. Grace-period / terminal-vs-transient
- * handling is in [applyVerdict].
+ * checkout, then enters the id in settings ([activate], which checks it with the proxy before
+ * storing it), or the transaction id from Paddle's invoice (`txn_xxx`), which [activate] has the
+ * proxy turn into the subscription id first. We validate it against the stateless license proxy at
+ * [LICENSE_BASE_URL].
+ * Grace-period / terminal-vs-transient handling is in [applyVerdict].
  *
  * Exposes the same neutral surface as the play [SubscriptionManager] — `state`,
  * `currentState()`, `isSyncAllowed()`, `connect()`, `refreshState()` — so shared code
@@ -76,15 +79,16 @@ class SubscriptionManager @Inject constructor(
     fun currentSubId(): String? = prefs.getString(SyncPreferences.KEY_PADDLE_SUB_ID, null)
 
     /**
-     * Store a pasted Paddle subscription id and validate it immediately. A new id is unconfirmed, so it
-     * is checked as reason="activation" until the proxy accepts it once, and as reason="refresh" after
-     * that (see [licenseReason]).
+     * Store a Paddle subscription id without checking it first, and validate it straight after. For a
+     * settings backup only ([restoreFromBackup]), where the install has no id that could be lost; ids typed
+     * in the dialog go through [activate]. A new id is unconfirmed, so it is checked as reason="activation"
+     * until the proxy accepts it once, and as reason="refresh" after that (see [licenseReason]).
      */
     @Synchronized
-    fun applyLicense(subId: String) {
+    private fun applyLicense(subId: String) {
         val cleaned = subId.trim()
-        // Saving the id that is already stored (the dialog is pre-filled with it) is a retry, not a new
-        // id: keep its confirmation, or a proxy fault during the retry could delete a paying id.
+        // Storing the id that is already stored is a retry, not a new id: keep its confirmation, or a proxy
+        // fault during the retry could delete a paying id.
         val newId = cleaned != currentSubId()?.trim()
         val edit = prefs.edit().putString(SyncPreferences.KEY_PADDLE_SUB_ID, cleaned)
         if (newId) edit.putBoolean(SyncPreferences.KEY_LICENSE_CONFIRMED, false)
@@ -104,21 +108,30 @@ class SubscriptionManager @Inject constructor(
      * or after a reinstall keeps sync activated without pasting the id again.
      *
      * Only when this install has no id of its own: a restore never swaps a key the user entered here
-     * for one from a file, which may be older. The id is validated at once through [applyLicense],
-     * reported as an activation like a pasted id, since it puts the key on an install the same way;
-     * an id Paddle no longer knows is dropped again by that check.
+     * for one from a file, which may be older. The id is stored and validated at once, unlike a typed
+     * id, which [activate] checks before storing: this install has no id of its own here, so an id Paddle
+     * no longer knows costs nothing when the check drops it again. It is reported as an activation like a
+     * typed id, since it puts the key on an install the same way.
+     *
+     * The field is read as the dialog reads its text ([parseSubscriptionEntry]) and only one id is taken
+     * from it, so text that is not an id (an email address, a transaction id, a hand-edited file) never
+     * reaches the licence proxy. Logged by kind and length, never the text.
      *
      * @return true when the id was taken and the check started.
      */
     fun restoreFromBackup(subId: String): Boolean {
-        val cleaned = subId.trim()
-        if (cleaned.isEmpty()) return false
+        val entry = parseSubscriptionEntry(subId)
+        if (entry == SubscriptionEntry.Empty) return false
+        if (entry !is SubscriptionEntry.Valid) {
+            SyncLog.w(TAG, "Backup carries a subscription id field that is not an id (${entry.kind}, ${subId.length} characters); ignored")
+            return false
+        }
         if (!currentSubId().isNullOrBlank()) {
             SyncLog.i(TAG, "Backup carries a subscription id; this install already has one, keeping it")
             return false
         }
         SyncLog.i(TAG, "Subscription id restored from a backup; validating")
-        applyLicense(cleaned)
+        applyLicense(entry.subId)
         return true
     }
 
@@ -155,7 +168,16 @@ class SubscriptionManager @Inject constructor(
      */
     private val refreshLock = Mutex()
 
-    suspend fun refreshState() = refreshLock.withLock {
+    suspend fun refreshState() {
+        refreshLock.withLock { checkStoredId() }
+    }
+
+    /**
+     * [refreshState]'s check, for a caller that already holds [refreshLock].
+     *
+     * @return the verdict it applied, or null when no id is stored or a fixture answer was dropped.
+     */
+    private fun checkStoredId(): LicenseVerdict? {
         val subId = prefs.getString(SyncPreferences.KEY_PADDLE_SUB_ID, null)?.trim()
         if (subId.isNullOrEmpty()) {
             val had = prefs.getString(SyncPreferences.KEY_SUBSCRIPTION_PRODUCT, null)
@@ -163,7 +185,7 @@ class SubscriptionManager @Inject constructor(
                 if (had.isNullOrEmpty()) SubscriptionState.NoSubscription
                 else SubscriptionState.Expired(had)
             )
-            return@withLock
+            return null
         }
 
         val fixtureBefore = debugFixtureBody
@@ -171,13 +193,70 @@ class SubscriptionManager @Inject constructor(
         // Debug fixtures only (always null in release): a check that went to the network before a
         // fixture was set must not replace the fixture when its answer lands afterwards. On a cold
         // start the app's own startup check is exactly that, and it overwrote a fresh fixture.
-        if (fixtureBefore == null && debugFixtureBody != null) return@withLock
+        if (fixtureBefore == null && debugFixtureBody != null) return null
         applyVerdict(verdict, checkedId = subId)
+        return verdict
+    }
+
+    /**
+     * The subscription dialog's Activate, for an entry [parseSubscriptionEntry] accepted: a subscription id
+     * ([SubscriptionEntry.Valid], lower case), or a transaction id ([SubscriptionEntry.ValidTransaction]) that
+     * the licence proxy's /txn-to-sub first turns into the id of the subscription it paid for
+     * ([lookUpTransaction]). A transaction that leads to no subscription id ends there ([transactionOutcome]),
+     * with nothing stored and nothing changed; the id it does lead to goes on exactly as a typed one.
+     *
+     * The id is stored only once Paddle names it a subscription of this product (see
+     * [planActivation]); a refused or unanswered entry leaves the stored id and the state exactly as they
+     * were, and a paused or unpaid entry does not replace an id that syncs. The stored id entered again is a
+     * re-check, handled as any settings visit's check.
+     *
+     * Runs in this manager's scope, not the caller's: the check is a blocking call that ignores cancellation,
+     * and a screen closed mid-check (a rotation) must not drop an answer that was already accepted. The card
+     * of the recreated screen shows it through [state]; only the dialog's own message is lost.
+     *
+     * [debugOffline] (debug builds only, from the license_enter verb) answers the check of a different id,
+     * and every transaction lookup, with "no connection" without asking the proxy.
+     */
+    internal suspend fun activate(entry: SubscriptionEntry.Sendable, debugOffline: Boolean = false): ActivationOutcome =
+        scope.async { refreshLock.withLock { activateLocked(entry, debugOffline) } }.await()
+
+    private fun activateLocked(entry: SubscriptionEntry.Sendable, debugOffline: Boolean): ActivationOutcome {
+        val candidate = when (entry) {
+            is SubscriptionEntry.Valid -> entry.subId
+            is SubscriptionEntry.ValidTransaction -> {
+                val lookup = lookUpTransaction(entry.txnId, debugOffline)
+                // Null exactly when the lookup found a subscription id.
+                val stop = transactionOutcome(lookup)
+                // The answer and what it means, never an id.
+                SyncLog.i(
+                    TAG,
+                    "Entered transaction id looked up: $lookup" +
+                        (stop?.let { " -> $it; nothing stored" } ?: "; its subscription id is checked as if entered")
+                )
+                if (stop != null) return stop
+                (lookup as TransactionLookup.Resolved).subId
+            }
+        }
+        val stored = currentSubId()?.trim()
+        if (stored != null && stored.lowercase() == candidate) {
+            if (debugOffline) SyncLog.i("DebugCommand", "license_enter: offline applies to a different id only; re-checking the stored one")
+            val verdict = checkStoredId()
+            val outcome = verdict?.let(::recheckOutcome) ?: ActivationOutcome.NotChecked("no_subscription_id")
+            SyncLog.i(TAG, "Entered subscription id is the stored one; re-checked: $outcome")
+            return outcome
+        }
+        val verdict = if (me.proton.sync.BuildConfig.DEBUG && debugOffline) {
+            LicenseVerdict.Unknown("network_error")
+        } else {
+            callValidate(candidate, confirmed = false, useFixture = false)
+        }
+        return commitActivation(candidate, verdict)
     }
 
     /**
      * Act on one answer from the licence proxy. The only place a verdict changes the state, shared by
-     * [refreshState] and [debugApplyFixture], so a fixture drives exactly the code a real answer does.
+     * [refreshState], [commitActivation] and [debugApplyFixture], so a fixture drives exactly the code a
+     * real answer does.
      * What each verdict means, and why, is in [LicenseVerdict].
      */
     // Synchronized with updateState: settings' onResume starts two refreshes at once, and a debug
@@ -211,6 +290,12 @@ class SubscriptionManager @Inject constructor(
                     SyncLog.w(TAG, "Subscription past due: Paddle is retrying the payment; sync continues")
                 } else if (!verdict.paymentFailed && wasFailing) {
                     SyncLog.i(TAG, "Subscription no longer past due")
+                }
+                // The way back, logged once like the way in (Unpaid and Suspended below): without it a field log
+                // shows the stop but only the scheduler's "arming" line for the recovery.
+                (before as? SubscriptionState.Expired)?.let { was ->
+                    val from = if (was.paused) "paused" else if (was.paymentFailed) "unpaid" else "expired"
+                    SyncLog.i(TAG, "Subscription ${if (verdict.trial) "in trial" else "active"} again (was $from); sync on")
                 }
                 // Logged when it changes only: every app start and every settings visit re-checks.
                 val change = verdict.scheduledChange
@@ -300,6 +385,39 @@ class SubscriptionManager @Inject constructor(
     }
 
     /**
+     * Store an entered id per [planActivation], from the stored id and state as they are now. A stored id
+     * starts unconfirmed and clean, as [applyLicense] starts one: the old id's paused, past-due or scheduled
+     * flags must not colour the log lines or the payment notice for this one. [applyVerdict] then confirms it
+     * and sets the state, so it stays the only place a verdict changes the state. Runs under [refreshLock]
+     * ([activate]), so no check of the old id still on the network can land after it.
+     */
+    @Synchronized
+    private fun commitActivation(candidate: String, verdict: LicenseVerdict): ActivationOutcome {
+        val hadId = !currentSubId().isNullOrBlank()
+        val plan = planActivation(verdict, storedIdSyncing = hadId && _state.value.isActive)
+        if (plan.store) {
+            prefs.edit()
+                .putString(SyncPreferences.KEY_PADDLE_SUB_ID, candidate)
+                .putBoolean(SyncPreferences.KEY_LICENSE_CONFIRMED, false)
+                .apply()
+            clearGrace()
+            transition(_state.value.withoutPaddleDetails())
+            applyVerdict(verdict, checkedId = candidate)
+        }
+        // The outcome and what happened to the stored id, never an id.
+        SyncLog.i(
+            TAG,
+            "Entered subscription id checked as an activation: ${plan.outcome}; " + when {
+                plan.store && hadId -> "stored, replacing the previous id"
+                plan.store -> "stored"
+                hadId -> "the stored id is kept"
+                else -> "nothing stored"
+            }
+        )
+        return plan.outcome
+    }
+
+    /**
      * Every state change goes through here, so the payment notice follows the state whichever path
      * changed it: a verdict, a new id, or a check that found no id at all. The card says the same; the
      * notice is the part a user of a background sync app actually sees, and without Paddle's recovery
@@ -341,7 +459,7 @@ class SubscriptionManager @Inject constructor(
      * There is deliberately no "canceled": that verdict deletes the stored subscription id, and on a
      * test phone that is the real licence. "scheduled_cancel" is safe: an active subscription that Paddle
      * will cancel in 30 days, which keeps the id like any active one. "scheduled_pause" is the same with a
-     * pause.
+     * pause. "trialing" is a Paddle trial that ends in 7 days, for the trial card and its day count.
      */
     fun debugApplyFixture(status: String) {
         if (!me.proton.sync.BuildConfig.DEBUG) return
@@ -354,6 +472,10 @@ class SubscriptionManager @Inject constructor(
             "past_due" -> JSONObject()
                 .put("ok", true).put("valid", true).put("status", "past_due")
                 .put("current_period_ends_at", Instant.ofEpochMilli(System.currentTimeMillis() + THIRTY_DAYS_MS).toString())
+                .toString()
+            "trialing" -> JSONObject()
+                .put("ok", true).put("valid", true).put("status", "trialing")
+                .put("current_period_ends_at", Instant.ofEpochMilli(System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000).toString())
                 .toString()
             "paused" -> JSONObject()
                 .put("ok", false).put("error", "subscription_paused").put("status", "paused")
@@ -382,7 +504,7 @@ class SubscriptionManager @Inject constructor(
                 SyncLog.w(
                     "DebugCommand",
                     "license_fixture: unknown status '$status' " +
-                        "(past_due | unpaid | paused | scheduled_cancel | scheduled_pause | refresh)"
+                        "(past_due | unpaid | paused | scheduled_cancel | scheduled_pause | trialing | refresh)"
                 )
                 return
             }
@@ -399,10 +521,14 @@ class SubscriptionManager @Inject constructor(
         }
     }
 
-    private fun callValidate(subId: String, confirmed: Boolean): LicenseVerdict {
+    private fun callValidate(subId: String, confirmed: Boolean, useFixture: Boolean = true): LicenseVerdict {
         // A debug fixture stands in for the proxy until "refresh", so the refresh every settings
-        // onResume makes cannot replace it a second after it was applied.
-        debugFixtureBody?.let { if (me.proton.sync.BuildConfig.DEBUG) return classifyLicenseAnswer(200, it, confirmed) }
+        // onResume makes cannot replace it a second after it was applied. Only for the stored id: a typed
+        // id is always checked by the real proxy, so a fixture standing in for the stored id can never
+        // make an entry look accepted and replace it.
+        if (useFixture) {
+            debugFixtureBody?.let { if (me.proton.sync.BuildConfig.DEBUG) return classifyLicenseAnswer(200, it, confirmed) }
+        }
         val url = "$LICENSE_BASE_URL/validate?sub=${URLEncoder.encode(subId, "UTF-8")}&reason=${licenseReason(confirmed)}"
         return try {
             val req = Request.Builder().url(url).get().build()
@@ -410,6 +536,27 @@ class SubscriptionManager @Inject constructor(
         } catch (e: Exception) {
             SyncLog.w(TAG, "Validate call failed: ${e.message}")
             LicenseVerdict.Unknown("network_error")
+        }
+    }
+
+    /**
+     * Ask the licence proxy's /txn-to-sub which subscription [txnId] paid for, as [classifyTxnAnswer] reads the
+     * answer. Read-only on the proxy's side, and never answered by a debug fixture, which stands in for the stored
+     * id's check only. [debugOffline] (debug builds) answers "no connection" without asking.
+     */
+    private fun lookUpTransaction(txnId: String, debugOffline: Boolean): TransactionLookup {
+        if (me.proton.sync.BuildConfig.DEBUG && debugOffline) return TransactionLookup.Unknown("network_error")
+        val url = "$LICENSE_BASE_URL/txn-to-sub?txn=${URLEncoder.encode(txnId, "UTF-8")}"
+        return try {
+            val req = Request.Builder().url(url).get().build()
+            http.newCall(req).execute().use { resp -> classifyTxnAnswer(resp.code, resp.body?.string()) }
+        } catch (e: IOException) {
+            // No network, an unknown host, a timeout. The class only: a message can carry the URL, and with it the id.
+            SyncLog.w(TAG, "Transaction lookup failed: ${e.javaClass.simpleName}")
+            TransactionLookup.Unknown("network_error")
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Transaction lookup failed: ${e.javaClass.simpleName}")
+            TransactionLookup.Unknown("request_failed")
         }
     }
 
@@ -450,10 +597,13 @@ class SubscriptionManager @Inject constructor(
         links
     }
 
+    // The store first, then the flow. The gate (SubscriptionGate, the sync preflight, the event loop) reads
+    // the stored state, and the scheduling observer acts as soon as the flow emits: emitting first let it
+    // arm schedules and request syncs that the gate, still reading the old state, then declined.
     @Synchronized
     private fun updateState(newState: SubscriptionState) {
-        _state.value = newState
         persistState(newState)
+        _state.value = newState
     }
 
     private fun persistState(s: SubscriptionState) {

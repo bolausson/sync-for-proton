@@ -116,12 +116,13 @@ class TokenRefreshAuthenticator @Inject constructor(
                             .header("x-pm-uid", newTokens.uid)
                             .build()
                     } else {
-                        // Do NOT log the response body (may contain tokens)
-                        SyncLog.w(TAG, "Token refresh response error: code=${newTokens?.code}")
+                        // Code and Error only (ProtonApiError), never the body: a refresh reply carries tokens
+                        SyncLog.w(TAG, "Token refresh response error: code=${newTokens?.code}" + ProtonApiError.describe(body))
                     }
                 } else {
-                    // Do NOT log the response body
-                    SyncLog.w(TAG, "Token refresh HTTP error: ${refreshResponse.code}")
+                    // Code and Error only (ProtonApiError), never the body: a refresh reply carries tokens.
+                    // This is where a refused refresh token (10013) shows up.
+                    SyncLog.w(TAG, "Token refresh HTTP error: ${refreshResponse.code}" + ProtonApiError.describe(body))
                 }
             } catch (e: Exception) {
                 SyncLog.e(TAG, "Token refresh failed", e)

@@ -398,6 +398,10 @@ class BackupFlowController(
      * subscription because new accounts can shift the device's subscription gate: a
      * subscription id from the backup is taken and validated at once when this install has
      * none, otherwise [SubscriptionManager.connect] refreshes the one it has.
+     *
+     * The restored accounts' first syncs run at once when the subscription is active. Otherwise
+     * they wait for it, and the subscription observer requests them when it turns active, which
+     * a subscription id taken from this backup does once the licence check accepts it.
      */
     private fun applyImport(payload: BackupPayload, overwriteNames: Set<String>) {
         activity.lifecycleScope.launch(Dispatchers.IO) {

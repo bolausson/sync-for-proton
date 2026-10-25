@@ -45,7 +45,9 @@ object SyncLog {
     // ---- Optional user-chosen file sink ----
     // Mirrors every emitted line into a folder the *user* picked (see FileLogSink /
     // FileLogController). Opt-in, and the only standing route from here to storage. When null,
-    // which is the default, these calls are a cheap no-op.
+    // which is the default, these calls are a cheap no-op. Lines reach the sink verbatim and
+    // FileLogSink.write redacts them (LogRedaction); the in-memory ring stays verbatim for the
+    // viewer, and DebugLog redacts its export.
 
     @Volatile private var fileSink: ((String) -> Unit)? = null
 

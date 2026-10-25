@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Абонамент</string>
-    <string name="spp_subscribe_dialog_message">Абонирайте се в браузъра си, след което поставете по-долу идентификатора на абонамента си (sub_…), за да активирате синхронизирането на това устройство.</string>
+    <string name="spp_btn_enter_subscription_id">Въведете идентификатор на абонамента</string>
+    <string name="spp_subscribe_dialog_title">Въведете идентификатор на абонамента</string>
+    <string name="spp_subscribe_dialog_message">Поставете идентификатора на абонамента си (той започва със sub_ и се показва на страницата след плащането) или идентификатора на транзакцията от фактурата от Paddle (той започва с txn_). Загубили сте и двата? Имейлът с разписката от Paddle съдържа връзка \"Manage subscription\" към абонамента ви (Paddle посочва продавача като BEO). Ако все още не можете да намерите идентификатор, докоснете \"Изпращане на доклад до разработчика\" в Настройки. Абонамент от Google Play работи само във версията на това приложение от Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Активиране</string>
-    <string name="spp_subscribe_open_checkout">Абониране в браузъра</string>
     <string name="spp_subscribe_validating">Проверка на абонамента ви…</string>
+    <string name="spp_subscribe_activated">Абонаментът е активиран.</string>
+    <string name="spp_subscribe_error_not_found">Не е намерен абонамент с този идентификатор. Проверете идентификатора и опитайте отново.</string>
+    <string name="spp_subscribe_error_wrong_product">Този идентификатор на абонамент принадлежи на друго приложение.</string>
+    <string name="spp_subscribe_error_cancelled">Този абонамент е отменен. Абонирайте се отново, за да получите нов идентификатор на абонамент.</string>
+    <string name="spp_subscribe_error_kept_current">Този абонамент е на пауза или не е платен, затова този телефон запазва текущия си абонамент.</string>
+    <string name="spp_subscribe_error_play_order">Това е номер на поръчка в Google Play. Абонамент от Google Play работи само във версията на приложението от Google Play.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Този идентификатор на транзакция е непълен или съдържа печатна грешка. Копирайте го отново.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Не е намерена покупка с този идентификатор на транзакция. Проверете идентификатора или въведете идентификатора на абонамента, който започва със sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Тази покупка принадлежи на друго приложение.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Тази покупка все още няма абонамент. Ако току-що сте платили, опитайте отново след минута. В противен случай въведете идентификатора на абонамента, който започва със sub_.</string>
+    <string name="spp_subscribe_error_email">Това е имейл адрес. Идентификаторът на абонамента ви започва със \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Този идентификатор на абонамент е непълен или съдържа печатна грешка. Копирайте го отново.</string>
+    <string name="spp_subscribe_error_not_an_id">Това не е идентификатор на абонамент. Идентификаторите на абонаменти започват със \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Текстът съдържа повече от един идентификатор. Въведете само един.</string>
     <string name="spp_manage_dialog_title">Управление на абонамента</string>
     <string name="spp_manage_action_update_payment">Актуализиране на метода на плащане</string>
     <string name="spp_manage_action_cancel">Отмяна на абонамента</string>

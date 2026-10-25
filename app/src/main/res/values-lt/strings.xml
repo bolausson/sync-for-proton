@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Nepavyko atrakinti jūsų Proton duomenų. Prisijunkite iš naujo.</string>
     <string name="error_pqc_keys_unsupported">Ši paskyra turi šifravimo raktą, kurio ši programa negali perskaityti. Jūsų slaptažodis teisingas, todėl prisijungti iš naujo nepadės. Patikrinkite, ar yra programos atnaujinimas, arba išsiųskite ataskaitą iš programos nustatymų.</string>
     <string name="error_fido2_not_supported">Jūsų paskyroje naudojamas aparatinis saugos raktas (FIDO2). Šiuo metu „Sync for Proton“ palaiko tik autentifikavimo programėlės kodus (TOTP). Kaip atsarginį būdą Proton žiniatinklio nustatymuose pridėkite TOTP kodą, tada prisijunkite čia.</string>
+    <string name="error_login_verification_refused">Proton nepriėmė patvirtinimo. Prisijunkite iš naujo ir dar kartą atlikite patikrą.</string>
+    <string name="error_login_account_disabled">Proton praneša, kad ši paskyra išjungta. Prisijunkite svetainėje proton.me arba susisiekite su Proton palaikymo komanda, kad sužinotumėte priežastį.</string>
+    <string name="error_login_sso_unsupported">Ši paskyra prisijungia per organizacijos bendrąjį prisijungimą (SSO). „Sync for Proton“ palaiko tik prisijungimą slaptažodžiu.</string>
+    <string name="error_login_untrusted_server">Prisijungimas sustabdytas, nes nepavyko patvirtinti, kad šis ryšys yra su Proton. Patikrinkite tinklą (tai gali sukelti viešojo Wi-Fi tinklo prisijungimo puslapis arba filtruojantis tarpinis serveris) ir bandykite dar kartą.</string>
+    <string name="error_login_proton_refused">Proton negalėjo užbaigti prisijungimo. Bandykite dar kartą po akimirkos.</string>
+    <string name="error_login_unexpected">Prisijungimas nepavyko dėl netikėtos klaidos (%1$s). Bandykite dar kartą.</string>
     <string name="sync_contacts">Kontaktai</string>
     <string name="sync_calendar">Kalendorius</string>
     <string name="calendar_timeframe_title">Kalendoriaus sinchronizavimo diapazonas</string>
@@ -187,9 +193,15 @@
     <string name="label_language">Kalba</string>
     <string name="label_language_auto">Automatinė (sistemos numatytoji)</string>
     <string name="label_subscription">Prenumerata</string>
-    <string name="label_subscription_none">Nemokamai 7 dienas, vėliau prasideda mokėjimas, jei neatšauksite.</string>
-    <string name="label_subscription_trial">Nemokamas bandomasis laikotarpis: liko %1$d d.</string>
+    <string name="label_subscription_none">Sinchronizavimas išjungtas. Nemokamai 7 dienas, vėliau prasideda mokėjimas, jei neatšauksite.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Nemokamas bandymas: liko %1$d diena</item>
+        <item quantity="few">Nemokamas bandymas: liko %1$d dienos</item>
+        <item quantity="many">Nemokamas bandymas: liko %1$d dienos</item>
+        <item quantity="other">Nemokamas bandymas: liko %1$d dienų</item>
+    </plurals>
     <string name="label_subscription_active">Aktyvi, atnaujinama %1$s</string>
+    <string name="label_subscription_active_play">Aktyvi, tvarkoma „Google Play“</string>
     <string name="label_subscription_ends">Baigiasi %1$s</string>
     <string name="label_subscription_pauses">Pristabdoma %1$s</string>
     <string name="label_subscription_expired">Prenumerata pasibaigė: atnaujinkite, kad tęstumėte sinchronizavimą.</string>
@@ -212,7 +224,7 @@
     <string name="plan_monthly_price">%1$s/mėn.</string>
     <string name="plan_annual_price">%1$s/metai</string>
     <string name="plan_picker_disclosure_plain">Bet kada galite atšaukti „Google Play“ → Prenumeratos.</string>
-    <string name="label_subscription_required">Sinchronizavimui reikia prenumeratos.</string>
+    <string name="label_subscription_required">Sinchronizavimas išjungtas: reikalinga prenumerata.</string>
     <string name="btn_choose_plan">Pasirinkti planą</string>
     <string name="error_billing_unavailable">„Google Play“ atsiskaitymas nepasiekiamas</string>
     <string name="error_purchase_failed">Pirkimas nepavyko: bandykite dar kartą</string>
@@ -645,10 +657,13 @@ Pašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas varda
     <string name="setup_choose_body">Iš pradžių abu yra išjungti, todėl į šį telefoną niekas nekopijuojama, kol pats nenuspręsite. Tai galite pakeisti bet kuriuo metu.</string>
     <string name="setup_choose_save">Pradėti sinchronizavimą</string>
     <string name="setup_choose_none">Ne dabar</string>
+    <string name="setup_choose_saved_inactive">Išsaugota. Sinchronizavimas prasidės, kai tik bus aktyvi prenumerata.</string>
     <string name="sfp_hero_nothing_enabled">Dar niekas nesinchronizuojama</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Pasirinkite kontaktus, kalendorių arba abu paskyroje žemiau</string>
     <string name="sfp_hero_awaiting_first_sync">Laukiama pirmojo sinchronizavimo</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Į šį telefoną dar nieko nenukopijuota</string>
+    <string name="sfp_hero_sync_off">Sinchronizavimas išjungtas</string>
+    <string name="sfp_hero_subtitle_sync_off">Sinchronizavimas lieka išjungtas, kol nebus aktyvios prenumeratos. Žr. skiltį „Prenumerata“ aukščiau.</string>
 
     <string name="toast_resync_skipped">Nėra ko sinchronizuoti: sinchronizavimas išjungtas (%1$s)</string>
 </resources>

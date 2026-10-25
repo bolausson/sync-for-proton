@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Impossible de déverrouiller vos données Proton. Veuillez vous reconnecter.</string>
     <string name="error_pqc_keys_unsupported">Ce compte possède une clé de chiffrement que cette application ne peut pas lire. Votre mot de passe est correct, se reconnecter n\'aidera donc pas. Vérifiez si une mise à jour de l\'application est disponible ou envoyez un rapport depuis les paramètres de l\'application.</string>
     <string name="error_fido2_not_supported">Votre compte utilise une clé de sécurité matérielle (FIDO2). Sync for Proton ne prend actuellement en charge que les codes d\'application d\'authentification (TOTP). Veuillez ajouter un code TOTP dans les paramètres web de Proton comme solution de secours, puis connectez-vous ici.</string>
+    <string name="error_login_verification_refused">Proton n\'a pas accepté la vérification. Veuillez vous reconnecter et refaire la vérification.</string>
+    <string name="error_login_account_disabled">Proton indique que ce compte est désactivé. Connectez-vous sur proton.me ou contactez l\'assistance Proton pour en connaître la raison.</string>
+    <string name="error_login_sso_unsupported">Ce compte se connecte via l\'authentification unique (SSO) d\'une organisation. Sync for Proton prend uniquement en charge la connexion par mot de passe.</string>
+    <string name="error_login_untrusted_server">La connexion a été interrompue, car il n\'a pas été possible de confirmer que le serveur joint est bien celui de Proton. Vérifiez votre réseau (la page de connexion d\'un Wi-Fi public ou un proxy de filtrage peut en être la cause), puis réessayez.</string>
+    <string name="error_login_proton_refused">Proton n\'a pas pu finaliser la connexion. Veuillez réessayer dans un instant.</string>
+    <string name="error_login_unexpected">La connexion a échoué en raison d\'une erreur inattendue (%1$s). Veuillez réessayer.</string>
     <string name="sync_contacts">Contacts</string>
     <string name="sync_calendar">Calendrier</string>
     <string name="calendar_timeframe_title">Plage de synchronisation du calendrier</string>
@@ -185,9 +191,14 @@
     <string name="label_language">Langue</string>
     <string name="label_language_auto">Automatique (langue du système)</string>
     <string name="label_subscription">Abonnement</string>
-    <string name="label_subscription_none">Gratuit pendant 7 jours, puis la facturation commence sauf annulation.</string>
-    <string name="label_subscription_trial">Essai gratuit: %1$d jours restants</string>
+    <string name="label_subscription_none">Synchronisation désactivée. Gratuit pendant 7 jours, puis la facturation commence sauf annulation.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Essai gratuit: %1$d jour restant</item>
+        <item quantity="many">Essai gratuit: %1$d jours restants</item>
+        <item quantity="other">Essai gratuit: %1$d jours restants</item>
+    </plurals>
     <string name="label_subscription_active">Actif, renouvellement le %1$s</string>
+    <string name="label_subscription_active_play">Actif, géré par Google Play</string>
     <string name="label_subscription_ends">Prend fin le %1$s</string>
     <string name="label_subscription_pauses">Sera suspendu le %1$s</string>
     <string name="label_subscription_expired">Abonnement expiré: renouvelez pour reprendre la synchronisation.</string>
@@ -210,7 +221,7 @@
     <string name="plan_monthly_price">%1$s/mois</string>
     <string name="plan_annual_price">%1$s/an</string>
     <string name="plan_picker_disclosure_plain">Vous pouvez annuler à tout moment dans Google Play → Abonnements.</string>
-    <string name="label_subscription_required">Un abonnement est nécessaire pour synchroniser.</string>
+    <string name="label_subscription_required">Synchronisation désactivée: un abonnement est nécessaire.</string>
     <string name="btn_choose_plan">Choisir un forfait</string>
     <string name="error_billing_unavailable">La facturation Google Play n\'est pas disponible</string>
     <string name="error_purchase_failed">Achat échoué: veuillez réessayer</string>
@@ -641,10 +652,14 @@
     <string name="setup_choose_body">Les deux sont désactivés au départ, rien n\'est donc copié sur ce téléphone tant que vous ne l\'avez pas décidé. Vous pouvez modifier ce choix à tout moment.</string>
     <string name="setup_choose_save">Démarrer la synchronisation</string>
     <string name="setup_choose_none">Pas maintenant</string>
+    <string name="setup_choose_saved_inactive">Enregistré. La synchronisation démarrera dès qu\'un abonnement sera actif.</string>
     <string name="sfp_hero_nothing_enabled">Rien n\'est encore synchronisé</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Choisissez les contacts, le calendrier ou les deux dans le compte ci-dessous</string>
     <string name="sfp_hero_awaiting_first_sync">En attente de la première synchronisation</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Aucune donnée copiée sur ce téléphone pour le moment</string>
+
+    <string name="sfp_hero_sync_off">Synchronisation désactivée</string>
+    <string name="sfp_hero_subtitle_sync_off">La synchronisation reste désactivée tant qu\'aucun abonnement n\'est actif. Voir la section Abonnement ci-dessus.</string>
 
     <string name="toast_resync_skipped">Rien à resynchroniser : la synchronisation de %1$s est désactivée</string>
 </resources>

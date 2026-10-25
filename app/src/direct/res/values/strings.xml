@@ -4,12 +4,32 @@
     Not present in the play flavor.
 -->
 <resources>
-    <string name="spp_subscribe_dialog_title">Subscription</string>
-    <string name="spp_subscribe_dialog_message">Subscribe in your browser, then paste your subscription ID (starts with \"sub_\") below to activate sync on this device.</string>
+    <!-- The subscription card's button that opens the subscription ID dialog. -->
+    <string name="spp_btn_enter_subscription_id">Enter subscription ID</string>
+    <string name="spp_subscribe_dialog_title">Enter subscription ID</string>
+    <!-- Keep sub_, txn_, Paddle, BEO and Google Play exactly as they are. "Manage subscription" stays in English:
+         it is the link text in Paddle's receipt email, which Paddle shows in English. "Send report to
+         developer" must be this language's own translation of btn_send_report, copied from
+         app/src/main/res/values-XX/strings.xml, so it matches the button in Settings. -->
+    <string name="spp_subscribe_dialog_message">Paste your subscription ID (it starts with sub_ and is shown on the page after checkout) or the transaction ID from Paddle\'s invoice (it starts with txn_). Lost both? Paddle\'s receipt email has a \"Manage subscription\" link to your subscription (Paddle names the seller as BEO). If you still cannot find an ID, tap \"Send report to developer\" in Settings. A Google Play subscription only works in the Google Play version of this app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activate</string>
-    <string name="spp_subscribe_open_checkout">Subscribe in browser</string>
     <string name="spp_subscribe_validating">Checking your subscription…</string>
+    <string name="spp_subscribe_activated">Subscription activated.</string>
+    <!-- Answers under the subscription ID field. Keep "sub_" and "Google Play" exactly as they are. -->
+    <string name="spp_subscribe_error_not_found">No subscription with this ID was found. Check the ID and try again.</string>
+    <string name="spp_subscribe_error_wrong_product">This subscription ID belongs to a different app.</string>
+    <string name="spp_subscribe_error_cancelled">This subscription has been cancelled. Subscribe again to get a new subscription ID.</string>
+    <string name="spp_subscribe_error_kept_current">That subscription is paused or unpaid, so this phone keeps its current subscription.</string>
+    <string name="spp_subscribe_error_play_order">This is a Google Play order number. A Google Play subscription only works in the Google Play version of the app.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">This transaction ID is incomplete or has a typo. Copy it again.</string>
+    <string name="spp_subscribe_error_transaction_not_found">No purchase with this transaction ID was found. Check the ID, or enter the subscription ID that starts with sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">This purchase belongs to a different app.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">This purchase has no subscription yet. If you have just paid, try again in a minute. Otherwise enter the subscription ID that starts with sub_.</string>
+    <string name="spp_subscribe_error_email">This is an email address. Your subscription ID starts with \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">This subscription ID is incomplete or has a typo. Copy it again.</string>
+    <string name="spp_subscribe_error_not_an_id">This isn\'t a subscription ID. Subscription IDs start with \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">This contains more than one ID. Enter only one.</string>
     <string name="spp_manage_dialog_title">Manage subscription</string>
     <string name="spp_manage_action_update_payment">Update payment method</string>
     <string name="spp_manage_action_cancel">Cancel subscription</string>

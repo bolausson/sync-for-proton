@@ -67,6 +67,13 @@ object BillingUi {
     fun manageNote(context: Context): String? = null
 
     /**
+     * The status line of an active subscription's card. A Billing 8.3.0 `Purchase` carries no renewal date,
+     * so the line names who manages the subscription instead of the direct version's "renews <date>": the
+     * card's Manage subscription opens Google Play's page, which shows the real date.
+     */
+    fun activeStatusText(context: Context): String? = context.getString(R.string.label_subscription_active_play)
+
+    /**
      * Status line and button of the subscription card when there is no subscription. The 7-day trial
      * wording only when Google offers this account that trial on every plan (an account that had this
      * subscription before gets none), judged from the cached product details; neutral wording until they
@@ -81,6 +88,16 @@ object BillingUi {
             context.getString(R.string.label_subscription_required) to context.getString(R.string.btn_choose_plan)
         }
     }
+
+    /** What the card's trial, plan and renew buttons open: the plan picker. */
+    fun startPurchase(activity: SyncSettingsActivity, sm: SubscriptionManager) = showPurchaseOptions(activity, sm)
+
+    /** The direct version's Enter subscription ID button; Google Play needs no id. */
+    @Suppress("UNUSED_PARAMETER")
+    fun enterIdLabel(context: Context): String? = null
+
+    /** The trial card's button. */
+    fun upgradeLabel(context: Context): String? = context.getString(R.string.btn_upgrade)
 
     /** The offers of [details] as plain data for [PlayOfferSelection]. */
     private fun offersOf(details: ProductDetails): List<PlayOfferSelection.Offer> =
@@ -243,6 +260,12 @@ object BillingUi {
     @Suppress("UNUSED_PARAMETER")
     fun debugLicenseFixture(activity: SyncSettingsActivity, sm: SubscriptionManager, status: String) {
         SyncLog.i(DEBUG_TAG, "license_fixture: not applicable in the play flavor (Google Play Billing)")
+    }
+
+    /** Debug builds: subscription ids are Paddle's, which this version never takes. */
+    @Suppress("UNUSED_PARAMETER")
+    fun debugLicenseEnter(activity: SyncSettingsActivity, sm: SubscriptionManager, text: String, offline: Boolean) {
+        SyncLog.i(DEBUG_TAG, "license_enter: not applicable in the play flavor (Google Play Billing)")
     }
 
     /** Debug builds: these verbs drive the direct version's Paddle portal links; this version opens Google's page. */

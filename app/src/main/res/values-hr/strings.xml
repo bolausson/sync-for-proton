@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Nije moguće otključati vaše Proton podatke. Prijavite se ponovno.</string>
     <string name="error_pqc_keys_unsupported">Ovaj račun ima ključ za šifriranje koji ova aplikacija ne može pročitati. Vaša je lozinka ispravna pa ponovna prijava neće pomoći. Provjerite postoji li ažuriranje aplikacije ili pošaljite izvještaj iz postavki aplikacije.</string>
     <string name="error_fido2_not_supported">Vaš račun koristi hardverski sigurnosni ključ (FIDO2). Sync for Proton trenutno podržava samo kodove iz aplikacije za autentifikaciju (TOTP). Dodajte TOTP kod u web postavkama Proton kao rezervu, a zatim se prijavite ovdje.</string>
+    <string name="error_login_verification_refused">Proton nije prihvatio provjeru. Prijavite se ponovno i još jednom dovršite provjeru.</string>
+    <string name="error_login_account_disabled">Proton javlja da je ovaj račun onemogućen. Prijavite se na proton.me ili se obratite podršci Protona kako biste saznali razlog.</string>
+    <string name="error_login_sso_unsupported">Ovaj se račun prijavljuje putem jedinstvene prijave (SSO) organizacije. Sync for Proton podržava samo prijavu lozinkom.</string>
+    <string name="error_login_untrusted_server">Prijava je zaustavljena jer nije bilo moguće potvrditi da ova veza vodi do Protona. Provjerite mrežu (to može uzrokovati stranica za prijavu javne Wi-Fi mreže ili proxy za filtriranje) i pokušajte ponovno.</string>
+    <string name="error_login_proton_refused">Proton nije mogao dovršiti prijavu. Pokušajte ponovno za trenutak.</string>
+    <string name="error_login_unexpected">Prijava nije uspjela zbog neočekivane pogreške (%1$s). Pokušajte ponovno.</string>
     <string name="sync_contacts">Kontakti</string>
     <string name="sync_calendar">Kalendar</string>
     <string name="calendar_timeframe_title">Raspon sinkronizacije kalendara</string>
@@ -186,9 +192,14 @@
     <string name="label_language">Jezik</string>
     <string name="label_language_auto">Automatski (zadano sustava)</string>
     <string name="label_subscription">Pretplata</string>
-    <string name="label_subscription_none">Besplatno 7 dana, zatim počinje naplata ako ne otkažete.</string>
-    <string name="label_subscription_trial">Besplatno probno razdoblje: preostalo %1$d dana</string>
+    <string name="label_subscription_none">Sinkronizacija je isključena. Besplatno 7 dana, zatim počinje naplata ako ne otkažete.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Besplatno probno razdoblje: još %1$d dan</item>
+        <item quantity="few">Besplatno probno razdoblje: još %1$d dana</item>
+        <item quantity="other">Besplatno probno razdoblje: još %1$d dana</item>
+    </plurals>
     <string name="label_subscription_active">Aktivna, obnavlja se %1$s</string>
+    <string name="label_subscription_active_play">Aktivna, upravljana putem Google Play</string>
     <string name="label_subscription_ends">Završava %1$s</string>
     <string name="label_subscription_pauses">Pauzira se %1$s</string>
     <string name="label_subscription_expired">Pretplata je istekla: obnovite je da biste nastavili sinkronizaciju.</string>
@@ -211,7 +222,7 @@
     <string name="plan_monthly_price">%1$s/mjesec</string>
     <string name="plan_annual_price">%1$s/godina</string>
     <string name="plan_picker_disclosure_plain">Možete otkazati u bilo kojem trenutku u Google Play → Pretplate.</string>
-    <string name="label_subscription_required">Za sinkronizaciju je potrebna pretplata.</string>
+    <string name="label_subscription_required">Sinkronizacija je isključena: potrebna je pretplata.</string>
     <string name="btn_choose_plan">Odaberite plan</string>
     <string name="error_billing_unavailable">Google Play naplata nije dostupna</string>
     <string name="error_purchase_failed">Kupnja nije uspjela: pokušajte ponovno</string>
@@ -643,10 +654,13 @@
     <string name="setup_choose_body">Oboje je na početku isključeno pa se ništa ne kopira na ovaj telefon dok to ne odaberete. Ovo možete promijeniti u bilo kojem trenutku.</string>
     <string name="setup_choose_save">Pokreni sinkronizaciju</string>
     <string name="setup_choose_none">Ne sada</string>
+    <string name="setup_choose_saved_inactive">Spremljeno. Sinkronizacija počinje čim pretplata bude aktivna.</string>
     <string name="sfp_hero_nothing_enabled">Ništa se još ne sinkronizira</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Odaberite kontakte, kalendar ili oboje na računu ispod</string>
     <string name="sfp_hero_awaiting_first_sync">Čeka se prva sinkronizacija</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Ništa još nije kopirano na ovaj telefon</string>
+    <string name="sfp_hero_sync_off">Sinkronizacija je isključena</string>
+    <string name="sfp_hero_subtitle_sync_off">Sinkronizacija ostaje isključena dok pretplata ne bude aktivna. Pogledajte odjeljak Pretplata iznad.</string>
 
     <string name="toast_resync_skipped">Nema se što sinkronizirati: sinkronizacija za %1$s je isključena</string>
 </resources>

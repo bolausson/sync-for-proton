@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abonnement</string>
-    <string name="spp_subscribe_dialog_message">Tegn et abonnement i din browser, og indsæt derefter dit abonnements-id (sub_…) nedenfor for at aktivere synkronisering på denne enhed.</string>
+    <string name="spp_btn_enter_subscription_id">Indtast abonnements-id</string>
+    <string name="spp_subscribe_dialog_title">Indtast abonnements-id</string>
+    <string name="spp_subscribe_dialog_message">Indsæt dit abonnements-id (det starter med sub_ og vises på siden efter betalingen) eller transaktions-id\'et fra Paddles faktura (det starter med txn_). Har du mistet begge? Kvitteringsmailen fra Paddle har et link “Manage subscription” til dit abonnement (i e-mails fra Paddle står BEO som sælger). Hvis du stadig ikke kan finde et id, så tryk på “Send rapport til udvikler” i Indstillinger. Et Google Play-abonnement virker kun i Google Play-versionen af denne app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivér</string>
-    <string name="spp_subscribe_open_checkout">Abonnér i browseren</string>
     <string name="spp_subscribe_validating">Kontrollerer dit abonnement…</string>
+    <string name="spp_subscribe_activated">Abonnement aktiveret.</string>
+    <string name="spp_subscribe_error_not_found">Der blev ikke fundet noget abonnement med dette id. Kontrollér id\'et, og prøv igen.</string>
+    <string name="spp_subscribe_error_wrong_product">Dette abonnements-id tilhører en anden app.</string>
+    <string name="spp_subscribe_error_cancelled">Dette abonnement er opsagt. Tegn et nyt abonnement for at få et nyt abonnements-id.</string>
+    <string name="spp_subscribe_error_kept_current">Det abonnement er sat på pause eller ubetalt, så denne telefon beholder sit nuværende abonnement.</string>
+    <string name="spp_subscribe_error_play_order">Dette er et Google Play-ordrenummer. Et Google Play-abonnement virker kun i Google Play-versionen af appen.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Dette transaktions-id er ufuldstændigt eller indeholder en tastefejl. Kopiér det igen.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Der blev ikke fundet noget køb med dette transaktions-id. Kontrollér id\'et, eller indtast det abonnements-id, der starter med sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Dette køb tilhører en anden app.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Dette køb har endnu ikke et abonnement. Hvis du lige har betalt, så prøv igen om et minut. Ellers skal du indtaste det abonnements-id, der starter med sub_.</string>
+    <string name="spp_subscribe_error_email">Dette er en e-mailadresse. Dit abonnements-id starter med “sub_”.</string>
+    <string name="spp_subscribe_error_mistyped">Dette abonnements-id er ufuldstændigt eller indeholder en tastefejl. Kopiér det igen.</string>
+    <string name="spp_subscribe_error_not_an_id">Dette er ikke et abonnements-id. Abonnements-id\'er starter med “sub_”.</string>
+    <string name="spp_subscribe_error_several_ids">Dette indeholder mere end ét id. Indtast kun ét.</string>
     <string name="spp_manage_dialog_title">Administrer abonnement</string>
     <string name="spp_manage_action_update_payment">Opdater betalingsmetode</string>
     <string name="spp_manage_action_cancel">Opsig abonnement</string>

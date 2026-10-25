@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Subskrypcja</string>
-    <string name="spp_subscribe_dialog_message">Wykup subskrypcję w przeglądarce, a następnie wklej poniżej swój identyfikator subskrypcji (sub_…), aby aktywować synchronizację na tym urządzeniu.</string>
+    <string name="spp_btn_enter_subscription_id">Wprowadź identyfikator subskrypcji</string>
+    <string name="spp_subscribe_dialog_title">Wprowadź identyfikator subskrypcji</string>
+    <string name="spp_subscribe_dialog_message">Wklej swój identyfikator subskrypcji (zaczyna się od sub_ i jest wyświetlany na stronie po dokonaniu zakupu) lub identyfikator transakcji z faktury Paddle (zaczyna się od txn_). Nie masz żadnego z nich? E-mail z potwierdzeniem zakupu od Paddle zawiera link \"Manage subscription\" do Twojej subskrypcji (Paddle podaje BEO jako sprzedawcę). Jeśli nadal nie możesz znaleźć identyfikatora, dotknij \"Wyślij raport do dewelopera\" w Ustawieniach. Subskrypcja z Google Play działa tylko w wersji tej aplikacji z Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktywuj</string>
-    <string name="spp_subscribe_open_checkout">Subskrybuj w przeglądarce</string>
     <string name="spp_subscribe_validating">Sprawdzanie subskrypcji…</string>
+    <string name="spp_subscribe_activated">Subskrypcja aktywowana.</string>
+    <string name="spp_subscribe_error_not_found">Nie znaleziono subskrypcji o tym identyfikatorze. Sprawdź identyfikator i spróbuj ponownie.</string>
+    <string name="spp_subscribe_error_wrong_product">Ten identyfikator subskrypcji należy do innej aplikacji.</string>
+    <string name="spp_subscribe_error_cancelled">Ta subskrypcja została anulowana. Wykup subskrypcję ponownie, aby otrzymać nowy identyfikator subskrypcji.</string>
+    <string name="spp_subscribe_error_kept_current">Ta subskrypcja jest wstrzymana lub nieopłacona, więc ten telefon zachowuje obecną subskrypcję.</string>
+    <string name="spp_subscribe_error_play_order">To jest numer zamówienia Google Play. Subskrypcja z Google Play działa tylko w wersji aplikacji z Google Play.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Ten identyfikator transakcji jest niekompletny lub zawiera literówkę. Skopiuj go ponownie.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nie znaleziono zakupu o tym identyfikatorze transakcji. Sprawdź identyfikator lub wprowadź identyfikator subskrypcji, który zaczyna się od sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Ten zakup należy do innej aplikacji.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Ten zakup nie ma jeszcze subskrypcji. Jeśli płatność została właśnie dokonana, spróbuj ponownie za minutę. W przeciwnym razie wprowadź identyfikator subskrypcji, który zaczyna się od sub_.</string>
+    <string name="spp_subscribe_error_email">To jest adres e-mail. Twój identyfikator subskrypcji zaczyna się od \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Ten identyfikator subskrypcji jest niekompletny lub zawiera literówkę. Skopiuj go ponownie.</string>
+    <string name="spp_subscribe_error_not_an_id">To nie jest identyfikator subskrypcji. Identyfikatory subskrypcji zaczynają się od \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Ten tekst zawiera więcej niż jeden identyfikator. Wprowadź tylko jeden.</string>
     <string name="spp_manage_dialog_title">Zarządzaj subskrypcją</string>
     <string name="spp_manage_action_update_payment">Zaktualizuj metodę płatności</string>
     <string name="spp_manage_action_cancel">Anuluj subskrypcję</string>

@@ -66,7 +66,6 @@ class RemovedAccountKeysTest {
         val keys = listOf(
             SyncPreferences.notifySyncFailureKey("contacts", account),
             SyncPreferences.syncIntervalKey(account, "calendar"),
-            SyncPreferences.lastSyncKey(account, "contacts"),
             SyncPreferences.lastSyncRangeKey(account, "cal1"),
             SyncPreferences.KEY_TIMEZONE_UPDATES,
             SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED,
@@ -78,6 +77,26 @@ class RemovedAccountKeysTest {
     }
 
     @Test
+    fun aRemovedAccountsLastSyncTimesGo_aLiveAccountKeepsThem() {
+        // A kept time told the subscription catch-up that a re-added account of the same name had synced, so
+        // with Android's automatic sync off its first sync was never asked for.
+        val keys = listOf("contacts", "calendar").flatMap {
+            listOf(SyncPreferences.lastSyncKey(account, it), SyncPreferences.lastSyncFailedKey(account, it))
+        }
+        assertEquals(emptyMap<String, String>(), SyncPreferences.keysOfRemovedAccounts(keys, setOf(account)))
+        assertEquals(keys.associateWith { account }, SyncPreferences.keysOfRemovedAccounts(keys, setOf("other@example.com")))
+        // The failed time is read as its account's first, like the name mode's re-apply flag.
+        assertEquals(
+            listOf(account, "failed_$account"),
+            SyncPreferences.accountNamesOfKey(SyncPreferences.lastSyncFailedKey(account, "calendar")),
+        )
+        // An account literally called failed_<x> keeps its last sync time while it exists.
+        val oddName = "failed_$account"
+        val oddKey = SyncPreferences.lastSyncKey(oddName, "contacts")
+        assertEquals(emptyMap<String, String>(), SyncPreferences.keysOfRemovedAccounts(listOf(oddKey), setOf(oddName)))
+    }
+
+    @Test
     fun everyListedPrefixGivesBackTheAccountName() {
         for (prefix in SyncPreferences.ACCOUNT_SCOPED_PREFIXES) {
             assertEquals(prefix, account, SyncPreferences.accountNamesOfKey(prefix + account).first())
@@ -85,12 +104,21 @@ class RemovedAccountKeysTest {
     }
 
     @Test
-    fun onlyTheNameModesPrefixBeginsAnotherListedPrefix() {
+    fun onlyTheNameModeAndLastSyncPrefixesBeginAnotherListedPrefix() {
         // Any other such pair is a key with two readings, like the re-apply flag: give it a test like these.
         val nested = SyncPreferences.ACCOUNT_SCOPED_PREFIXES.flatMap { p ->
             SyncPreferences.ACCOUNT_SCOPED_PREFIXES.filter { it != p && it.startsWith(p) }.map { p to it }
         }
-        assertEquals(listOf("contact_name_mode_" to "contact_name_mode_reapply_"), nested)
+        assertEquals(
+            listOf(
+                "contact_name_mode_" to "contact_name_mode_reapply_",
+                "last_contacts_sync_" to "last_contacts_sync_failed_",
+                "last_calendar_sync_" to "last_calendar_sync_failed_",
+            ),
+            nested,
+        )
+        assertEquals(SyncPreferences.lastSyncFailedKey("", "contacts"), "last_contacts_sync_failed_")
+        assertEquals(SyncPreferences.lastSyncKey("", "calendar"), "last_calendar_sync_")
         assertEquals(ContactNameMode.reapplyKey(""), "contact_name_mode_reapply_")
         assertEquals(ContactNameMode.key(""), "contact_name_mode_")
     }

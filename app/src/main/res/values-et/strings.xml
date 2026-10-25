@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Teie Proton andmeid ei õnnestunud avada. Palun logige uuesti sisse.</string>
     <string name="error_pqc_keys_unsupported">Sellel kontol on krüpteerimisvõti, mida see rakendus lugeda ei oska. Teie parool on õige, seega uuesti sisselogimine ei aita. Kontrollige, kas rakendusele on saadaval uuendus, või saatke rakenduse seadetest aruanne.</string>
     <string name="error_fido2_not_supported">Teie konto kasutab riistvaralist turvavõtit (FIDO2). Sync for Proton toetab praegu ainult autentimisrakenduse koode (TOTP). Palun lisage Protoni veebisätetes varuvariandina TOTP kood ja seejärel logige siin sisse.</string>
+    <string name="error_login_verification_refused">Proton ei aktsepteerinud kinnitamist. Palun logige uuesti sisse ja läbige kontroll veel kord.</string>
+    <string name="error_login_account_disabled">Proton teatab, et see konto on keelatud. Põhjuse teadasaamiseks logige sisse aadressil proton.me või võtke ühendust Protoni toega.</string>
+    <string name="error_login_sso_unsupported">See konto logib sisse organisatsiooni ühekordse sisselogimise (SSO) kaudu. Sync for Proton toetab ainult parooliga sisselogimist.</string>
+    <string name="error_login_untrusted_server">Sisselogimine peatati, sest ei õnnestunud kinnitada, et see ühendus kuulub Protonile. Kontrollige oma võrku (selle võib põhjustada avaliku Wi-Fi-võrgu sisselogimisleht või filtreeriv puhverserver) ja proovige uuesti.</string>
+    <string name="error_login_proton_refused">Proton ei suutnud sisselogimist lõpule viia. Palun proovige mõne hetke pärast uuesti.</string>
+    <string name="error_login_unexpected">Sisselogimine ebaõnnestus ootamatu vea tõttu (%1$s). Palun proovige uuesti.</string>
     <string name="sync_contacts">Kontaktid</string>
     <string name="sync_calendar">Kalender</string>
     <string name="calendar_timeframe_title">Kalendri s\u00fcnkroonimise vahemik</string>
@@ -185,9 +191,13 @@
     <string name="label_language">Keel</string>
     <string name="label_language_auto">Automaatne (s\u00fcsteemi vaikev\u00e4\u00e4rtus)</string>
     <string name="label_subscription">Tellimus</string>
-    <string name="label_subscription_none">Tasuta 7 päeva, seejärel algab arveldamine, kui te ei tühista.</string>
-    <string name="label_subscription_trial">Tasuta prooviperiood: jäänud %1$d päeva</string>
+    <string name="label_subscription_none">Sünkroonimine on välja lülitatud. Tasuta 7 päeva, seejärel algab arveldamine, kui te ei tühista.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Tasuta prooviperiood: %1$d päev jäänud</item>
+        <item quantity="other">Tasuta prooviperiood: %1$d päeva jäänud</item>
+    </plurals>
     <string name="label_subscription_active">Aktiivne, uueneb %1$s</string>
+    <string name="label_subscription_active_play">Aktiivne, haldab Google Play</string>
     <string name="label_subscription_ends">Lõpeb %1$s</string>
     <string name="label_subscription_pauses">Peatatakse %1$s</string>
     <string name="label_subscription_expired">Tellimus on aegunud: uuendage, et sünkroonimist jätkata.</string>
@@ -210,7 +220,7 @@
     <string name="plan_monthly_price">%1$s/kuu</string>
     <string name="plan_annual_price">%1$s/aasta</string>
     <string name="plan_picker_disclosure_plain">Saate igal ajal tühistada Google Play → Tellimused.</string>
-    <string name="label_subscription_required">Sünkroonimiseks on vaja tellimust.</string>
+    <string name="label_subscription_required">Sünkroonimine on välja lülitatud: tellimus on vajalik.</string>
     <string name="btn_choose_plan">Vali pakett</string>
     <string name="error_billing_unavailable">Google Play arveldus pole saadaval</string>
     <string name="error_purchase_failed">Ost ebaõnnestus: proovige uuesti</string>
@@ -640,10 +650,13 @@
     <string name="setup_choose_body">Mõlemad on alguses välja lülitatud, nii et sellesse telefoni ei kopeerita midagi enne, kui te ise nii ütlete. Saate seda igal ajal muuta.</string>
     <string name="setup_choose_save">Alusta sünkroonimist</string>
     <string name="setup_choose_none">Mitte praegu</string>
+    <string name="setup_choose_saved_inactive">Salvestatud. Sünkroonimine algab, kui tellimus on aktiivne.</string>
     <string name="sfp_hero_nothing_enabled">Veel ei sünkroonita midagi</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Vali allolevalt kontolt kontaktid, kalender või mõlemad</string>
     <string name="sfp_hero_awaiting_first_sync">Ootab esimest sünkroonimist</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Sellesse telefoni pole veel midagi kopeeritud</string>
+    <string name="sfp_hero_sync_off">Sünkroonimine on välja lülitatud</string>
+    <string name="sfp_hero_subtitle_sync_off">Sünkroonimine jääb välja lülitatuks, kuni aktiivset tellimust pole. Vaata ülal jaotist Tellimus.</string>
 
     <string name="toast_resync_skipped">Pole midagi sünkroonida: sünkroonimine on välja lülitatud (%1$s)</string>
 </resources>

@@ -48,14 +48,15 @@ object TokenRefresher {
             client.newCall(request).execute().use { resp ->
                 val respBody = resp.body?.string()
                 if (!resp.isSuccessful) {
-                    SyncLog.w(TAG, "Refresh HTTP error: ${resp.code}")  // never log the body (tokens)
+                    // Code and Error only (ProtonApiError), never the body (tokens)
+                    SyncLog.w(TAG, "Refresh HTTP error: ${resp.code}" + ProtonApiError.describe(respBody))
                     return null
                 }
                 val tokens = gson.fromJson(respBody, RefreshTokenResponse::class.java)
                 if (tokens != null && tokens.code == 1000 && tokens.accessToken.isNotEmpty()) {
                     Tokens(tokens.accessToken, tokens.refreshToken, tokens.uid)
                 } else {
-                    SyncLog.w(TAG, "Refresh response error: code=${tokens?.code}")
+                    SyncLog.w(TAG, "Refresh response error: code=${tokens?.code}" + ProtonApiError.describe(respBody))
                     null
                 }
             }

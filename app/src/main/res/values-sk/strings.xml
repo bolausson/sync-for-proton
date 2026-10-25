@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Nepodarilo sa odomknúť vaše Proton údaje. Prihláste sa znova.</string>
     <string name="error_pqc_keys_unsupported">Tento účet má šifrovací kľúč, ktorý táto aplikácia nedokáže prečítať. Vaše heslo je správne, takže opätovné prihlásenie nepomôže. Skontrolujte, či je k dispozícii aktualizácia aplikácie, alebo odošlite hlásenie z nastavení aplikácie.</string>
     <string name="error_fido2_not_supported">Váš účet používa hardvérový bezpečnostný kľúč (FIDO2). Sync for Proton momentálne podporuje len kódy z autentifikačnej aplikácie (TOTP). Pridajte si prosím kód TOTP vo webových nastaveniach Proton ako zálohu a potom sa tu prihláste.</string>
+    <string name="error_login_verification_refused">Proton overenie neprijal. Prihláste sa znova a dokončite overenie ešte raz.</string>
+    <string name="error_login_account_disabled">Proton hlási, že tento účet je deaktivovaný. Prihláste sa na proton.me alebo kontaktujte podporu Protonu a zistite dôvod.</string>
+    <string name="error_login_sso_unsupported">Tento účet sa prihlasuje cez jednotné prihlásenie (SSO) organizácie. Sync for Proton podporuje iba prihlásenie heslom.</string>
+    <string name="error_login_untrusted_server">Prihlásenie bolo zastavené, pretože sa nepodarilo potvrdiť, že ide o pripojenie k Protonu. Skontrolujte svoju sieť (môže to spôsobiť prihlasovacia stránka verejnej siete Wi-Fi alebo filtrujúci proxy server) a skúste to znova.</string>
+    <string name="error_login_proton_refused">Proton nemohol dokončiť prihlásenie. Skúste to znova o chvíľu.</string>
+    <string name="error_login_unexpected">Prihlásenie zlyhalo pre neočakávanú chybu (%1$s). Skúste to znova.</string>
     <string name="sync_contacts">Kontakty</string>
     <string name="sync_calendar">Kalendár</string>
     <string name="calendar_timeframe_title">Rozsah synchronizácie kalendára</string>
@@ -176,9 +182,15 @@
     <string name="label_language_auto">Automaticky (predvolené systému)</string>
 
     <string name="label_subscription">Predplatné</string>
-    <string name="label_subscription_none">Bezplatne 7 dní, potom sa začne fakturácia, pokiaľ nezrušíte.</string>
-    <string name="label_subscription_trial">Skúšobná verzia: zostáva %1$d dní</string>
+    <string name="label_subscription_none">Synchronizácia je vypnutá. Bezplatne 7 dní, potom sa začne fakturácia, pokiaľ nezrušíte.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Bezplatná skúška: zostáva %1$d deň</item>
+        <item quantity="few">Bezplatná skúška: zostávajú %1$d dni</item>
+        <item quantity="many">Bezplatná skúška: zostáva %1$d dňa</item>
+        <item quantity="other">Bezplatná skúška: zostáva %1$d dní</item>
+    </plurals>
     <string name="label_subscription_active">Aktívne, obnovuje sa %1$s</string>
+    <string name="label_subscription_active_play">Aktívne, spravované cez Google Play</string>
     <string name="label_subscription_ends">Končí %1$s</string>
     <string name="label_subscription_pauses">Bude pozastavené %1$s</string>
     <string name="label_subscription_expired">Predplatné vypršalo: obnovte ho na pokračovanie synchronizácie.</string>
@@ -201,7 +213,7 @@
     <string name="plan_monthly_price">%1$s/mes.</string>
     <string name="plan_annual_price">%1$s/rok</string>
     <string name="plan_picker_disclosure_plain">Môžete kedykoľvek zrušiť v Google Play → Predplatné.</string>
-    <string name="label_subscription_required">Na synchronizáciu je potrebné predplatné.</string>
+    <string name="label_subscription_required">Synchronizácia je vypnutá: vyžaduje sa predplatné.</string>
     <string name="btn_choose_plan">Vybrať plán</string>
     <string name="error_billing_unavailable">Fakturácia Google Play nie je dostupná</string>
     <string name="error_purchase_failed">Nákup zlyhal: skúste to znova</string>
@@ -644,10 +656,13 @@
     <string name="setup_choose_body">Obe možnosti sú na začiatku vypnuté, takže sa do tohto telefónu nič neskopíruje, kým sa nerozhodnete. Kedykoľvek to môžete zmeniť.</string>
     <string name="setup_choose_save">Spustiť synchronizáciu</string>
     <string name="setup_choose_none">Teraz nie</string>
+    <string name="setup_choose_saved_inactive">Uložené. Synchronizácia sa spustí, keď bude predplatné aktívne.</string>
     <string name="sfp_hero_nothing_enabled">Zatiaľ sa nič nesynchronizuje</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Vyberte kontakty, kalendár alebo oboje v účte nižšie</string>
     <string name="sfp_hero_awaiting_first_sync">Čaká sa na prvú synchronizáciu</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Zatiaľ sa nič neskopírovalo do tohto telefónu</string>
+    <string name="sfp_hero_sync_off">Synchronizácia je vypnutá</string>
+    <string name="sfp_hero_subtitle_sync_off">Synchronizácia zostane vypnutá, kým nebude aktívne predplatné. Podrobnosti nájdete v časti Predplatné vyššie.</string>
 
     <string name="toast_resync_skipped">Niet čo synchronizovať: synchronizácia pre %1$s je vypnutá</string>
 </resources>

@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">No se pudieron desbloquear sus datos de Proton. Inicie sesión de nuevo.</string>
     <string name="error_pqc_keys_unsupported">Esta cuenta tiene una clave de cifrado que esta aplicación no puede leer. Su contraseña es correcta, por lo que volver a iniciar sesión no servirá. Compruebe si hay una actualización de la aplicación o envíe un informe desde la configuración de la aplicación.</string>
     <string name="error_fido2_not_supported">Su cuenta utiliza una llave de seguridad física (FIDO2). Sync for Proton actualmente solo admite códigos de aplicaciones de autenticación (TOTP). Por favor, añada un código TOTP en la configuración web de Proton como respaldo y luego inicie sesión aquí.</string>
+    <string name="error_login_verification_refused">Proton no ha aceptado la verificación. Inicie sesión de nuevo y vuelva a completar la comprobación.</string>
+    <string name="error_login_account_disabled">Proton indica que esta cuenta está desactivada. Inicie sesión en proton.me o contacte con el soporte de Proton para saber el motivo.</string>
+    <string name="error_login_sso_unsupported">Esta cuenta accede mediante el inicio de sesión único (SSO) de una organización. Sync for Proton solo admite el inicio de sesión con contraseña.</string>
+    <string name="error_login_untrusted_server">Se ha detenido el inicio de sesión porque no se ha podido confirmar que esta conexión sea de Proton. Compruebe su red (la página de acceso de una Wi-Fi pública o un proxy de filtrado pueden causarlo) e inténtelo de nuevo.</string>
+    <string name="error_login_proton_refused">Proton no ha podido completar el inicio de sesión. Inténtelo de nuevo en unos instantes.</string>
+    <string name="error_login_unexpected">El inicio de sesión ha fallado por un error inesperado (%1$s). Inténtelo de nuevo.</string>
     <string name="sync_contacts">Contactos</string>
     <string name="sync_calendar">Calendario</string>
     <string name="calendar_timeframe_title">Rango de sincronización del calendario</string>
@@ -185,9 +191,14 @@
     <string name="label_language">Idioma</string>
     <string name="label_language_auto">Automático (predeterminado del sistema)</string>
     <string name="label_subscription">Suscripción</string>
-    <string name="label_subscription_none">Gratis durante 7 días, luego comenzará el cobro a menos que canceles.</string>
-    <string name="label_subscription_trial">Prueba gratuita: quedan %1$d días</string>
+    <string name="label_subscription_none">Sincronización desactivada. Gratis durante 7 días, luego comenzará el cobro a menos que canceles.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Prueba gratuita: queda %1$d día</item>
+        <item quantity="many">Prueba gratuita: quedan %1$d días</item>
+        <item quantity="other">Prueba gratuita: quedan %1$d días</item>
+    </plurals>
     <string name="label_subscription_active">Activa, se renueva el %1$s</string>
+    <string name="label_subscription_active_play">Activa, gestionada por Google Play</string>
     <string name="label_subscription_ends">Finaliza el %1$s</string>
     <string name="label_subscription_pauses">Se pondrá en pausa el %1$s</string>
     <string name="label_subscription_expired">Suscripción caducada: renueva para reanudar la sincronización.</string>
@@ -210,7 +221,7 @@
     <string name="plan_monthly_price">%1$s/mes</string>
     <string name="plan_annual_price">%1$s/año</string>
     <string name="plan_picker_disclosure_plain">Puedes cancelar cuando quieras en Google Play → Suscripciones.</string>
-    <string name="label_subscription_required">Se necesita una suscripción para sincronizar.</string>
+    <string name="label_subscription_required">Sincronización desactivada: se necesita una suscripción.</string>
     <string name="btn_choose_plan">Elegir un plan</string>
     <string name="error_billing_unavailable">La facturación de Google Play no está disponible</string>
     <string name="error_purchase_failed">La compra ha fallado: inténtalo de nuevo</string>
@@ -641,10 +652,14 @@
     <string name="setup_choose_body">Ambos empiezan desactivados, así que no se copia nada a este teléfono hasta que usted lo indique. Puede cambiarlo en cualquier momento.</string>
     <string name="setup_choose_save">Empezar a sincronizar</string>
     <string name="setup_choose_none">Ahora no</string>
+    <string name="setup_choose_saved_inactive">Guardado. La sincronización empezará cuando haya una suscripción activa.</string>
     <string name="sfp_hero_nothing_enabled">Todavía no se sincroniza nada</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Elija contactos, calendario o ambos en la cuenta de abajo</string>
     <string name="sfp_hero_awaiting_first_sync">Esperando la primera sincronización</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Todavía no se ha copiado nada a este teléfono</string>
+
+    <string name="sfp_hero_sync_off">Sincronización desactivada</string>
+    <string name="sfp_hero_subtitle_sync_off">La sincronización permanece desactivada hasta que haya una suscripción activa. Consulte Suscripción más arriba.</string>
 
     <string name="toast_resync_skipped">Nada que sincronizar: la sincronización de %1$s está desactivada</string>
 </resources>

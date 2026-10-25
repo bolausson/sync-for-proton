@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Prenumeration</string>
-    <string name="spp_subscribe_dialog_message">Prenumerera i din webbläsare och klistra sedan in ditt prenumerations-ID (sub_…) nedan för att aktivera synkronisering på den här enheten.</string>
+    <string name="spp_btn_enter_subscription_id">Ange prenumerations-ID</string>
+    <string name="spp_subscribe_dialog_title">Ange prenumerations-ID</string>
+    <string name="spp_subscribe_dialog_message">Klistra in ditt prenumerations-ID (det börjar med sub_ och visas på sidan efter betalningen) eller transaktions-ID:t från Paddles faktura (det börjar med txn_). Har du tappat bort båda? Kvittomejlet från Paddle har en länk ”Manage subscription” till din prenumeration (i mejl från Paddle står BEO som säljare). Om du fortfarande inte hittar något ID trycker du på ”Skicka rapport till utvecklaren” i Inställningar. En Google Play-prenumeration fungerar bara i Google Play-versionen av den här appen.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivera</string>
-    <string name="spp_subscribe_open_checkout">Prenumerera i webbläsaren</string>
     <string name="spp_subscribe_validating">Kontrollerar din prenumeration…</string>
+    <string name="spp_subscribe_activated">Prenumerationen har aktiverats.</string>
+    <string name="spp_subscribe_error_not_found">Ingen prenumeration med det här ID:t hittades. Kontrollera ID:t och försök igen.</string>
+    <string name="spp_subscribe_error_wrong_product">Det här prenumerations-ID:t hör till en annan app.</string>
+    <string name="spp_subscribe_error_cancelled">Den här prenumerationen har avslutats. Prenumerera igen för att få ett nytt prenumerations-ID.</string>
+    <string name="spp_subscribe_error_kept_current">Den prenumerationen är pausad eller obetald, så den här telefonen behåller sin nuvarande prenumeration.</string>
+    <string name="spp_subscribe_error_play_order">Det här är ett ordernummer från Google Play. En Google Play-prenumeration fungerar bara i Google Play-versionen av appen.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Det här transaktions-ID:t är ofullständigt eller innehåller ett skrivfel. Kopiera det igen.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Inget köp med det här transaktions-ID:t hittades. Kontrollera ID:t eller ange prenumerations-ID:t som börjar med sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Det här köpet hör till en annan app.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Det här köpet har ingen prenumeration ännu. Om du precis har betalat, försök igen om en minut. Annars anger du prenumerations-ID:t som börjar med sub_.</string>
+    <string name="spp_subscribe_error_email">Det här är en e-postadress. Ditt prenumerations-ID börjar med ”sub_”.</string>
+    <string name="spp_subscribe_error_mistyped">Det här prenumerations-ID:t är ofullständigt eller innehåller ett skrivfel. Kopiera det igen.</string>
+    <string name="spp_subscribe_error_not_an_id">Det här är inte ett prenumerations-ID. Prenumerations-ID:n börjar med ”sub_”.</string>
+    <string name="spp_subscribe_error_several_ids">Det här innehåller mer än ett ID. Ange bara ett.</string>
     <string name="spp_manage_dialog_title">Hantera prenumeration</string>
     <string name="spp_manage_action_update_payment">Uppdatera betalmetod</string>
     <string name="spp_manage_action_cancel">Avsluta prenumeration</string>

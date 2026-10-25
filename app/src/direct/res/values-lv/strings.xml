@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abonements</string>
-    <string name="spp_subscribe_dialog_message">Abonējiet savā pārlūkprogrammā un pēc tam ielīmējiet zemāk savu abonementa ID (sub_…), lai aktivizētu sinhronizāciju šajā ierīcē.</string>
+    <string name="spp_btn_enter_subscription_id">Ievadīt abonementa ID</string>
+    <string name="spp_subscribe_dialog_title">Ievadīt abonementa ID</string>
+    <string name="spp_subscribe_dialog_message">Ielīmējiet savu abonementa ID (tas sākas ar sub_ un ir redzams lapā, kas tiek parādīta pēc apmaksas) vai darījuma ID no Paddle rēķina (tas sākas ar txn_). Pazaudējāt abus? Paddle kvīts e-pastā ir saite \"Manage subscription\" uz jūsu abonementu (Paddle e-pastos pārdevējs ir norādīts kā BEO). Ja joprojām nevarat atrast nevienu ID, sadaļā Iestatījumi pieskarieties \"Sūtīt ziņojumu izstrādātājam\". Google Play abonements darbojas tikai šīs lietotnes Google Play versijā.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivizēt</string>
-    <string name="spp_subscribe_open_checkout">Abonēt pārlūkprogrammā</string>
     <string name="spp_subscribe_validating">Notiek abonementa pārbaude…</string>
+    <string name="spp_subscribe_activated">Abonements aktivizēts.</string>
+    <string name="spp_subscribe_error_not_found">Abonements ar šo ID netika atrasts. Pārbaudiet ID un mēģiniet vēlreiz.</string>
+    <string name="spp_subscribe_error_wrong_product">Šis abonementa ID pieder citai lietotnei.</string>
+    <string name="spp_subscribe_error_cancelled">Šis abonements ir atcelts. Abonējiet vēlreiz, lai saņemtu jaunu abonementa ID.</string>
+    <string name="spp_subscribe_error_kept_current">Šis abonements ir apturēts vai neapmaksāts, tāpēc šajā tālrunī saglabājas pašreizējais abonements.</string>
+    <string name="spp_subscribe_error_play_order">Šis ir Google Play pasūtījuma numurs. Google Play abonements darbojas tikai lietotnes Google Play versijā.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Šis darījuma ID ir nepilnīgs vai satur drukas kļūdu. Nokopējiet to vēlreiz.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Pirkums ar šo darījuma ID netika atrasts. Pārbaudiet ID vai ievadiet abonementa ID, kas sākas ar sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Šis pirkums pieder citai lietotnei.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Šim pirkumam vēl nav abonementa. Ja tikko samaksājāt, mēģiniet vēlreiz pēc minūtes. Pretējā gadījumā ievadiet abonementa ID, kas sākas ar sub_.</string>
+    <string name="spp_subscribe_error_email">Šī ir e-pasta adrese. Jūsu abonementa ID sākas ar \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Šis abonementa ID ir nepilnīgs vai satur drukas kļūdu. Nokopējiet to vēlreiz.</string>
+    <string name="spp_subscribe_error_not_an_id">Šis nav abonementa ID. Abonementu ID sākas ar \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Tas satur vairāk nekā vienu ID. Ievadiet tikai vienu.</string>
     <string name="spp_manage_dialog_title">Pārvaldīt abonementu</string>
     <string name="spp_manage_action_update_payment">Atjaunināt maksājuma metodi</string>
     <string name="spp_manage_action_cancel">Atcelt abonementu</string>

@@ -28,6 +28,12 @@
     <string name="error_unlock_failed">Kan uw Proton-gegevens niet ontgrendelen. Meld u opnieuw aan.</string>
     <string name="error_pqc_keys_unsupported">Dit account heeft een versleutelingssleutel die deze app niet kan lezen. Uw wachtwoord is juist, opnieuw aanmelden helpt dus niet. Controleer of er een update van de app is, of stuur een rapport via de instellingen van de app.</string>
     <string name="error_fido2_not_supported">Uw account gebruikt een hardware-beveiligingssleutel (FIDO2). Sync for Proton ondersteunt momenteel alleen codes uit authenticatie-apps (TOTP). Voeg als reserve een TOTP-code toe in de web-instellingen van Proton en meld u daarna hier aan.</string>
+    <string name="error_login_verification_refused">Proton heeft de verificatie niet geaccepteerd. Meld u opnieuw aan en voltooi de controle nogmaals.</string>
+    <string name="error_login_account_disabled">Volgens Proton is dit account uitgeschakeld. Meld u aan op proton.me of neem contact op met de support van Proton om te weten te komen waarom.</string>
+    <string name="error_login_sso_unsupported">Dit account meldt zich aan via single sign-on (SSO) van een organisatie. Sync for Proton ondersteunt alleen aanmelden met een wachtwoord.</string>
+    <string name="error_login_untrusted_server">Het aanmelden is gestopt omdat niet kon worden bevestigd dat deze verbinding van Proton is. Controleer uw netwerk (een inlogpagina van openbare wifi of een filterende proxy kan dit veroorzaken) en probeer het opnieuw.</string>
+    <string name="error_login_proton_refused">Proton kon het aanmelden niet voltooien. Probeer het zo meteen opnieuw.</string>
+    <string name="error_login_unexpected">Aanmelden mislukt door een onverwachte fout (%1$s). Probeer het opnieuw.</string>
     <string name="sync_contacts">Contacten</string>
     <string name="sync_calendar">Agenda</string>
     <string name="calendar_timeframe_title">Synchronisatiebereik agenda</string>
@@ -196,9 +202,13 @@
     <string name="label_language_auto">Automatisch (systeemstandaard)</string>
 
     <string name="label_subscription">Abonnement</string>
-    <string name="label_subscription_none">7 dagen gratis, daarna start de facturering tenzij u annuleert.</string>
-    <string name="label_subscription_trial">Gratis proefperiode: %1$d dagen over</string>
+    <string name="label_subscription_none">Synchronisatie staat uit. 7 dagen gratis, daarna start de facturering tenzij u annuleert.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Gratis proefperiode: nog %1$d dag</item>
+        <item quantity="other">Gratis proefperiode: nog %1$d dagen</item>
+    </plurals>
     <string name="label_subscription_active">Actief, verlengt op %1$s</string>
+    <string name="label_subscription_active_play">Actief, beheerd door Google Play</string>
     <string name="label_subscription_ends">Eindigt op %1$s</string>
     <string name="label_subscription_pauses">Wordt gepauzeerd op %1$s</string>
     <string name="label_subscription_expired">Abonnement verlopen: verleng om synchronisatie te hervatten.</string>
@@ -221,7 +231,7 @@
     <string name="plan_monthly_price">%1$s/maand</string>
     <string name="plan_annual_price">%1$s/jaar</string>
     <string name="plan_picker_disclosure_plain">U kunt op elk moment annuleren in Google Play → Abonnementen.</string>
-    <string name="label_subscription_required">Voor synchronisatie is een abonnement nodig.</string>
+    <string name="label_subscription_required">Synchronisatie staat uit: een abonnement is vereist.</string>
     <string name="btn_choose_plan">Kies een abonnement</string>
     <string name="error_billing_unavailable">Google Play-facturering is niet beschikbaar</string>
     <string name="error_purchase_failed">Aankoop mislukt: probeer het opnieuw</string>
@@ -657,10 +667,13 @@ Wil je ze verwijderen? Verder verandert er niets aan de contacten en hun weergav
     <string name="setup_choose_body">Beide staan om te beginnen uit, dus er wordt niets naar deze telefoon gekopieerd totdat u dat aangeeft. U kunt dit op elk moment wijzigen.</string>
     <string name="setup_choose_save">Synchronisatie starten</string>
     <string name="setup_choose_none">Niet nu</string>
+    <string name="setup_choose_saved_inactive">Opgeslagen. Synchronisatie start zodra een abonnement actief is.</string>
     <string name="sfp_hero_nothing_enabled">Er wordt nog niets gesynchroniseerd</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Kies contacten, agenda of beide in het account hieronder</string>
     <string name="sfp_hero_awaiting_first_sync">Wachten op de eerste synchronisatie</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Er is nog niets naar deze telefoon gekopieerd</string>
+    <string name="sfp_hero_sync_off">Synchronisatie staat uit</string>
+    <string name="sfp_hero_subtitle_sync_off">Synchronisatie blijft uit totdat er een abonnement actief is. Zie Abonnement hierboven.</string>
 
     <string name="toast_resync_skipped">Niets te synchroniseren: synchronisatie voor %1$s staat uit</string>
 </resources>

@@ -33,6 +33,13 @@ import me.proton.sync.settings.SyncSettingsActivity
 import javax.inject.Inject
 import kotlinx.coroutines.*
 
+/**
+ * The setup chooser's positive button: "Start syncing" only when the subscription lets sync start,
+ * "Continue" otherwise, because the choice is kept but nothing syncs until a subscription is active.
+ */
+internal fun setupChooserSaveLabel(syncAllowed: Boolean): Int =
+    if (syncAllowed) R.string.setup_choose_save else R.string.btn_continue
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
@@ -194,6 +201,10 @@ class LoginActivity : AppCompatActivity() {
         clearError()
 
         scope.launch {
+            // Set once finishLogin owns the screen. It fetches the keys in a coroutine of its own and resets
+            // the controls on every way out; resetting them here as well re-enabled Sign in during that fetch,
+            // and a second tap started a second sign-in whose tokens were stored over the first one's.
+            var handedOff = false
             try {
                 val result = withContext(Dispatchers.IO) {
                     srpAuthHandler.login(username, password)
@@ -210,6 +221,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     SyncLog.d("LoginActivity", "Skipping 2FA, going straight to finishLogin")
                     finishLogin(result)
+                    handedOff = true
                 }
             } catch (e: SrpAuthHandler.CaptchaRequiredException) {
                 // Launch CAPTCHA WebView
@@ -231,12 +243,15 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: SrpAuthHandler.Fido2OnlyException) {
                 showError(getString(R.string.error_fido2_not_supported))
             } catch (e: SrpAuthHandler.AuthException) {
-                showError(e.message ?: getString(R.string.error_login_failed))
+                // SrpAuthHandler has logged the status, Code and Error; the screen shows a
+                // translated message chosen by those fields, never the exception's English text.
+                SyncLog.i("LoginActivity", "Sign-in failed: ${SignInErrors.kindOf(e)}")
+                showError(SignInErrors.message(this@LoginActivity, e))
             } catch (e: Exception) {
                 SyncLog.e("LoginActivity", "Login error", e)
-                showError("${e.javaClass.simpleName}: ${e.message}")
+                showError(SignInErrors.message(this@LoginActivity, e))
             } finally {
-                setLoading(false)
+                if (!handedOff) setLoading(false)
             }
         }
     }
@@ -273,16 +288,16 @@ class LoginActivity : AppCompatActivity() {
                 // accident of ordering, and says what the user can act on instead of a status.
                 showError(getString(R.string.error_2fa_failed))
             } catch (e: SrpAuthHandler.AuthException) {
-                if (isSessionExpired(e)) {
-                    resetToLogin("Session expired. Please sign in again.")
+                if (SignInErrors.isSessionExpired(e)) {
+                    resetToLogin(getString(R.string.error_session_expired))
                 } else {
-                    showError(e.message ?: getString(R.string.error_2fa_failed))
+                    showError(SignInErrors.message(this@LoginActivity, e, twoFactor = true))
                 }
             } catch (e: Exception) {
-                if (isSessionExpired(e)) {
-                    resetToLogin("Session expired. Please sign in again.")
+                if (SignInErrors.isSessionExpired(e)) {
+                    resetToLogin(getString(R.string.error_session_expired))
                 } else {
-                    showError(getString(R.string.error_2fa_failed))
+                    showError(SignInErrors.message(this@LoginActivity, e, twoFactor = true))
                 }
             }
             setLoading(false)
@@ -342,13 +357,17 @@ class LoginActivity : AppCompatActivity() {
                     resetToLogin(getString(R.string.error_unlock_failed))
                 }
             } catch (e: Exception) {
-                if (isSessionExpired(e)) {
-                    resetToLogin("Session expired. Please sign in again.")
+                // Before either reset: after 2FA or the mailbox password, nothing else re-enables the
+                // controls, and the screen kept spinning with every field disabled.
+                setLoading(false)
+                if (SignInErrors.isSessionExpired(e)) {
+                    resetToLogin(getString(R.string.error_session_expired))
                     return@launch
                 }
                 SyncLog.w("LoginActivity", "Key fetch failed (non-unlock error)", e)
-                setLoading(false)
-                resetToLogin(getString(R.string.error_login_failed))
+                // Not "check your credentials": the password was already accepted, and this is a
+                // user-info or network failure after it.
+                resetToLogin(SignInErrors.message(this@LoginActivity, e))
             }
         }
     }
@@ -583,25 +602,40 @@ class LoginActivity : AppCompatActivity() {
      * than something they discover afterwards, and somebody who only wants contacts never sees a
      * calendar appear on their phone. Dismissing without choosing leaves both off, which is safe,
      * recoverable, and clearly explained by the settings screen they land on next.
+     *
+     * Without an active subscription the button reads "Continue" instead of "Start syncing", and a
+     * choice is followed by a toast saying sync starts once a subscription is active: the choice is
+     * kept, but the subscription gate stops every sync until then.
      */
     private fun askWhatToSync(displayName: String, then: () -> Unit) {
         val account = android.accounts.Account(displayName, ProtonSyncApp.ACCOUNT_TYPE)
         val abAccount = android.accounts.Account(displayName, ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
         val labels = arrayOf(getString(R.string.sync_contacts), getString(R.string.sync_calendar))
         val picked = booleanArrayOf(false, false)
+        val syncAllowed = subscriptionManager.isSyncAllowed()
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle(R.string.setup_choose_title)
             .setMultiChoiceItems(labels, picked) { _, which, isChecked -> picked[which] = isChecked }
             .setCancelable(false)
             .setNeutralButton(R.string.setup_choose_none) { _, _ -> then() }
-            .setPositiveButton(R.string.setup_choose_save) { _, _ ->
+            .setPositiveButton(setupChooserSaveLabel(syncAllowed)) { _, _ ->
                 if (picked[0]) {
                     me.proton.sync.backup.AccountProvisioner
-                        .enableSyncFor(abAccount, SyncConstants.AUTHORITY_CONTACTS)
+                        .enableSyncFor(this, abAccount, SyncConstants.AUTHORITY_CONTACTS, displayName)
                 }
                 if (picked[1]) {
                     me.proton.sync.backup.AccountProvisioner
-                        .enableSyncFor(account, SyncConstants.AUTHORITY_CALENDAR)
+                        .enableSyncFor(this, account, SyncConstants.AUTHORITY_CALENDAR, displayName)
+                }
+                SyncLog.i(
+                    "UserAction",
+                    "Setup chooser for '$displayName': contacts=${picked[0]} calendar=${picked[1]}, " +
+                        "subscription ${if (syncAllowed) "active" else "inactive"}"
+                )
+                if (!syncAllowed && (picked[0] || picked[1])) {
+                    android.widget.Toast.makeText(
+                        this, getString(R.string.setup_choose_saved_inactive), android.widget.Toast.LENGTH_LONG
+                    ).show()
                 }
                 then()
             }
@@ -702,12 +736,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         scope.cancel()
-    }
-
-    private fun isSessionExpired(e: Exception): Boolean {
-        val msg = e.message ?: ""
-        return msg.contains("401") || msg.contains("Unauthorized") ||
-            msg.contains("Invalid access token") || msg.contains("Expired access token")
     }
 
     private fun resetToLogin(message: String) {

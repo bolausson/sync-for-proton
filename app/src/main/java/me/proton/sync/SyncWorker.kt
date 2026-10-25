@@ -158,34 +158,43 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
          */
         fun scheduleAll(context: Context) {
             val accountManager = AccountManager.get(context)
-            val accounts = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-
-            for (account in accounts) {
-                // Only schedule watchdogs when fallback full sync is enabled
-                val contactsFallbackEnabled = prefs.getBoolean(SyncPreferences.fallbackContactsEnabledKey(account.name), false)
-                if (contactsFallbackEnabled) {
-                    val contactsInterval = prefs.getString(
-                        SyncPreferences.fallbackContactsIntervalKey(account.name), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
-                    )?.toLongOrNull() ?: 43200L
-                    scheduleForAccount(context, account.name, "contacts", contactsInterval / 60)
-                } else {
-                    scheduleForAccount(context, account.name, "contacts", -1)
-                }
-
-                val calendarFallbackEnabled = prefs.getBoolean(SyncPreferences.fallbackCalendarEnabledKey(account.name), false)
-                if (calendarFallbackEnabled) {
-                    val calendarInterval = prefs.getString(
-                        SyncPreferences.fallbackCalendarIntervalKey(account.name), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
-                    )?.toLongOrNull() ?: 43200L
-                    scheduleForAccount(context, account.name, "calendar", calendarInterval / 60)
-                } else {
-                    scheduleForAccount(context, account.name, "calendar", -1)
-                }
+            for (account in accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)) {
+                scheduleFromSettings(context, account.name)
             }
         }
 
-        private fun workName(accountName: String, syncType: String): String {
+        /**
+         * Schedule or cancel one account's two watchdogs from its fallback settings. The body of
+         * [scheduleAll], on its own so a new or renamed account can be armed without touching the
+         * others (SyncScheduling.scheduleWorkers).
+         */
+        fun scheduleFromSettings(context: Context, accountName: String) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+            // Only schedule watchdogs when fallback full sync is enabled
+            val contactsFallbackEnabled = prefs.getBoolean(SyncPreferences.fallbackContactsEnabledKey(accountName), false)
+            if (contactsFallbackEnabled) {
+                val contactsInterval = prefs.getString(
+                    SyncPreferences.fallbackContactsIntervalKey(accountName), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
+                )?.toLongOrNull() ?: 43200L
+                scheduleForAccount(context, accountName, "contacts", contactsInterval / 60)
+            } else {
+                scheduleForAccount(context, accountName, "contacts", -1)
+            }
+
+            val calendarFallbackEnabled = prefs.getBoolean(SyncPreferences.fallbackCalendarEnabledKey(accountName), false)
+            if (calendarFallbackEnabled) {
+                val calendarInterval = prefs.getString(
+                    SyncPreferences.fallbackCalendarIntervalKey(accountName), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
+                )?.toLongOrNull() ?: 43200L
+                scheduleForAccount(context, accountName, "calendar", calendarInterval / 60)
+            } else {
+                scheduleForAccount(context, accountName, "calendar", -1)
+            }
+        }
+
+        /** The unique work name of an account's watchdog (also read by the schedule_info debug command). */
+        internal fun workName(accountName: String, syncType: String): String {
             return "proton_sync_${syncType}_${accountName.hashCode()}"
         }
     }

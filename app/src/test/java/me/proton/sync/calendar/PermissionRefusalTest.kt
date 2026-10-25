@@ -87,21 +87,28 @@ class PermissionRefusalTest {
     fun `each upload path keeps its own wording`() {
         val body = """{"Code":2000,"Error":"Server busy"}"""
         assertEquals(
-            "Could not save an event to Proton: HTTP 500 {\"Code\":2000,\"Error\":\"Server busy\"}",
+            "Could not save an event to Proton: HTTP 500 (Code 2000: Server busy)",
             uploadSwallowedFailure("save an event to Proton", 500, body)
         )
         assertEquals(
-            "Could not update an event on Proton: HTTP 500 {\"Code\":2000,\"Error\":\"Server busy\"}",
+            "Could not update an event on Proton: HTTP 500 (Code 2000: Server busy)",
             uploadSwallowedFailure("update an event on Proton", 500, body)
         )
     }
 
-    /** A body longer than a notification can carry is cut, not dropped. */
+    /** The text is persisted and logged, so a body that is not Proton's JSON (a proxy page) is left out. */
     @Test
-    fun `a long error body is cut to 160 characters`() {
-        val long = "x".repeat(400)
-        val out = uploadSwallowedFailure("save an event to Proton", 502, long)
-        assertEquals("Could not save an event to Proton: HTTP 502 " + "x".repeat(160), out)
+    fun `a body that is not Proton's JSON is left out`() {
+        val out = uploadSwallowedFailure("save an event to Proton", 502, "x".repeat(400))
+        assertEquals("Could not save an event to Proton: HTTP 502", out)
+    }
+
+    /** A Proton message longer than a notification can carry is cut, not dropped. */
+    @Test
+    fun `a long Proton error is cut`() {
+        val body = """{"Code":2000,"Error":"${"y".repeat(400)}"}"""
+        val out = uploadSwallowedFailure("save an event to Proton", 500, body)
+        assertEquals("Could not save an event to Proton: HTTP 500 (Code 2000: " + "y".repeat(200) + "…)", out)
     }
 
     /**

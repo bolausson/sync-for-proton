@@ -56,15 +56,21 @@ class SrpAuthHandler @Inject constructor(
             val errorBody = authInfoResponse.errorBody()?.string() ?: "no body"
             // Check for CAPTCHA requirement
             checkForCaptcha(errorBody)
-            // Do NOT log error body (may contain verification tokens)
-            SyncLog.e(TAG, "Auth info failed: HTTP ${authInfoResponse.code()}")
-            throw AuthException("Failed to get auth info: HTTP ${authInfoResponse.code()}")
+            // Code and Error only, never the body (a 9001 body carries a verification token)
+            throw refused("Auth info failed", authInfoResponse.code(), errorBody)
         }
-        val authInfo = authInfoResponse.body()
-            ?: throw AuthException("Failed to get auth info: empty response body")
+        val authInfo = authInfoResponse.body() ?: run {
+            SyncLog.e(TAG, "Auth info failed: HTTP ${authInfoResponse.code()} with an empty body")
+            throw AuthException("Failed to get auth info: empty response body", httpStatus = authInfoResponse.code())
+        }
 
         if (authInfo.code != 1000) {
-            throw AuthException("Auth info failed with code: ${authInfo.code}")
+            SyncLog.e(TAG, "Auth info failed: HTTP ${authInfoResponse.code()} (Code ${authInfo.code})")
+            throw AuthException(
+                "Auth info failed with code: ${authInfo.code}",
+                httpStatus = authInfoResponse.code(),
+                protonCode = authInfo.code
+            )
         }
 
         // Step 2: Compute SRP proofs (after checking that Proton signed the modulus)
@@ -78,7 +84,7 @@ class SrpAuthHandler @Inject constructor(
             )
         } catch (e: SrpCrypto.UnsignedModulusException) {
             SyncLog.e(TAG, "Sign-in stopped before any proof was sent: ${e.message}")
-            throw AuthException("Modulus signature verification failed - possible MITM attack", e)
+            throw AuthException("Modulus signature verification failed - possible MITM attack", e, untrustedServer = true)
         }
 
         val clientEphemeralB64 = Base64.encodeToString(proofs.clientEphemeral, Base64.NO_WRAP)
@@ -99,21 +105,28 @@ class SrpAuthHandler @Inject constructor(
         if (!authResponse.isSuccessful) {
             val errorBody = authResponse.errorBody()?.string() ?: "no body"
             checkForCaptcha(errorBody)
-            // Do NOT log error body
-            SyncLog.e(TAG, "Authentication failed: HTTP ${authResponse.code()}")
-            throw AuthException("Authentication failed: HTTP ${authResponse.code()}")
+            // Code and Error only, never the body. A wrong password reads
+            // "Authentication failed: HTTP 422 (Code 8002: ...)".
+            throw refused("Authentication failed", authResponse.code(), errorBody)
         }
-        val auth = authResponse.body()
-            ?: throw AuthException("Authentication failed: empty response body")
+        val auth = authResponse.body() ?: run {
+            SyncLog.e(TAG, "Authentication failed: HTTP ${authResponse.code()} with an empty body")
+            throw AuthException("Authentication failed: empty response body", httpStatus = authResponse.code())
+        }
 
         if (auth.code != 1000) {
-            SyncLog.e(TAG, "Authentication failed with code: ${auth.code}")
-            throw AuthException("Authentication failed with code: ${auth.code}")
+            SyncLog.e(TAG, "Authentication failed: HTTP ${authResponse.code()} (Code ${auth.code})")
+            throw AuthException(
+                "Authentication failed with code: ${auth.code}",
+                httpStatus = authResponse.code(),
+                protonCode = auth.code
+            )
         }
 
         // Step 4: Verify server proof
         if (!SrpCrypto.verifyServerProof(proofs.expectedServerProof, auth.serverProof)) {
-            throw AuthException("Server proof verification failed - possible MITM attack")
+            SyncLog.e(TAG, "Server proof verification failed; sign-in stopped")
+            throw AuthException("Server proof verification failed - possible MITM attack", untrustedServer = true)
         }
 
         // Log scope, password mode and second factor for diagnostic purposes (no secrets
@@ -163,7 +176,9 @@ class SrpAuthHandler @Inject constructor(
         val response = apiClient.getAuthInfo(mapOf("Username" to username, "Intent" to "Proton"))
         val info = response.body()
         if (!response.isSuccessful || info == null || info.code != 1000) {
-            return "auth info failed: HTTP ${response.code()}, code ${info?.code}"
+            // The error body is read only here, after body() came back empty.
+            return "auth info failed: HTTP ${response.code()}" +
+                (if (info != null) " (Code ${info.code})" else response.protonErrorSuffix())
         }
         return try {
             "modulus signature verified with Proton's modulus key (${SrpCrypto.readSignedModulus(info.modulus).size} bytes)"
@@ -190,23 +205,26 @@ class SrpAuthHandler @Inject constructor(
                 // with Code 8002 (the code was wrong) in a support log. A field report was
                 // undiagnosable for exactly this reason: its screenshot carried more
                 // information than its log.
-                val apiError = readApiError(response.errorBody()?.string())
-                SyncLog.w(
-                    TAG,
-                    "2FA verification failed for ${session.accountName}: HTTP ${response.code()}" +
-                        (apiError?.let { " (Code ${it.first}: ${it.second})" } ?: " (no API error body)")
+                val errorBody = response.errorBody()?.string()
+                val apiError = ProtonApiError.parse(errorBody)
+                val detail = ProtonApiError.describe(errorBody).ifEmpty { " (no API error body)" }
+                SyncLog.w(TAG, "2FA verification failed for ${session.accountName}: HTTP ${response.code()}$detail")
+                if (apiError?.first == ProtonApiError.CODE_INVALID_LOGIN) throw TwoFactorRejectedException()
+                throw AuthException(
+                    "2FA verification failed: HTTP ${response.code()}$detail",
+                    httpStatus = response.code(),
+                    protonCode = apiError?.first
                 )
-                if (apiError?.first == CODE_INCORRECT_CREDENTIALS) throw TwoFactorRejectedException()
-                throw AuthException("2FA verification failed: HTTP ${response.code()}")
             }
 
             @Suppress("UNCHECKED_CAST")
-            val body = response.body() ?: throw AuthException("2FA response body is null")
+            val body = response.body()
+                ?: throw AuthException("2FA response body is null", httpStatus = response.code())
             val code = (body["Code"] as? Double)?.toInt()
             if (code != 1000) {
                 SyncLog.w(TAG, "2FA rejected for ${session.accountName}: Code $code")
-                if (code == CODE_INCORRECT_CREDENTIALS) throw TwoFactorRejectedException()
-                throw AuthException("2FA failed with code: $code")
+                if (code == ProtonApiError.CODE_INVALID_LOGIN) throw TwoFactorRejectedException()
+                throw AuthException("2FA failed with code: $code", httpStatus = response.code(), protonCode = code)
             }
 
             // INFO, not DEBUG: this is the milestone that says the second factor was
@@ -226,9 +244,15 @@ class SrpAuthHandler @Inject constructor(
             // request tag, which is never sent.
             val userResponse = apiClient.getUser(session.accountName)
             if (!userResponse.isSuccessful) {
-                val errorBody = userResponse.errorBody()?.string() ?: "no body"
-                SyncLog.e(TAG, "User info failed: HTTP ${userResponse.code()} - $errorBody")
-                throw AuthException("Failed to fetch user info: HTTP ${userResponse.code()} - $errorBody")
+                // Code and Error only: the raw body went into both the log and the exception text.
+                val errorBody = userResponse.errorBody()?.string()
+                val detail = "HTTP ${userResponse.code()}" + ProtonApiError.describe(errorBody)
+                SyncLog.e(TAG, "User info failed: $detail")
+                throw AuthException(
+                    "Failed to fetch user info: $detail",
+                    httpStatus = userResponse.code(),
+                    protonCode = ProtonApiError.parse(errorBody)?.first
+                )
             }
             val user = userResponse.body()?.user
                 ?: throw AuthException("Failed to fetch user info: empty response body")
@@ -291,7 +315,7 @@ class SrpAuthHandler @Inject constructor(
                             }
                         }
                     } else {
-                        SyncLog.w(TAG, "Failed to fetch key salts: HTTP ${saltsResponse.code()}, using auth keySalt")
+                        SyncLog.w(TAG, "Failed to fetch key salts: HTTP ${saltsResponse.code()}${saltsResponse.protonErrorSuffix()}, using auth keySalt")
                         saltSource = "auth-keySalt-on-http-${saltsResponse.code()}"
                     }
                 } catch (e: Exception) {
@@ -375,7 +399,7 @@ class SrpAuthHandler @Inject constructor(
                             SyncLog.d(TAG, "No address keys found for ${session.accountName}")
                         }
                     } else {
-                        SyncLog.w(TAG, "Failed to fetch addresses: HTTP ${addressesResponse.code()}")
+                        SyncLog.w(TAG, "Failed to fetch addresses: HTTP ${addressesResponse.code()}${addressesResponse.protonErrorSuffix()}")
                     }
                 } catch (e: Exception) {
                     SyncLog.w(TAG, "Failed to fetch/unlock address keys for ${session.accountName}", e)
@@ -389,7 +413,21 @@ class SrpAuthHandler @Inject constructor(
         }
     }
 
-    class AuthException(message: String, cause: Throwable? = null) : Exception(message, cause)
+    /**
+     * A sign-in step failed. The fields let the sign-in screen name the cause without reading
+     * [message], which stays technical and is meant for the log ([me.proton.sync.account.SignInErrors]).
+     *
+     * [httpStatus] and [protonCode] are null when the step never got that far. [untrustedServer]
+     * means a modulus, server-proof or verification-URL check failed, so the answer may not have
+     * come from Proton at all.
+     */
+    class AuthException(
+        message: String,
+        cause: Throwable? = null,
+        val httpStatus: Int? = null,
+        val protonCode: Int? = null,
+        val untrustedServer: Boolean = false
+    ) : Exception(message, cause)
 
     /**
      * Thrown when the account requires 2FA but only FIDO2 (security key / passkey) is
@@ -401,7 +439,8 @@ class SrpAuthHandler @Inject constructor(
     class Fido2OnlyException : Exception("Account uses FIDO2-only 2FA; this app supports TOTP only")
 
     /**
-     * Proton rejected the authenticator code itself (Code 8002).
+     * Proton rejected the authenticator code itself ([ProtonApiError.CODE_INVALID_LOGIN], which
+     * for `/auth/v4/2fa` means a bad code).
      *
      * Typed so the sign-in screen can say "that code was not accepted, try again" instead of
      * surfacing a raw status. A user shown `2FA verification failed: HTTP 422` learns nothing
@@ -462,22 +501,14 @@ class SrpAuthHandler @Inject constructor(
     }
 
     /**
-     * Pull `Code` and `Error` out of a Proton error body, or null if it is not one.
-     *
-     * Proton answers every failure with `{"Code": NNNN, "Error": "..."}`, and that Code is
-     * the only thing that separates causes an HTTP status conflates. Returns the pair rather
-     * than a type because two fields do not earn a class.
+     * Log a refused sign-in call and build its exception: the status plus Proton's Code and
+     * Error, never the body (see [checkForCaptcha]: a 9001 body carries a bearer token). The Code
+     * is what separates a wrong password (8002) from everything else a 422 can mean.
      */
-    private fun readApiError(errorBody: String?): Pair<Int?, String?>? {
-        if (errorBody.isNullOrBlank()) return null
-        return try {
-            val json = com.google.gson.JsonParser.parseString(errorBody).asJsonObject
-            val code = json.get("Code")?.asInt
-            val message = json.get("Error")?.asString
-            if (code == null && message == null) null else code to message
-        } catch (_: Exception) {
-            null
-        }
+    private fun refused(what: String, httpStatus: Int, errorBody: String?): AuthException {
+        val line = "$what: HTTP $httpStatus" + ProtonApiError.describe(errorBody).ifEmpty { " (no API error body)" }
+        SyncLog.e(TAG, line)
+        return AuthException(line, httpStatus = httpStatus, protonCode = ProtonApiError.parse(errorBody)?.first)
     }
 
     /**
@@ -506,7 +537,7 @@ class SrpAuthHandler @Inject constructor(
         try {
             val json = com.google.gson.JsonParser.parseString(errorBody).asJsonObject
             val code = json.get("Code")?.asInt
-            if (code == 9001) {
+            if (code == ProtonApiError.CODE_HUMAN_VERIFICATION) {
                 val details = json.getAsJsonObject("Details")
                 val token = details?.get("HumanVerificationToken")?.asString ?: ""
                 val webUrl = details?.get("WebUrl")?.asString ?: ""
@@ -517,7 +548,10 @@ class SrpAuthHandler @Inject constructor(
                 // verify.proton.me; anything else means a tampered response.
                 if (webUrl.isNotEmpty() && !CaptchaHostPolicy.isAllowedUrl(webUrl)) {
                     SyncLog.w(TAG, "Captcha blocked: verification URL rejected (host not allowlisted)")
-                    throw AuthException("Verification page rejected: not a Proton URL. Please try again or verify via an official Proton app.")
+                    throw AuthException(
+                        "Verification page rejected: not a Proton URL. Please try again or verify via an official Proton app.",
+                        untrustedServer = true
+                    )
                 }
                 // Milestone: without this a support log jumps straight from "SRP login OK"
                 // to nothing, and you cannot tell whether Proton demanded verification at
@@ -563,9 +597,6 @@ class SrpAuthHandler @Inject constructor(
         /** Bits of [TwoFactorInfo.enabled]. Proton may add more; see [describeTwoFactor]. */
         private const val TWO_FACTOR_TOTP = 1
         private const val TWO_FACTOR_FIDO2 = 2
-
-        /** Proton's "incorrect login credentials", which for `/auth/v4/2fa` means a bad code. */
-        private const val CODE_INCORRECT_CREDENTIALS = 8002
 
         /**
          * Report clock drift beyond this. A TOTP step is 30 seconds and Proton tolerates

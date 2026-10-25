@@ -37,12 +37,19 @@ sealed class SyncTriggerType(val label: String) {
     /** Periodic sync triggered by WorkManager watchdog or system scheduler. */
     object ScheduledSync : SyncTriggerType("Scheduled sync")
 
+    /**
+     * The one sync requested when the subscription turns active ([SyncConstants.EXTRA_CATCH_UP]). A label only:
+     * nothing branches on it, so the run behaves as the MANUAL or EXPEDITED request it is.
+     */
+    object CatchUpSync : SyncTriggerType("Catch-up sync after activation")
+
     companion object {
         /**
          * Determines the trigger type from the sync adapter [extras] Bundle.
          *
          * Priority order matches the original inline logic:
-         * initialize > forceRemoteToLocal > forceLocalToRemote/upload > scheduledByWorker > manual > scheduled.
+         * initialize > forceRemoteToLocal > forceLocalToRemote/upload > userSyncNow > catchUp > scheduledByWorker >
+         * manual > scheduled.
          */
         fun fromExtras(extras: Bundle): SyncTriggerType {
             val isManual = extras.getBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false)
@@ -52,11 +59,13 @@ sealed class SyncTriggerType(val label: String) {
             val isForceLocalToRemote = extras.getBoolean(SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE, false)
             val isScheduledByWorker = extras.getBoolean(SyncConstants.EXTRA_SCHEDULED_BY_WORKER, false)
             val isUserSyncNow = extras.getBoolean(SyncConstants.EXTRA_USER_SYNC_NOW, false)
+            val isCatchUp = extras.getBoolean(SyncConstants.EXTRA_CATCH_UP, false)
             return when {
                 isInitialize -> InitialSync
                 isForceRemoteToLocal -> ManualForceRemoteToLocal
                 isForceLocalToRemote || (isManual && isUpload) -> ManualForceLocalToRemote
                 isUserSyncNow -> UserSyncNow
+                isCatchUp -> CatchUpSync
                 isScheduledByWorker -> ScheduledSync
                 isManual -> ManualSync
                 else -> ScheduledSync

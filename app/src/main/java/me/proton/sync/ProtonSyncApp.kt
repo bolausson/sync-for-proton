@@ -17,7 +17,6 @@ import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.account.LoginActivity
 import me.proton.sync.billing.SubscriptionManager
 import me.proton.sync.calendar.EventConflictGuard
-import me.proton.sync.billing.SubscriptionState
 import me.proton.sync.db.SyncDatabase
 import javax.inject.Inject
 import android.content.ContentResolver
@@ -110,15 +109,18 @@ class ProtonSyncApp : Application() {
         migrateParentAccountNames()
         migrateAddressBookAccountNames()
 
-        // Connect the subscription backend (Play Billing, or the Paddle licence check in the
-        // direct flavour) so the subscription gate resolves early. Sync schedules
-        // are armed by the subscription observer below — once SubscriptionManager emits a
-        // non-Unknown state (cached or live), it calls scheduleAll. This avoids the prior
-        // double-arm pattern where onCreate scheduled unconditionally and the observer
-        // immediately re-armed when the state resolved.
-        subscriptionManager.connect()
-
+        // Sync schedules are armed by the subscription observer, once SubscriptionManager emits a
+        // non-Unknown state (cached or live), never unconditionally here: that was a double arm,
+        // with the observer re-arming the moment the state resolved. The observer goes BEFORE
+        // connect() because it reads the cached state first, before either backend can change it:
+        // that is how it tells a plain start of an active install (re-arm only) from an activation
+        // (re-arm and one catch-up sync). Otherwise the order does not matter, since a StateFlow
+        // replays its current value to a collector that arrives late.
         observeSubscriptionForScheduling()
+
+        // Connect the subscription backend (Play Billing, or the Paddle licence check in the
+        // direct flavour) so the subscription gate resolves early.
+        subscriptionManager.connect()
 
         val accountManager = AccountManager.get(this)
         accountManager.addOnAccountsUpdatedListener({ accounts ->
@@ -186,7 +188,8 @@ class ProtonSyncApp : Application() {
      *  4. Rename the account_name in CalendarContract.Calendars (events follow via FK).
      *  5. Rename every SharedPreferences key whose suffix or middle token is the old name.
      *  6. Update the linked address-book account's EXTRA_PARENT_ACCOUNT_NAME.
-     *  7. Re-arm calendar sync settings (setIsSyncable / setSyncAutomatically / addPeriodicSync).
+     *  7. Re-arm calendar sync settings (setIsSyncable / setSyncAutomatically / SyncUtils.applyPeriodicSync),
+     *     and move the old name's scheduled work to the new name.
      *  8. Drop the in-memory session for the old name from AccountSessionManager.
      *  9. Remove the old parent account.
      */
@@ -309,15 +312,22 @@ class ProtonSyncApp : Application() {
             val syncOn = ContentResolver.getSyncAutomatically(oldParent, SyncConstants.AUTHORITY_CALENDAR)
             ContentResolver.setIsSyncable(newParent, SyncConstants.AUTHORITY_CALENDAR, 1)
             ContentResolver.setSyncAutomatically(newParent, SyncConstants.AUTHORITY_CALENDAR, syncOn)
-            if (syncOn) {
-                ContentResolver.addPeriodicSync(newParent, SyncConstants.AUTHORITY_CALENDAR, android.os.Bundle.EMPTY, SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS)
-            }
+            // The preferences were renamed above, so this reads the account's own interval.
+            SyncUtils.applyPeriodicSync(this, newParent, SyncConstants.AUTHORITY_CALENDAR, desired)
 
             // The in-memory session map is keyed by name; drop the old key so the next
             // getSession() rebuilds from AccountManager under the new name.
             accountSessionManager.removeSession(oldParent.name)
 
             am.removeAccountExplicitly(oldParent)
+            // Work names derive from the account name, and once renameAccountInPrefs has moved the
+            // keys, forgetRemovedAccounts can no longer find the old name: its event loop and
+            // watchdogs ran for ever against an account that does not exist, and the new name had
+            // none until the next start.
+            EventLoopWorker.scheduleForAccount(this, oldParent.name, -1)
+            SyncWorker.cancelForAccount(this, oldParent.name, "contacts")
+            SyncWorker.cancelForAccount(this, oldParent.name, "calendar")
+            SyncScheduling.scheduleWorkers(this, desired)
             SyncLog.i(TAG, "Parent rename: ${oldParent.name} → $desired complete")
             true
         } catch (e: Exception) {
@@ -410,7 +420,7 @@ class ProtonSyncApp : Application() {
      *  1. Add a new ab-account with the desired name (preserving parent-link user-data).
      *  2. UPDATE every RawContact + Settings row from the old account_name to the new one
      *     (CALLER_IS_SYNCADAPTER so the provider doesn't dirty-flag every contact).
-     *  3. Copy sync settings (setIsSyncable / setSyncAutomatically / addPeriodicSync).
+     *  3. Copy sync settings (setIsSyncable / setSyncAutomatically / SyncUtils.applyPeriodicSync).
      *  4. Remove the old ab-account.
      */
     private fun migrateAddressBookAccountNames() {
@@ -484,9 +494,7 @@ class ProtonSyncApp : Application() {
                 val syncOn = ContentResolver.getSyncAutomatically(oldAb, SyncConstants.AUTHORITY_CONTACTS)
                 ContentResolver.setIsSyncable(newAb, SyncConstants.AUTHORITY_CONTACTS, 1)
                 ContentResolver.setSyncAutomatically(newAb, SyncConstants.AUTHORITY_CONTACTS, syncOn)
-                if (syncOn) {
-                    ContentResolver.addPeriodicSync(newAb, SyncConstants.AUTHORITY_CONTACTS, android.os.Bundle.EMPTY, SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS)
-                }
+                SyncUtils.applyPeriodicSync(this, newAb, SyncConstants.AUTHORITY_CONTACTS, parentName)
 
                 am.removeAccountExplicitly(oldAb)
                 SyncLog.i(TAG, "Address-book migration: ${oldAb.name} → $desired complete")
@@ -502,66 +510,37 @@ class ProtonSyncApp : Application() {
      * becomes active again. Avoids waking the device for work the sync adapters
      * will only immediately skip.
      *
+     * An activation within a running process, or after a start with no open gate, also requests
+     * one catch-up sync (SyncScheduling.requestCatchUpSyncs): syncs the gate dropped meanwhile,
+     * such as the setup chooser's first sync or a restore's, are not replayed otherwise, and a
+     * restored or newly signed-in account sat empty until its first scheduled sync. A plain start
+     * of an active install only re-arms. SyncScheduling.Tracker decides which is which.
+     *
      * The user's `setSyncAutomatically` on/off preference is intentionally left
      * alone: we only remove the *periodic* portion, so when the subscription
      * is renewed the user's toggle state is preserved.
      */
     private fun observeSubscriptionForScheduling() {
+        // Read here, on the calling thread, before connect() can change the state: the cached
+        // verdict is what separates a plain start from one where the gate was closed.
+        val tracker = SyncScheduling.Tracker(activeAtStart = subscriptionManager.isSyncAllowed())
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
-            var lastActive: Boolean? = null
             subscriptionManager.state.collect { state ->
-                // Ignore the Unknown bootstrap state so we don't thrash schedules before the
-                // subscription backend (Play Billing or the licence check) has reported actual state.
-                if (state is SubscriptionState.Unknown) return@collect
-                val active = state.isActive
-                if (active == lastActive) return@collect
-                lastActive = active
-                if (active) {
-                    SyncLog.i(TAG, "Subscription active - arming sync schedules")
-                    EventLoopWorker.scheduleAll(this@ProtonSyncApp)
-                    SyncWorker.scheduleAll(this@ProtonSyncApp)
-                    restorePeriodicSyncs()
-                } else {
-                    SyncLog.i(TAG, "Subscription inactive - cancelling sync schedules")
-                    EventLoopWorker.cancelAll(this@ProtonSyncApp)
-                    SyncWorker.cancelAll(this@ProtonSyncApp)
-                    clearPeriodicSyncs()
+                when (val action = tracker.next(state)) {
+                    SyncScheduling.Action.ARM, SyncScheduling.Action.ARM_AND_CATCH_UP -> {
+                        SyncLog.i(TAG, "Subscription active - arming sync schedules")
+                        SyncScheduling.armAll(this@ProtonSyncApp)
+                        if (action == SyncScheduling.Action.ARM_AND_CATCH_UP) {
+                            SyncScheduling.requestCatchUpSyncs(this@ProtonSyncApp)
+                        }
+                    }
+                    SyncScheduling.Action.DISARM -> {
+                        SyncLog.i(TAG, "Subscription inactive - cancelling sync schedules")
+                        SyncScheduling.disarmAll(this@ProtonSyncApp)
+                    }
+                    SyncScheduling.Action.NONE -> {}
                 }
             }
-        }
-    }
-
-    private fun clearPeriodicSyncs() {
-        val am = AccountManager.get(this)
-        for (account in am.getAccountsByType(ACCOUNT_TYPE)) {
-            ContentResolver.removePeriodicSync(account, SyncConstants.AUTHORITY_CALENDAR, android.os.Bundle.EMPTY)
-        }
-        for (abAccount in am.getAccountsByType(ACCOUNT_TYPE_ADDRESS_BOOK)) {
-            ContentResolver.removePeriodicSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, android.os.Bundle.EMPTY)
-        }
-    }
-
-    /**
-     * Bring the periodic syncs into line with the schedule the user actually chose.
-     *
-     * This used to re-arm every enabled type at the hardcoded one-hour default on every start,
-     * ignoring the interval setting completely. That did two wrong things at once: it undid a
-     * "Manual only" choice on the next launch, so the fix that removed those syncs lasted until
-     * the user next opened the app, and it pinned everyone else to an hour no matter which
-     * interval they had picked. Both were seen in the field: set to "Manual only", the app still
-     * synced after an update and a force-close.
-     *
-     * Reconciling rather than restoring: the stored interval is the single source of truth, and a
-     * negative value means manual, so the sync is removed rather than re-created.
-     */
-    private fun restorePeriodicSyncs() {
-        val am = AccountManager.get(this)
-        for (account in am.getAccountsByType(ACCOUNT_TYPE)) {
-            val abAccount = android.accounts.Account(
-                SyncUtils.addressBookAccountName(am, account), ACCOUNT_TYPE_ADDRESS_BOOK
-            )
-            SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
-            SyncUtils.applyPeriodicSync(this, abAccount, SyncConstants.AUTHORITY_CONTACTS, account.name)
         }
     }
 

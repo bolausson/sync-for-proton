@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.preference.PreferenceManager
 import androidx.work.*
+import me.proton.sync.api.ProtonApiError
 import me.proton.sync.billing.SubscriptionGate
 import me.proton.sync.crypto.SecureStorage
 import okhttp3.OkHttpClient
@@ -266,6 +267,8 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
                 val map = gson.fromJson<Map<String, Any>>(body, object : TypeToken<Map<String, Any>>() {}.type)
                 map["EventID"] as? String
             } else {
+                // Silent until 2.0.2. Code and Error only, never the body.
+                SyncLog.w(TAG, "Event loop bootstrap failed: HTTP ${response.code}" + ProtonApiError.describe(readErrorBody(response)))
                 response.close()
                 null
             }
@@ -289,7 +292,7 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
                 val body = response.body?.string()
                 gson.fromJson<Map<String, Any>>(body, object : TypeToken<Map<String, Any>>() {}.type)
             } else {
-                SyncLog.w(TAG, "Event loop poll failed: HTTP ${response.code}")
+                SyncLog.w(TAG, "Event loop poll failed: HTTP ${response.code}" + ProtonApiError.describe(readErrorBody(response)))
                 response.close()
                 null
             }
@@ -298,6 +301,14 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
             null
         }
     }
+
+    /** A failed response's body text for [ProtonApiError.describe], or null when it cannot be read. */
+    private fun readErrorBody(response: okhttp3.Response): String? =
+        try {
+            response.body?.string()
+        } catch (_: Exception) {
+            null
+        }
 
     private fun triggerSync(accountManager: AccountManager, accountName: String, contacts: Boolean, calendar: Boolean) {
         val bundle = Bundle().apply {
@@ -346,6 +357,9 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
         /** Whether an interval in minutes should result in scheduled work at all. */
         internal fun schedulesWork(intervalMinutes: Long): Boolean = intervalMinutes > 0
 
+        /** The unique work name of an account's event loop (also read by the schedule_info debug command). */
+        internal fun workName(accountName: String) = "proton_event_loop_${accountName.hashCode()}"
+
         /**
          * Schedule the event loop poller for an account.
          *
@@ -353,7 +367,7 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
          *                        [intervalMinutesFor]). Zero or negative cancels.
          */
         fun scheduleForAccount(context: Context, accountName: String, intervalMinutes: Long) {
-            val workName = "proton_event_loop_${accountName.hashCode()}"
+            val workName = workName(accountName)
 
             // <= 0, not < 0. A caller dividing a -1 SECONDS sentinel by 60 gets 0, and 0 used to
             // fall through and schedule at MIN_INTERVAL_MINUTES - the opposite of "off".
@@ -411,29 +425,36 @@ class EventLoopWorker(context: Context, params: WorkerParameters) : Worker(conte
          */
         fun scheduleAll(context: Context) {
             val accountManager = AccountManager.get(context)
-            val accounts = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
+            for (account in accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)) {
+                scheduleFromSettings(context, account.name)
+            }
+        }
+
+        /**
+         * Schedule one account's event loop from its stored interval, or cancel it for "Manual only".
+         * The body of [scheduleAll], on its own so a new or renamed account can be armed without
+         * touching the others (SyncScheduling.scheduleWorkers).
+         */
+        fun scheduleFromSettings(context: Context, accountName: String) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val intervalSeconds = prefs.getString(
+                SyncPreferences.eventLoopIntervalKey(accountName),
+                "3600" // default 1 hour
+            )?.toLongOrNull() ?: 3600L
 
-            for (account in accounts) {
-                val intervalSeconds = prefs.getString(
-                    SyncPreferences.eventLoopIntervalKey(account.name),
-                    "3600" // default 1 hour
-                )?.toLongOrNull() ?: 3600L
-
-                val minutes = intervalMinutesFor(intervalSeconds)
-                if (schedulesWork(minutes)) {
-                    scheduleForAccount(context, account.name, minutes)
-                } else {
-                    // CANCEL, not skip. Skipping only declines to create a job; it leaves any
-                    // existing one running, and WorkManager unique periodic work outlives an app
-                    // upgrade and a force-stop. A user who chose "Manual only" on v1.10.49 got a
-                    // 15-minute job from that release's truncation bug, and updating to v1.10.50
-                    // fixed the setting for the FUTURE while that job kept firing forever, because
-                    // nothing here ever cancelled it. Seen in the field: after the update and a
-                    // force-stop, the job still fired every 15 minutes.
-                    // SyncWorker.scheduleAll has always had this else branch; this one did not.
-                    scheduleForAccount(context, account.name, -1)
-                }
+            val minutes = intervalMinutesFor(intervalSeconds)
+            if (schedulesWork(minutes)) {
+                scheduleForAccount(context, accountName, minutes)
+            } else {
+                // CANCEL, not skip. Skipping only declines to create a job; it leaves any
+                // existing one running, and WorkManager unique periodic work outlives an app
+                // upgrade and a force-stop. A user who chose "Manual only" on v1.10.49 got a
+                // 15-minute job from that release's truncation bug, and updating to v1.10.50
+                // fixed the setting for the FUTURE while that job kept firing forever, because
+                // nothing here ever cancelled it. Seen in the field: after the update and a
+                // force-stop, the job still fired every 15 minutes.
+                // SyncWorker.scheduleAll has always had this else branch; this one did not.
+                scheduleForAccount(context, accountName, -1)
             }
         }
     }

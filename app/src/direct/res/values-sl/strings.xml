@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Naročnina</string>
-    <string name="spp_subscribe_dialog_message">Naročite se v brskalniku in nato spodaj prilepite svoj ID naročnine (sub_…), da aktivirate sinhronizacijo v tej napravi.</string>
+    <string name="spp_btn_enter_subscription_id">Vnesi ID naročnine</string>
+    <string name="spp_subscribe_dialog_title">Vnesite ID naročnine</string>
+    <string name="spp_subscribe_dialog_message">Prilepite svoj ID naročnine (začne se s sub_ in je prikazan na strani po zaključku nakupa) ali ID transakcije z računa, ki ga izda Paddle (začne se s txn_). Ste izgubili oba? Potrdilo o plačilu, ki ga Paddle pošlje po e-pošti, vsebuje povezavo \"Manage subscription\" do vaše naročnine (Paddle prodajalca navaja kot BEO). Če ID-ja še vedno ne najdete, v Nastavitvah tapnite \"Pošlji poročilo razvijalcu\". Naročnina Google Play deluje samo v različici te aplikacije za Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiviraj</string>
-    <string name="spp_subscribe_open_checkout">Naročite se v brskalniku</string>
     <string name="spp_subscribe_validating">Preverjanje naročnine…</string>
+    <string name="spp_subscribe_activated">Naročnina je aktivirana.</string>
+    <string name="spp_subscribe_error_not_found">Naročnine s tem ID-jem ni bilo mogoče najti. Preverite ID in poskusite znova.</string>
+    <string name="spp_subscribe_error_wrong_product">Ta ID naročnine pripada drugi aplikaciji.</string>
+    <string name="spp_subscribe_error_cancelled">Ta naročnina je bila preklicana. Znova se naročite, da dobite nov ID naročnine.</string>
+    <string name="spp_subscribe_error_kept_current">Ta naročnina je začasno ustavljena ali neplačana, zato ta telefon obdrži trenutno naročnino.</string>
+    <string name="spp_subscribe_error_play_order">To je številka naročila Google Play. Naročnina Google Play deluje samo v različici aplikacije za Google Play.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Ta ID transakcije je nepopoln ali vsebuje tipkarsko napako. Znova ga kopirajte.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nakupa s tem ID-jem transakcije ni bilo mogoče najti. Preverite ID ali vnesite ID naročnine, ki se začne s sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Ta nakup pripada drugi aplikaciji.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Ta nakup še nima naročnine. Če ste pravkar plačali, poskusite znova čez minuto. Sicer vnesite ID naročnine, ki se začne s sub_.</string>
+    <string name="spp_subscribe_error_email">To je e-poštni naslov. Vaš ID naročnine se začne s \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Ta ID naročnine je nepopoln ali vsebuje tipkarsko napako. Znova ga kopirajte.</string>
+    <string name="spp_subscribe_error_not_an_id">To ni ID naročnine. ID-ji naročnin se začnejo s \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Besedilo vsebuje več kot en ID. Vnesite samo enega.</string>
     <string name="spp_manage_dialog_title">Upravljaj naročnino</string>
     <string name="spp_manage_action_update_payment">Posodobi način plačila</string>
     <string name="spp_manage_action_cancel">Prekliči naročnino</string>

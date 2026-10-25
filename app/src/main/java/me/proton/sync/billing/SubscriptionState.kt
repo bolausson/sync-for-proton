@@ -106,3 +106,16 @@ internal fun scheduledChangeLabel(change: ScheduledChange): Int = when (change.a
     ScheduledChange.Action.CANCEL -> R.string.label_subscription_ends
     ScheduledChange.Action.PAUSE -> R.string.label_subscription_pauses
 }
+
+private const val DAY_MS = 24L * 60 * 60 * 1000
+
+/**
+ * Whole days left of a trial that ends at [expiresAtMs], rounded up: a trial that started a minute ago has 7,
+ * and the last day reads 1 until it ends. 0 once the end has passed and the next licence check has not yet
+ * moved the state on. Written out by hand because Math.ceilDiv needs a newer Android than minSdk 29.
+ */
+internal fun trialDaysLeft(expiresAtMs: Long, nowMs: Long): Int {
+    val left = expiresAtMs - nowMs
+    if (left <= 0) return 0
+    return ((left + DAY_MS - 1) / DAY_MS).toInt()
+}

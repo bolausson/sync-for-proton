@@ -31,6 +31,8 @@ import me.proton.sync.SyncNotificationHelper
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.AuthInterceptor
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.ProtonApiError
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.api.protonRecipientKey
 import me.proton.sync.api.unexpectedKeyLookupFailure
 import me.proton.sync.api.models.CalendarEventDetail
@@ -609,7 +611,7 @@ class CalendarSyncAdapter(
         // Fetch calendar list from Proton
         val calendarsResponse = apiClient.getCalendars(account.name)
         if (!calendarsResponse.isSuccessful) {
-            SyncLog.e(TAG, "Failed to fetch calendars: ${calendarsResponse.code()}")
+            SyncLog.e(TAG, "Failed to fetch calendars: HTTP ${calendarsResponse.code()}${calendarsResponse.protonErrorSuffix()}")
             syncResult.stats.numIoExceptions++
             // Recorded, or the failure notification and the settings screen say only "Sync
             // incomplete" - the exact unhelpful string SyncUtils' swallowed-failure mechanism was
@@ -2238,7 +2240,7 @@ class CalendarSyncAdapter(
                     return null
                 }
                 if (!resp.isSuccessful) {
-                    SyncLog.e(TAG, "Failed to fetch event IDs for '$calDisplayName': HTTP ${resp.code()}, aborting sync")
+                    SyncLog.e(TAG, "Failed to fetch event IDs for '$calDisplayName': HTTP ${resp.code()}${resp.protonErrorSuffix()}, aborting sync")
                     return null
                 }
                 @Suppress("UNCHECKED_CAST")
@@ -2454,9 +2456,8 @@ class CalendarSyncAdapter(
                             break  // restart inner pagination at page=0 with the new chunk size
                         }
                         val spanDays = (windowEnd - windowStart) / SyncConstants.SECONDS_PER_DAY
-                        SyncLog.e(TAG, "Failed to fetch $label for '$calDisplayName' (Type=$type, Page=$page, span=${spanDays}d): HTTP ${resp.code()}, aborting sync")
+                        SyncLog.e(TAG, "Failed to fetch $label for '$calDisplayName' (Type=$type, Page=$page, span=${spanDays}d): HTTP ${resp.code()}${ProtonApiError.describe(errorBody)}, aborting sync")
                         SyncLog.e(TAG, "  Request URL: $requestUrl")
-                        SyncLog.e(TAG, "  Response body: ${errorBody ?: "(empty)"}")
                         return null
                     }
                     val events = resp.body()?.events
@@ -2671,7 +2672,7 @@ class CalendarSyncAdapter(
                 return null
             }
             if (!resp.isSuccessful) {
-                SyncLog.e(TAG, "'$calDisplayName': /events/ids fetch HTTP ${resp.code()}")
+                SyncLog.e(TAG, "'$calDisplayName': /events/ids fetch HTTP ${resp.code()}${resp.protonErrorSuffix()}")
                 return null
             }
             @Suppress("UNCHECKED_CAST")
@@ -2809,7 +2810,7 @@ class CalendarSyncAdapter(
     private suspend fun fetchCalendarKeys(accountName: String, calendarId: String): List<CalendarKey> {
         val response = apiClient.getCalendarKeys(accountName, calendarId)
         if (!response.isSuccessful) {
-            throw java.io.IOException("keys fetch failed for calendar $calendarId: HTTP ${response.code()}")
+            throw java.io.IOException("keys fetch failed for calendar $calendarId: HTTP ${response.code()}${response.protonErrorSuffix()}")
         }
         return response.body()?.keys ?: emptyList()
     }
@@ -2820,7 +2821,7 @@ class CalendarSyncAdapter(
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string() ?: "no body"
             throw java.io.IOException(
-                "passphrase fetch failed for calendar $calendarId: HTTP ${response.code()} - $errorBody"
+                "passphrase fetch failed for calendar $calendarId: HTTP ${response.code()}" + ProtonApiError.describe(errorBody)
             )
         }
         return response.body()?.getAllPassphrases() ?: emptyList()
@@ -2959,8 +2960,8 @@ class CalendarSyncAdapter(
                 )
                 true
             } else {
-                SyncLog.w(TAG, "Personal part update failed for $protonEventId: HTTP ${response.code()}")
-                response.errorBody()?.close()
+                // Reading the error body for its Code and Error also closes it.
+                SyncLog.w(TAG, "Personal part update failed for $protonEventId: HTTP ${response.code()}${response.protonErrorSuffix()}")
                 false
             }
         } catch (e: Exception) {
@@ -3187,8 +3188,8 @@ class CalendarSyncAdapter(
             if (response.isSuccessful) {
                 response.body()?.calendarSettings
             } else {
-                response.errorBody()?.close()
-                SyncLog.w(TAG, "Could not read calendar settings for $protonCalendarId: HTTP ${response.code()}")
+                // Reading the error body for its Code and Error also closes it.
+                SyncLog.w(TAG, "Could not read calendar settings for $protonCalendarId: HTTP ${response.code()}${response.protonErrorSuffix()}")
                 null
             }
         } catch (e: Exception) {
@@ -3713,7 +3714,7 @@ class CalendarSyncAdapter(
                                 SyncLog.w(TAG, "Giving up the delete of event ${mapping.protonEventId}; it comes back with the next sync")
                             }
                         }
-                        null -> SyncLog.e(TAG, "Failed to delete event on Proton: HTTP ${response.code()} - $errorBody")
+                        null -> SyncLog.e(TAG, "Failed to delete event on Proton: HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
                     }
                 } catch (e: Exception) {
                     SyncLog.e(TAG, "Network error deleting event ${mapping.protonEventId}", e)
@@ -4440,7 +4441,7 @@ class CalendarSyncAdapter(
                     synchronized(syncResult.stats) { syncResult.stats.numDeletes++ }
                 }
                 DeleteOpVerdict.REFUSED -> {
-                    SyncLog.w(TAG, "Proton refuses deleting event ${mapping.protonEventId} (code=${op.code} error='${op.error}'); " +
+                    SyncLog.w(TAG, "Proton refuses deleting event ${mapping.protonEventId} (code=${op.code} error='${ProtonApiError.clean(op.error)}'); " +
                         "restoring it on the phone, nobody is emailed")
                     restoreRefusedDelete(account, provider, mapping, androidEventId, deleteRefusalReason(), syncResult)
                 }
@@ -4469,7 +4470,7 @@ class CalendarSyncAdapter(
                 "restoring it on the phone")
             restoreRefusedDelete(account, provider, mapping, androidEventId, deleteRefusalReason(), syncResult)
         } else {
-            SyncLog.e(TAG, "Failed to delete event ${mapping.protonEventId} on Proton (calendar=${mapping.protonCalendarId}): HTTP ${response.code()} - ${errorBody ?: "(empty body)"}")
+            SyncLog.e(TAG, "Failed to delete event ${mapping.protonEventId} on Proton (calendar=${mapping.protonCalendarId}): HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
             synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
             // Leave the tombstone: the delete is retried next sync.
         }
@@ -4584,12 +4585,12 @@ class CalendarSyncAdapter(
         val key = strikeKey
         val strike = prefs.getInt(key, 0) + 1
         if (strike >= 3) {
-            SyncLog.e(TAG, "Delete of event $protonEventId rejected by Proton (code=${op.code} error='${op.error}') " +
+            SyncLog.e(TAG, "Delete of event $protonEventId rejected by Proton (code=${op.code} error='${ProtonApiError.clean(op.error)}') " +
                 "- attempt $strike/3, giving up and restoring it on the phone")
             prefs.edit().remove(key).apply()
             return true
         }
-        SyncLog.e(TAG, "Delete of event $protonEventId rejected by Proton (code=${op.code} error='${op.error}') " +
+        SyncLog.e(TAG, "Delete of event $protonEventId rejected by Proton (code=${op.code} error='${ProtonApiError.clean(op.error)}') " +
             "- attempt $strike/3, retrying next sync")
         prefs.edit().putInt(key, strike).apply()
         return false
@@ -5164,7 +5165,7 @@ class CalendarSyncAdapter(
         val retryCount = prefs.getInt(retryKey, 0) + 1
         val gaveUp = retryCount >= 3
         if (gaveUp) {
-            SyncLog.e(TAG, "$phase rejected by server (code=$opCode error='$opError') for event " +
+            SyncLog.e(TAG, "$phase rejected by server (code=$opCode error='${ProtonApiError.clean(opError)}') for event " +
                 "$androidEventId - attempt $retryCount/3, giving up (clearing dirty flag)")
             prefs.edit().remove(retryKey).apply()
             SyncUtils.clearCalendarEventDirtyFlag(provider, account, androidEventId, TAG)
@@ -5173,7 +5174,7 @@ class CalendarSyncAdapter(
             val reason = opError?.takeIf { it.isNotBlank() } ?: "Proton error code $opCode"
             gaveUpByAccount[account.name]?.add(rejectedEventTitle(eventTitle) to reason)
         } else {
-            SyncLog.e(TAG, "$phase rejected by server (code=$opCode error='$opError') for event " +
+            SyncLog.e(TAG, "$phase rejected by server (code=$opCode error='${ProtonApiError.clean(opError)}') for event " +
                 "$androidEventId - attempt $retryCount/3, keeping dirty flag for retry")
             prefs.edit().putInt(retryKey, retryCount).apply()
         }
@@ -5975,7 +5976,7 @@ class CalendarSyncAdapter(
                 if (response.isSuccessful && body != null) {
                     body.attendees.orEmpty() to (body.moreAttendees == 1)
                 } else {
-                    SyncLog.w(TAG, "Could not read page $page of the guests of event ${event.id} (HTTP ${response.code()})")
+                    SyncLog.w(TAG, "Could not read page $page of the guests of event ${event.id} (HTTP ${response.code()}${response.protonErrorSuffix()})")
                     null
                 }
             } catch (e: Exception) {
@@ -5999,7 +6000,7 @@ class CalendarSyncAdapter(
         if (response.isSuccessful) {
             response.body()?.event?.let { serverAttendeesOf(account, calendarId, it) }
         } else {
-            SyncLog.w(TAG, "Could not read guests' answers for event $eventId (HTTP ${response.code()}); using the phone's copy")
+            SyncLog.w(TAG, "Could not read guests' answers for event $eventId (HTTP ${response.code()}${response.protonErrorSuffix()}); using the phone's copy")
             null
         }
     } catch (e: Exception) {
@@ -6865,7 +6866,7 @@ class CalendarSyncAdapter(
         } else {
             val eventDetailResponse = apiClient.getCalendarEvent(account.name, protonCalendarId, protonEventId!!)
             if (!eventDetailResponse.isSuccessful) {
-                SyncLog.e(TAG, "Failed to fetch event detail for update: HTTP ${eventDetailResponse.code()}")
+                SyncLog.e(TAG, "Failed to fetch event detail for update: HTTP ${eventDetailResponse.code()}${eventDetailResponse.protonErrorSuffix()}")
                 synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
                 return null
             }
@@ -7234,7 +7235,7 @@ class CalendarSyncAdapter(
                 // silently drop the user's RSVP (the organizer never learns of it).
                 rsvpRetryable = statusResp.code() == 429 || statusResp.code() == 408 ||
                     statusResp.code() >= 500
-                SyncLog.w(TAG, "Failed to update attendance: HTTP ${statusResp.code()} - $err" +
+                SyncLog.w(TAG, "Failed to update attendance: HTTP ${statusResp.code()}${ProtonApiError.describe(err)}" +
                     if (rsvpRetryable) " (transient - will retry next sync)" else " (permanent - giving up)")
             }
         }
@@ -7367,7 +7368,7 @@ class CalendarSyncAdapter(
         syncResult: SyncResult
     ): UploadOutcome {
         val errorBody = updateResponse.errorBody()?.string() ?: "no body"
-        SyncLog.e(TAG, "Failed to update event on Proton: HTTP ${updateResponse.code()} - $errorBody")
+        SyncLog.e(TAG, "Failed to update event on Proton: HTTP ${updateResponse.code()}${ProtonApiError.describe(errorBody)}")
         // The UPDATE half needs exactly what the CREATE half needs. v1.10.53 first shipped the
         // refusal handling and the recorded reason on CREATE only, so EDITING an event on a
         // calendar Proton refuses still retried for ever and still ended the run with
@@ -7590,7 +7591,7 @@ class CalendarSyncAdapter(
             synchronized(syncResult.stats) { syncResult.stats.numUpdates++ }
         } else {
             val errorBody = response.errorBody()?.string() ?: "no body"
-            SyncLog.e(TAG, "Failed to upload event to Proton: HTTP ${response.code()} - $errorBody")
+            SyncLog.e(TAG, "Failed to upload event to Proton: HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
             SyncLog.e(TAG, "Failed event $androidEventId: rrule=${rrule ?: "(none)"} duration=${durationStr ?: "(none)"}")
             // Name the reason. Without this the run ends "Calendar sync FAILED: no reason
             // recorded" and the notification says "an unexpected error occurred", while the cause

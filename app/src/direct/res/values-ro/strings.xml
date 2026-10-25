@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abonament</string>
-    <string name="spp_subscribe_dialog_message">Abonează-te în browser, apoi lipește mai jos ID-ul abonamentului tău (sub_…) pentru a activa sincronizarea pe acest dispozitiv.</string>
+    <string name="spp_btn_enter_subscription_id">Introdu ID-ul abonamentului</string>
+    <string name="spp_subscribe_dialog_title">Introdu ID-ul abonamentului</string>
+    <string name="spp_subscribe_dialog_message">Lipește ID-ul abonamentului (începe cu sub_ și apare pe pagina afișată după plată) sau ID-ul tranzacției de pe factura de la Paddle (începe cu txn_). Le-ai pierdut pe amândouă? E-mailul cu chitanța de la Paddle conține un link \"Manage subscription\" către abonamentul tău (în e-mailurile de la Paddle, vânzătorul apare sub numele BEO). Dacă tot nu găsești niciun ID, atinge \"Trimite raport către dezvoltator\" în Setări. Un abonament Google Play funcționează doar în versiunea Google Play a acestei aplicații.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activează</string>
-    <string name="spp_subscribe_open_checkout">Abonează-te în browser</string>
     <string name="spp_subscribe_validating">Se verifică abonamentul…</string>
+    <string name="spp_subscribe_activated">Abonament activat.</string>
+    <string name="spp_subscribe_error_not_found">Nu a fost găsit niciun abonament cu acest ID. Verifică ID-ul și încearcă din nou.</string>
+    <string name="spp_subscribe_error_wrong_product">Acest ID de abonament aparține altei aplicații.</string>
+    <string name="spp_subscribe_error_cancelled">Acest abonament a fost anulat. Abonează-te din nou pentru a primi un ID de abonament nou.</string>
+    <string name="spp_subscribe_error_kept_current">Acel abonament este suspendat sau neplătit, așa că acest telefon își păstrează abonamentul actual.</string>
+    <string name="spp_subscribe_error_play_order">Acesta este un număr de comandă Google Play. Un abonament Google Play funcționează doar în versiunea Google Play a aplicației.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Acest ID de tranzacție este incomplet sau conține o greșeală de tastare. Copiază-l din nou.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nu a fost găsită nicio achiziție cu acest ID de tranzacție. Verifică ID-ul sau introdu ID-ul abonamentului care începe cu sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Această achiziție aparține altei aplicații.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Această achiziție nu are încă un abonament. Dacă tocmai ai plătit, încearcă din nou peste un minut. Altfel, introdu ID-ul abonamentului care începe cu sub_.</string>
+    <string name="spp_subscribe_error_email">Aceasta este o adresă de e-mail. ID-ul abonamentului tău începe cu \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Acest ID de abonament este incomplet sau conține o greșeală de tastare. Copiază-l din nou.</string>
+    <string name="spp_subscribe_error_not_an_id">Acesta nu este un ID de abonament. ID-urile de abonament încep cu \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Textul conține mai multe ID-uri. Introdu doar unul.</string>
     <string name="spp_manage_dialog_title">Gestionează abonamentul</string>
     <string name="spp_manage_action_update_payment">Actualizează metoda de plată</string>
     <string name="spp_manage_action_cancel">Anulează abonamentul</string>

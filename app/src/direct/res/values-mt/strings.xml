@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abbonament</string>
-    <string name="spp_subscribe_dialog_message">Abbona fil-browser tiegħek, imbagħad waħħal hawn taħt l-ID tal-abbonament tiegħek (sub_…) biex tattiva s-sinkronizzazzjoni fuq dan l-apparat.</string>
+    <string name="spp_btn_enter_subscription_id">Daħħal l-ID tal-abbonament</string>
+    <string name="spp_subscribe_dialog_title">Daħħal l-ID tal-abbonament</string>
+    <string name="spp_subscribe_dialog_message">Waħħal l-ID tal-abbonament tiegħek (jibda bi sub_ u jidher fil-paġna wara l-ħlas) jew l-ID tat-tranżazzjoni mill-fattura ta\' Paddle (jibda bi txn_). Tlift it-tnejn? L-email tal-irċevuta ta\' Paddle fiha link \"Manage subscription\" għall-abbonament tiegħek (fl-emails ta\' Paddle, il-bejjiegħ jidher bħala BEO). Jekk xorta ma ssib l-ebda ID, ikklikkja \"Ibgħat rapport lill-iżviluppatur\" fis-Settings. Abbonament ta\' Google Play jaħdem biss fil-verżjoni Google Play ta\' din l-app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Attiva</string>
-    <string name="spp_subscribe_open_checkout">Abbona fil-browser</string>
     <string name="spp_subscribe_validating">Qed niċċekkjaw l-abbonament tiegħek…</string>
+    <string name="spp_subscribe_activated">L-abbonament ġie attivat.</string>
+    <string name="spp_subscribe_error_not_found">Ma nstab l-ebda abbonament b\'dan l-ID. Iċċekkja l-ID u erġa\' pprova.</string>
+    <string name="spp_subscribe_error_wrong_product">Dan l-ID tal-abbonament jappartjeni għal app oħra.</string>
+    <string name="spp_subscribe_error_cancelled">Dan l-abbonament ġie kkanċellat. Erġa\' abbona biex tieħu ID ġdid tal-abbonament.</string>
+    <string name="spp_subscribe_error_kept_current">Dak l-abbonament huwa sospiż jew mhux imħallas, għalhekk dan it-telefon iżomm l-abbonament attwali tiegħu.</string>
+    <string name="spp_subscribe_error_play_order">Dan huwa numru ta\' ordni ta\' Google Play. Abbonament ta\' Google Play jaħdem biss fil-verżjoni Google Play tal-app.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Dan l-ID tat-tranżazzjoni mhux komplut jew fih żball tal-ittajpjar. Erġa\' kkopjah.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Ma nstab l-ebda xiri b\'dan l-ID tat-tranżazzjoni. Iċċekkja l-ID, jew daħħal l-ID tal-abbonament li jibda bi sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Dan ix-xiri jappartjeni għal app oħra.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Dan ix-xiri għad m\'għandux abbonament. Jekk għadek kif ħallast, erġa\' pprova wara minuta. Inkella, daħħal l-ID tal-abbonament li jibda bi sub_.</string>
+    <string name="spp_subscribe_error_email">Dan huwa indirizz tal-email. L-ID tal-abbonament tiegħek jibda bi \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Dan l-ID tal-abbonament mhux komplut jew fih żball tal-ittajpjar. Erġa\' kkopjah.</string>
+    <string name="spp_subscribe_error_not_an_id">Dan mhux ID tal-abbonament. L-IDs tal-abbonament jibdew bi \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Dan fih aktar minn ID wieħed. Daħħal wieħed biss.</string>
     <string name="spp_manage_dialog_title">Immaniġġja l-abbonament</string>
     <string name="spp_manage_action_update_payment">Aġġorna l-metodu ta\' pagament</string>
     <string name="spp_manage_action_cancel">Ikkanċella l-abbonament</string>

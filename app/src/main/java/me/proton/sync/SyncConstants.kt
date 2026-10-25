@@ -28,6 +28,12 @@ object SyncConstants {
     const val EXTRA_USER_SYNC_NOW = "userSyncNow"
 
     /**
+     * Set on the one sync [SyncScheduling] requests when the subscription turns active, so its run logs as a
+     * catch-up instead of looking like an ordinary periodic sync. Changes nothing the adapters do.
+     */
+    const val EXTRA_CATCH_UP = "catchUp"
+
+    /**
      * How many consecutive syncs of ONE calendar may re-check because the model-event counter
      * advanced mid-run (see the absorption-race fix in CalendarSyncAdapter).
      *
@@ -154,7 +160,10 @@ object SyncConstants {
      */
     const val CALENDAR_FULLFETCH_GET_PERMITS = 10
 
-    /** Default initial periodic-sync interval in seconds (1 hour). Used during account setup. */
+    /**
+     * The schedule of an account whose interval was never chosen (event_loop_interval_<account> unset),
+     * as SyncUtils.applyPeriodicSync and the catch-up sync read it. Never armed directly.
+     */
     const val DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS = 3600L
 
     // ---- Intent extras ----

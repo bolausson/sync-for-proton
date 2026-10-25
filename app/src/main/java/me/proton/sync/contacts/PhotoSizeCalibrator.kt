@@ -19,6 +19,7 @@ import me.proton.sync.SyncLog
 import me.proton.sync.SyncUtils
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.ProtonApiError
 import me.proton.sync.api.models.CreateContactBody
 import me.proton.sync.api.models.CreateContactRequest
 import me.proton.sync.api.models.DeleteContactsRequest
@@ -179,7 +180,8 @@ class PhotoSizeCalibrator @Inject constructor(
             )
             if (!createResponse.isSuccessful) {
                 val errBody = try { createResponse.errorBody()?.string()?.take(500) } catch (_: Exception) { null }
-                SyncLog.e(TAG, "Initial create HTTP ${createResponse.code()} - body=$errBody")
+                // Code and Error only, as everywhere else (the probe card is synthetic, but the rule is simpler kept whole)
+                SyncLog.e(TAG, "Initial create HTTP ${createResponse.code()}" + ProtonApiError.describe(errBody))
                 return Result(accountName, sourcePixels, sourceBytes, emptyList())
             }
 
@@ -286,7 +288,7 @@ class PhotoSizeCalibrator @Inject constructor(
             TAG,
             "Step ${step.dimensionPx}x${step.dimensionPx} q=${step.jpegQuality}: " +
                     "HTTP ${response.code()} - ${if (accepted) "ACCEPTED" else "REJECTED"}" +
-                    (errorBody?.let { " body=$it" } ?: "")
+                    ProtonApiError.describe(errorBody)
         )
 
         // Round-trip verification on accepted uploads.

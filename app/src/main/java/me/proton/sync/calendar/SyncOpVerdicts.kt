@@ -1,5 +1,7 @@
 package me.proton.sync.calendar
 
+import me.proton.sync.api.ProtonApiError
+
 /**
  * Reading Proton's verdicts on events/sync operations, and what the upload does with them. Pure.
  *
@@ -128,11 +130,15 @@ internal fun hasErrorCode(errorBody: String, code: Int): Boolean {
  *
  * [verb] is the path's own wording: "save an event to Proton" for a create, "update an event on Proton"
  * for an update. They must stay different, because the two paths fail for different reasons and the list
- * the user reads is the only place that distinguishes them. The body is cut to 160 characters, which is
- * about what a notification line can carry.
+ * the user reads is the only place that distinguishes them.
+ *
+ * Only Proton's Code and Error follow the status ([ProtonApiError.describe]), never the raw body: this text
+ * is persisted (SyncUtils' swallowed-failure record) and logged, and a body can quote an address. A body
+ * that is not Proton's JSON leaves just the status. The text still starts "Could not ...: HTTP 4xx/5xx",
+ * which is what the failure notification classifies by.
  */
 internal fun uploadSwallowedFailure(verb: String, httpCode: Int, errorBody: String): String =
-    "Could not $verb: HTTP $httpCode ${errorBody.take(160)}"
+    "Could not $verb: HTTP $httpCode" + ProtonApiError.describe(errorBody)
 
 /**
  * The reason shown for an upload Proton has permanently refused (code 2026 or 2011).

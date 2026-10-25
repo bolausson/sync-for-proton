@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Ihre Proton-Daten konnten nicht entsperrt werden. Bitte melden Sie sich erneut an.</string>
     <string name="error_pqc_keys_unsupported">Dieses Konto hat einen Verschlüsselungsschlüssel, den diese App nicht lesen kann. Ihr Passwort ist korrekt, eine erneute Anmeldung hilft daher nicht. Prüfen Sie, ob ein App-Update verfügbar ist, oder senden Sie über die Einstellungen der App einen Bericht.</string>
     <string name="error_fido2_not_supported">Ihr Konto verwendet einen Hardware-Sicherheitsschlüssel (FIDO2). Sync for Proton unterstützt derzeit nur Codes aus Authenticator-Apps (TOTP). Bitte fügen Sie in den Web-Einstellungen von Proton einen TOTP-Code als Backup hinzu und melden Sie sich anschließend hier an.</string>
+    <string name="error_login_verification_refused">Proton hat die Verifizierung nicht akzeptiert. Bitte melden Sie sich erneut an und schließen Sie die Prüfung noch einmal ab.</string>
+    <string name="error_login_account_disabled">Laut Proton ist dieses Konto deaktiviert. Melden Sie sich auf proton.me an oder wenden Sie sich an den Proton-Support, um den Grund zu erfahren.</string>
+    <string name="error_login_sso_unsupported">Dieses Konto meldet sich über das Single Sign-on (SSO) einer Organisation an. Sync for Proton unterstützt nur die Anmeldung mit Passwort.</string>
+    <string name="error_login_untrusted_server">Die Anmeldung wurde abgebrochen, weil nicht bestätigt werden konnte, dass diese Verbindung zu Proton gehört. Prüfen Sie Ihr Netzwerk (die Anmeldeseite eines öffentlichen WLANs oder ein filternder Proxy kann die Ursache sein) und versuchen Sie es erneut.</string>
+    <string name="error_login_proton_refused">Proton konnte die Anmeldung nicht abschließen. Bitte versuchen Sie es in Kürze erneut.</string>
+    <string name="error_login_unexpected">Die Anmeldung ist wegen eines unerwarteten Fehlers (%1$s) fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
     <string name="sync_contacts">Kontakte</string>
     <string name="sync_calendar">Kalender</string>
     <string name="calendar_timeframe_title">Kalender-Synchronisierungszeitraum</string>
@@ -185,9 +191,13 @@
     <string name="label_language">Sprache</string>
     <string name="label_language_auto">Automatisch (Systemstandard)</string>
     <string name="label_subscription">Abonnement</string>
-    <string name="label_subscription_none">7 Tage gratis, danach beginnt die Abrechnung, sofern Sie nicht kündigen.</string>
-    <string name="label_subscription_trial">Kostenlose Testversion: noch %1$d Tage</string>
+    <string name="label_subscription_none">Synchronisierung ist aus. 7 Tage gratis, danach beginnt die Abrechnung, sofern Sie nicht kündigen.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Kostenlose Testversion: noch %1$d Tag</item>
+        <item quantity="other">Kostenlose Testversion: noch %1$d Tage</item>
+    </plurals>
     <string name="label_subscription_active">Aktiv, Verlängerung am %1$s</string>
+    <string name="label_subscription_active_play">Aktiv, von Google Play verwaltet</string>
     <string name="label_subscription_ends">Endet am %1$s</string>
     <string name="label_subscription_pauses">Wird am %1$s pausiert</string>
     <string name="label_subscription_expired">Abonnement abgelaufen: verlängern, um die Synchronisierung fortzusetzen.</string>
@@ -210,7 +220,7 @@
     <string name="plan_monthly_price">%1$s/Monat</string>
     <string name="plan_annual_price">%1$s/Jahr</string>
     <string name="plan_picker_disclosure_plain">Sie können jederzeit in Google Play → Abos kündigen.</string>
-    <string name="label_subscription_required">Für die Synchronisierung ist ein Abo erforderlich.</string>
+    <string name="label_subscription_required">Synchronisierung ist aus: Ein Abonnement ist erforderlich.</string>
     <string name="btn_choose_plan">Tarif wählen</string>
     <string name="error_billing_unavailable">Google Play-Abrechnung ist nicht verfügbar</string>
     <string name="error_purchase_failed">Kauf fehlgeschlagen: bitte erneut versuchen</string>
@@ -415,8 +425,8 @@
     <string name="sfp_tile_logs">Sync-Protokoll</string>
     <string name="sfp_tile_backup">Sicherung</string>
     <string name="sfp_tile_battery">Akku</string>
-    <string name="sfp_stat_contacts">kontakte</string>
-    <string name="sfp_stat_events">termine</string>
+    <string name="sfp_stat_contacts">Kontakte</string>
+    <string name="sfp_stat_events">Termine</string>
     <string name="sfp_login_title">Bei Proton anmelden</string>
     <string name="sfp_login_subtitle">Ihr Passwort wird nie an Proton gesendet: Die Anmeldung nutzt SRP.</string>
     <string name="sfp_login_reassurance">Protons eigene Verschlüsselung · kein Tracking</string>
@@ -637,10 +647,13 @@
     <string name="setup_choose_body">Beides ist zunächst ausgeschaltet, es wird also nichts auf dieses Telefon kopiert, bis Sie es festlegen. Sie können das jederzeit ändern.</string>
     <string name="setup_choose_save">Synchronisierung starten</string>
     <string name="setup_choose_none">Jetzt nicht</string>
+    <string name="setup_choose_saved_inactive">Gespeichert. Die Synchronisierung startet, sobald ein Abonnement aktiv ist.</string>
     <string name="sfp_hero_nothing_enabled">Es wird noch nichts synchronisiert</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Wählen Sie unten im Konto Kontakte, Kalender oder beides</string>
     <string name="sfp_hero_awaiting_first_sync">Warten auf die erste Synchronisierung</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Es wurde noch nichts auf dieses Telefon kopiert</string>
+    <string name="sfp_hero_sync_off">Synchronisierung ist aus</string>
+    <string name="sfp_hero_subtitle_sync_off">Die Synchronisierung bleibt aus, bis ein Abonnement aktiv ist. Siehe oben unter Abonnement.</string>
 
     <string name="toast_resync_skipped">Nichts zu synchronisieren: Synchronisierung für %1$s ist aus</string>
 </resources>

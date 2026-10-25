@@ -82,9 +82,12 @@ class ManualOnlyIntervalTest {
     private fun cancelsOnStartup(storedSeconds: Long): Boolean =
         !EventLoopWorker.schedulesWork(EventLoopWorker.intervalMinutesFor(storedSeconds))
 
-    /** A periodic sync is armed only for an enabled type on a real interval. */
+    /**
+     * A periodic sync is armed only for an enabled type on a real interval: the shipped rule of the single
+     * writer, as the start-up pass calls it (the subscription observer acts on an active state).
+     */
     private fun armsOnStartup(storedSeconds: Long, enabled: Boolean): Boolean =
-        enabled && EventLoopWorker.schedulesWork(EventLoopWorker.intervalMinutesFor(storedSeconds))
+        SyncUtils.periodicSyncWanted(enabled, storedSeconds, syncAllowed = true)
 
     /** And the half that must keep working: every real interval still schedules, unchanged. */
     @Test

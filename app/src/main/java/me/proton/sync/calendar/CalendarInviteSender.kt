@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.ProtonApiError
 import me.proton.sync.api.protonRecipientKey
 import me.proton.sync.api.unexpectedKeyLookupFailure
 import me.proton.sync.crypto.KeyManager
@@ -527,7 +528,7 @@ class CalendarInviteSender(
         )
         if (!draftResponse.isSuccessful) {
             val err = draftResponse.errorBody()?.string() ?: "no body"
-            throw RuntimeException("Draft creation failed: HTTP ${draftResponse.code()}: $err")
+            throw RuntimeException("Draft creation failed: HTTP ${draftResponse.code()}" + ProtonApiError.describe(err))
         }
         val draftMessage = draftResponse.body()?.get("Message") as? Map<String, Any>
         val draftId = draftMessage?.get("ID") as? String
@@ -601,7 +602,7 @@ class CalendarInviteSender(
                     SyncLog.i(TAG, "Uploaded ICS attachment (id=$attachmentId)")
                 } else {
                     val err = attResponse.errorBody()?.string() ?: "no body"
-                    SyncLog.w(TAG, "ICS attachment upload failed: ${attResponse.code()} $err")
+                    SyncLog.w(TAG, "ICS attachment upload failed: HTTP ${attResponse.code()}" + ProtonApiError.describe(err))
                     recipientPkesks = null
                     attachmentSessionKeyBytes = null
                 }
@@ -736,7 +737,8 @@ class CalendarInviteSender(
         if (sendError != null) {
             // A refused send delivered nothing, so the draft goes.
             deleteDraft(draftId)
-            throw RuntimeException("Send failed: HTTP ${sendResponse.code()}: $sendError")
+            // sendError stays the raw text above, because isDraftNotReadable reads it; only Code and Error leave.
+            throw RuntimeException("Send failed: HTTP ${sendResponse.code()}" + ProtonApiError.describe(sendError))
         }
 
         val allEmails = resolved.map { it.attendee.email.lowercase() }.toSet()

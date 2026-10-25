@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Níorbh fhéidir do shonraí Proton a dhíghlasáil. Sínigh isteach arís le do thoil.</string>
     <string name="error_pqc_keys_unsupported">Tá eochair chriptithe ag an gcuntas seo nach féidir leis an aip seo a léamh. Tá do phasfhocal ceart, mar sin ní chabhróidh síniú isteach arís. Seiceáil an bhfuil nuashonrú ar fáil don aip, nó seol tuairisc ó shocruithe na haipe.</string>
     <string name="error_fido2_not_supported">Úsáideann do chuntas eochair shlándála crua-earraí (FIDO2). Ní thacaíonn Sync for Proton faoi láthair ach le cóid ó aip fhíordheimhnithe (TOTP). Cuir cód TOTP leis mar chúltaca i socruithe gréasáin Proton, agus ansin sínigh isteach anseo.</string>
+    <string name="error_login_verification_refused">Níor ghlac Proton leis an bhfíorú. Sínigh isteach arís le do thoil agus déan an fíorú uair amháin eile.</string>
+    <string name="error_login_account_disabled">Deir Proton go bhfuil an cuntas seo díchumasaithe. Sínigh isteach ag proton.me nó déan teagmháil le tacaíocht Proton chun a fháil amach cén fáth.</string>
+    <string name="error_login_sso_unsupported">Síníonn an cuntas seo isteach trí shíniú aonair isteach (SSO) eagraíochta. Ní thacaíonn Sync for Proton ach le síniú isteach le pasfhocal.</string>
+    <string name="error_login_untrusted_server">Stopadh an síniú isteach mar níorbh fhéidir a dheimhniú gur le Proton an nasc seo. Seiceáil do líonra (d\'fhéadfadh leathanach síniú isteach ar Wi-Fi poiblí nó seachfhreastalaí scagtha é seo a chur faoi deara) agus bain triail eile as.</string>
+    <string name="error_login_proton_refused">Níorbh fhéidir le Proton an síniú isteach a chur i gcrích. Bain triail eile as i gceann tamaillín le do thoil.</string>
+    <string name="error_login_unexpected">Theip ar an síniú isteach de bharr earráide gan choinne (%1$s). Bain triail eile as le do thoil.</string>
     <string name="sync_contacts">Teagmhálaithe</string>
     <string name="sync_calendar">Féilire</string>
     <string name="calendar_timeframe_title">Raon sioncronaithe féilire</string>
@@ -188,9 +194,16 @@
     <string name="label_language">Teanga</string>
     <string name="label_language_auto">Uathoibríoch (réamhshocrú an chórais)</string>
     <string name="label_subscription">Síntiús</string>
-    <string name="label_subscription_none">Saor in aisce ar feadh 7 lá, ansin tosaíonn an bhilleáil mura gcealaíonn tú.</string>
-    <string name="label_subscription_trial">Triail shaor: %1$d lá fágtha</string>
+    <string name="label_subscription_none">Tá sioncronú múchta. Saor in aisce ar feadh 7 lá, ansin tosaíonn an bhilleáil mura gcealaíonn tú.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Triail shaor: %1$d lá fágtha</item>
+        <item quantity="two">Triail shaor: %1$d lá fágtha</item>
+        <item quantity="few">Triail shaor: %1$d lá fágtha</item>
+        <item quantity="many">Triail shaor: %1$d lá fágtha</item>
+        <item quantity="other">Triail shaor: %1$d lá fágtha</item>
+    </plurals>
     <string name="label_subscription_active">Gníomhach, athnuachan %1$s</string>
+    <string name="label_subscription_active_play">Gníomhach, á bhainistiú ag Google Play</string>
     <string name="label_subscription_ends">Críochnóidh an síntiús ar %1$s</string>
     <string name="label_subscription_pauses">Cuirfear an síntiús ar sos ar %1$s</string>
     <string name="label_subscription_expired">Tá an síntiús imithe in éag: athnuaigh chun sioncronú a atosú.</string>
@@ -213,7 +226,7 @@
     <string name="plan_monthly_price">%1$s/mí</string>
     <string name="plan_annual_price">%1$s/bliain</string>
     <string name="plan_picker_disclosure_plain">Is féidir leat cealú am ar bith in Google Play → Síntiúis.</string>
-    <string name="label_subscription_required">Tá síntiús ag teastáil chun sioncronú.</string>
+    <string name="label_subscription_required">Tá sioncronú múchta: tá síntiús ag teastáil.</string>
     <string name="btn_choose_plan">Roghnaigh plean</string>
     <string name="error_billing_unavailable">Níl billeáil Google Play ar fáil</string>
     <string name="error_purchase_failed">Theip ar an gceannach: bain triail eile as le do thoil</string>
@@ -651,10 +664,13 @@ Iad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a 
     <string name="setup_choose_body">Tá an dá cheann múchta ar dtús, mar sin ní chóipeáiltear aon rud chuig an nguthán seo go dtí go roghnaíonn tú é. Is féidir leat é seo a athrú am ar bith.</string>
     <string name="setup_choose_save">Tosaigh ag sioncronú</string>
     <string name="setup_choose_none">Níos déanaí</string>
+    <string name="setup_choose_saved_inactive">Sábháilte. Tosóidh an sioncronú nuair a bheidh síntiús gníomhach.</string>
     <string name="sfp_hero_nothing_enabled">Níl aon rud á shioncronú fós</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Roghnaigh teagmhálaithe, féilire nó an dá rud sa chuntas thíos</string>
     <string name="sfp_hero_awaiting_first_sync">Ag fanacht leis an gcéad sioncronú</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Níl aon rud cóipéailte chuig an bhfón seo fós</string>
+    <string name="sfp_hero_sync_off">Tá sioncronú múchta</string>
+    <string name="sfp_hero_subtitle_sync_off">Fanann sioncronú múchta go dtí go mbeidh síntiús gníomhach. Féach Síntiús thuas.</string>
 
     <string name="toast_resync_skipped">Níl aon rud le sioncronú: tá sioncronú do %1$s múchta</string>
 </resources>

@@ -26,8 +26,8 @@ android {
         applicationId = "me.proton.sync"
         minSdk = 29
         targetSdk = 36
-        versionCode = 200000
-        versionName = "2.0.0"
+        versionCode = 200002
+        versionName = "2.0.2"
     }
 
     // Needed only so AGP can find llvm-objcopy for `debugSymbolLevel` below. There is no
@@ -184,6 +184,15 @@ tasks.withType<Test>().configureEach {
     inputs.file(rootProject.layout.projectDirectory.file("native/gopenpgp-bridge/modulus_test.go"))
         .withPropertyName("bridgeModulusTest")
         .withPathSensitivity(PathSensitivity.NONE)
+    // ActiveStatusLineTest reads every language's strings.xml, and a changed text alone changes no compiled class.
+    inputs.files(fileTree("src/main/res") { include("values*/strings.xml") })
+        .withPropertyName("stringResources")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    // ReleaseStringsTest and SubscriptionCardWordingTest also read the direct flavour's strings.xml in every
+    // language, which the play test task compiles no class from at all.
+    inputs.files(fileTree("src/direct/res") { include("values*/strings.xml") })
+        .withPropertyName("directStringResources")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
 val roomVersion = "2.6.1"

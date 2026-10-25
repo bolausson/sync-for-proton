@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Nu s-au putut debloca datele Proton. Conectați-vă din nou.</string>
     <string name="error_pqc_keys_unsupported">Acest cont are o cheie de criptare pe care această aplicație nu o poate citi. Parola este corectă, deci reconectarea nu va ajuta. Verificați dacă există o actualizare a aplicației sau trimiteți un raport din setările aplicației.</string>
     <string name="error_fido2_not_supported">Contul dumneavoastră folosește o cheie de securitate hardware (FIDO2). Sync for Proton acceptă în prezent doar coduri din aplicații de autentificare (TOTP). Vă rugăm să adăugați un cod TOTP ca rezervă în setările web Proton, apoi conectați-vă aici.</string>
+    <string name="error_login_verification_refused">Proton nu a acceptat verificarea. Conectați-vă din nou și finalizați încă o dată verificarea.</string>
+    <string name="error_login_account_disabled">Proton raportează că acest cont este dezactivat. Conectați-vă pe proton.me sau contactați asistența Proton pentru a afla motivul.</string>
+    <string name="error_login_sso_unsupported">Acest cont se conectează prin autentificarea unică (SSO) a unei organizații. Sync for Proton acceptă doar conectarea cu parolă.</string>
+    <string name="error_login_untrusted_server">Conectarea a fost oprită deoarece nu s-a putut confirma că această conexiune este cu Proton. Verificați rețeaua (pagina de autentificare a unei rețele Wi-Fi publice sau un proxy de filtrare poate cauza acest lucru) și încercați din nou.</string>
+    <string name="error_login_proton_refused">Proton nu a putut finaliza conectarea. Încercați din nou peste câteva momente.</string>
+    <string name="error_login_unexpected">Conectarea a eșuat din cauza unei erori neașteptate (%1$s). Încercați din nou.</string>
     <string name="sync_contacts">Contacte</string>
     <string name="sync_calendar">Calendar</string>
     <string name="calendar_timeframe_title">Intervalul de sincronizare a calendarului</string>
@@ -175,9 +181,14 @@
     <string name="label_language_auto">Automat (implicit sistem)</string>
 
     <string name="label_subscription">Abonament</string>
-    <string name="label_subscription_none">Gratuit timp de 7 zile, apoi \u00eencepe facturarea dac\u0103 nu anulezi.</string>
-    <string name="label_subscription_trial">Perioad\u0103 de prob\u0103: %1$d zile r\u0103mase</string>
+    <string name="label_subscription_none">Sincronizarea este oprită. Gratuit timp de 7 zile, apoi începe facturarea dacă nu anulezi.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Probă gratuită: a mai rămas %1$d zi</item>
+        <item quantity="few">Probă gratuită: au mai rămas %1$d zile</item>
+        <item quantity="other">Probă gratuită: au mai rămas %1$d de zile</item>
+    </plurals>
     <string name="label_subscription_active">Activ, se re\u00eennoie\u0219te la %1$s</string>
+    <string name="label_subscription_active_play">Activ, gestionat de Google Play</string>
     <string name="label_subscription_ends">Se încheie la %1$s</string>
     <string name="label_subscription_pauses">Se suspendă la %1$s</string>
     <string name="label_subscription_expired">Abonament expirat: re\u00eennoie\u0219te pentru a relua sincronizarea.</string>
@@ -200,7 +211,7 @@
     <string name="plan_monthly_price">%1$s/lun\u0103</string>
     <string name="plan_annual_price">%1$s/an</string>
     <string name="plan_picker_disclosure_plain">Po\u021bi anula oric\u00e2nd din Google Play → Abonamente.</string>
-    <string name="label_subscription_required">Pentru sincronizare este necesar un abonament.</string>
+    <string name="label_subscription_required">Sincronizarea este oprită: este necesar un abonament.</string>
     <string name="btn_choose_plan">Alege un plan</string>
     <string name="error_billing_unavailable">Facturarea Google Play nu este disponibil\u0103</string>
     <string name="error_purchase_failed">Achizi\u021bia a e\u0219uat: te rug\u0103m s\u0103 \u00eencerci din nou</string>
@@ -641,10 +652,14 @@
     <string name="setup_choose_body">Ambele sunt dezactivate la început, deci nu se copiază nimic pe acest telefon până când nu decideți dvs. Puteți schimba acest lucru oricând.</string>
     <string name="setup_choose_save">Începe sincronizarea</string>
     <string name="setup_choose_none">Nu acum</string>
+    <string name="setup_choose_saved_inactive">Salvat. Sincronizarea începe după ce un abonament devine activ.</string>
     <string name="sfp_hero_nothing_enabled">Încă nu se sincronizează nimic</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Alegeți contacte, calendar sau ambele în contul de mai jos</string>
     <string name="sfp_hero_awaiting_first_sync">Se așteaptă prima sincronizare</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Încă nu a fost copiat nimic pe acest telefon</string>
+
+    <string name="sfp_hero_sync_off">Sincronizarea este oprită</string>
+    <string name="sfp_hero_subtitle_sync_off">Sincronizarea rămâne oprită până când există un abonament activ. Consultați secțiunea Abonament de mai sus.</string>
 
     <string name="toast_resync_skipped">Nimic de sincronizat: sincronizarea pentru %1$s este dezactivată</string>
 </resources>

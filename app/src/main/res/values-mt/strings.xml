@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Ma setgħetx tiżblokka d-data Proton tiegħek. Jekk jogħġbok erġa\' idħol.</string>
     <string name="error_pqc_keys_unsupported">Dan il-kont għandu ċavetta tal-kriptaġġ li din l-app ma tistax taqra. Il-password tiegħek hija korretta, għalhekk li terġa\' tidħol mhux se jgħin. Iċċekkja jekk hemmx aġġornament tal-app, jew ibgħat rapport mis-settings tal-app.</string>
     <string name="error_fido2_not_supported">L-akkawnt tiegħek juża security key tal-hardware (FIDO2). Sync for Proton bħalissa jappoġġja biss kodiċijiet minn authenticator app (TOTP). Jekk jogħġbok żid kodiċi TOTP bħala backup fis-settings tal-web ta\' Proton, imbagħad idħol hawn.</string>
+    <string name="error_login_verification_refused">Proton ma aċċettax il-verifika. Jekk jogħġbok erġa\' idħol u lesti l-verifika mill-ġdid.</string>
+    <string name="error_login_account_disabled">Proton jirrapporta li dan il-kont huwa diżattivat. Idħol fuq proton.me jew ikkuntattja lill-appoġġ ta\' Proton biex issir taf għaliex.</string>
+    <string name="error_login_sso_unsupported">Dan il-kont jidħol permezz tas-single sign-on (SSO) ta\' organizzazzjoni. Sync for Proton jappoġġja biss id-dħul bil-password.</string>
+    <string name="error_login_untrusted_server">Id-dħul twaqqaf għax ma setax jiġi kkonfermat li din il-konnessjoni hija ta\' Proton. Iċċekkja n-netwerk tiegħek (paġna tad-dħul ta\' Wi-Fi pubbliku jew proxy li jiffiltra jistgħu jikkawżaw dan) u erġa\' pprova.</string>
+    <string name="error_login_proton_refused">Proton ma setax ilesti d-dħul. Jekk jogħġbok erġa\' pprova fi ftit mumenti.</string>
+    <string name="error_login_unexpected">Id-dħul falla minħabba żball mhux mistenni (%1$s). Jekk jogħġbok erġa\' pprova.</string>
     <string name="sync_contacts">Kuntatti</string>
     <string name="sync_calendar">Kalendarju</string>
     <string name="calendar_timeframe_title">Medda tas-sinkronizzazzjoni tal-kalendarju</string>
@@ -187,9 +193,16 @@
     <string name="label_language">Lingwa</string>
     <string name="label_language_auto">Awtomatiku (default tas-sistema)</string>
     <string name="label_subscription">Abbonament</string>
-    <string name="label_subscription_none">Bla ħlas għal 7 ijiem, imbagħad jibda l-ħlas jekk ma tikkanċellax.</string>
-    <string name="label_subscription_trial">Prova bla ħlas: %1$d ijiem fadal</string>
+    <string name="label_subscription_none">Is-sinkronizzazzjoni hija mitfija. Bla ħlas għal 7 ijiem, imbagħad jibda l-ħlas jekk ma tikkanċellax.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Prova bla ħlas: fadal %1$d jum</item>
+        <item quantity="two">Prova bla ħlas: fadal %1$d ijiem</item>
+        <item quantity="few">Prova bla ħlas: fadal %1$d ijiem</item>
+        <item quantity="many">Prova bla ħlas: fadal %1$d jum</item>
+        <item quantity="other">Prova bla ħlas: fadal %1$d jum</item>
+    </plurals>
     <string name="label_subscription_active">Attiv, jiġġedded fi %1$s</string>
+    <string name="label_subscription_active_play">Attiv, immaniġġjat minn Google Play</string>
     <string name="label_subscription_ends">Jintemm fi %1$s</string>
     <string name="label_subscription_pauses">Jiġi sospiż fi %1$s</string>
     <string name="label_subscription_expired">L-abbonament skada: ġeddu biex tkompli s-sinkronizzazzjoni.</string>
@@ -212,7 +225,7 @@
     <string name="plan_monthly_price">%1$s/xahar</string>
     <string name="plan_annual_price">%1$s/sena</string>
     <string name="plan_picker_disclosure_plain">Tista\' tikkanċella f\'kull ħin f\'Google Play → Abbonamenti.</string>
-    <string name="label_subscription_required">Biex tissinkronizza jeħtieġ abbonament.</string>
+    <string name="label_subscription_required">Is-sinkronizzazzjoni hija mitfija: jeħtieġ abbonament.</string>
     <string name="btn_choose_plan">Agħżel pjan</string>
     <string name="error_billing_unavailable">Il-ħlas ta\' Google Play mhux disponibbli</string>
     <string name="error_purchase_failed">Ix-xiri falla: jekk jogħġbok erġa\' pprova</string>
@@ -640,10 +653,14 @@
     <string name="setup_choose_body">It-tnejn jibdew diżattivati, għalhekk ma jiġi kkupjat xejn f\'dan it-telefon qabel ma tagħżel int. Tista\' tibdel dan fi kwalunkwe ħin.</string>
     <string name="setup_choose_save">Ibda s-sinkronizzazzjoni</string>
     <string name="setup_choose_none">Mhux issa</string>
+    <string name="setup_choose_saved_inactive">Ġie ssejvjat. Is-sinkronizzazzjoni tibda hekk kif ikun hemm abbonament attiv.</string>
     <string name="sfp_hero_nothing_enabled">Għadu xejn ma qed jiġi sinkronizzat</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Agħżel kuntatti, kalendarju jew it-tnejn fil-kont hawn taħt</string>
     <string name="sfp_hero_awaiting_first_sync">Fl-istennija tal-ewwel sinkronizzazzjoni</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Għadu xejn ma ġie kkupjat fuq dan it-telefon</string>
+
+    <string name="sfp_hero_sync_off">Is-sinkronizzazzjoni mitfija</string>
+    <string name="sfp_hero_subtitle_sync_off">Is-sinkronizzazzjoni tibqa\' mitfija sakemm ikun hemm abbonament attiv. Ara Abbonament hawn fuq.</string>
 
     <string name="toast_resync_skipped">Xejn xi jiġi sinkronizzat: is-sinkronizzazzjoni ta %1$s hija mitfija</string>
 </resources>

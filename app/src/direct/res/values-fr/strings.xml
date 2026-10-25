@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abonnement</string>
-    <string name="spp_subscribe_dialog_message">Abonnez-vous dans votre navigateur, puis collez ci-dessous votre identifiant d\'abonnement (sub_…) pour activer la synchronisation sur cet appareil.</string>
+    <string name="spp_btn_enter_subscription_id">Saisir l\'identifiant d\'abonnement</string>
+    <string name="spp_subscribe_dialog_title">Saisir l\'identifiant d\'abonnement</string>
+    <string name="spp_subscribe_dialog_message">Collez votre identifiant d\'abonnement (il commence par sub_ et s\'affiche sur la page qui suit le paiement) ou l\'identifiant de transaction indiqué sur la facture de Paddle (il commence par txn_). Vous avez perdu les deux ? L\'e-mail de reçu de Paddle contient un lien \"Manage subscription\" vers votre abonnement (dans les e-mails de Paddle, le vendeur apparaît sous le nom BEO). Si vous ne trouvez toujours aucun identifiant, appuyez sur \"Envoyer un rapport au développeur\" dans les Paramètres. Un abonnement Google Play ne fonctionne que dans la version Google Play de cette application.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activer</string>
-    <string name="spp_subscribe_open_checkout">S\'abonner dans le navigateur</string>
     <string name="spp_subscribe_validating">Vérification de votre abonnement…</string>
+    <string name="spp_subscribe_activated">Abonnement activé.</string>
+    <string name="spp_subscribe_error_not_found">Aucun abonnement ne correspond à cet identifiant. Vérifiez l\'identifiant et réessayez.</string>
+    <string name="spp_subscribe_error_wrong_product">Cet identifiant d\'abonnement appartient à une autre application.</string>
+    <string name="spp_subscribe_error_cancelled">Cet abonnement a été résilié. Abonnez-vous à nouveau pour obtenir un nouvel identifiant d\'abonnement.</string>
+    <string name="spp_subscribe_error_kept_current">Cet abonnement est suspendu ou impayé, ce téléphone conserve donc son abonnement actuel.</string>
+    <string name="spp_subscribe_error_play_order">Ceci est un numéro de commande Google Play. Un abonnement Google Play ne fonctionne que dans la version Google Play de l\'application.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Cet identifiant de transaction est incomplet ou contient une faute de frappe. Copiez-le à nouveau.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Aucun achat ne correspond à cet identifiant de transaction. Vérifiez l\'identifiant ou saisissez l\'identifiant d\'abonnement qui commence par sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Cet achat appartient à une autre application.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Cet achat n\'a pas encore d\'abonnement. Si vous venez de payer, réessayez dans une minute. Sinon, saisissez l\'identifiant d\'abonnement qui commence par sub_.</string>
+    <string name="spp_subscribe_error_email">Ceci est une adresse e-mail. Votre identifiant d\'abonnement commence par \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Cet identifiant d\'abonnement est incomplet ou contient une faute de frappe. Copiez-le à nouveau.</string>
+    <string name="spp_subscribe_error_not_an_id">Ce n\'est pas un identifiant d\'abonnement. Les identifiants d\'abonnement commencent par \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Ce texte contient plusieurs identifiants. Saisissez-en un seul.</string>
     <string name="spp_manage_dialog_title">Gérer l\'abonnement</string>
     <string name="spp_manage_action_update_payment">Modifier le moyen de paiement</string>
     <string name="spp_manage_action_cancel">Résilier l\'abonnement</string>

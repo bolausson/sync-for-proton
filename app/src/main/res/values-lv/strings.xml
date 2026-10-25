@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Neizdevās atbloķēt jūsu Proton datus. Lūdzu, pierakstieties vēlreiz.</string>
     <string name="error_pqc_keys_unsupported">Šim kontam ir šifrēšanas atslēga, kuru šī lietotne nevar nolasīt. Jūsu parole ir pareiza, tāpēc atkārtota pieteikšanās nepalīdzēs. Pārbaudiet, vai ir pieejams lietotnes atjauninājums, vai arī nosūtiet ziņojumu no lietotnes iestatījumiem.</string>
     <string name="error_fido2_not_supported">Jūsu kontā tiek izmantota aparatūras drošības atslēga (FIDO2). Sync for Proton pašlaik atbalsta tikai autentifikācijas lietotnes kodus (TOTP). Lūdzu, pievienojiet TOTP kodu kā rezerves variantu Proton tīmekļa iestatījumos un pēc tam pierakstieties šeit.</string>
+    <string name="error_login_verification_refused">Proton nepieņēma verifikāciju. Lūdzu, pierakstieties vēlreiz un atkārtoti izpildiet pārbaudi.</string>
+    <string name="error_login_account_disabled">Proton ziņo, ka šis konts ir atspējots. Pierakstieties vietnē proton.me vai sazinieties ar Proton atbalsta dienestu, lai uzzinātu iemeslu.</string>
+    <string name="error_login_sso_unsupported">Šis konts pierakstās, izmantojot organizācijas vienoto pierakstīšanos (SSO). Sync for Proton atbalsta tikai pierakstīšanos ar paroli.</string>
+    <string name="error_login_untrusted_server">Pierakstīšanās tika apturēta, jo nevarēja apstiprināt, ka šis savienojums ir ar Proton. Pārbaudiet savu tīklu (to var izraisīt publiska Wi-Fi tīkla pierakstīšanās lapa vai filtrējošs starpniekserveris) un mēģiniet vēlreiz.</string>
+    <string name="error_login_proton_refused">Proton nevarēja pabeigt pierakstīšanos. Lūdzu, pēc brīža mēģiniet vēlreiz.</string>
+    <string name="error_login_unexpected">Pierakstīšanās neizdevās neparedzētas kļūdas dēļ (%1$s). Lūdzu, mēģiniet vēlreiz.</string>
     <string name="sync_contacts">Kontakti</string>
     <string name="sync_calendar">Kalendārs</string>
     <string name="calendar_timeframe_title">Kalendāra sinhronizācijas diapazons</string>
@@ -186,9 +192,14 @@
     <string name="label_language">Valoda</string>
     <string name="label_language_auto">Automātiski (sistēmas noklusējums)</string>
     <string name="label_subscription">Abonements</string>
-    <string name="label_subscription_none">Bez maksas 7 dienas, pēc tam sāksies norēķini, ja neatcelsiet.</string>
-    <string name="label_subscription_trial">Bezmaksas izmēģinājums: atlikušas %1$d dienas</string>
+    <string name="label_subscription_none">Sinhronizācija ir izslēgta. Bez maksas 7 dienas, pēc tam sāksies norēķini, ja neatcelsiet.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="zero">Bezmaksas izmēģinājums: atlikušas %1$d dienas</item>
+        <item quantity="one">Bezmaksas izmēģinājums: atlikusi %1$d diena</item>
+        <item quantity="other">Bezmaksas izmēģinājums: atlikušas %1$d dienas</item>
+    </plurals>
     <string name="label_subscription_active">Aktīvs, atjaunojas %1$s</string>
+    <string name="label_subscription_active_play">Aktīvs, to pārvalda Google Play</string>
     <string name="label_subscription_ends">Beidzas %1$s</string>
     <string name="label_subscription_pauses">Tiks apturēts %1$s</string>
     <string name="label_subscription_expired">Abonementa termiņš beidzies: atjauniniet, lai atsāktu sinhronizāciju.</string>
@@ -211,7 +222,7 @@
     <string name="plan_monthly_price">%1$s/mēnesī</string>
     <string name="plan_annual_price">%1$s/gadā</string>
     <string name="plan_picker_disclosure_plain">Varat atcelt jebkurā laikā Google Play → Abonementi.</string>
-    <string name="label_subscription_required">Sinhronizācijai nepieciešams abonements.</string>
+    <string name="label_subscription_required">Sinhronizācija ir izslēgta: nepieciešams abonements.</string>
     <string name="btn_choose_plan">Izvēlēties plānu</string>
     <string name="error_billing_unavailable">Google Play norēķini nav pieejami</string>
     <string name="error_purchase_failed">Pirkums neizdevās: lūdzu, mēģiniet vēlreiz</string>
@@ -639,10 +650,13 @@
     <string name="setup_choose_body">Sākumā abi ir izslēgti, tāpēc šajā tālrunī nekas netiek kopēts, kamēr to nenorādāt. To varat mainīt jebkurā laikā.</string>
     <string name="setup_choose_save">Sākt sinhronizāciju</string>
     <string name="setup_choose_none">Ne tagad</string>
+    <string name="setup_choose_saved_inactive">Saglabāts. Sinhronizācija sāksies, tiklīdz būs aktīvs abonements.</string>
     <string name="sfp_hero_nothing_enabled">Vēl nekas netiek sinhronizēts</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Izvēlieties kontaktus, kalendāru vai abus kontā zemāk</string>
     <string name="sfp_hero_awaiting_first_sync">Gaida pirmo sinhronizāciju</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Šajā tālrunī vēl nekas nav kopēts</string>
+    <string name="sfp_hero_sync_off">Sinhronizācija ir izslēgta</string>
+    <string name="sfp_hero_subtitle_sync_off">Sinhronizācija paliek izslēgta, līdz abonements būs aktīvs. Skatiet sadaļu Abonements augstāk.</string>
 
     <string name="toast_resync_skipped">Nav ko sinhronizēt: sinhronizācija ir izslēgta (%1$s)</string>
 </resources>

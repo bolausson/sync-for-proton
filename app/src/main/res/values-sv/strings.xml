@@ -28,6 +28,12 @@
     <string name="error_unlock_failed">Kunde inte låsa upp dina Proton-data. Logga in igen.</string>
     <string name="error_pqc_keys_unsupported">Det här kontot har en krypteringsnyckel som den här appen inte kan läsa. Ditt lösenord är korrekt, så att logga in igen hjälper inte. Kontrollera om det finns en uppdatering av appen, eller skicka en rapport från inställningarna i appen.</string>
     <string name="error_fido2_not_supported">Ditt konto använder en hårdvarusäkerhetsnyckel (FIDO2). Sync for Proton stöder för närvarande endast koder från autentiseringsappar (TOTP). Lägg till en TOTP-kod som reserv i Protons webbinställningar och logga sedan in här.</string>
+    <string name="error_login_verification_refused">Proton godkände inte verifieringen. Logga in igen och slutför kontrollen en gång till.</string>
+    <string name="error_login_account_disabled">Proton uppger att det här kontot är inaktiverat. Logga in på proton.me eller kontakta Protons support för att ta reda på varför.</string>
+    <string name="error_login_sso_unsupported">Det här kontot loggar in via en organisations enkel inloggning (SSO). Sync for Proton stöder endast inloggning med lösenord.</string>
+    <string name="error_login_untrusted_server">Inloggningen stoppades eftersom det inte gick att bekräfta att anslutningen går till Proton. Kontrollera ditt nätverk (en inloggningssida för ett offentligt wifi eller en filtrerande proxy kan orsaka detta) och försök igen.</string>
+    <string name="error_login_proton_refused">Proton kunde inte slutföra inloggningen. Försök igen om en stund.</string>
+    <string name="error_login_unexpected">Inloggningen misslyckades på grund av ett oväntat fel (%1$s). Försök igen.</string>
     <string name="sync_contacts">Kontakter</string>
     <string name="sync_calendar">Kalender</string>
     <string name="calendar_timeframe_title">Kalendersynkroniseringsomfång</string>
@@ -184,9 +190,13 @@
     <string name="label_language_auto">Auto (systemstandard)</string>
 
     <string name="label_subscription">Prenumeration</string>
-    <string name="label_subscription_none">Gratis i 7 dagar, sedan startar faktureringen om du inte avbryter.</string>
-    <string name="label_subscription_trial">Gratis provperiod: %1$d dagar kvar</string>
+    <string name="label_subscription_none">Synkroniseringen är avstängd. Gratis i 7 dagar, sedan startar faktureringen om du inte avbryter.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Gratis provperiod: %1$d dag kvar</item>
+        <item quantity="other">Gratis provperiod: %1$d dagar kvar</item>
+    </plurals>
     <string name="label_subscription_active">Aktiv, förnyas %1$s</string>
+    <string name="label_subscription_active_play">Aktiv, hanterad av Google Play</string>
     <string name="label_subscription_ends">Upphör den %1$s</string>
     <string name="label_subscription_pauses">Pausas den %1$s</string>
     <string name="label_subscription_expired">Prenumerationen har gått ut: förnya för att återuppta synkroniseringen.</string>
@@ -209,7 +219,7 @@
     <string name="plan_monthly_price">%1$s/mån</string>
     <string name="plan_annual_price">%1$s/år</string>
     <string name="plan_picker_disclosure_plain">Du kan avbryta när som helst i Google Play → Prenumerationer.</string>
-    <string name="label_subscription_required">Ett abonnemang krävs för att synkronisera.</string>
+    <string name="label_subscription_required">Synkroniseringen är avstängd: en prenumeration krävs.</string>
     <string name="btn_choose_plan">Välj abonnemang</string>
     <string name="error_billing_unavailable">Google Play-fakturering är inte tillgänglig</string>
     <string name="error_purchase_failed">Köpet misslyckades: försök igen</string>
@@ -657,10 +667,13 @@
     <string name="setup_choose_body">Båda är avstängda till att börja med, så inget kopieras till telefonen förrän du säger till. Du kan ändra detta när som helst.</string>
     <string name="setup_choose_save">Börja synka</string>
     <string name="setup_choose_none">Inte nu</string>
+    <string name="setup_choose_saved_inactive">Sparat. Synkroniseringen startar när en prenumeration är aktiv.</string>
     <string name="sfp_hero_nothing_enabled">Inget synkroniseras än</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Välj kontakter, kalender eller båda i kontot nedan</string>
     <string name="sfp_hero_awaiting_first_sync">Väntar på första synkroniseringen</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Inget har kopierats till telefonen än</string>
+    <string name="sfp_hero_sync_off">Synkroniseringen är avstängd</string>
+    <string name="sfp_hero_subtitle_sync_off">Synkroniseringen förblir avstängd tills en prenumeration är aktiv. Se Prenumeration ovan.</string>
 
     <string name="toast_resync_skipped">Inget att synkronisera: synkronisering för %1$s är avstängd</string>
 </resources>

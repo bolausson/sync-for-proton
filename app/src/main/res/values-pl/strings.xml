@@ -28,6 +28,12 @@
     <string name="error_unlock_failed">Nie można odblokować danych Proton. Zaloguj się ponownie.</string>
     <string name="error_pqc_keys_unsupported">To konto ma klucz szyfrowania, którego ta aplikacja nie potrafi odczytać. Hasło jest poprawne, więc ponowne logowanie nie pomoże. Sprawdź, czy jest dostępna aktualizacja aplikacji, albo wyślij raport z ustawień aplikacji.</string>
     <string name="error_fido2_not_supported">Twoje konto używa sprzętowego klucza bezpieczeństwa (FIDO2). Sync for Proton obsługuje obecnie wyłącznie kody z aplikacji uwierzytelniającej (TOTP). Dodaj kod TOTP w ustawieniach internetowych Proton jako kopię zapasową, a następnie zaloguj się tutaj.</string>
+    <string name="error_login_verification_refused">Proton nie przyjął weryfikacji. Zaloguj się ponownie i jeszcze raz przejdź weryfikację.</string>
+    <string name="error_login_account_disabled">Proton zgłasza, że to konto jest wyłączone. Zaloguj się na proton.me lub skontaktuj się z pomocą techniczną Protona, aby poznać przyczynę.</string>
+    <string name="error_login_sso_unsupported">To konto korzysta z logowania jednokrotnego (SSO) organizacji. Sync for Proton obsługuje tylko logowanie hasłem.</string>
+    <string name="error_login_untrusted_server">Logowanie zostało przerwane, ponieważ nie udało się potwierdzić, że to połączenie prowadzi do Protona. Sprawdź swoją sieć (przyczyną może być strona logowania publicznej sieci Wi-Fi lub filtrujący serwer proxy) i spróbuj ponownie.</string>
+    <string name="error_login_proton_refused">Proton nie mógł dokończyć logowania. Spróbuj ponownie za chwilę.</string>
+    <string name="error_login_unexpected">Logowanie nie powiodło się z powodu nieoczekiwanego błędu (%1$s). Spróbuj ponownie.</string>
     <string name="sync_contacts">Kontakty</string>
     <string name="sync_calendar">Kalendarz</string>
     <string name="calendar_timeframe_title">Zakres synchronizacji kalendarza</string>
@@ -186,9 +192,15 @@
     <string name="label_language_auto">Automatycznie (domy\u015blny systemowy)</string>
 
     <string name="label_subscription">Subskrypcja</string>
-    <string name="label_subscription_none">Bezp\u0142atnie przez 7 dni, potem rozpoczn\u0105 si\u0119 op\u0142aty, chyba \u017ce anulujesz.</string>
-    <string name="label_subscription_trial">Okres pr\u00f3bny: pozosta\u0142o %1$d dni</string>
+    <string name="label_subscription_none">Synchronizacja jest wyłączona. Bezpłatnie przez 7 dni, potem rozpoczną się opłaty, chyba że anulujesz.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Bezpłatny okres próbny: pozostał %1$d dzień</item>
+        <item quantity="few">Bezpłatny okres próbny: pozostały %1$d dni</item>
+        <item quantity="many">Bezpłatny okres próbny: pozostało %1$d dni</item>
+        <item quantity="other">Bezpłatny okres próbny: pozostało %1$d dnia</item>
+    </plurals>
     <string name="label_subscription_active">Aktywna, odnawia si\u0119 %1$s</string>
+    <string name="label_subscription_active_play">Aktywna, zarządzana przez Google Play</string>
     <string name="label_subscription_ends">Kończy się %1$s</string>
     <string name="label_subscription_pauses">Zostanie wstrzymana %1$s</string>
     <string name="label_subscription_expired">Subskrypcja wygas\u0142a: odnów, aby wznowi\u0107 synchronizacj\u0119.</string>
@@ -211,7 +223,7 @@
     <string name="plan_monthly_price">%1$s/mies.</string>
     <string name="plan_annual_price">%1$s/rok</string>
     <string name="plan_picker_disclosure_plain">Mo\u017cesz anulowa\u0107 w dowolnym momencie w Google Play → Subskrypcje.</string>
-    <string name="label_subscription_required">Do synchronizacji potrzebna jest subskrypcja.</string>
+    <string name="label_subscription_required">Synchronizacja jest wyłączona: wymagana jest subskrypcja.</string>
     <string name="btn_choose_plan">Wybierz plan</string>
     <string name="error_billing_unavailable">P\u0142atno\u015bci Google Play s\u0105 niedost\u0119pne</string>
     <string name="error_purchase_failed">Zakup nie powi\u00f3d\u0142 si\u0119: spr\u00f3buj ponownie</string>
@@ -660,10 +672,13 @@ Usunąć je? Nic innego w tych kontaktach się nie zmieni, a ich nazwa wyświetl
     <string name="setup_choose_body">Oba ustawienia są na początku wyłączone, więc nic nie jest kopiowane na ten telefon, dopóki tego nie zdecydujesz. Możesz to zmienić w dowolnej chwili.</string>
     <string name="setup_choose_save">Rozpocznij synchronizację</string>
     <string name="setup_choose_none">Nie teraz</string>
+    <string name="setup_choose_saved_inactive">Zapisano. Synchronizacja rozpocznie się, gdy subskrypcja będzie aktywna.</string>
     <string name="sfp_hero_nothing_enabled">Nic jeszcze nie jest synchronizowane</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Wybierz kontakty, kalendarz lub oba na koncie poniżej</string>
     <string name="sfp_hero_awaiting_first_sync">Oczekiwanie na pierwszą synchronizację</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Nic nie zostało jeszcze skopiowane na ten telefon</string>
+    <string name="sfp_hero_sync_off">Synchronizacja jest wyłączona</string>
+    <string name="sfp_hero_subtitle_sync_off">Synchronizacja pozostaje wyłączona, dopóki nie będzie aktywnej subskrypcji. Szczegóły w sekcji Subskrypcja powyżej.</string>
 
     <string name="toast_resync_skipped">Nie ma czego synchronizować: synchronizacja dla %1$s jest wyłączona</string>
 </resources>

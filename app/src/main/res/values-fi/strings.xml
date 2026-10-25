@@ -28,6 +28,12 @@
     <string name="error_unlock_failed">Proton-tietojasi ei voitu avata. Kirjaudu uudelleen sisään.</string>
     <string name="error_pqc_keys_unsupported">Tällä tilillä on salausavain, jota tämä sovellus ei osaa lukea. Salasanasi on oikein, joten uudelleen kirjautuminen ei auta. Tarkista, onko sovellukseen saatavilla päivitys, tai lähetä raportti sovelluksen asetuksista.</string>
     <string name="error_fido2_not_supported">Tilisi käyttää laitteistopohjaista suojausavainta (FIDO2). Sync for Proton tukee tällä hetkellä vain todennussovelluksen koodeja (TOTP). Lisää Protonin verkkoasetuksissa varakeinoksi TOTP-koodi ja kirjaudu sitten sisään täällä.</string>
+    <string name="error_login_verification_refused">Proton ei hyväksynyt vahvistusta. Kirjaudu uudelleen sisään ja suorita tarkistus vielä kerran.</string>
+    <string name="error_login_account_disabled">Protonin mukaan tämä tili on poistettu käytöstä. Kirjaudu sisään osoitteessa proton.me tai ota yhteyttä Protonin tukeen saadaksesi selville syyn.</string>
+    <string name="error_login_sso_unsupported">Tälle tilille kirjaudutaan organisaation kertakirjautumisella (SSO). Sync for Proton tukee vain salasanalla kirjautumista.</string>
+    <string name="error_login_untrusted_server">Kirjautuminen keskeytettiin, koska yhteyden ei voitu vahvistaa olevan Protonin. Tarkista verkkoyhteytesi (syynä voi olla julkisen Wi-Fi-verkon kirjautumissivu tai suodattava välityspalvelin) ja yritä uudelleen.</string>
+    <string name="error_login_proton_refused">Proton ei voinut viedä kirjautumista loppuun. Yritä hetken kuluttua uudelleen.</string>
+    <string name="error_login_unexpected">Kirjautuminen epäonnistui odottamattoman virheen vuoksi (%1$s). Yritä uudelleen.</string>
     <string name="sync_contacts">Yhteystiedot</string>
     <string name="sync_calendar">Kalenteri</string>
     <string name="calendar_timeframe_title">Kalenterin synkronointialue</string>
@@ -183,9 +189,13 @@
     <string name="label_language">Kieli</string>
     <string name="label_language_auto">Automaattinen (järjestelmän oletus)</string>
     <string name="label_subscription">Tilaus</string>
-    <string name="label_subscription_none">Ilmainen 7 päivää, sen jälkeen laskutus alkaa, ellet peruuta.</string>
-    <string name="label_subscription_trial">Maksuton kokeilu: %1$d päivää jäljellä</string>
+    <string name="label_subscription_none">Synkronointi on pois päältä. Ilmainen 7 päivää, sen jälkeen laskutus alkaa, ellet peruuta.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Maksuton kokeilu: %1$d päivä jäljellä</item>
+        <item quantity="other">Maksuton kokeilu: %1$d päivää jäljellä</item>
+    </plurals>
     <string name="label_subscription_active">Aktiivinen, uusiutuu %1$s</string>
+    <string name="label_subscription_active_play">Aktiivinen, Google Playn hallitsema</string>
     <string name="label_subscription_ends">Päättyy %1$s</string>
     <string name="label_subscription_pauses">Keskeytyy %1$s</string>
     <string name="label_subscription_expired">Tilaus vanhentunut: uusi jatkaaksesi synkronointia.</string>
@@ -208,7 +218,7 @@
     <string name="plan_monthly_price">%1$s/kk</string>
     <string name="plan_annual_price">%1$s/vuosi</string>
     <string name="plan_picker_disclosure_plain">Voit peruuttaa milloin tahansa kohdassa Google Play → Tilaukset.</string>
-    <string name="label_subscription_required">Synkronointi vaatii tilauksen.</string>
+    <string name="label_subscription_required">Synkronointi on pois päältä: tilaus vaaditaan.</string>
     <string name="btn_choose_plan">Valitse paketti</string>
     <string name="error_billing_unavailable">Google Play -laskutus ei ole käytettävissä</string>
     <string name="error_purchase_failed">Osto epäonnistui: yritä uudelleen</string>
@@ -657,10 +667,13 @@
     <string name="setup_choose_body">Molemmat ovat aluksi pois käytöstä, joten mitään ei kopioida tähän puhelimeen ennen kuin niin haluat. Voit muuttaa tätä milloin tahansa.</string>
     <string name="setup_choose_save">Aloita synkronointi</string>
     <string name="setup_choose_none">Ei nyt</string>
+    <string name="setup_choose_saved_inactive">Tallennettu. Synkronointi alkaa, kun tilaus on aktiivinen.</string>
     <string name="sfp_hero_nothing_enabled">Mitään ei vielä synkronoida</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Valitse alla olevalta tililtä yhteystiedot, kalenteri tai molemmat</string>
     <string name="sfp_hero_awaiting_first_sync">Odotetaan ensimmäistä synkronointia</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Mitään ei ole vielä kopioitu tähän puhelimeen</string>
+    <string name="sfp_hero_sync_off">Synkronointi on pois päältä</string>
+    <string name="sfp_hero_subtitle_sync_off">Synkronointi pysyy pois päältä, kunnes tilaus on aktiivinen. Katso yllä oleva kohta Tilaus.</string>
 
     <string name="toast_resync_skipped">Ei mitään synkronoitavaa: kohteen %1$s synkronointi on pois käytöstä</string>
 </resources>

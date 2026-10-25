@@ -56,12 +56,22 @@ Also available on [Uptodown](https://sync-provider-for-proton.en.uptodown.com/an
 This build is paid via the web (no Google Play Billing):
 
 1. Subscribe at **<https://apps.olausson.de/sync_provider_for_proton/checkout.html>**
-   (monthly or yearly; 7-day free trial).
+   (monthly or yearly; 7-day free trial). The app's **Start 7-day free trial** button opens
+   the same page.
 2. After payment, the page shows your **subscription ID** (starts with `sub_`). Copy it.
-3. In the app, open **Settings** and tap the subscription button (**Start 7-day free trial**,
-   or **Renew** after a subscription ended), paste the ID and tap **Activate**.
+   The **transaction ID** on Paddle's invoice (starts with `txn_`) works as well: the app
+   looks up the subscription it paid for.
+3. In the app, open **Settings**; on the **Subscription** card at the top, tap
+   **Enter subscription ID**, paste the ID and tap **Activate**.
 4. Keep the subscription ID somewhere safe, such as a password manager. You'll need it to
-   re-activate after reinstalling or on another device.
+   re-activate after reinstalling or on another device. During the trial, and while a
+   subscription is paused, unpaid or expired, the card keeps its **Enter subscription ID**
+   button, and the dialog shows the ID this phone has stored.
+
+Lost the ID? The transaction ID (`txn_`) on Paddle's invoice activates too. Otherwise open the
+**Manage subscription** link in your Paddle receipt email (Paddle names the seller as BEO) and
+copy the subscription ID from Paddle's page. A Google Play subscription does not unlock
+this build: it only works in the Google Play version.
 
 Manage or cancel anytime via the link in your Paddle receipt email.
 

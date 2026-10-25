@@ -8,6 +8,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import me.proton.sync.SyncLog
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.api.models.CalendarEventDetail
 import me.proton.sync.api.models.CalendarInfo
 import me.proton.sync.api.models.CalendarKey
@@ -53,7 +54,7 @@ class CalendarBackupBuilder(
             return CalendarBackupResult(emptyList(), 0, 0, true)
         }
         if (!calResp.isSuccessful) {
-            SyncLog.e(TAG, "getCalendars HTTP ${calResp.code()} for $accountName")
+            SyncLog.e(TAG, "getCalendars HTTP ${calResp.code()}${calResp.protonErrorSuffix()} for $accountName")
             return CalendarBackupResult(emptyList(), 0, 0, true)
         }
         val calendars = calResp.body()?.calendars ?: emptyList()
@@ -174,7 +175,7 @@ class CalendarBackupBuilder(
                 break
             }
             if (!resp.isSuccessful) {
-                SyncLog.w(TAG, "getCalendarEventIds returned ${resp.code()} for $calId; id list is incomplete")
+                SyncLog.w(TAG, "getCalendarEventIds returned HTTP ${resp.code()}${resp.protonErrorSuffix()} for $calId; id list is incomplete")
                 pagingFailed = true
                 break
             }

@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Předplatné</string>
-    <string name="spp_subscribe_dialog_message">Předplaťte si službu v prohlížeči a poté níže vložte své ID předplatného (sub_…) pro aktivaci synchronizace na tomto zařízení.</string>
+    <string name="spp_btn_enter_subscription_id">Zadat ID předplatného</string>
+    <string name="spp_subscribe_dialog_title">Zadejte ID předplatného</string>
+    <string name="spp_subscribe_dialog_message">Vložte své ID předplatného (začíná na sub_ a zobrazí se na stránce po dokončení platby) nebo ID transakce z faktury od Paddle (začíná na txn_). Ztratili jste obojí? E-mail s potvrzením platby od Paddle obsahuje odkaz \"Manage subscription\" na vaše předplatné (Paddle uvádí jako prodejce BEO). Pokud ID stále nemůžete najít, klepněte v Nastavení na \"Odeslat hlášení vývojáři\". Předplatné z Google Play funguje pouze ve verzi této aplikace z Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivovat</string>
-    <string name="spp_subscribe_open_checkout">Předplatit v prohlížeči</string>
     <string name="spp_subscribe_validating">Ověřování předplatného…</string>
+    <string name="spp_subscribe_activated">Předplatné aktivováno.</string>
+    <string name="spp_subscribe_error_not_found">Předplatné s tímto ID nebylo nalezeno. Zkontrolujte ID a zkuste to znovu.</string>
+    <string name="spp_subscribe_error_wrong_product">Toto ID předplatného patří k jiné aplikaci.</string>
+    <string name="spp_subscribe_error_cancelled">Toto předplatné bylo zrušeno. Předplaťte si službu znovu, abyste získali nové ID předplatného.</string>
+    <string name="spp_subscribe_error_kept_current">Toto předplatné je pozastavené nebo nezaplacené, proto si tento telefon ponechá své současné předplatné.</string>
+    <string name="spp_subscribe_error_play_order">Toto je číslo objednávky Google Play. Předplatné z Google Play funguje pouze ve verzi aplikace z Google Play.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Toto ID transakce je neúplné nebo obsahuje překlep. Zkopírujte ID znovu.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nákup s tímto ID transakce nebyl nalezen. Zkontrolujte ID nebo zadejte ID předplatného, které začíná na sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Tento nákup patří k jiné aplikaci.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Tento nákup zatím nemá předplatné. Pokud jste právě zaplatili, zkuste to znovu za minutu. Jinak zadejte ID předplatného, které začíná na sub_.</string>
+    <string name="spp_subscribe_error_email">Toto je e-mailová adresa. Vaše ID předplatného začíná na \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Toto ID předplatného je neúplné nebo obsahuje překlep. Zkopírujte ID znovu.</string>
+    <string name="spp_subscribe_error_not_an_id">Toto není ID předplatného. ID předplatného začínají na \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Text obsahuje více než jedno ID. Zadejte pouze jedno.</string>
     <string name="spp_manage_dialog_title">Spravovat předplatné</string>
     <string name="spp_manage_action_update_payment">Aktualizovat platební metodu</string>
     <string name="spp_manage_action_cancel">Zrušit předplatné</string>

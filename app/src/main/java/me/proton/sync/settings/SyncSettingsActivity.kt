@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -34,6 +35,7 @@ import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncNotificationHelper
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 import me.proton.sync.SyncWorker
 import me.proton.sync.EventLoopWorker
@@ -45,16 +47,21 @@ import me.proton.sync.calendar.TzDataFreshness
 import me.proton.sync.contacts.ContactNameMode
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.account.LoginActivity
+import me.proton.sync.account.SignInErrors
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.backup.BackupFlowController
 import me.proton.sync.backup.BackupFormat
 import me.proton.sync.billing.BillingUi
 import me.proton.sync.billing.ScheduledChange
+import me.proton.sync.billing.SubscriptionGate
 import me.proton.sync.billing.SubscriptionManager
 import me.proton.sync.billing.SubscriptionState
 import me.proton.sync.billing.scheduledChangeLabel
+import me.proton.sync.billing.trialDaysLeft
 import me.proton.sync.contacts.ConflictResolutionReceiver
 import me.proton.sync.databinding.ActivitySettingsBinding
 import me.proton.sync.databinding.SettingsAccountCardBinding
+import me.proton.sync.databinding.SettingsSubscriptionCardBinding
 import java.text.DateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -899,11 +906,14 @@ class SyncSettingsActivity : AppCompatActivity() {
      *
      *   debug_command = sync | remove_account | resync_remote | resync_local | backup_export | backup_import |
      *                   backup_restore_subscription   (see handleDebugBackupCommand) |
-     *                   billing_offers | plan_picker | billing_sheet (plan = monthly | yearly) |
-     *                   billing_manage | billing_update_payment | licences |
-     *                   backup_reminder (part = export) | srp_modulus (username) |
-     *                   license_fixture (status) | tz_updates (state = on | off) | tz_info |
-     *                   tz_probe (tzid, local) | tz_warning (mode, version) |
+     *                   billing_offers | plan_picker | billing_start | billing_sheet (plan = monthly | yearly) |
+     *                   billing_manage | billing_update_payment | licences | debug_log (file) |
+     *                   log_redaction_probe |
+     *                   backup_reminder (part = export) | srp_modulus (username) | signin_probe (username) |
+     *                   license_fixture (status) | license_enter (text or text_file, offline) |
+     *                   tz_updates (state = on | off) | tz_info |
+     *                   tz_probe (tzid, local) | tz_warning (mode, version) | schedule_info |
+     *                   interval (seconds = a picker value | manual) |
      *                   retime_check | retime_run | retime_fixture (event_id, minutes, mode)
      *   account       = the account name as shown on its card
      *   section       = contacts | calendar | all   (default all)
@@ -943,15 +953,49 @@ class SyncSettingsActivity : AppCompatActivity() {
                 BillingUi.debugLogOffers(this, subscriptionManager)
                 return
             }
+            // The play version's plan picker; in the direct version, the Enter subscription ID dialog.
             "plan_picker" -> {
-                SyncLog.i(tag, "plan_picker: opening the plan picker")
+                SyncLog.i(tag, "plan_picker: opening the plan picker (direct version: the Enter subscription ID dialog)")
                 BillingUi.showPurchaseOptions(this, subscriptionManager)
+                return
+            }
+            // The card's trial, plan and renew button, through its handler: the direct version opens Paddle's
+            // checkout page, the play version the plan picker.
+            "billing_start" -> {
+                SyncLog.i(tag, "billing_start: as the card's trial, plan or renew button")
+                BillingUi.startPurchase(this, subscriptionManager)
                 return
             }
             // The footer's "Third-party licences" link.
             "licences" -> {
                 SyncLog.i(tag, "licences: opening the licences screen")
                 openLicences()
+                return
+            }
+            // The log viewer's Save button, into files/debug/ instead of a picked document.
+            "debug_log" -> {
+                val name = fileName?.takeIf { it.matches(Regex("[A-Za-z0-9._-]+")) } ?: "debug-log.txt"
+                val file = java.io.File(getExternalFilesDir("debug"), name)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        me.proton.sync.DebugLog.writeTo(this@SyncSettingsActivity, android.net.Uri.fromFile(file))
+                        SyncLog.i(tag, "debug_log: written -> ${file.absolutePath}")
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "debug_log: failed: ${e.javaClass.simpleName}")
+                    }
+                }
+                return
+            }
+            // Test fixture: one line in each form the redaction knows, with made-up values; logcat keeps the raw
+            // line, as it does every line, while the file copy and the debug log get it redacted.
+            "log_redaction_probe" -> {
+                SyncLog.i(
+                    tag,
+                    "log_redaction_probe: token=probe0000000001 \"AccessToken\":\"probe0000000002\" " +
+                        "Bearer probe0000000003 sub_${"0".repeat(26)} txn_${"0".repeat(26)}"
+                )
+                FileLogController.flushNow()
+                SyncLog.i(tag, "log_redaction_probe: file copy ${if (FileLogController.isActive()) "flushed" else "is off"}")
                 return
             }
             "billing_sheet" -> {
@@ -966,12 +1010,54 @@ class SyncSettingsActivity : AppCompatActivity() {
                 BillingUi.debugManage(this, subscriptionManager, updatePayment = command == "billing_update_payment")
                 return
             }
-            // Test fixture, not a user action: a Paddle licence answer (past_due, unpaid, paused, scheduled_cancel
-            // or scheduled_pause) run through the real handling, or "refresh" to ask the licence proxy again.
+            // Test fixture, not a user action: a Paddle licence answer (past_due, unpaid, paused, scheduled_cancel,
+            // scheduled_pause or trialing) run through the real handling, or "refresh" to ask the licence proxy again.
             "license_fixture" -> {
                 val status = intent.getStringExtra("status").orEmpty()
                 intent.removeExtra("status")
                 BillingUi.debugLicenseFixture(this, subscriptionManager, status)
+                return
+            }
+            // The subscription dialog's Activate button with <text> in its field, through the button's own handler
+            // (direct version; the play version logs that it does not apply). Safe on a phone with a real licence:
+            // an entry Paddle does not accept never changes the stored id. With text_file instead of text, the text
+            // is the trimmed content of files/debug/<text_file> in the app's external files folder, deleted as soon
+            // as it is read: a real transaction id then never appears on the am start line, which adbd logs.
+            "license_enter" -> {
+                val text = intent.getStringExtra("text").orEmpty()
+                val textFile = intent.getStringExtra("text_file")
+                val offline = intent.getBooleanExtra("offline", false)
+                intent.removeExtra("text")
+                intent.removeExtra("text_file")
+                intent.removeExtra("offline")
+                if (textFile == null) {
+                    BillingUi.debugLicenseEnter(this, subscriptionManager, text, offline)
+                    return
+                }
+                if (!textFile.matches(Regex("[A-Za-z0-9_-][A-Za-z0-9._-]*"))) {
+                    SyncLog.w(tag, "license_enter ignored: text_file must be a file name in files/debug/, not a path")
+                    return
+                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val file = java.io.File(getExternalFilesDir("debug"), textFile)
+                    val fromFile = try {
+                        file.readText().trim()
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "license_enter: the text file cannot be read: ${e.javaClass.simpleName}")
+                        null
+                    } finally {
+                        // Read or not, it goes: it may hold a real id.
+                        if (file.exists() && !file.delete()) SyncLog.w(tag, "license_enter: the text file could not be deleted")
+                    }
+                    if (fromFile == null) return@launch
+                    // Its length only, as for any entered text.
+                    SyncLog.i(tag, "license_enter: ${fromFile.length} characters from the text file, which is deleted")
+                    withContext(Dispatchers.Main) {
+                        if (!isFinishing && !isDestroyed) {
+                            BillingUi.debugLicenseEnter(this@SyncSettingsActivity, subscriptionManager, fromFile, offline)
+                        }
+                    }
+                }
                 return
             }
             // The backup reminder as its timer shows it, or (part = export) the chooser behind its
@@ -1002,6 +1088,30 @@ class SyncSettingsActivity : AppCompatActivity() {
                 }
                 return
             }
+            // Test fixture, not a user action: one sign-in for one username with a random password, so
+            // Proton refuses it (Code 8002) and the log shows the Code and the exact message the sign-in
+            // screen would show. No real password ever travels over adb. Proton counts it as a failed
+            // attempt and may ask for a CAPTCHA, so use the test account, and never in a loop.
+            "signin_probe" -> {
+                val username = intent.getStringExtra("username").orEmpty()
+                intent.removeExtra("username")
+                if (username.isBlank()) {
+                    SyncLog.w(tag, "signin_probe ignored: no username")
+                    return
+                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val line = try {
+                        srpAuthHandler.login(username, "sfp-probe-" + java.util.UUID.randomUUID())
+                        "unexpected: Proton accepted a random password"
+                    } catch (e: me.proton.sync.api.SrpAuthHandler.CaptchaRequiredException) {
+                        "human verification required (Code 9001); the sign-in screen would open the CAPTCHA"
+                    } catch (e: Exception) {
+                        "${SignInErrors.kindOf(e)}: \"${SignInErrors.message(this@SyncSettingsActivity, e)}\""
+                    }
+                    SyncLog.i(tag, "signin_probe: $line")
+                }
+                return
+            }
             // The "Update time zones online" switch, through the same path as the switch itself.
             "tz_updates" -> {
                 val state = intent.getStringExtra("state")
@@ -1022,6 +1132,16 @@ class SyncSettingsActivity : AppCompatActivity() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     try { TimeZoneDebugCommands.info(applicationContext, dao) } catch (e: Exception) {
                         SyncLog.w(tag, "tz_info failed: ${e.message}")
+                    }
+                }
+                return
+            }
+            // Read-only: per account, the subscription gate, the interval, the switches, the periodic syncs
+            // and the event loop's and watchdogs' WorkManager states (their names are not in dumpsys).
+            "schedule_info" -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try { SyncScheduling.debugLogSchedules(applicationContext) } catch (e: Exception) {
+                        SyncLog.w(tag, "schedule_info failed: ${e.message}")
                     }
                 }
                 return
@@ -1099,6 +1219,23 @@ class SyncSettingsActivity : AppCompatActivity() {
             }
             "resync_remote" -> performFullResyncRemoteToLocal(account, abAccount, section)
             "resync_local" -> performFullResyncLocalToRemote(account, abAccount, section)
+            // The account's sync interval picker: stores one of its values as the dialog does, then runs
+            // the picker's handler. "manual" is its "Manual only" (-1).
+            "interval" -> {
+                val raw = intent.getStringExtra("seconds")
+                intent.removeExtra("seconds")
+                val values = resources.getStringArray(R.array.sync_interval_values)
+                val v = if (raw == "manual") "-1" else raw
+                if (v == null || v !in values) {
+                    SyncLog.w(tag, "interval ignored: '$raw' is not one of ${values.filter { it != "-1" }.joinToString()} or manual")
+                } else {
+                    PreferenceManager.getDefaultSharedPreferences(this).edit()
+                        .putString(SyncPreferences.eventLoopIntervalKey(account.name), v).apply()
+                    applyEventLoopInterval(account)
+                    buildAccountCards()
+                    SyncLog.i(tag, "interval: '${account.name}' set to $v")
+                }
+            }
             // The re-time pass: "check" plans without writing, "run" makes the next sync run it.
             "retime_check" -> {
                 val dao = syncDatabase.calendarEventSyncDao()
@@ -1195,28 +1332,37 @@ class SyncSettingsActivity : AppCompatActivity() {
         // long labels ("Update payment method" and "Manage subscription" run to 40-59 characters),
         // which a horizontal row cannot hold in most languages.
         card.subscriptionButtonRow.orientation = LinearLayout.HORIZONTAL
+        // Only the direct version shows it, and only in the branches that call showEnterIdButton.
+        card.btnSubscriptionEnterId.visibility = View.GONE
 
         when (state) {
             SubscriptionState.Unknown,
             SubscriptionState.NoSubscription -> {
                 // Per flavor: Paddle always starts with the trial; Google offers one only to accounts
                 // that never had this subscription, so the play version promises it only when offered.
+                // The direct version's button opens Paddle's checkout, and the id it ends with goes in
+                // through Enter subscription ID.
                 val (status, action) = BillingUi.noSubscriptionTexts(this@SyncSettingsActivity, subscriptionManager)
                 card.textSubscriptionStatus.text = status
                 card.btnSubscriptionAction.text = action
                 card.btnSubscriptionAction.visibility = View.VISIBLE
-                card.btnSubscriptionAction.setOnClickListener { BillingUi.showPurchaseOptions(this@SyncSettingsActivity, subscriptionManager) }
+                card.btnSubscriptionAction.setOnClickListener { BillingUi.startPurchase(this@SyncSettingsActivity, subscriptionManager) }
                 card.btnSubscriptionManage.visibility = View.GONE
+                showEnterIdButton(card)
                 card.iconSubscription.setImageResource(android.R.drawable.ic_lock_lock)
             }
             is SubscriptionState.Trial -> {
-                val daysLeft = ((state.expiresAtMs - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).coerceAtLeast(0)
+                val daysLeft = trialDaysLeft(state.expiresAtMs, System.currentTimeMillis())
                 card.textSubscriptionStatus.text = scheduledChangeText(state.scheduledChange, dateFmt)
-                    ?: getString(R.string.label_subscription_trial, daysLeft)
-                card.btnSubscriptionAction.text = getString(R.string.btn_upgrade)
-                card.btnSubscriptionAction.visibility = View.VISIBLE
-                card.btnSubscriptionAction.setOnClickListener { BillingUi.showPurchaseOptions(this@SyncSettingsActivity, subscriptionManager) }
+                    ?: resources.getQuantityString(R.plurals.label_subscription_trial_days, daysLeft, daysLeft)
+                // None in the direct version: its trial already is the subscription (BillingUi.upgradeLabel).
+                val upgrade = BillingUi.upgradeLabel(this)
+                upgrade?.let { card.btnSubscriptionAction.text = it }
+                card.btnSubscriptionAction.visibility = if (upgrade != null) View.VISIBLE else View.GONE
+                card.btnSubscriptionAction.setOnClickListener { BillingUi.startPurchase(this@SyncSettingsActivity, subscriptionManager) }
                 card.btnSubscriptionManage.visibility = View.VISIBLE
+                // Direct version: the trial's id is the one a second phone needs, and the dialog shows it.
+                showEnterIdButton(card)
                 card.iconSubscription.setImageResource(android.R.drawable.ic_menu_recent_history)
             }
             is SubscriptionState.Active -> if (state.paymentFailed) {
@@ -1231,8 +1377,10 @@ class SyncSettingsActivity : AppCompatActivity() {
                 card.subscriptionButtonRow.orientation = LinearLayout.VERTICAL
                 card.iconSubscription.setImageResource(android.R.drawable.stat_sys_warning)
             } else {
-                // "Renews" no longer holds once Paddle has a cancellation or a pause scheduled.
+                // "Renews" no longer holds once Paddle has a cancellation or a pause scheduled. The play
+                // version has no renewal date (a Play purchase carries none), so its line names Google Play.
                 card.textSubscriptionStatus.text = scheduledChangeText(state.scheduledChange, dateFmt)
+                    ?: BillingUi.activeStatusText(this)
                     ?: getString(R.string.label_subscription_active, dateFmt.format(Date(state.expiresAtMs)))
                 card.btnSubscriptionAction.visibility = View.GONE
                 card.btnSubscriptionManage.visibility = View.VISIBLE
@@ -1249,33 +1397,38 @@ class SyncSettingsActivity : AppCompatActivity() {
             is SubscriptionState.Expired -> if (state.paused) {
                 // Paused, not ended: the subscription id is kept, so sync comes back by itself if the
                 // subscription is resumed. Manage reaches the paused subscription itself. Renew stays
-                // too: a customer cannot usually resume a paused subscription on their own, and the
-                // purchase dialog is the only way to enter a new id, which replaces the kept one.
+                // too, because a customer cannot usually resume a paused subscription on their own: it
+                // opens a new purchase (Paddle's checkout in the direct version), and Enter subscription
+                // ID takes the new id, which replaces the kept one.
                 card.textSubscriptionStatus.text = getString(R.string.label_subscription_paused)
                 card.btnSubscriptionAction.text = getString(R.string.btn_renew)
                 card.btnSubscriptionAction.visibility = View.VISIBLE
-                card.btnSubscriptionAction.setOnClickListener { BillingUi.showPurchaseOptions(this@SyncSettingsActivity, subscriptionManager) }
+                card.btnSubscriptionAction.setOnClickListener { BillingUi.startPurchase(this@SyncSettingsActivity, subscriptionManager) }
                 card.btnSubscriptionManage.visibility = View.VISIBLE
                 card.subscriptionButtonRow.orientation = LinearLayout.VERTICAL
+                showEnterIdButton(card)
                 card.iconSubscription.setImageResource(android.R.drawable.stat_sys_warning)
             } else if (state.paymentFailed) {
                 // Unpaid: the first charge after the trial failed, or a renewal stayed past due too
                 // long, so sync is off. The id is kept and the next licence check after Paddle
                 // collects turns sync back on, so the one thing to offer is the payment page; Manage
-                // stays for cancelling.
+                // stays for cancelling. Enter subscription ID (direct version) takes a new
+                // subscription's id instead, and its dialog shows the kept one.
                 card.textSubscriptionStatus.text = getString(R.string.label_subscription_unpaid)
                 card.btnSubscriptionAction.text = getString(R.string.btn_update_payment_method)
                 card.btnSubscriptionAction.visibility = View.VISIBLE
                 card.btnSubscriptionAction.setOnClickListener { BillingUi.openUpdatePayment(this@SyncSettingsActivity, subscriptionManager, state) }
                 card.btnSubscriptionManage.visibility = View.VISIBLE
                 card.subscriptionButtonRow.orientation = LinearLayout.VERTICAL
+                showEnterIdButton(card)
                 card.iconSubscription.setImageResource(android.R.drawable.stat_sys_warning)
             } else {
                 card.textSubscriptionStatus.text = getString(R.string.label_subscription_expired)
                 card.btnSubscriptionAction.text = getString(R.string.btn_renew)
                 card.btnSubscriptionAction.visibility = View.VISIBLE
-                card.btnSubscriptionAction.setOnClickListener { BillingUi.showPurchaseOptions(this@SyncSettingsActivity, subscriptionManager) }
+                card.btnSubscriptionAction.setOnClickListener { BillingUi.startPurchase(this@SyncSettingsActivity, subscriptionManager) }
                 card.btnSubscriptionManage.visibility = View.GONE
+                showEnterIdButton(card)
                 card.iconSubscription.setImageResource(android.R.drawable.stat_notify_error)
             }
         }
@@ -1286,6 +1439,9 @@ class SyncSettingsActivity : AppCompatActivity() {
         card.textSubscriptionNote.text = note
         card.textSubscriptionNote.visibility =
             if (note != null && card.btnSubscriptionManage.visibility == View.VISIBLE) View.VISIBLE else View.GONE
+
+        // The hero says when sync is off for want of a subscription, so it follows the state too.
+        if (accountCardHandles.isNotEmpty()) updateHeroStatus(accountCardHandles.map { it.parentAccount })
     }
 
     /**
@@ -1295,9 +1451,25 @@ class SyncSettingsActivity : AppCompatActivity() {
     private fun scheduledChangeText(change: ScheduledChange?, dateFmt: DateFormat): String? =
         change?.let { getString(scheduledChangeLabel(it), dateFmt.format(Date(it.effectiveAtMs))) }
 
+    /**
+     * The card's Enter subscription ID button (direct version only; the play version has no label for it, so
+     * nothing changes on its cards): on the cards where sync is off and a subscription id is the way back (no
+     * subscription, paused, unpaid, expired), and on the trial card, whose dialog shows the id a second phone
+     * needs. Not on the active cards. Stacked under the other buttons, because two long labels do not fit side
+     * by side.
+     */
+    private fun showEnterIdButton(card: SettingsSubscriptionCardBinding) {
+        val label = BillingUi.enterIdLabel(this) ?: return
+        card.btnSubscriptionEnterId.text = label
+        card.btnSubscriptionEnterId.visibility = View.VISIBLE
+        card.btnSubscriptionEnterId.setOnClickListener { BillingUi.showPurchaseOptions(this, subscriptionManager) }
+        card.subscriptionButtonRow.orientation = LinearLayout.VERTICAL
+    }
+
     // Purchase / manage UI is flavor-specific (Play billing sheet vs Paddle web
-    // checkout + paste) — see BillingUi in src/play and src/direct. The shared code
-    // above only calls BillingUi.showPurchaseOptions(...) / openManageSubscription(...).
+    // checkout + paste): see BillingUi in src/play and src/direct. The shared code
+    // above only calls BillingUi.startPurchase(...), enterIdLabel(...) and upgradeLabel(...),
+    // showPurchaseOptions(...) and openManageSubscription(...).
 
     private fun buildAccountCards() {
         val container = binding.settingsContainer
@@ -1562,38 +1734,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 defaultValue = "3600",
                 prefs = prefs,
                 formatLabel = { v -> formatIntervalLabel(v, intervalEntries, intervalValues) },
-                onChanged = {
-                    val seconds = SyncPreferences.getLongFromStringPref(prefs, eventLoopKey, 3600)
-                    val abAcct = Account(
-                        SyncUtils.addressBookAccountName(accountManager, account),
-                        ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK
-                    )
-                    if (seconds < 0) {
-                        // "Manual only". The sentinel is -1 SECONDS, and this used to hand
-                        // scheduleForAccount `seconds / 60`, which truncates -1 to 0. The worker
-                        // cancels on a NEGATIVE interval, so 0 fell through to
-                        // maxOf(0, MIN_INTERVAL_MINUTES) and scheduled the event loop every 15
-                        // minutes - the fastest the app offers, from the option that promises none.
-                        // The two fallback pickers below always branched on the sentinel; this one
-                        // never did.
-                        EventLoopWorker.scheduleForAccount(this, account.name, -1)
-                        // And manual has to mean manual. This is the only schedule control in the
-                        // UI, but the hourly ContentResolver periodic sync armed at provisioning
-                        // is what actually runs the adapter, and nothing here ever touched it - so
-                        // "Manual only" left a background sync running every hour regardless.
-                        SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
-                        SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
-                        SyncLog.i("SyncSettings", "Event loop set to manual for '${account.name}': event loop cancelled and both periodic syncs removed")
-                    } else {
-                        EventLoopWorker.scheduleForAccount(this, account.name, EventLoopWorker.intervalMinutesFor(seconds))
-                        // The chosen interval now governs the periodic sync too, for whichever
-                        // types are actually switched on. Arming one for a type the user has
-                        // turned off would resurrect exactly what the switch is meant to stop.
-                        SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
-                        SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
-                        SyncLog.i("SyncSettings", "Event loop for '${account.name}' set to ${seconds}s; periodic syncs re-armed to match")
-                    }
-                }
+                onChanged = { applyEventLoopInterval(account) }
             )
 
             // "Show notification while syncing" — gates the IMPORTANCE_MIN ongoing notif.
@@ -1633,7 +1774,13 @@ class SyncSettingsActivity : AppCompatActivity() {
                         prefs.edit().putBoolean(contactsFallbackEnabledKey, true).apply()
                         cardBinding.valueContactsFallback.text = label
                         val seconds = selectedVal.toLongOrNull() ?: 43200
-                        SyncWorker.scheduleForAccount(this, account.name, "contacts", seconds / 60)
+                        // Armed only while the subscription lets sync run; the subscription observer
+                        // arms it from the stored value when the subscription turns active.
+                        if (SubscriptionGate.isSyncAllowedCached(this)) {
+                            SyncWorker.scheduleForAccount(this, account.name, "contacts", seconds / 60)
+                        } else {
+                            SyncLog.i("SyncSettings", "Contacts fallback for '${account.name}' set to ${seconds}s; not armed while the subscription is inactive")
+                        }
                     }
                 }
             }
@@ -1661,7 +1808,12 @@ class SyncSettingsActivity : AppCompatActivity() {
                         prefs.edit().putBoolean(calendarFallbackEnabledKey, true).apply()
                         cardBinding.valueCalendarFallback.text = label
                         val seconds = selectedVal.toLongOrNull() ?: 43200
-                        SyncWorker.scheduleForAccount(this, account.name, "calendar", seconds / 60)
+                        // Armed only while the subscription lets sync run, as above.
+                        if (SubscriptionGate.isSyncAllowedCached(this)) {
+                            SyncWorker.scheduleForAccount(this, account.name, "calendar", seconds / 60)
+                        } else {
+                            SyncLog.i("SyncSettings", "Calendar fallback for '${account.name}' set to ${seconds}s; not armed while the subscription is inactive")
+                        }
                     }
                 }
             }
@@ -2011,9 +2163,12 @@ class SyncSettingsActivity : AppCompatActivity() {
     }
 
     /**
-     * Derive the overview hero status from per-account sync state: "needs attention" when any
-     * ENABLED account/authority has a failure newer than its last success (the same rule the
-     * account cards use for their red fail line); otherwise the green "everything's synced".
+     * Derive the overview hero status from per-account sync state, first match wins: "nothing is
+     * syncing yet" when no account has a sync type switched on; "sync is off" when the subscription
+     * lets no sync start; "waiting for the first sync" when nothing enabled has ever completed;
+     * "needs attention" when any ENABLED account/authority has a failure newer than its last success
+     * (the same rule the account cards use for their red fail line); otherwise the green
+     * "everything's synced".
      */
     private fun updateHeroStatus(accounts: List<Account>) {
         val am = AccountManager.get(this)
@@ -2046,13 +2201,14 @@ class SyncSettingsActivity : AppCompatActivity() {
                 ContentResolver.getSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR)
         }
         if (nothingEnabled) {
-            binding.heroStatusBox.setCardBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn_container))
-            binding.heroStatusIcon.setImageResource(R.drawable.ic_sfp_warn)
-            binding.heroStatusIcon.setColorFilter(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn))
-            binding.heroTitle.setText(R.string.sfp_hero_nothing_enabled)
-            binding.heroSubtitle.setText(R.string.sfp_hero_subtitle_nothing_enabled)
+            showHeroWarning(R.string.sfp_hero_nothing_enabled, R.string.sfp_hero_subtitle_nothing_enabled)
+            return
+        }
+        // Sync is switched on, but the subscription gate drops every sync before it starts, so
+        // neither "waiting" nor "synced" is true. Checked before both, and before needsAttention,
+        // because an old failure is not what stops sync now.
+        if (!subscriptionManager.isSyncAllowed()) {
+            showHeroWarning(R.string.sfp_hero_sync_off, R.string.sfp_hero_subtitle_sync_off)
             return
         }
         // Enabled, but nothing has ever completed. "Everything's synced" is wrong here in the way
@@ -2079,23 +2235,11 @@ class SyncSettingsActivity : AppCompatActivity() {
             lastSuccesses.isNotEmpty() && lastSuccesses.all { it == 0L }
         }
         if (awaitingFirstSync) {
-            binding.heroStatusBox.setCardBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn_container))
-            binding.heroStatusIcon.setImageResource(R.drawable.ic_sfp_warn)
-            binding.heroStatusIcon.setColorFilter(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn))
-            binding.heroTitle.setText(R.string.sfp_hero_awaiting_first_sync)
-            binding.heroSubtitle.setText(R.string.sfp_hero_subtitle_awaiting_first_sync)
+            showHeroWarning(R.string.sfp_hero_awaiting_first_sync, R.string.sfp_hero_subtitle_awaiting_first_sync)
             return
         }
         if (needsAttention) {
-            binding.heroStatusBox.setCardBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn_container))
-            binding.heroStatusIcon.setImageResource(R.drawable.ic_sfp_warn)
-            binding.heroStatusIcon.setColorFilter(
-                androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn))
-            binding.heroTitle.setText(R.string.sfp_hero_warn)
-            binding.heroSubtitle.setText(R.string.sfp_hero_subtitle_warn)
+            showHeroWarning(R.string.sfp_hero_warn, R.string.sfp_hero_subtitle_warn)
         } else {
             binding.heroStatusBox.setCardBackgroundColor(
                 androidx.core.content.ContextCompat.getColor(this, R.color.sfp_good_container))
@@ -2104,6 +2248,17 @@ class SyncSettingsActivity : AppCompatActivity() {
             binding.heroTitle.setText(R.string.sfp_hero_ok)
             binding.heroSubtitle.setText(R.string.sfp_hero_subtitle_ok)
         }
+    }
+
+    /** The hero in its amber warning style, with [title] and [subtitle]. */
+    private fun showHeroWarning(@StringRes title: Int, @StringRes subtitle: Int) {
+        binding.heroStatusBox.setCardBackgroundColor(
+            androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn_container))
+        binding.heroStatusIcon.setImageResource(R.drawable.ic_sfp_warn)
+        binding.heroStatusIcon.setColorFilter(
+            androidx.core.content.ContextCompat.getColor(this, R.color.sfp_warn))
+        binding.heroTitle.setText(title)
+        binding.heroSubtitle.setText(subtitle)
     }
 
     // --- Dialogs ---
@@ -2321,7 +2476,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 } else {
                     SyncLog.w(
                         "UserAction",
-                        "Proton did not accept the sign-out for the removed account (HTTP ${response.code()}); " +
+                        "Proton did not accept the sign-out for the removed account (HTTP ${response.code()}${response.protonErrorSuffix()}); " +
                             "its session will stay valid until it expires on its own"
                     )
                 }
@@ -2375,21 +2530,51 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     // --- Sync interval helpers ---
 
-    private fun updateContactsSyncInterval(abAccount: Account, seconds: Long) {
+    /**
+     * The sync interval picker's handler, run once it has stored the new value (and by the "interval"
+     * debug command): the event loop and both periodic syncs follow the stored interval.
+     */
+    private fun applyEventLoopInterval(account: Account) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val seconds = SyncPreferences.getLongFromStringPref(prefs, SyncPreferences.eventLoopIntervalKey(account.name), 3600)
+        val abAcct = Account(
+            SyncUtils.addressBookAccountName(accountManager, account),
+            ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK
+        )
         if (seconds < 0) {
-            ContentResolver.setSyncAutomatically(abAccount, SyncConstants.AUTHORITY_CONTACTS, false)
+            // "Manual only". The sentinel is -1 SECONDS, and this used to hand
+            // scheduleForAccount `seconds / 60`, which truncates -1 to 0. The worker
+            // cancels on a NEGATIVE interval, so 0 fell through to
+            // maxOf(0, MIN_INTERVAL_MINUTES) and scheduled the event loop every 15
+            // minutes - the fastest the app offers, from the option that promises none.
+            // The two fallback pickers always branched on the sentinel; this one never
+            // did.
+            EventLoopWorker.scheduleForAccount(this, account.name, -1)
+            // And manual has to mean manual. This is the only schedule control in the
+            // UI, but the hourly ContentResolver periodic sync armed at provisioning
+            // is what actually runs the adapter, and nothing here ever touched it - so
+            // "Manual only" left a background sync running every hour regardless.
+            SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
+            SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
+            SyncLog.i("SyncSettings", "Event loop set to manual for '${account.name}': event loop cancelled and both periodic syncs removed")
         } else {
-            ContentResolver.setSyncAutomatically(abAccount, SyncConstants.AUTHORITY_CONTACTS, true)
-            ContentResolver.addPeriodicSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, Bundle.EMPTY, seconds)
-        }
-    }
-
-    private fun updateCalendarSyncInterval(account: Account, seconds: Long) {
-        if (seconds < 0) {
-            ContentResolver.setSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR, false)
-        } else {
-            ContentResolver.setSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR, true)
-            ContentResolver.addPeriodicSync(account, SyncConstants.AUTHORITY_CALENDAR, Bundle.EMPTY, seconds)
+            // Armed only while the subscription lets sync run, like the periodic syncs below (gated
+            // inside applyPeriodicSync). The subscription observer arms it from the stored value when
+            // the subscription turns active.
+            val allowed = SubscriptionGate.isSyncAllowedCached(this)
+            if (allowed) {
+                EventLoopWorker.scheduleForAccount(this, account.name, EventLoopWorker.intervalMinutesFor(seconds))
+            }
+            // The chosen interval now governs the periodic sync too, for whichever
+            // types are actually switched on. Arming one for a type the user has
+            // turned off would resurrect exactly what the switch is meant to stop.
+            SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
+            SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
+            if (allowed) {
+                SyncLog.i("SyncSettings", "Event loop for '${account.name}' set to ${seconds}s; periodic syncs re-armed to match")
+            } else {
+                SyncLog.i("SyncSettings", "Event loop for '${account.name}' set to ${seconds}s; not armed while the subscription is inactive")
+            }
         }
     }
 

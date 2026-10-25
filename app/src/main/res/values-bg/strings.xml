@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Данните на Proton не могат да бъдат отключени. Моля, влезте отново.</string>
     <string name="error_pqc_keys_unsupported">Този акаунт има ключ за шифроване, който това приложение не може да чете. Паролата ви е правилна, затова повторното влизане няма да помогне. Проверете дали има актуализация на приложението или изпратете доклад от настройките на приложението.</string>
     <string name="error_fido2_not_supported">Вашият акаунт използва хардуерен ключ за сигурност (FIDO2). Sync for Proton в момента поддържа само кодове от приложения за удостоверяване (TOTP). Моля, добавете TOTP код като резервен вариант в уеб настройките на Proton и след това влезте тук.</string>
+    <string name="error_login_verification_refused">Proton не прие проверката. Моля, влезте отново и завършете проверката още веднъж.</string>
+    <string name="error_login_account_disabled">Proton съобщава, че този акаунт е деактивиран. Влезте в proton.me или се свържете с поддръжката на Proton, за да разберете причината.</string>
+    <string name="error_login_sso_unsupported">Този акаунт влиза чрез единно влизане (SSO) на организация. Sync for Proton поддържа само влизане с парола.</string>
+    <string name="error_login_untrusted_server">Влизането беше спряно, защото не може да се потвърди, че тази връзка е към Proton. Проверете мрежата си (причината може да е страница за вход в обществена Wi-Fi мрежа или филтриращ прокси сървър) и опитайте отново.</string>
+    <string name="error_login_proton_refused">Proton не успя да завърши влизането. Моля, опитайте отново след малко.</string>
+    <string name="error_login_unexpected">Влизането е неуспешно поради неочаквана грешка (%1$s). Моля, опитайте отново.</string>
     <string name="sync_contacts">Контакти</string>
     <string name="sync_calendar">Календар</string>
     <string name="calendar_timeframe_title">Период на синхронизация на календара</string>
@@ -173,9 +179,13 @@
     <string name="label_language">Език</string>
     <string name="label_language_auto">Автоматично (системна настройка)</string>
     <string name="label_subscription">Абонамент</string>
-    <string name="label_subscription_none">Безплатно за 7 дни, след което започва таксуване, освен ако не откажете.</string>
-    <string name="label_subscription_trial">Безплатен пробен период: остават %1$d дни</string>
+    <string name="label_subscription_none">Синхронизацията е изключена. Безплатно за 7 дни, след което започва таксуване, освен ако не откажете.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Безплатен пробен период: остава %1$d ден</item>
+        <item quantity="other">Безплатен пробен период: остават %1$d дни</item>
+    </plurals>
     <string name="label_subscription_active">Активен, подновява се на %1$s</string>
+    <string name="label_subscription_active_play">Активен, управляван от Google Play</string>
     <string name="label_subscription_ends">Приключва на %1$s</string>
     <string name="label_subscription_pauses">Поставя се на пауза на %1$s</string>
     <string name="label_subscription_expired">Абонаментът е изтекъл: подновете, за да възобновите синхронизацията.</string>
@@ -198,7 +208,7 @@
     <string name="plan_monthly_price">%1$s/месец</string>
     <string name="plan_annual_price">%1$s/година</string>
     <string name="plan_picker_disclosure_plain">Можете да откажете по всяко време в Google Play → Абонаменти.</string>
-    <string name="label_subscription_required">За синхронизиране е необходим абонамент.</string>
+    <string name="label_subscription_required">Синхронизацията е изключена: необходим е абонамент.</string>
     <string name="btn_choose_plan">Изберете план</string>
     <string name="error_billing_unavailable">Google Play фактурирането не е налично</string>
     <string name="error_purchase_failed">Покупката е неуспешна: моля, опитайте отново</string>
@@ -637,10 +647,13 @@
     <string name="setup_choose_body">И двете са изключени в началото, така че нищо не се копира на този телефон, докато не решите. Може да промените това по всяко време.</string>
     <string name="setup_choose_save">Начало на синхронизирането</string>
     <string name="setup_choose_none">Не сега</string>
+    <string name="setup_choose_saved_inactive">Запазено. Синхронизацията ще започне, щом абонаментът стане активен.</string>
     <string name="sfp_hero_nothing_enabled">Все още нищо не се синхронизира</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Изберете контакти, календар или и двете в акаунта по-долу</string>
     <string name="sfp_hero_awaiting_first_sync">Изчакване на първата синхронизация</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Все още нищо не е копирано на този телефон</string>
+    <string name="sfp_hero_sync_off">Синхронизацията е изключена</string>
+    <string name="sfp_hero_subtitle_sync_off">Синхронизацията остава изключена, докато няма активен абонамент. Вижте раздела Абонамент по-горе.</string>
 
     <string name="toast_resync_skipped">Няма какво да се синхронизира: синхронизирането за %1$s е изключено</string>
 </resources>

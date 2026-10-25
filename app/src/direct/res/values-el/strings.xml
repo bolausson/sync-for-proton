@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Συνδρομή</string>
-    <string name="spp_subscribe_dialog_message">Κάντε συνδρομή στο πρόγραμμα περιήγησής σας και, στη συνέχεια, επικολλήστε παρακάτω το αναγνωριστικό συνδρομής σας (sub_…) για να ενεργοποιήσετε τον συγχρονισμό σε αυτή τη συσκευή.</string>
+    <string name="spp_btn_enter_subscription_id">Εισαγωγή αναγνωριστικού συνδρομής</string>
+    <string name="spp_subscribe_dialog_title">Εισαγωγή αναγνωριστικού συνδρομής</string>
+    <string name="spp_subscribe_dialog_message">Επικολλήστε το αναγνωριστικό συνδρομής σας (ξεκινά με sub_ και εμφανίζεται στη σελίδα μετά την ολοκλήρωση της πληρωμής) ή το αναγνωριστικό συναλλαγής από το τιμολόγιο του Paddle (ξεκινά με txn_). Τα χάσατε και τα δύο; Το email απόδειξης του Paddle περιέχει έναν σύνδεσμο \"Manage subscription\" προς τη συνδρομή σας (στα email του Paddle ο πωλητής αναφέρεται ως BEO). Αν εξακολουθείτε να μη βρίσκετε κανένα αναγνωριστικό, πατήστε \"Αποστολή αναφοράς στον προγραμματιστή\" στις Ρυθμίσεις. Μια συνδρομή Google Play λειτουργεί μόνο στην έκδοση Google Play αυτής της εφαρμογής.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Ενεργοποίηση</string>
-    <string name="spp_subscribe_open_checkout">Συνδρομή στο πρόγραμμα περιήγησης</string>
     <string name="spp_subscribe_validating">Έλεγχος της συνδρομής σας…</string>
+    <string name="spp_subscribe_activated">Η συνδρομή ενεργοποιήθηκε.</string>
+    <string name="spp_subscribe_error_not_found">Δεν βρέθηκε συνδρομή με αυτό το αναγνωριστικό. Ελέγξτε το αναγνωριστικό και δοκιμάστε ξανά.</string>
+    <string name="spp_subscribe_error_wrong_product">Αυτό το αναγνωριστικό συνδρομής ανήκει σε άλλη εφαρμογή.</string>
+    <string name="spp_subscribe_error_cancelled">Αυτή η συνδρομή έχει ακυρωθεί. Κάντε ξανά συνδρομή για να λάβετε νέο αναγνωριστικό συνδρομής.</string>
+    <string name="spp_subscribe_error_kept_current">Αυτή η συνδρομή βρίσκεται σε παύση ή δεν έχει εξοφληθεί, οπότε αυτό το τηλέφωνο διατηρεί την τρέχουσα συνδρομή του.</string>
+    <string name="spp_subscribe_error_play_order">Αυτός είναι αριθμός παραγγελίας Google Play. Μια συνδρομή Google Play λειτουργεί μόνο στην έκδοση Google Play της εφαρμογής.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Αυτό το αναγνωριστικό συναλλαγής είναι ελλιπές ή περιέχει τυπογραφικό λάθος. Αντιγράψτε το ξανά.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Δεν βρέθηκε αγορά με αυτό το αναγνωριστικό συναλλαγής. Ελέγξτε το αναγνωριστικό ή εισαγάγετε το αναγνωριστικό συνδρομής που ξεκινά με sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Αυτή η αγορά ανήκει σε άλλη εφαρμογή.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Αυτή η αγορά δεν έχει ακόμη συνδρομή. Αν μόλις πληρώσατε, δοκιμάστε ξανά σε ένα λεπτό. Διαφορετικά, εισαγάγετε το αναγνωριστικό συνδρομής που ξεκινά με sub_.</string>
+    <string name="spp_subscribe_error_email">Αυτή είναι διεύθυνση email. Το αναγνωριστικό συνδρομής σας ξεκινά με \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Αυτό το αναγνωριστικό συνδρομής είναι ελλιπές ή περιέχει τυπογραφικό λάθος. Αντιγράψτε το ξανά.</string>
+    <string name="spp_subscribe_error_not_an_id">Αυτό δεν είναι αναγνωριστικό συνδρομής. Τα αναγνωριστικά συνδρομής ξεκινούν με \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Το κείμενο περιέχει περισσότερα από ένα αναγνωριστικά. Εισαγάγετε μόνο ένα.</string>
     <string name="spp_manage_dialog_title">Διαχείριση συνδρομής</string>
     <string name="spp_manage_action_update_payment">Ενημέρωση τρόπου πληρωμής</string>
     <string name="spp_manage_action_cancel">Ακύρωση συνδρομής</string>

@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Impossibile sbloccare i tuoi dati Proton. Accedi di nuovo.</string>
     <string name="error_pqc_keys_unsupported">Questo account ha una chiave di crittografia che questa app non è in grado di leggere. La password è corretta, quindi accedere di nuovo non servirà. Verifica se è disponibile un aggiornamento dell\'app, oppure invia un rapporto dalle impostazioni dell\'app.</string>
     <string name="error_fido2_not_supported">Il tuo account utilizza una chiave di sicurezza hardware (FIDO2). Sync for Proton attualmente supporta solo i codici delle app di autenticazione (TOTP). Aggiungi un codice TOTP nelle impostazioni web di Proton come riserva, poi accedi qui.</string>
+    <string name="error_login_verification_refused">Proton non ha accettato la verifica. Accedi di nuovo e completa ancora una volta il controllo.</string>
+    <string name="error_login_account_disabled">Proton segnala che questo account è disattivato. Accedi su proton.me o contatta l\'assistenza Proton per scoprire il motivo.</string>
+    <string name="error_login_sso_unsupported">Questo account accede tramite il Single Sign-On (SSO) di un\'organizzazione. Sync for Proton supporta solo l\'accesso con password.</string>
+    <string name="error_login_untrusted_server">L\'accesso è stato interrotto perché non è stato possibile confermare che questa connessione sia di Proton. Controlla la rete (la pagina di accesso di una rete Wi-Fi pubblica o un proxy di filtraggio possono causarlo) e riprova.</string>
+    <string name="error_login_proton_refused">Proton non è riuscito a completare l\'accesso. Riprova tra qualche istante.</string>
+    <string name="error_login_unexpected">Accesso non riuscito a causa di un errore imprevisto (%1$s). Riprova.</string>
     <string name="sync_contacts">Contatti</string>
     <string name="sync_calendar">Calendario</string>
     <string name="calendar_timeframe_title">Intervallo di sincronizzazione del calendario</string>
@@ -185,9 +191,14 @@
     <string name="label_language">Lingua</string>
     <string name="label_language_auto">Automatico (predefinito di sistema)</string>
     <string name="label_subscription">Abbonamento</string>
-    <string name="label_subscription_none">Gratis per 7 giorni, poi inizia la fatturazione se non annulli.</string>
-    <string name="label_subscription_trial">Prova gratuita: %1$d giorni rimanenti</string>
+    <string name="label_subscription_none">Sincronizzazione disattivata. Gratis per 7 giorni, poi inizia la fatturazione se non annulli.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Prova gratuita: resta %1$d giorno</item>
+        <item quantity="many">Prova gratuita: restano %1$d di giorni</item>
+        <item quantity="other">Prova gratuita: restano %1$d giorni</item>
+    </plurals>
     <string name="label_subscription_active">Attivo, rinnovo il %1$s</string>
+    <string name="label_subscription_active_play">Attivo, gestito da Google Play</string>
     <string name="label_subscription_ends">Termina il %1$s</string>
     <string name="label_subscription_pauses">Va in pausa il %1$s</string>
     <string name="label_subscription_expired">Abbonamento scaduto: rinnova per riprendere la sincronizzazione.</string>
@@ -210,7 +221,7 @@
     <string name="plan_monthly_price">%1$s/mese</string>
     <string name="plan_annual_price">%1$s/anno</string>
     <string name="plan_picker_disclosure_plain">Puoi annullare in qualsiasi momento in Google Play → Abbonamenti.</string>
-    <string name="label_subscription_required">Per sincronizzare serve un abbonamento.</string>
+    <string name="label_subscription_required">Sincronizzazione disattivata: serve un abbonamento.</string>
     <string name="btn_choose_plan">Scegli un piano</string>
     <string name="error_billing_unavailable">La fatturazione Google Play non è disponibile</string>
     <string name="error_purchase_failed">Acquisto non riuscito: riprova</string>
@@ -637,10 +648,14 @@
     <string name="setup_choose_body">Entrambi sono disattivati all\'inizio, quindi non viene copiato nulla su questo telefono finché non lo decidi tu. Puoi cambiare questa scelta in qualsiasi momento.</string>
     <string name="setup_choose_save">Avvia la sincronizzazione</string>
     <string name="setup_choose_none">Non ora</string>
+    <string name="setup_choose_saved_inactive">Salvato. La sincronizzazione inizierà quando un abbonamento sarà attivo.</string>
     <string name="sfp_hero_nothing_enabled">Ancora nessuna sincronizzazione</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Scegli contatti, calendario o entrambi nel tuo account qui sotto</string>
     <string name="sfp_hero_awaiting_first_sync">In attesa della prima sincronizzazione</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Ancora nessun dato copiato su questo telefono</string>
+
+    <string name="sfp_hero_sync_off">Sincronizzazione disattivata</string>
+    <string name="sfp_hero_subtitle_sync_off">La sincronizzazione resta disattivata finché non c\'è un abbonamento attivo. Vedi Abbonamento qui sopra.</string>
 
     <string name="toast_resync_skipped">Niente da sincronizzare: la sincronizzazione di %1$s è disattivata</string>
 </resources>

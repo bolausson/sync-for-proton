@@ -489,13 +489,17 @@ object SyncPreferences {
      * account that is gone (ProtonSyncApp.forgetRemovedAccounts).
      *
      * Taken from the single-argument key builders here, in ContactNameMode, EventConflictGuard and
-     * PendingCancellations. Deliberately excludes the two-argument builders (last_sync_, sync_interval_
-     * by type, notify_sync_failure_,
-     * last_sync_error_, last_sync_range_), whose suffix is not a bare account name - stripping
-     * those would invent account names out of "contacts" and "calendar". contact_name_mode_ also
+     * PendingCancellations. Deliberately excludes the two-argument builders (sync_interval_ by type,
+     * notify_sync_failure_, last_sync_error_, last_sync_range_), whose suffix is not a bare account name -
+     * stripping those would invent account names out of "contacts" and "calendar". contact_name_mode_ also
      * begins the name mode's re-apply flag, contact_name_mode_reapply_<account>, so that has its own
      * entry: read by the shorter prefix alone, every flag looked like the name mode of an account called
      * "reapply_<account>" and was deleted at the next start, before the sync that was to apply it.
+     *
+     * The last sync times (lastSyncKey, lastSyncFailedKey) are listed by type, so their suffix is the bare
+     * account name, and "last_<type>_sync_failed_" nests in "last_<type>_sync_" the same way. Since 2.0.2:
+     * a time kept from a removed account told the subscription catch-up that a re-added account of the same
+     * name had synced before, so with Android's automatic sync off its first sync was never asked for.
      */
     val ACCOUNT_SCOPED_PREFIXES: List<String> = listOf(
         "event_loop_interval_", "event_loop_id_",
@@ -512,6 +516,7 @@ object SyncPreferences {
         "notify_sync_in_progress_", "poll_attendee_status_",
         "send_calendar_invites_", "send_calendar_updates_", "send_calendar_cancellations_",
         "sync_paused_until_", "contact_name_mode_", "contact_name_mode_reapply_",
+        "last_contacts_sync_", "last_contacts_sync_failed_", "last_calendar_sync_", "last_calendar_sync_failed_",
     )
 
     /**

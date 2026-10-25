@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Tilaus</string>
-    <string name="spp_subscribe_dialog_message">Tee tilaus selaimessasi ja liitä sitten tilaustunnuksesi (sub_…) alle aktivoidaksesi synkronoinnin tällä laitteella.</string>
+    <string name="spp_btn_enter_subscription_id">Anna tilaustunnus</string>
+    <string name="spp_subscribe_dialog_title">Anna tilaustunnus</string>
+    <string name="spp_subscribe_dialog_message">Liitä tilaustunnuksesi (se alkaa merkeillä sub_ ja näkyy sivulla maksun jälkeen) tai Paddlen laskussa oleva maksutapahtuman tunnus (se alkaa merkeillä txn_). Ovatko molemmat hukassa? Paddlen kuittisähköpostissa on linkki ”Manage subscription”, joka vie tilaukseesi (Paddlen sähköposteissa myyjänä näkyy BEO). Jos et vieläkään löydä tunnusta, napauta Asetuksissa ”Lähetä raportti kehittäjälle”. Google Play -tilaus toimii vain tämän sovelluksen Google Play -versiossa.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivoi</string>
-    <string name="spp_subscribe_open_checkout">Tilaa selaimessa</string>
     <string name="spp_subscribe_validating">Tarkistetaan tilaustasi…</string>
+    <string name="spp_subscribe_activated">Tilaus aktivoitu.</string>
+    <string name="spp_subscribe_error_not_found">Tällä tunnuksella ei löytynyt tilausta. Tarkista tunnus ja yritä uudelleen.</string>
+    <string name="spp_subscribe_error_wrong_product">Tämä tilaustunnus kuuluu toiseen sovellukseen.</string>
+    <string name="spp_subscribe_error_cancelled">Tämä tilaus on peruutettu. Tee uusi tilaus saadaksesi uuden tilaustunnuksen.</string>
+    <string name="spp_subscribe_error_kept_current">Se tilaus on keskeytetty tai maksamatta, joten tämä puhelin säilyttää nykyisen tilauksensa.</string>
+    <string name="spp_subscribe_error_play_order">Tämä on Google Playn tilausnumero. Google Play -tilaus toimii vain sovelluksen Google Play -versiossa.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Tämä maksutapahtuman tunnus on vaillinainen tai siinä on kirjoitusvirhe. Kopioi se uudelleen.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Tällä maksutapahtuman tunnuksella ei löytynyt ostoa. Tarkista tunnus tai anna tilaustunnus, joka alkaa merkeillä sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Tämä osto kuuluu toiseen sovellukseen.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Tällä ostolla ei ole vielä tilausta. Jos maksoit juuri, yritä uudelleen minuutin kuluttua. Muussa tapauksessa anna tilaustunnus, joka alkaa merkeillä sub_.</string>
+    <string name="spp_subscribe_error_email">Tämä on sähköpostiosoite. Tilaustunnuksesi alkaa merkeillä ”sub_”.</string>
+    <string name="spp_subscribe_error_mistyped">Tämä tilaustunnus on vaillinainen tai siinä on kirjoitusvirhe. Kopioi se uudelleen.</string>
+    <string name="spp_subscribe_error_not_an_id">Tämä ei ole tilaustunnus. Tilaustunnukset alkavat merkeillä ”sub_”.</string>
+    <string name="spp_subscribe_error_several_ids">Tässä on useampi kuin yksi tunnus. Anna vain yksi.</string>
     <string name="spp_manage_dialog_title">Hallinnoi tilausta</string>
     <string name="spp_manage_action_update_payment">Päivitä maksutapa</string>
     <string name="spp_manage_action_cancel">Peruuta tilaus</string>

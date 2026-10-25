@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Előfizetés</string>
-    <string name="spp_subscribe_dialog_message">Fizessen elő a böngészőjében, majd illessze be alább az előfizetési azonosítóját (sub_…) a szinkronizálás aktiválásához ezen az eszközön.</string>
+    <string name="spp_btn_enter_subscription_id">Előfizetési azonosító megadása</string>
+    <string name="spp_subscribe_dialog_title">Előfizetési azonosító megadása</string>
+    <string name="spp_subscribe_dialog_message">Illessze be az előfizetési azonosítóját (sub_ előtaggal kezdődik, és a fizetés után megjelenő oldalon látható), vagy a Paddle által kiállított számlán szereplő tranzakcióazonosítót (txn_ előtaggal kezdődik). Mindkettőt elvesztette? A Paddle nyugtát tartalmazó e-mailjében van egy \"Manage subscription\" hivatkozás, amely az előfizetéséhez vezet (a Paddle e-mailjeiben az eladó BEO néven szerepel). Ha továbbra sem talál azonosítót, koppintson a Beállításokban a \"Jelentés küldése a fejlesztőnek\" gombra. A Google Play-előfizetés csak az alkalmazás Google Play-verziójában működik.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiválás</string>
-    <string name="spp_subscribe_open_checkout">Előfizetés a böngészőben</string>
     <string name="spp_subscribe_validating">Előfizetés ellenőrzése…</string>
+    <string name="spp_subscribe_activated">Előfizetés aktiválva.</string>
+    <string name="spp_subscribe_error_not_found">Nem található előfizetés ezzel az azonosítóval. Ellenőrizze az azonosítót, és próbálja újra.</string>
+    <string name="spp_subscribe_error_wrong_product">Ez az előfizetési azonosító egy másik alkalmazáshoz tartozik.</string>
+    <string name="spp_subscribe_error_cancelled">Ezt az előfizetést lemondták. Fizessen elő újra, hogy új előfizetési azonosítót kapjon.</string>
+    <string name="spp_subscribe_error_kept_current">Az az előfizetés szüneteltetve van vagy nincs kifizetve, ezért ez a telefon megtartja a jelenlegi előfizetését.</string>
+    <string name="spp_subscribe_error_play_order">Ez egy Google Play-rendelésszám. A Google Play-előfizetés csak az alkalmazás Google Play-verziójában működik.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Ez a tranzakcióazonosító hiányos vagy elírást tartalmaz. Másolja ki újra.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nem található vásárlás ezzel a tranzakcióazonosítóval. Ellenőrizze az azonosítót, vagy adja meg a sub_ előtaggal kezdődő előfizetési azonosítót.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Ez a vásárlás egy másik alkalmazáshoz tartozik.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Ehhez a vásárláshoz még nem tartozik előfizetés. Ha most fizetett, próbálja újra egy perc múlva. Ellenkező esetben adja meg a sub_ előtaggal kezdődő előfizetési azonosítót.</string>
+    <string name="spp_subscribe_error_email">Ez egy e-mail-cím. Az előfizetési azonosítója \"sub_\" előtaggal kezdődik.</string>
+    <string name="spp_subscribe_error_mistyped">Ez az előfizetési azonosító hiányos vagy elírást tartalmaz. Másolja ki újra.</string>
+    <string name="spp_subscribe_error_not_an_id">Ez nem előfizetési azonosító. Az előfizetési azonosítók \"sub_\" előtaggal kezdődnek.</string>
+    <string name="spp_subscribe_error_several_ids">Ez egynél több azonosítót tartalmaz. Csak egyet adjon meg.</string>
     <string name="spp_manage_dialog_title">Előfizetés kezelése</string>
     <string name="spp_manage_action_update_payment">Fizetési mód módosítása</string>
     <string name="spp_manage_action_cancel">Előfizetés lemondása</string>

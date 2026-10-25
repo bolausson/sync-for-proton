@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.FileProvider
+import androidx.preference.PreferenceManager
+import me.proton.sync.billing.LicenceSummary
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -37,20 +39,6 @@ object DebugLog {
 
     private const val AUTHORITY_SUFFIX = ".fileprovider"
 
-    /**
-     * Bearer-style secrets, stripped defensively.
-     *
-     * Our own lines should not carry these — the human-verification token was removed from
-     * [me.proton.sync.account.LoginActivity] once it turned out to be sitting in the CAPTCHA
-     * URL — but the appended system section is written by WebView and OkHttp, which we do
-     * not control, and a support log is a file people forward around.
-     */
-    private val REDACTIONS: List<Pair<Regex, String>> = listOf(
-        Regex("""(?i)(token=)[A-Za-z0-9._~+/=-]{8,}""") to "$1<redacted>",
-        Regex("""(?i)("?(?:HumanVerificationToken|AccessToken|RefreshToken|access_token|refresh_token)"?\s*[:=]\s*"?)[A-Za-z0-9._~+/=-]{8,}""") to "$1<redacted>",
-        Regex("""(?i)(Bearer\s+)[A-Za-z0-9._~+/=-]{8,}""") to "$1<redacted>",
-    )
-
     private fun stamp(): String =
         SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
 
@@ -60,21 +48,50 @@ object DebugLog {
     /**
      * Header first: it answers, without a single follow-up question, which build and which
      * ROM produced the log and whether verbose was on. Getting that wrong by assumption is
-     * what turns a support report into a multi-day round-trip.
+     * what turns a support report into a multi-day round-trip. The licence line says whether
+     * sync is off for licence reasons, never with the subscription id, and the install line
+     * tells the stores and a sideload apart.
      */
-    private fun header(bodyLines: Int, truncated: Boolean): String {
+    private fun header(context: Context, bodyLines: Int, truncated: Boolean): String {
         val at = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US).format(Date())
         val debugSuffix = if (BuildConfig.DEBUG) " debug" else ""
+        val licence = LicenceSummary.line(
+            PreferenceManager.getDefaultSharedPreferences(context),
+            paddle = BuildConfig.FLAVOR == "direct",
+        )
         return buildString {
             appendLine("=== Sync for Proton debug log ===")
             appendLine("App:      ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) ${BuildConfig.FLAVOR}$debugSuffix")
+            appendLine("Install:  ${installSource(context)}")
             appendLine("Android:  ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
             appendLine("Device:   ${Build.MANUFACTURER} ${Build.MODEL}")
             appendLine("Verbose:  ${if (SyncLog.isVerboseEnabled()) "on" else "off"}")
+            appendLine("Licence:  $licence")
             appendLine("Captured: $at")
             appendLine("Lines:    $bodyLines${if (truncated) " (older lines omitted)" else ""}")
             appendLine("=================================")
         }
+    }
+
+    /**
+     * The app store (or other app) that installed this copy, as Android recorded it, and the app
+     * that started the install when that is a different one. Raw package names, because the ids
+     * of the smaller stores are not something to guess in a mapping table. Our own package needs
+     * no permission; "unknown" when Android does not answer.
+     */
+    private fun installSource(context: Context): String = try {
+        val pm = context.packageManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val info = pm.getInstallSourceInfo(context.packageName)
+            val installer = info.installingPackageName ?: "none"
+            val initiator = info.initiatingPackageName
+            if (initiator != null && initiator != info.installingPackageName) "$installer (started by $initiator)" else installer
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getInstallerPackageName(context.packageName) ?: "none"
+        }
+    } catch (_: Exception) {
+        "unknown"
     }
 
     /**
@@ -85,7 +102,7 @@ object DebugLog {
      * with it. Anyone who needs a log that outlives the process turns on "Save logs to a
      * file", which is exactly the switch that decision belongs to.
      */
-    fun build(): String {
+    fun build(context: Context): String {
         val raw = LogBuffer.snapshot().joinToString("\n") { LogBuffer.format(it) }
 
         val all = raw.lines()
@@ -93,9 +110,9 @@ object DebugLog {
         val body = if (truncated) all.takeLast(MAX_BODY_LINES) else all
 
         return buildString {
-            append(header(body.size, truncated))
+            append(header(context, body.size, truncated))
             appendLine()
-            append(redact(body.joinToString("\n")))
+            append(LogRedaction.redact(body.joinToString("\n")))
             appendLine()
             val system = systemSection()
             if (system.isNotBlank()) {
@@ -123,15 +140,9 @@ object DebugLog {
         val text = process.inputStream.bufferedReader().use { it.readText() }
         process.waitFor()
         val lines = text.lines().filter { it.isNotBlank() && !it.trimStart().startsWith("---------") }
-        redact(lines.takeLast(MAX_SYSTEM_LINES).joinToString("\n"))
+        LogRedaction.redact(lines.takeLast(MAX_SYSTEM_LINES).joinToString("\n"))
     } catch (_: Exception) {
         ""
-    }
-
-    fun redact(text: String): String {
-        var out = text
-        for ((pattern, replacement) in REDACTIONS) out = pattern.replace(out, replacement)
-        return out
     }
 
     // --- delivery -------------------------------------------------------------------
@@ -146,7 +157,7 @@ object DebugLog {
         } catch (_: Exception) { /* a stale copy is harmless; never block the export */ }
 
         val file = File(context.cacheDir, fileName())
-        file.writeText(build())
+        file.writeText(build(context))
         val uri = FileProvider.getUriForFile(context, context.packageName + AUTHORITY_SUFFIX, file)
         return file to uri
     }
@@ -181,7 +192,7 @@ object DebugLog {
 
     fun writeTo(context: Context, uri: android.net.Uri) {
         context.contentResolver.openOutputStream(uri)?.use { out ->
-            out.write(build().toByteArray(Charsets.UTF_8))
+            out.write(build(context).toByteArray(Charsets.UTF_8))
         } ?: throw java.io.IOException("Could not open $uri for writing")
     }
 }

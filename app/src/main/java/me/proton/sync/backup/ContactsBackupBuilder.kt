@@ -5,6 +5,7 @@ import ezvcard.VCard
 import ezvcard.property.RawProperty
 import me.proton.sync.SyncLog
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.api.models.ContactCard
 import me.proton.sync.crypto.ContactDecryptor
 
@@ -39,7 +40,9 @@ class ContactsBackupBuilder(
             } catch (e: Exception) {
                 SyncLog.w(TAG, "getContacts page $page failed: ${e.message}"); fetchFailed = true; break
             }
-            if (!r.isSuccessful) { fetchFailed = true; break }
+            if (!r.isSuccessful) {
+                SyncLog.w(TAG, "getContacts page $page: HTTP ${r.code()}${r.protonErrorSuffix()}"); fetchFailed = true; break
+            }
             val metas = r.body()?.contacts ?: emptyList()
             metas.forEach { ids.add(it.id) }
             if (metas.size < 100) break
@@ -55,7 +58,9 @@ class ContactsBackupBuilder(
             } catch (e: Exception) {
                 SyncLog.w(TAG, "exportContacts page $exportPage failed: ${e.message}"); fetchFailed = true; break
             }
-            if (!r.isSuccessful) { fetchFailed = true; break }
+            if (!r.isSuccessful) {
+                SyncLog.w(TAG, "exportContacts page $exportPage: HTTP ${r.code()}${r.protonErrorSuffix()}"); fetchFailed = true; break
+            }
             val details = r.body()?.contacts ?: emptyList()
             details.forEach { cardsById[it.id] = it.cards }
             if (details.size < 50) break

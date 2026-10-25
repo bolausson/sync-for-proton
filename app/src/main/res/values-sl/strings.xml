@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Vaših Proton podatkov ni bilo mogoče odkleniti. Prijavite se znova.</string>
     <string name="error_pqc_keys_unsupported">Ta račun ima šifrirni ključ, ki ga ta aplikacija ne zna prebrati. Vaše geslo je pravilno, zato ponovna prijava ne bo pomagala. Preverite, ali je na voljo posodobitev aplikacije, ali pa pošljite poročilo v nastavitvah aplikacije.</string>
     <string name="error_fido2_not_supported">Vaš račun uporablja strojni varnostni ključ (FIDO2). Sync for Proton trenutno podpira samo kode iz aplikacije za preverjanje pristnosti (TOTP). Dodajte kodo TOTP v spletnih nastavitvah Proton kot rezervo in se nato prijavite tukaj.</string>
+    <string name="error_login_verification_refused">Proton ni sprejel preverjanja. Znova se prijavite in še enkrat opravite preverjanje.</string>
+    <string name="error_login_account_disabled">Proton sporoča, da je ta račun onemogočen. Prijavite se na proton.me ali se obrnite na podporo Protona, da izveste razlog.</string>
+    <string name="error_login_sso_unsupported">Ta račun se prijavlja prek enotne prijave (SSO) organizacije. Sync for Proton podpira samo prijavo z geslom.</string>
+    <string name="error_login_untrusted_server">Prijava je bila ustavljena, ker ni bilo mogoče potrditi, da gre za povezavo s Protonom. Preverite omrežje (to lahko povzroči prijavna stran javnega omrežja Wi-Fi ali filtrirni posredniški strežnik) in poskusite znova.</string>
+    <string name="error_login_proton_refused">Proton ni mogel dokončati prijave. Poskusite znova čez trenutek.</string>
+    <string name="error_login_unexpected">Prijava ni uspela zaradi nepričakovane napake (%1$s). Poskusite znova.</string>
     <string name="sync_contacts">Stiki</string>
     <string name="sync_calendar">Koledar</string>
     <string name="calendar_timeframe_title">Obseg sinhronizacije koledarja</string>
@@ -176,9 +182,15 @@
     <string name="label_language_auto">Samodejno (sistemsko privzeto)</string>
 
     <string name="label_subscription">Naročnina</string>
-    <string name="label_subscription_none">Brezplačno 7 dni, nato se začne obračunavanje, razen če prekličete.</string>
-    <string name="label_subscription_trial">Brezplačno preizkusno obdobje: še %1$d dni</string>
+    <string name="label_subscription_none">Sinhronizacija je izklopljena. Brezplačno 7 dni, nato se začne obračunavanje, razen če prekličete.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Brezplačno preizkusno obdobje: še %1$d dan</item>
+        <item quantity="two">Brezplačno preizkusno obdobje: še %1$d dneva</item>
+        <item quantity="few">Brezplačno preizkusno obdobje: še %1$d dnevi</item>
+        <item quantity="other">Brezplačno preizkusno obdobje: še %1$d dni</item>
+    </plurals>
     <string name="label_subscription_active">Aktivna, podaljša se %1$s</string>
+    <string name="label_subscription_active_play">Aktivna, upravljana prek Google Play</string>
     <string name="label_subscription_ends">Konča se %1$s</string>
     <string name="label_subscription_pauses">Začasno se ustavi %1$s</string>
     <string name="label_subscription_expired">Naročnina je potekla: podaljšajte jo za nadaljevanje sinhronizacije.</string>
@@ -201,7 +213,7 @@
     <string name="plan_monthly_price">%1$s/mesec</string>
     <string name="plan_annual_price">%1$s/leto</string>
     <string name="plan_picker_disclosure_plain">Kadar koli lahko prekličete v Google Play → Naročnine.</string>
-    <string name="label_subscription_required">Za sinhronizacijo je potrebna naročnina.</string>
+    <string name="label_subscription_required">Sinhronizacija je izklopljena: potrebna je naročnina.</string>
     <string name="btn_choose_plan">Izberi paket</string>
     <string name="error_billing_unavailable">Obračunavanje Google Play ni na voljo</string>
     <string name="error_purchase_failed">Nakup ni uspel: poskusite znova</string>
@@ -648,10 +660,13 @@ Ali jih želite odstraniti? Nič drugega pri stikih se ne spremeni, njihovo prik
     <string name="setup_choose_body">Oboje je na začetku izklopljeno, zato se v ta telefon ne prekopira nič, dokler se ne odločite. To lahko kadar koli spremenite.</string>
     <string name="setup_choose_save">Začni sinhronizacijo</string>
     <string name="setup_choose_none">Ne zdaj</string>
+    <string name="setup_choose_saved_inactive">Shranjeno. Sinhronizacija se bo začela, ko bo naročnina aktivna.</string>
     <string name="sfp_hero_nothing_enabled">Nič se še ne sinhronizira</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Izberite stike, koledar ali oboje v računu spodaj</string>
     <string name="sfp_hero_awaiting_first_sync">Čakanje na prvo sinhronizacijo</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Nič še ni bilo kopirano v ta telefon</string>
+    <string name="sfp_hero_sync_off">Sinhronizacija je izklopljena</string>
+    <string name="sfp_hero_subtitle_sync_off">Sinhronizacija ostane izklopljena, dokler naročnina ni aktivna. Podrobnosti so v razdelku Naročnina zgoraj.</string>
 
     <string name="toast_resync_skipped">Ni ničesar za sinhronizacijo: sinhronizacija za %1$s je izklopljena</string>
 </resources>

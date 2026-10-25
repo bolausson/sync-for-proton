@@ -51,8 +51,9 @@ import javax.inject.Singleton
  *
  * The Play build never emits [SubscriptionState.Trial]: a Billing 8.3.0 `Purchase` carries no
  * offer id, pricing phase or expiry, so a trial purchase cannot be told apart from a paid one on
- * the device (that needs the server-side subscriptionsv2 API). Nor does it return an expiry, so
- * every active purchase counts as active now, refreshed on app resume.
+ * the device (that needs the server-side subscriptionsv2 API). Nor does it carry a renewal date, so
+ * [SubscriptionState.Active] holds 0 for one and the settings card shows none
+ * ([BillingUi.activeStatusText]); every active purchase counts as active now, refreshed on app resume.
  */
 @Singleton
 class SubscriptionManager @Inject constructor(
@@ -200,17 +201,11 @@ class SubscriptionManager @Inject constructor(
 
     private fun resolveActiveState(purchase: Purchase): SubscriptionState {
         val productId = purchase.products.firstOrNull() ?: PRODUCT_ID
-        // Google Play does not return a precise expiry millis on-device. Use now + 30 days
-        // as a placeholder expiry; Play-side autorenew decides the real one, and refreshState
-        // (which the settings screen runs on every resume) recomputes it.
-        val estimatedExpiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-        return if (purchase.isAutoRenewing) {
-            SubscriptionState.Active(estimatedExpiry, productId)
-        } else {
-            // Cancelled but still within paid period — treat as Active until Play
-            // drops the purchase from queryPurchasesAsync.
-            SubscriptionState.Active(estimatedExpiry, productId)
-        }
+        // No expiry: a Purchase carries no renewal date. Before 2.0.1 this stored now + 30 days, and the
+        // card showed it as the renewal date, one Google never set. 0 is what persistState keeps for none.
+        // Renewing or not, a PURCHASED purchase is Active: a cancelled one keeps its paid period until
+        // Play drops it from queryPurchasesAsync.
+        return SubscriptionState.Active(0L, productId)
     }
 
     private fun acknowledge(purchase: Purchase) {
@@ -304,9 +299,15 @@ class SubscriptionManager @Inject constructor(
         }
     }
 
+    // The store first, then the flow. The gate (SubscriptionGate, the sync preflight, the event loop) reads
+    // the stored state, and the scheduling observer acts as soon as the flow emits: emitting first let it
+    // arm schedules and request syncs that the gate, still reading the old state, then declined.
+    // Synchronized because there are two writers (onPurchasesUpdated on the main thread, refreshState on
+    // IO), and they must not leave the flow and the store in different states.
+    @Synchronized
     private fun updateState(newState: SubscriptionState) {
-        _state.value = newState
         persistState(newState)
+        _state.value = newState
     }
 
     private fun persistState(s: SubscriptionState) {

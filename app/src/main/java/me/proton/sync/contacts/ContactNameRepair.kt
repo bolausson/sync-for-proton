@@ -9,6 +9,7 @@ import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.ProtonApiClient
 import me.proton.sync.api.models.ContactCard
 import me.proton.sync.api.models.UpdateContactRequest
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.crypto.ContactDecryptor
 import me.proton.sync.crypto.KeyManager
 import me.proton.sync.db.daos.ContactSyncDao
@@ -124,6 +125,11 @@ class ContactNameRepair(
                         )
                     }
                 } else {
+                    // The Code only: a refused card write can quote the card.
+                    SyncLog.w(
+                        TAG,
+                        "Name repair update refused for ${finding.protonId}: HTTP ${response.code()}${response.protonErrorSuffix(withError = false)}"
+                    )
                     failed++
                 }
             } catch (e: Exception) {
@@ -168,7 +174,7 @@ class ContactNameRepair(
             } catch (e: Exception) {
                 throw Incomplete("could not read your contacts (${e.javaClass.simpleName})")
             }
-            if (!response.isSuccessful) throw Incomplete("Proton returned HTTP ${response.code()}")
+            if (!response.isSuccessful) throw Incomplete("Proton returned HTTP ${response.code()}${response.protonErrorSuffix(withError = false)}")
             val details = response.body()?.contacts ?: emptyList()
             details.forEach { byId[it.id] = it.cards }
             if (details.size < EXPORT_PAGE) break
@@ -197,7 +203,7 @@ class ContactNameRepair(
         while (true) {
             coroutineContext.ensureActive()
             val response = apiClient.getContacts(accountName, page, HEADER_PAGE)
-            if (!response.isSuccessful) throw Incomplete("Proton returned HTTP ${response.code()}")
+            if (!response.isSuccessful) throw Incomplete("Proton returned HTTP ${response.code()}${response.protonErrorSuffix(withError = false)}")
             val metas = response.body()?.contacts ?: emptyList()
             metas.forEach { ids.add(it.id) }
             if (metas.size < HEADER_PAGE) break

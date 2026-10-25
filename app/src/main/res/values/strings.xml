@@ -29,7 +29,16 @@
     <string name="error_unlock_failed">Could not unlock your Proton data. Please sign in again.</string>
     <string name="error_pqc_keys_unsupported">This account has an encryption key this app cannot read. Your password is correct, so signing in again will not help. Check for an app update, or send a report from the app\'s settings.</string>
     <string name="error_fido2_not_supported">Your account uses a hardware security key (FIDO2). Sync for Proton currently supports authenticator-app codes (TOTP) only. Please add a TOTP code in Proton\'s web settings as a backup, then sign in here.</string>
-    <string name="version_label" translatable="false">v2.0.0</string>
+    <!-- Sign-in failures, chosen by Proton's error code (SignInErrors) -->
+    <string name="error_login_verification_refused">Proton did not accept the verification. Please sign in again and complete the check once more.</string>
+    <string name="error_login_account_disabled">Proton reports that this account is disabled. Sign in at proton.me or contact Proton support to find out why.</string>
+    <string name="error_login_sso_unsupported">This account signs in through an organisation\'s single sign-on (SSO). Sync for Proton supports password sign-in only.</string>
+    <string name="error_login_untrusted_server">Sign-in was stopped because this connection could not be confirmed as Proton\'s. Check your network (a public Wi-Fi login page or a filtering proxy can cause this) and try again.</string>
+    <!-- The app appends the status and Proton's code in brackets, for example " (HTTP 422, code 2001)" -->
+    <string name="error_login_proton_refused">Proton could not complete the sign-in. Please try again in a moment.</string>
+    <!-- %1$s is the name of the error type, for example IllegalStateException; keep it untranslated -->
+    <string name="error_login_unexpected">Sign-in failed because of an unexpected error (%1$s). Please try again.</string>
+    <string name="version_label" translatable="false">v2.0.2</string>
 
     <!-- Legal footer (settings, just above the brand/version line) -->
     <string name="link_privacy_policy">Privacy Policy</string>
@@ -372,9 +381,15 @@
 
     <!-- Subscription / Google Play Billing -->
     <string name="label_subscription">Subscription</string>
-    <string name="label_subscription_none">Free for 7 days, then billing starts unless you cancel.</string>
-    <string name="label_subscription_trial">Free trial: %1$d days left</string>
+    <string name="label_subscription_none">Sync is off. Free for 7 days, then billing starts unless you cancel.</string>
+    <!-- Whole days left, rounded up, so the last day reads "1 day left". -->
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Free trial: %1$d day left</item>
+        <item quantity="other">Free trial: %1$d days left</item>
+    </plurals>
     <string name="label_subscription_active">Active, renews %1$s</string>
+    <!-- Play version: a Google Play purchase tells the app no renewal date, so the line names who manages it. -->
+    <string name="label_subscription_active_play">Active, managed by Google Play</string>
     <string name="label_subscription_ends">Ends on %1$s</string>
     <string name="label_subscription_pauses">Pauses on %1$s</string>
     <string name="label_subscription_expired">Subscription expired: renew to resume sync.</string>
@@ -397,7 +412,7 @@
     <string name="plan_monthly_price">%1$s/month</string>
     <string name="plan_annual_price">%1$s/year</string>
     <string name="plan_picker_disclosure_plain">You can cancel anytime in Google Play → Subscriptions.</string>
-    <string name="label_subscription_required">A subscription is required to sync.</string>
+    <string name="label_subscription_required">Sync is off: a subscription is required.</string>
     <string name="btn_choose_plan">Choose a plan</string>
     <string name="error_billing_unavailable">Google Play billing is not available</string>
     <string name="error_purchase_failed">Purchase failed: please try again</string>
@@ -756,6 +771,9 @@
     <string name="setup_choose_body">Both are off to begin with, so nothing is copied to this phone until you say so. You can change this at any time.</string>
     <string name="setup_choose_save">Start syncing</string>
     <string name="setup_choose_none">Not now</string>
+    <!-- Shown once after the chooser when no subscription is active and something was ticked: the choice
+         is kept, but nothing syncs until a subscription is active. -->
+    <string name="setup_choose_saved_inactive">Saved. Sync starts once a subscription is active.</string>
 
     <!-- Shown when no account has either sync type switched on, so the green "all done" cannot
          appear to somebody who has just signed in and not yet chosen what to sync. -->
@@ -766,6 +784,11 @@
          before any sync has actually run. -->
     <string name="sfp_hero_awaiting_first_sync">Waiting for the first sync</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Nothing has been copied to this phone yet</string>
+
+    <!-- Sync is switched on, but without an active subscription the app drops every sync before it starts.
+         "Subscription" is the title of the card above the hero (label_subscription). -->
+    <string name="sfp_hero_sync_off">Sync is off</string>
+    <string name="sfp_hero_subtitle_sync_off">Sync stays off until a subscription is active. See Subscription above.</string>
 
     <!-- A forced resync deletes before it rebuilds, so it must not touch a switched-off type.
          %1$s is the type name or names, e.g. "Calendar" or "Contacts & Calendar". -->

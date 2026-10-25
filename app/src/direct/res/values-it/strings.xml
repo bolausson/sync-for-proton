@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Abbonamento</string>
-    <string name="spp_subscribe_dialog_message">Abbonati dal tuo browser, poi incolla qui sotto il tuo ID abbonamento (sub_…) per attivare la sincronizzazione su questo dispositivo.</string>
+    <string name="spp_btn_enter_subscription_id">Inserisci ID abbonamento</string>
+    <string name="spp_subscribe_dialog_title">Inserisci ID abbonamento</string>
+    <string name="spp_subscribe_dialog_message">Incolla il tuo ID abbonamento (inizia con sub_ e viene mostrato nella pagina dopo il pagamento) oppure l\'ID transazione riportato nella fattura di Paddle (inizia con txn_). Li hai persi entrambi? L\'email di ricevuta di Paddle contiene un link \"Manage subscription\" al tuo abbonamento (nelle email di Paddle il venditore è indicato come BEO). Se ancora non trovi un ID, tocca \"Invia rapporto allo sviluppatore\" in Impostazioni. Un abbonamento Google Play funziona solo nella versione Google Play di questa app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Attiva</string>
-    <string name="spp_subscribe_open_checkout">Abbonati nel browser</string>
     <string name="spp_subscribe_validating">Verifica dell\'abbonamento in corso…</string>
+    <string name="spp_subscribe_activated">Abbonamento attivato.</string>
+    <string name="spp_subscribe_error_not_found">Nessun abbonamento trovato con questo ID. Controlla l\'ID e riprova.</string>
+    <string name="spp_subscribe_error_wrong_product">Questo ID abbonamento appartiene a un\'altra app.</string>
+    <string name="spp_subscribe_error_cancelled">Questo abbonamento è stato annullato. Abbonati di nuovo per ottenere un nuovo ID abbonamento.</string>
+    <string name="spp_subscribe_error_kept_current">Quell\'abbonamento è in pausa o non pagato, quindi questo telefono mantiene l\'abbonamento attuale.</string>
+    <string name="spp_subscribe_error_play_order">Questo è un numero d\'ordine Google Play. Un abbonamento Google Play funziona solo nella versione Google Play dell\'app.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Questo ID transazione è incompleto o contiene un errore di battitura. Copialo di nuovo.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Nessun acquisto trovato con questo ID transazione. Controlla l\'ID oppure inserisci l\'ID abbonamento che inizia con sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Questo acquisto appartiene a un\'altra app.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Questo acquisto non ha ancora un abbonamento. Se hai appena pagato, riprova tra un minuto. Altrimenti inserisci l\'ID abbonamento che inizia con sub_.</string>
+    <string name="spp_subscribe_error_email">Questo è un indirizzo email. Il tuo ID abbonamento inizia con \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Questo ID abbonamento è incompleto o contiene un errore di battitura. Copialo di nuovo.</string>
+    <string name="spp_subscribe_error_not_an_id">Questo non è un ID abbonamento. Gli ID abbonamento iniziano con \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Il testo contiene più di un ID. Inseriscine solo uno.</string>
     <string name="spp_manage_dialog_title">Gestisci abbonamento</string>
     <string name="spp_manage_action_update_payment">Aggiorna metodo di pagamento</string>
     <string name="spp_manage_action_cancel">Annulla abbonamento</string>

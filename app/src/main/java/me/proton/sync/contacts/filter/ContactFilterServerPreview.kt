@@ -8,6 +8,7 @@ import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.ProtonApiClient
 import me.proton.sync.api.models.ContactCard
 import me.proton.sync.api.models.ContactMeta
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.crypto.ContactDecryptor
 import me.proton.sync.crypto.KeyManager
 import me.proton.sync.db.daos.ContactSyncDao
@@ -225,7 +226,8 @@ class ContactFilterServerPreview(
                 response.body()?.labels?.forEach { names[it.id] = it.name }
                 null
             } else {
-                "HTTP ${response.code()}"
+                // Shown in the preview's toast, so the Code only, never Proton's English text.
+                "HTTP ${response.code()}${response.protonErrorSuffix(withError = false)}"
             }
         } catch (e: Exception) {
             e.javaClass.simpleName
@@ -246,7 +248,7 @@ class ContactFilterServerPreview(
             } catch (e: Exception) {
                 throw Unavailable("could not reach Proton (${e.javaClass.simpleName})")
             }
-            if (!response.isSuccessful) throw Unavailable("Proton returned HTTP ${response.code()}")
+            if (!response.isSuccessful) throw Unavailable("Proton returned HTTP ${response.code()}${response.protonErrorSuffix(withError = false)}")
             val metas = response.body()?.contacts ?: emptyList()
             all += metas
             if (metas.size < HEADER_PAGE) break
@@ -274,7 +276,10 @@ class ContactFilterServerPreview(
                 SyncLog.w(TAG, "Dry run export page $page failed: ${e.message}")
                 break
             }
-            if (!response.isSuccessful) break
+            if (!response.isSuccessful) {
+                SyncLog.w(TAG, "Dry run export page $page failed: HTTP ${response.code()}${response.protonErrorSuffix()}")
+                break
+            }
             val details = response.body()?.contacts ?: emptyList()
             details.forEach { if (it.id in wantedSet) cardsById[it.id] = it.cards }
             if (details.size < EXPORT_PAGE) break

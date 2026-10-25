@@ -166,7 +166,7 @@ class LogViewerActivity : AppCompatActivity() {
 
         binding.btnCopy.setOnClickListener {
             onBackground {
-                val text = DebugLog.build()
+                val text = DebugLog.build(this)
                 handler.post {
                     // The clipboard rides a binder transaction with a hard size limit, and a
                     // long debug log can reach it. Failing here must point at the share and

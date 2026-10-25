@@ -10,6 +10,7 @@ import android.provider.ContactsContract
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 import me.proton.sync.account.AccountSession
 import me.proton.sync.account.AccountSessionManager
@@ -20,7 +21,8 @@ import me.proton.sync.account.AccountSessionManager
  * Historically this lived inline at the end of `LoginActivity.onLoginComplete`.
  * Extracting it guarantees a backup-restored account is wired up *identically*
  * to a freshly-logged-in one (parent account + address-book child + contacts
- * provider settings + auto-sync + periodic sync), so the two paths cannot drift.
+ * provider settings + auto-sync + periodic sync + its schedules), so the two paths
+ * cannot drift.
  *
  * The caller is responsible for building the final [AccountSession] (including
  * any token merge) before calling [provision]; this object only persists it and
@@ -38,8 +40,12 @@ object AccountProvisioner {
      *        is the user-visible display name (and the parent Account.name).
      * @param protonUsername the raw Proton login identifier (stored as `proton_username`
      *        user-data and used by `addressBookAccountName`); may differ from the display name.
-     * @param requestInitialSync when true, fire an immediate expedited sync for both
-     *        authorities (login does this; import defers until after license validation).
+     * @param requestInitialSync when true, fire an immediate expedited manual sync for both
+     *        authorities. Sign-in passes true only for an account that already exists (a new
+     *        account's first sync waits for the setup chooser). Import passes false: it asks for
+     *        the first syncs itself once the restored settings are written, and only while the
+     *        subscription is active; otherwise the catch-up sync the subscription observer
+     *        requests when it turns active does it (ProtonSyncApp).
      */
     fun provision(
         context: Context,
@@ -152,18 +158,12 @@ object AccountProvisioner {
                 ContentResolver.getSyncAutomatically(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS)
         ContentResolver.setIsSyncable(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, 1)
         ContentResolver.setSyncAutomatically(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, applySync)
-        if (applySync) {
-            ContentResolver.addPeriodicSync(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, Bundle.EMPTY, SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS)
-        } else {
-            // Newly necessary. Until a restore could carry a switch that is OFF, provision only
-            // ever turned things on: enableSync=false reached here for brand-new accounts alone,
-            // which had no periodic job to remove. Now that restoring an account can switch a type
-            // off, the old job survives it - waking every hour, calling requestSync, and being
-            // declined by the adapter's own guard. Wasted battery, and a periodic-sync list that
-            // disagrees with the switch, which is misleading enough that it misled this project's
-            // own testing.
-            ContentResolver.removePeriodicSync(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, Bundle.EMPTY)
-        }
+        // Through the shared writer. Removing matters as much as arming: a restore can switch a type
+        // off, and the old job then survived it, waking every hour to be declined by the adapter's
+        // own guard, with a periodic-sync list that disagreed with the switch (misleading enough that
+        // it misled this project's own testing). The writer removes it, arms at the account's own
+        // interval rather than an hour, and arms nothing while the subscription is inactive.
+        SyncUtils.applyPeriodicSync(context, addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, displayName)
 
         // Enable calendar sync on the MAIN account.
         val applyCalendar = restoreSyncCalendar
@@ -171,11 +171,12 @@ object AccountProvisioner {
                 ContentResolver.getSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR)
         ContentResolver.setIsSyncable(account, SyncConstants.AUTHORITY_CALENDAR, 1)
         ContentResolver.setSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR, applyCalendar)
-        if (applyCalendar) {
-            ContentResolver.addPeriodicSync(account, SyncConstants.AUTHORITY_CALENDAR, Bundle.EMPTY, SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS)
-        } else {
-            ContentResolver.removePeriodicSync(account, SyncConstants.AUTHORITY_CALENDAR, Bundle.EMPTY)
-        }
+        SyncUtils.applyPeriodicSync(context, account, SyncConstants.AUTHORITY_CALENDAR, displayName)
+
+        // The event loop and the fallback watchdogs. The subscription observer arms them only at
+        // process start or when the subscription turns active, so a new account (signed in or
+        // restored) had no event loop until the next start of the app.
+        SyncScheduling.scheduleWorkers(context, displayName)
 
         if (requestInitialSync) {
             requestImmediateSync(account, addressBookAccount)
@@ -187,12 +188,16 @@ object AccountProvisioner {
      *
      * The mirror of [provision]'s `enableSync = false`: the account exists and is syncable, but
      * nothing has been copied to the phone yet. Kept here so the switch-on sequence is written once
-     * and the setup chooser cannot drift from what provisioning does.
+     * and the setup chooser cannot drift from what provisioning does. The periodic sync follows the
+     * account's schedule and the subscription, through the shared writer.
+     *
+     * @param parentAccountName the parent account whose schedule applies; for contacts [account] is
+     *   its address-book child.
      */
-    fun enableSyncFor(account: Account, authority: String) {
+    fun enableSyncFor(context: Context, account: Account, authority: String, parentAccountName: String) {
         ContentResolver.setIsSyncable(account, authority, 1)
         ContentResolver.setSyncAutomatically(account, authority, true)
-        ContentResolver.addPeriodicSync(account, authority, Bundle.EMPTY, SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS)
+        SyncUtils.applyPeriodicSync(context, account, authority, parentAccountName)
         ContentResolver.requestSync(account, authority, Bundle().apply {
             putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
             putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)

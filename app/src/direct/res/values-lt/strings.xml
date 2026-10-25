@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Prenumerata</string>
-    <string name="spp_subscribe_dialog_message">Užsiprenumeruokite savo naršyklėje, tada įklijuokite žemiau savo prenumeratos ID (sub_…), kad suaktyvintumėte sinchronizavimą šiame įrenginyje.</string>
+    <string name="spp_btn_enter_subscription_id">Įvesti prenumeratos ID</string>
+    <string name="spp_subscribe_dialog_title">Įvesti prenumeratos ID</string>
+    <string name="spp_subscribe_dialog_message">Įklijuokite savo prenumeratos ID (jis prasideda sub_ ir rodomas puslapyje po apmokėjimo) arba operacijos ID iš Paddle sąskaitos faktūros (jis prasideda txn_). Pametėte abu? Paddle kvito el. laiške yra nuoroda \"Manage subscription\" į jūsų prenumeratą (Paddle el. laiškuose pardavėjas nurodomas kaip BEO). Jei vis tiek nerandate jokio ID, skiltyje Nustatymai bakstelėkite \"Siųsti ataskaitą kūrėjui\". „Google Play“ prenumerata veikia tik šios programos „Google Play“ versijoje.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktyvinti</string>
-    <string name="spp_subscribe_open_checkout">Prenumeruoti naršyklėje</string>
     <string name="spp_subscribe_validating">Tikrinama jūsų prenumerata…</string>
+    <string name="spp_subscribe_activated">Prenumerata suaktyvinta.</string>
+    <string name="spp_subscribe_error_not_found">Prenumerata su šiuo ID nerasta. Patikrinkite ID ir bandykite dar kartą.</string>
+    <string name="spp_subscribe_error_wrong_product">Šis prenumeratos ID priklauso kitai programai.</string>
+    <string name="spp_subscribe_error_cancelled">Ši prenumerata atšaukta. Užsiprenumeruokite iš naujo, kad gautumėte naują prenumeratos ID.</string>
+    <string name="spp_subscribe_error_kept_current">Ta prenumerata pristabdyta arba neapmokėta, todėl šiame telefone lieka dabartinė prenumerata.</string>
+    <string name="spp_subscribe_error_play_order">Tai „Google Play“ užsakymo numeris. „Google Play“ prenumerata veikia tik „Google Play“ programos versijoje.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Šis operacijos ID neišsamus arba jame yra rašybos klaida. Nukopijuokite jį dar kartą.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Pirkimas su šiuo operacijos ID nerastas. Patikrinkite ID arba įveskite prenumeratos ID, kuris prasideda sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Šis pirkimas priklauso kitai programai.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Šis pirkimas dar neturi prenumeratos. Jei ką tik sumokėjote, bandykite dar kartą po minutės. Kitu atveju įveskite prenumeratos ID, kuris prasideda sub_.</string>
+    <string name="spp_subscribe_error_email">Tai el. pašto adresas. Jūsų prenumeratos ID prasideda \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Šis prenumeratos ID neišsamus arba jame yra rašybos klaida. Nukopijuokite jį dar kartą.</string>
+    <string name="spp_subscribe_error_not_an_id">Tai ne prenumeratos ID. Prenumeratos ID prasideda \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Čia yra daugiau nei vienas ID. Įveskite tik vieną.</string>
     <string name="spp_manage_dialog_title">Tvarkyti prenumeratą</string>
     <string name="spp_manage_action_update_payment">Atnaujinti mokėjimo būdą</string>
     <string name="spp_manage_action_cancel">Atšaukti prenumeratą</string>

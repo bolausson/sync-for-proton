@@ -27,6 +27,7 @@ import me.proton.sync.SyncNotificationHelper
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.AuthInterceptor
 import me.proton.sync.api.ProtonApiClient
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.api.models.*
 import me.proton.sync.crypto.ContactDecryptor
 import me.proton.sync.crypto.KeyManager
@@ -1091,7 +1092,7 @@ class ContactsSyncAdapter(
             while (hasMore) {
                 val exportResponse = apiClient.exportContacts(parentAccountName, page = exportPage, pageSize = 50)
                 if (!exportResponse.isSuccessful) {
-                    SyncLog.e(TAG, "Export contacts page $exportPage failed: ${exportResponse.code()}")
+                    SyncLog.e(TAG, "Export contacts page $exportPage failed: HTTP ${exportResponse.code()}${exportResponse.protonErrorSuffix()}")
                     break
                 }
                 val exportedContacts = exportResponse.body()?.contacts ?: emptyList()
@@ -1337,6 +1338,12 @@ class ContactsSyncAdapter(
                 null, null
             )
             syncResult.stats.numDeletes++
+        } else {
+            // Silent until 2.0.2, while the tombstone stayed and the delete was simply retried.
+            SyncLog.w(
+                TAG,
+                "Could not delete contact ${mapping.protonContactId} on Proton: HTTP ${response.code()}${response.protonErrorSuffix()}; it stays pending"
+            )
         }
     }
 
@@ -1426,7 +1433,7 @@ class ContactsSyncAdapter(
                             existingLabelNames.add(catName)
                             SyncLog.i(TAG, "Created Proton label '$catName'")
                         } else {
-                            SyncLog.w(TAG, "Failed to create label '$catName': ${resp.code()}")
+                            SyncLog.w(TAG, "Failed to create label '$catName': HTTP ${resp.code()}${resp.protonErrorSuffix()}")
                         }
                     } catch (e: Exception) {
                         SyncLog.w(TAG, "Error creating label '$catName': ${e.message}")
@@ -1503,8 +1510,9 @@ class ContactsSyncAdapter(
                     val code = response.code()
                     val errorBody = try { response.errorBody()?.string() } catch (_: Exception) { null }
                     val protonCode = me.proton.sync.api.protonErrorCode(errorBody)
+                    // The Code only, never Proton's Error: a refused card write can quote the card, and no
+                    // log holds contact contents (see recordCreateRefusal).
                     val detail = "HTTP $code" + (protonCode?.let { ", Proton code $it" } ?: "")
-                    val protonError = protonErrorText(errorBody)
                     if (ContactUploadRefusals.isTransientHttp(code)) {
                         SyncLog.w(
                             TAG,
@@ -1515,7 +1523,6 @@ class ContactsSyncAdapter(
                         SyncLog.e(
                             TAG,
                             "Proton refused the update to contact ${mapping.protonContactId} ($detail)" +
-                                (protonError?.let { ": $it" } ?: "") +
                                 "; the edit stays on the phone and this sync will try again"
                         )
                         syncResult.stats.numSkippedEntries++
@@ -2700,7 +2707,7 @@ class ContactsSyncAdapter(
             // A refused or empty reply is no more skippable than an exception below: returning here
             // uploaded the card without KEY and X-PM-* after all, and now it would lose the UID too.
             val detail = response.body()?.contact ?: throw ServerCardUnavailable(
-                "Proton's copy of contact $protonContactId could not be read (HTTP ${response.code()})",
+                "Proton's copy of contact $protonContactId could not be read (HTTP ${response.code()}${response.protonErrorSuffix()})",
                 transient = ContactUploadRefusals.isTransientHttp(response.code())
             )
             val merged = contactDecryptor.decryptAndMergeCards(accountName, detail.cards)
@@ -3507,7 +3514,7 @@ class ContactsSyncAdapter(
         try {
             val response = apiClient.getContactLabels(accountName)
             if (!response.isSuccessful) {
-                SyncLog.w(TAG, "Failed to fetch contact labels: ${response.code()}")
+                SyncLog.w(TAG, "Failed to fetch contact labels: HTTP ${response.code()}${response.protonErrorSuffix()}")
                 return ContactLabels(labelMap, nameMap, fetched = false)
             }
             val labels = response.body()?.labels
@@ -3585,7 +3592,7 @@ class ContactsSyncAdapter(
                     SyncLog.i(TAG, "Deleted Proton label '$name' (${label.id})")
                     protonLabelNames.remove(name)
                 } else {
-                    SyncLog.w(TAG, "Failed to delete Proton label '$name': ${resp.code()}")
+                    SyncLog.w(TAG, "Failed to delete Proton label '$name': HTTP ${resp.code()}${resp.protonErrorSuffix()}")
                 }
             } catch (e: Exception) {
                 SyncLog.w(TAG, "Error deleting Proton label '$name': ${e.message}")
@@ -3675,7 +3682,7 @@ class ContactsSyncAdapter(
             val response = apiClient.getContacts(accountName, page = page, pageSize = PAGE_SIZE)
             if (!response.isSuccessful) {
                 val code = response.code()
-                SyncLog.e(TAG, "Failed to fetch contacts page $page: $code")
+                SyncLog.e(TAG, "Failed to fetch contacts page $page: HTTP $code${response.protonErrorSuffix()}")
                 if (code == 401 || code == 403) {
                     throw Exception("Auth failed fetching contacts: HTTP $code")
                 }
@@ -3695,7 +3702,7 @@ class ContactsSyncAdapter(
     private suspend fun fetchContactDetail(accountName: String, contactId: String): me.proton.sync.api.models.ContactDetail? {
         val response = apiClient.getContact(accountName, contactId)
         if (!response.isSuccessful) {
-            SyncLog.e(TAG, "Failed to fetch contact detail $contactId: ${response.code()}")
+            SyncLog.e(TAG, "Failed to fetch contact detail $contactId: HTTP ${response.code()}${response.protonErrorSuffix()}")
             return null
         }
         return response.body()?.contact

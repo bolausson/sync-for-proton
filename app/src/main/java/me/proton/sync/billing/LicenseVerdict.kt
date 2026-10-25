@@ -30,8 +30,9 @@ internal sealed class LicenseVerdict {
         val periodEndsAtMs: Long?,
         val scheduledChange: ScheduledChange? = null,
     ) : LicenseVerdict()
-    object Unpaid : LicenseVerdict()
-    object Suspended : LicenseVerdict()
+    // data objects, so a log line that prints a verdict reads "Unpaid", not "LicenseVerdict$Unpaid@bf254cc".
+    data object Unpaid : LicenseVerdict()
+    data object Suspended : LicenseVerdict()
     data class Ended(val error: String) : LicenseVerdict()
     data class Unknown(val error: String) : LicenseVerdict()
 }

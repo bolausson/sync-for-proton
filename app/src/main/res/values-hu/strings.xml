@@ -27,6 +27,12 @@
     <string name="error_unlock_failed">Nem siker\u00fclt feloldani a Proton adatait. K\u00e9rj\u00fck, jelentkezzen be \u00fajra.</string>
     <string name="error_pqc_keys_unsupported">Ennek a fióknak van egy titkosítási kulcsa, amelyet ez az alkalmazás nem tud olvasni. A jelszava helyes, ezért az újbóli bejelentkezés nem segít. Ellenőrizze, van-e frissítés az alkalmazáshoz, vagy küldjön jelentést az alkalmazás beállításaiból.</string>
     <string name="error_fido2_not_supported">A fi\u00f3kja hardveres biztons\u00e1gi kulcsot (FIDO2) haszn\u00e1l. A Sync for Proton jelenleg csak hiteles\u00edt\u0151 alkalmaz\u00e1s k\u00f3djait (TOTP) t\u00e1mogatja. K\u00e9rj\u00fck, adjon hozz\u00e1 egy TOTP k\u00f3dot tartal\u00e9kk\u00e9nt a Proton webes be\u00e1ll\u00edt\u00e1saiban, majd jelentkezzen be itt.</string>
+    <string name="error_login_verification_refused">A Proton nem fogadta el az ellenőrzést. Kérjük, jelentkezzen be újra, és végezze el még egyszer az ellenőrzést.</string>
+    <string name="error_login_account_disabled">A Proton szerint ez a fiók le van tiltva. Jelentkezzen be a proton.me oldalon, vagy forduljon a Proton ügyfélszolgálatához, hogy megtudja az okát.</string>
+    <string name="error_login_sso_unsupported">Ez a fiók egy szervezet egyszeri bejelentkezésén (SSO) keresztül jelentkezik be. A Sync for Proton csak jelszavas bejelentkezést támogat.</string>
+    <string name="error_login_untrusted_server">A bejelentkezés leállt, mert nem sikerült megerősíteni, hogy ez a kapcsolat a Protonhoz tartozik. Ellenőrizze a hálózatot (ezt egy nyilvános Wi-Fi-hálózat bejelentkezési oldala vagy egy szűrő proxy is okozhatja), majd próbálja újra.</string>
+    <string name="error_login_proton_refused">A Proton nem tudta befejezni a bejelentkezést. Kérjük, próbálja újra egy kis idő múlva.</string>
+    <string name="error_login_unexpected">A bejelentkezés váratlan hiba miatt sikertelen (%1$s). Kérjük, próbálja újra.</string>
     <string name="sync_contacts">N\u00e9vjegyek</string>
     <string name="sync_calendar">Napt\u00e1r</string>
     <string name="calendar_timeframe_title">Napt\u00e1r szinkroniz\u00e1l\u00e1si tartom\u00e1ny</string>
@@ -173,9 +179,13 @@
     <string name="label_language">Nyelv</string>
     <string name="label_language_auto">Automatikus (rendszer alap\u00e9rtelmezett)</string>
     <string name="label_subscription">Előfizetés</string>
-    <string name="label_subscription_none">Ingyenes 7 napig, utána a számlázás elindul, hacsak nem mondja le.</string>
-    <string name="label_subscription_trial">Ingyenes próbaidőszak: %1$d nap van hátra</string>
+    <string name="label_subscription_none">A szinkronizálás ki van kapcsolva. Ingyenes 7 napig, utána a számlázás elindul, hacsak nem mondja le.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Ingyenes próbaidőszak: %1$d nap van hátra</item>
+        <item quantity="other">Ingyenes próbaidőszak: %1$d nap van hátra</item>
+    </plurals>
     <string name="label_subscription_active">Aktív, megújul: %1$s</string>
+    <string name="label_subscription_active_play">Aktív, a Google Play kezeli</string>
     <string name="label_subscription_ends">Megszűnik: %1$s</string>
     <string name="label_subscription_pauses">Szüneteltetés kezdete: %1$s</string>
     <string name="label_subscription_expired">Az előfizetés lejárt: újítsa meg a szinkronizálás folytatásához.</string>
@@ -198,7 +208,7 @@
     <string name="plan_monthly_price">%1$s/hónap</string>
     <string name="plan_annual_price">%1$s/év</string>
     <string name="plan_picker_disclosure_plain">Bármikor lemondhatja a Google Play → Előfizetések menüpontban.</string>
-    <string name="label_subscription_required">A szinkronizáláshoz előfizetés szükséges.</string>
+    <string name="label_subscription_required">A szinkronizálás ki van kapcsolva: előfizetés szükséges.</string>
     <string name="btn_choose_plan">Csomag választása</string>
     <string name="error_billing_unavailable">A Google Play számlázás nem érhető el</string>
     <string name="error_purchase_failed">A vásárlás sikertelen: próbálja újra</string>
@@ -641,10 +651,13 @@
     <string name="setup_choose_body">Kezdetben mindkettő ki van kapcsolva, így semmi nem másolódik erre a telefonra, amíg Ön nem választ. Ezt bármikor módosíthatja.</string>
     <string name="setup_choose_save">Szinkronizálás indítása</string>
     <string name="setup_choose_none">Most nem</string>
+    <string name="setup_choose_saved_inactive">Mentve. A szinkronizálás elindul, amint lesz aktív előfizetés.</string>
     <string name="sfp_hero_nothing_enabled">Még semmi sem szinkronizálódik</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Válassza a névjegyeket, a naptárat vagy mindkettőt az alábbi fióknál</string>
     <string name="sfp_hero_awaiting_first_sync">Várakozás az első szinkronizálásra</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Még semmi sem másolódott át erre a telefonra</string>
+    <string name="sfp_hero_sync_off">A szinkronizálás ki van kapcsolva</string>
+    <string name="sfp_hero_subtitle_sync_off">A szinkronizálás kikapcsolva marad, amíg nincs aktív előfizetés. Lásd fent az Előfizetés részt.</string>
 
     <string name="toast_resync_skipped">Nincs mit szinkronizálni: a(z) %1$s szinkronizálása ki van kapcsolva</string>
 </resources>

@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spp_subscribe_dialog_title">Pretplata</string>
-    <string name="spp_subscribe_dialog_message">Pretplatite se u svom pregledniku, a zatim u nastavku zalijepite svoj ID pretplate (sub_…) kako biste aktivirali sinkronizaciju na ovom uređaju.</string>
+    <string name="spp_btn_enter_subscription_id">Unesi ID pretplate</string>
+    <string name="spp_subscribe_dialog_title">Unesite ID pretplate</string>
+    <string name="spp_subscribe_dialog_message">Zalijepite svoj ID pretplate (počinje sa sub_ i prikazuje se na stranici nakon plaćanja) ili ID transakcije s računa koji izdaje Paddle (počinje s txn_). Izgubili ste oba? E-poruka s potvrdom plaćanja koju šalje Paddle sadrži poveznicu \"Manage subscription\" na vašu pretplatu (Paddle navodi prodavatelja kao BEO). Ako ID i dalje ne možete pronaći, dodirnite \"Pošalji izvještaj razvijatelju\" u Postavkama. Pretplata putem Google Play radi samo u Google Play verziji ove aplikacije.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiviraj</string>
-    <string name="spp_subscribe_open_checkout">Pretplata u pregledniku</string>
     <string name="spp_subscribe_validating">Provjera pretplate…</string>
+    <string name="spp_subscribe_activated">Pretplata je aktivirana.</string>
+    <string name="spp_subscribe_error_not_found">Pretplata s ovim ID-om nije pronađena. Provjerite ID i pokušajte ponovno.</string>
+    <string name="spp_subscribe_error_wrong_product">Ovaj ID pretplate pripada drugoj aplikaciji.</string>
+    <string name="spp_subscribe_error_cancelled">Ova je pretplata otkazana. Ponovno se pretplatite kako biste dobili novi ID pretplate.</string>
+    <string name="spp_subscribe_error_kept_current">Ta je pretplata pauzirana ili neplaćena pa ovaj telefon zadržava trenutačnu pretplatu.</string>
+    <string name="spp_subscribe_error_play_order">Ovo je broj narudžbe Google Play. Pretplata putem Google Play radi samo u Google Play verziji aplikacije.</string>
+    <string name="spp_subscribe_error_transaction_mistyped">Ovaj ID transakcije nije potpun ili sadrži pogrešku pri upisu. Ponovno ga kopirajte.</string>
+    <string name="spp_subscribe_error_transaction_not_found">Kupnja s ovim ID-om transakcije nije pronađena. Provjerite ID ili unesite ID pretplate koji počinje sa sub_.</string>
+    <string name="spp_subscribe_error_transaction_wrong_product">Ova kupnja pripada drugoj aplikaciji.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Ova kupnja još nema pretplatu. Ako ste upravo platili, pokušajte ponovno za minutu. U suprotnom unesite ID pretplate koji počinje sa sub_.</string>
+    <string name="spp_subscribe_error_email">Ovo je adresa e-pošte. Vaš ID pretplate počinje sa \"sub_\".</string>
+    <string name="spp_subscribe_error_mistyped">Ovaj ID pretplate nije potpun ili sadrži pogrešku pri upisu. Ponovno ga kopirajte.</string>
+    <string name="spp_subscribe_error_not_an_id">Ovo nije ID pretplate. ID-ovi pretplate počinju sa \"sub_\".</string>
+    <string name="spp_subscribe_error_several_ids">Ovo sadrži više od jednog ID-a. Unesite samo jedan.</string>
     <string name="spp_manage_dialog_title">Upravljaj pretplatom</string>
     <string name="spp_manage_action_update_payment">Ažuriraj način plaćanja</string>
     <string name="spp_manage_action_cancel">Otkaži pretplatu</string>

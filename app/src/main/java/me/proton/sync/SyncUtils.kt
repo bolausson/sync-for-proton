@@ -19,6 +19,7 @@ import me.proton.sync.account.AccountSession
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.api.ProtonApiClient
 import me.proton.sync.api.TokenRefresher
+import me.proton.sync.api.protonErrorSuffix
 import me.proton.sync.billing.SubscriptionGate
 import me.proton.sync.crypto.KeyManager
 import java.util.concurrent.ConcurrentHashMap
@@ -290,6 +291,9 @@ object SyncUtils {
                                 keyManager.unlockAddressKeysWithMailboxPassword(account.name, mbPassword.toCharArray(), allAddressKeys)
                                 addressKeysRefreshed = true
                             }
+                        } else {
+                            // Silent until 2.0.2.
+                            SyncLog.w(tag, "Address keys not refreshed: HTTP ${addressesResponse.code()}${addressesResponse.protonErrorSuffix()}")
                         }
                     } catch (e: Exception) {
                         SyncLog.w(tag, "Failed to re-unlock address keys: ${e.message}")
@@ -604,23 +608,32 @@ object SyncUtils {
     /**
      * The single writer of a ContentResolver periodic sync, and the only one that knows the rule.
      *
-     * The rule is: a periodic sync exists only when the type is switched ON and the account's
-     * schedule is a real interval, and its period IS that interval. It had been open-coded at eight
-     * call sites, six of which passed a hardcoded one hour and read no preference at all. That is
-     * how "Manual only" kept coming back: fixing the picker left the sync switches, provisioning,
-     * the rename paths and the restore each free to arm an hourly job against a schedule that said
-     * none. The worst of them sat one row above the schedule setting: toggle Contacts off and on
-     * and the hour was back, which is precisely the tap somebody troubleshooting an unwanted sync
-     * would make.
+     * The rule is: a periodic sync exists only while the subscription lets sync run, the type is
+     * switched ON and the account's schedule is a real interval, and its period IS that interval.
+     * It had been open-coded at eight call sites, six of which passed a hardcoded one hour and read
+     * no preference at all. That is how "Manual only" kept coming back: fixing the picker left the
+     * sync switches, provisioning, the rename paths and the restore each free to arm an hourly job
+     * against a schedule that said none. The worst of them sat one row above the schedule setting:
+     * toggle Contacts off and on and the hour was back, which is precisely the tap somebody
+     * troubleshooting an unwanted sync would make. Even after that, provisioning, the setup
+     * chooser, both rename paths and two dead settings helpers each still armed a hardcoded hour
+     * until 2.0.2.
+     *
+     * The subscription is part of the rule because arming while it is inactive woke the phone for
+     * syncs the gate only declined, and undid the removal the subscription observer had just made.
      *
      * @param parentAccountName the PARENT account the schedule belongs to. The contacts sync lives
      *   on the address-book child, whose preferences are keyed by the parent.
+     * @param syncAllowed whether the subscription lets sync run. Read from the stored state by
+     *   default; the subscription observer passes true, because it acts on the state it was just
+     *   told and must not depend on when the store catches up.
      */
     fun applyPeriodicSync(
         context: Context,
         account: Account,
         authority: String,
         parentAccountName: String,
+        syncAllowed: Boolean = SubscriptionGate.isSyncAllowedCached(context),
     ) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val seconds = SyncPreferences.getLongFromStringPref(
@@ -629,16 +642,20 @@ object SyncUtils {
             SyncConstants.DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS,
         )
         val enabled = android.content.ContentResolver.getSyncAutomatically(account, authority)
-        if (enabled && seconds > 0) {
+        if (periodicSyncWanted(enabled, seconds, syncAllowed)) {
             android.content.ContentResolver.addPeriodicSync(
                 account, authority, android.os.Bundle.EMPTY, seconds
             )
         } else {
-            // Switched off, or a manual schedule. Both mean no periodic wakeup, and
-            // removePeriodicSync is a no-op when there is nothing to remove.
+            // Switched off, a manual schedule, or an inactive subscription. All mean no periodic
+            // wakeup, and removePeriodicSync is a no-op when there is nothing to remove.
             android.content.ContentResolver.removePeriodicSync(account, authority, android.os.Bundle.EMPTY)
         }
     }
+
+    /** [applyPeriodicSync]'s rule on its own, so the unit tests exercise the shipped one. */
+    internal fun periodicSyncWanted(enabled: Boolean, seconds: Long, syncAllowed: Boolean): Boolean =
+        syncAllowed && enabled && seconds > 0
 
     /** Record the first swallowed (counted-but-not-thrown) exception message for this sync run. */
     fun recordSwallowedFailure(syncType: String, accountName: String, message: String?) {

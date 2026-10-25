@@ -28,6 +28,12 @@
     <string name="error_unlock_failed">Δεν ήταν δυνατό το ξεκλείδωμα των δεδομένων Proton. Συνδεθείτε ξανά.</string>
     <string name="error_pqc_keys_unsupported">Αυτός ο λογαριασμός έχει ένα κλειδί κρυπτογράφησης που αυτή η εφαρμογή δεν μπορεί να διαβάσει. Ο κωδικός σας είναι σωστός, οπότε η επανασύνδεση δεν θα βοηθήσει. Ελέγξτε αν υπάρχει ενημέρωση της εφαρμογής ή στείλτε αναφορά από τις ρυθμίσεις της εφαρμογής.</string>
     <string name="error_fido2_not_supported">Ο λογαριασμός σας χρησιμοποιεί κλειδί ασφαλείας υλικού (FIDO2). Το Sync for Proton υποστηρίζει προς το παρόν μόνο κωδικούς από εφαρμογές ελέγχου ταυτότητας (TOTP). Προσθέστε έναν κωδικό TOTP ως εφεδρικό στις ρυθμίσεις του Proton στο web και, στη συνέχεια, συνδεθείτε εδώ.</string>
+    <string name="error_login_verification_refused">Το Proton δεν αποδέχτηκε την επαλήθευση. Συνδεθείτε ξανά και ολοκληρώστε τον έλεγχο άλλη μία φορά.</string>
+    <string name="error_login_account_disabled">Το Proton αναφέρει ότι αυτός ο λογαριασμός είναι απενεργοποιημένος. Συνδεθείτε στο proton.me ή επικοινωνήστε με την υποστήριξη του Proton για να μάθετε τον λόγο.</string>
+    <string name="error_login_sso_unsupported">Αυτός ο λογαριασμός συνδέεται μέσω ενιαίας σύνδεσης (SSO) ενός οργανισμού. Το Sync for Proton υποστηρίζει μόνο σύνδεση με κωδικό πρόσβασης.</string>
+    <string name="error_login_untrusted_server">Η σύνδεση διακόπηκε, επειδή δεν ήταν δυνατό να επιβεβαιωθεί ότι αυτή η σύνδεση δικτύου ανήκει στο Proton. Ελέγξτε το δίκτυό σας (αυτό μπορεί να οφείλεται σε σελίδα σύνδεσης δημόσιου Wi-Fi ή σε διακομιστή μεσολάβησης με φιλτράρισμα) και δοκιμάστε ξανά.</string>
+    <string name="error_login_proton_refused">Το Proton δεν μπόρεσε να ολοκληρώσει τη σύνδεση. Δοκιμάστε ξανά σε λίγο.</string>
+    <string name="error_login_unexpected">Η σύνδεση απέτυχε λόγω απρόσμενου σφάλματος (%1$s). Δοκιμάστε ξανά.</string>
     <string name="sync_contacts">Επαφές</string>
     <string name="sync_calendar">Ημερολόγιο</string>
     <string name="calendar_timeframe_title">Εύρος συγχρονισμού ημερολογίου</string>
@@ -183,9 +189,13 @@
     <string name="label_language">Γλώσσα</string>
     <string name="label_language_auto">Αυτόματα (προεπιλογή συστήματος)</string>
     <string name="label_subscription">Συνδρομή</string>
-    <string name="label_subscription_none">Δωρεάν για 7 ημέρες, στη συνέχεια ξεκινά η χρέωση εκτός αν ακυρώσετε.</string>
-    <string name="label_subscription_trial">Δωρεάν δοκιμή: απομένουν %1$d ημέρες</string>
+    <string name="label_subscription_none">Ο συγχρονισμός είναι απενεργοποιημένος. Δωρεάν για 7 ημέρες, στη συνέχεια ξεκινά η χρέωση εκτός αν ακυρώσετε.</string>
+    <plurals name="label_subscription_trial_days">
+        <item quantity="one">Δωρεάν δοκιμή: απομένει %1$d ημέρα</item>
+        <item quantity="other">Δωρεάν δοκιμή: απομένουν %1$d ημέρες</item>
+    </plurals>
     <string name="label_subscription_active">Ενεργή, ανανέωση στις %1$s</string>
+    <string name="label_subscription_active_play">Ενεργή, διαχείριση από το Google Play</string>
     <string name="label_subscription_ends">Λήγει στις %1$s</string>
     <string name="label_subscription_pauses">Τίθεται σε παύση στις %1$s</string>
     <string name="label_subscription_expired">Η συνδρομή έληξε: ανανεώστε για να συνεχιστεί ο συγχρονισμός.</string>
@@ -208,7 +218,7 @@
     <string name="plan_monthly_price">%1$s/μήνα</string>
     <string name="plan_annual_price">%1$s/έτος</string>
     <string name="plan_picker_disclosure_plain">Μπορείτε να ακυρώσετε ανά πάσα στιγμή στο Google Play → Συνδρομές.</string>
-    <string name="label_subscription_required">Απαιτείται συνδρομή για τον συγχρονισμό.</string>
+    <string name="label_subscription_required">Ο συγχρονισμός είναι απενεργοποιημένος: απαιτείται συνδρομή.</string>
     <string name="btn_choose_plan">Επιλογή πλάνου</string>
     <string name="error_billing_unavailable">Η χρέωση μέσω Google Play δεν είναι διαθέσιμη</string>
     <string name="error_purchase_failed">Η αγορά απέτυχε: δοκιμάστε ξανά</string>
@@ -659,10 +669,13 @@
     <string name="setup_choose_body">Και τα δύο ξεκινούν απενεργοποιημένα, οπότε δεν αντιγράφεται τίποτα σε αυτό το τηλέφωνο μέχρι να το επιλέξετε εσείς. Μπορείτε να το αλλάξετε ανά πάσα στιγμή.</string>
     <string name="setup_choose_save">Έναρξη συγχρονισμού</string>
     <string name="setup_choose_none">Όχι τώρα</string>
+    <string name="setup_choose_saved_inactive">Αποθηκεύτηκε. Ο συγχρονισμός ξεκινά μόλις υπάρξει ενεργή συνδρομή.</string>
     <string name="sfp_hero_nothing_enabled">Δεν συγχρονίζεται ακόμη τίποτα</string>
     <string name="sfp_hero_subtitle_nothing_enabled">Επιλέξτε επαφές, ημερολόγιο ή και τα δύο στον λογαριασμό παρακάτω</string>
     <string name="sfp_hero_awaiting_first_sync">Αναμονή για τον πρώτο συγχρονισμό</string>
     <string name="sfp_hero_subtitle_awaiting_first_sync">Δεν έχει αντιγραφεί ακόμη τίποτα σε αυτό το τηλέφωνο</string>
+    <string name="sfp_hero_sync_off">Ο συγχρονισμός είναι απενεργοποιημένος</string>
+    <string name="sfp_hero_subtitle_sync_off">Ο συγχρονισμός παραμένει απενεργοποιημένος μέχρι να υπάρξει ενεργή συνδρομή. Δείτε την ενότητα Συνδρομή παραπάνω.</string>
 
     <string name="toast_resync_skipped">Δεν υπάρχει τίποτα για συγχρονισμό: ο συγχρονισμός για %1$s είναι ανενεργός</string>
 </resources>
