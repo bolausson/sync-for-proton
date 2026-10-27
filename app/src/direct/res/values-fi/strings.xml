@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Anna tilaustunnus</string>
     <string name="spp_subscribe_dialog_title">Anna tilaustunnus</string>
-    <string name="spp_subscribe_dialog_message">Liitä tilaustunnuksesi (se alkaa merkeillä sub_ ja näkyy sivulla maksun jälkeen) tai Paddlen laskussa oleva maksutapahtuman tunnus (se alkaa merkeillä txn_). Ovatko molemmat hukassa? Paddlen kuittisähköpostissa on linkki ”Manage subscription”, joka vie tilaukseesi (Paddlen sähköposteissa myyjänä näkyy BEO). Jos et vieläkään löydä tunnusta, napauta Asetuksissa ”Lähetä raportti kehittäjälle”. Google Play -tilaus toimii vain tämän sovelluksen Google Play -versiossa.</string>
+    <string name="spp_subscribe_dialog_message">Liitä tilaustunnuksesi (se alkaa merkeillä sub_ ja näkyy sivulla maksun jälkeen) tai Paddlen laskussa oleva maksutapahtuman tunnus (se alkaa merkeillä txn_). Ovatko molemmat hukassa? Paddlen tilaustasi koskevassa sähköpostissa on linkki maksutavan päivittämiseen: kopioi tämä linkki (ei peruutuslinkkiä) ja liitä se tähän, tunnus löytyy linkistä. Myös tilauksesi sivun osoite Paddlen asiakasportaalissa käy, samoin kuin portaalin maksuluettelosta löytyvä maksutapahtuman tunnus. Jos et vieläkään löydä tunnusta, napauta Asetuksissa ”Lähetä raportti kehittäjälle”. Google Play -tilaus toimii vain tämän sovelluksen Google Play -versiossa.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivoi</string>
     <string name="spp_subscribe_validating">Tarkistetaan tilaustasi…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Tämä tilaustunnus on vaillinainen tai siinä on kirjoitusvirhe. Kopioi se uudelleen.</string>
     <string name="spp_subscribe_error_not_an_id">Tämä ei ole tilaustunnus. Tilaustunnukset alkavat merkeillä ”sub_”.</string>
     <string name="spp_subscribe_error_several_ids">Tässä on useampi kuin yksi tunnus. Anna vain yksi.</string>
+    <string name="spp_subscribe_error_too_long">Tämä on liian pitkä. Liitä vain tunnus tai Paddlen sähköpostissa oleva linkki.</string>
     <string name="spp_manage_dialog_title">Hallinnoi tilausta</string>
     <string name="spp_manage_action_update_payment">Päivitä maksutapa</string>
     <string name="spp_manage_action_cancel">Peruuta tilaus</string>
     <string name="spp_manage_error">Hallintasivua ei voitu ladata. Yritä uudelleen.</string>
-    <string name="spp_manage_note">Paddle kysyy sähköpostiosoitetta, jolla teit tilauksen. Paddlen sähköposteissa myyjänä näkyy BEO.</string>
+    <string name="spp_manage_note">Paddle kysyy sähköpostiosoitetta, jolla teit tilauksen, ja lähettää sinulle kirjautumislinkin sähköpostitse.</string>
     <string name="spp_manage_loading">Otetaan yhteyttä Paddleen…</string>
     <string name="spp_manage_unavailable">Tilauspalvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.</string>
     <string name="spp_manage_no_connection">Ei yhteyttä. Tarkista, että puhelimesi on verkossa, ja yritä sitten uudelleen.</string>

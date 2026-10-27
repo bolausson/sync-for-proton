@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Cuir isteach aitheantas síntiúis</string>
     <string name="spp_subscribe_dialog_title">Cuir isteach aitheantas síntiúis</string>
-    <string name="spp_subscribe_dialog_message">Greamaigh d\'aitheantas síntiúis (tosaíonn sé le sub_ agus taispeántar é ar an leathanach tar éis na híocaíochta) nó an t-aitheantas idirbhirt ó shonrasc Paddle (tosaíonn sé le txn_). Ar chaill tú an dá cheann? Tá nasc \"Manage subscription\" chuig do shíntiús i ríomhphost admhála Paddle (i ríomhphoist Paddle, tugtar BEO ar an díoltóir). Mura féidir leat aon aitheantas a aimsiú fós, tapáil \"Seol tuairisc chuig an bhforbróir\" sna Socruithe. Ní oibríonn síntiús Google Play ach i leagan Google Play den aip seo.</string>
+    <string name="spp_subscribe_dialog_message">Greamaigh d\'aitheantas síntiúis (tosaíonn sé le sub_ agus taispeántar é ar an leathanach tar éis na híocaíochta) nó an t-aitheantas idirbhirt ó shonrasc Paddle (tosaíonn sé le txn_). Ar chaill tú an dá cheann? I ríomhphost Paddle faoi do shíntiús, tá nasc chun do mhodh íocaíochta a nuashonrú: cóipeáil an nasc sin (ní an ceann chun an síntiús a chealú) agus greamaigh anseo é, mar go bhfuil an t-aitheantas ann. Oibríonn seoladh leathanach do shíntiúis i dtairseach custaiméirí Paddle freisin, chomh maith le haitheantas idirbhirt ó cheann de na híocaíochtaí ansin. Mura féidir leat aon aitheantas a aimsiú fós, tapáil \"Seol tuairisc chuig an bhforbróir\" sna Socruithe. Ní oibríonn síntiús Google Play ach i leagan Google Play den aip seo.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Gníomhachtaigh</string>
     <string name="spp_subscribe_validating">Do shíntiús á sheiceáil…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Tá an t-aitheantas síntiúis seo neamhiomlán nó tá botún clóscríofa ann. Cóipeáil arís é.</string>
     <string name="spp_subscribe_error_not_an_id">Ní aitheantas síntiúis é seo. Tosaíonn aitheantais síntiúis le \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Tá níos mó ná aitheantas amháin anseo. Ná cuir isteach ach ceann amháin.</string>
+    <string name="spp_subscribe_error_too_long">Tá sé seo rófhada. Ná greamaigh ach an t-aitheantas, nó an nasc ó ríomhphost Paddle.</string>
     <string name="spp_manage_dialog_title">Bainistigh síntiús</string>
     <string name="spp_manage_action_update_payment">Nuashonraigh modh íocaíochta</string>
     <string name="spp_manage_action_cancel">Cealaigh síntiús</string>
     <string name="spp_manage_error">Níorbh fhéidir leathanach na bainistíochta a lódáil. Bain triail eile as.</string>
-    <string name="spp_manage_note">Iarrfaidh Paddle ort an seoladh ríomhphoist a d\'úsáid tú chun liostáil. I ríomhphoist Paddle, tugtar BEO ar an díoltóir.</string>
+    <string name="spp_manage_note">Iarrfaidh Paddle ort an seoladh ríomhphoist a d\'úsáid tú chun liostáil, agus cuirfidh sé nasc logála isteach chugat i ríomhphost.</string>
     <string name="spp_manage_loading">Ag dul i dteagmháil le Paddle…</string>
     <string name="spp_manage_unavailable">Níl an tseirbhís síntiúis ar fáil. Bain triail eile as níos déanaí le do thoil.</string>
     <string name="spp_manage_no_connection">Gan nasc. Seiceáil go bhfuil do ghuthán ar líne, ansin bain triail eile as.</string>

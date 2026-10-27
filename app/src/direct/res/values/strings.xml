@@ -7,11 +7,11 @@
     <!-- The subscription card's button that opens the subscription ID dialog. -->
     <string name="spp_btn_enter_subscription_id">Enter subscription ID</string>
     <string name="spp_subscribe_dialog_title">Enter subscription ID</string>
-    <!-- Keep sub_, txn_, Paddle, BEO and Google Play exactly as they are. "Manage subscription" stays in English:
-         it is the link text in Paddle's receipt email, which Paddle shows in English. "Send report to
-         developer" must be this language's own translation of btn_send_report, copied from
-         app/src/main/res/values-XX/strings.xml, so it matches the button in Settings. -->
-    <string name="spp_subscribe_dialog_message">Paste your subscription ID (it starts with sub_ and is shown on the page after checkout) or the transaction ID from Paddle\'s invoice (it starts with txn_). Lost both? Paddle\'s receipt email has a \"Manage subscription\" link to your subscription (Paddle names the seller as BEO). If you still cannot find an ID, tap \"Send report to developer\" in Settings. A Google Play subscription only works in the Google Play version of this app.</string>
+    <!-- Keep sub_, txn_, Paddle and Google Play exactly as they are. Paddle writes its emails and its customer portal
+         in the customer's language, so translate "update your payment method", "cancel" and "payments" naturally:
+         they need not match Paddle's own words. "Send report to developer" must be this language's own translation
+         of btn_send_report, copied from app/src/main/res/values-XX/strings.xml, so it matches the button in Settings. -->
+    <string name="spp_subscribe_dialog_message">Paste your subscription ID (it starts with sub_ and is shown on the page after checkout) or the transaction ID from Paddle\'s invoice (it starts with txn_). Lost both? Paddle\'s email about your subscription has a link to update your payment method: copy that link (not the one to cancel) and paste it here, the ID is in it. The address of your subscription\'s page in Paddle\'s customer portal works too, as does a transaction ID from its payments. If you still cannot find an ID, tap \"Send report to developer\" in Settings. A Google Play subscription only works in the Google Play version of this app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activate</string>
     <string name="spp_subscribe_validating">Checking your subscription…</string>
@@ -30,13 +30,13 @@
     <string name="spp_subscribe_error_mistyped">This subscription ID is incomplete or has a typo. Copy it again.</string>
     <string name="spp_subscribe_error_not_an_id">This isn\'t a subscription ID. Subscription IDs start with \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">This contains more than one ID. Enter only one.</string>
+    <string name="spp_subscribe_error_too_long">This is too long. Paste only the ID, or the link from Paddle\'s email.</string>
     <string name="spp_manage_dialog_title">Manage subscription</string>
     <string name="spp_manage_action_update_payment">Update payment method</string>
     <string name="spp_manage_action_cancel">Cancel subscription</string>
     <string name="spp_manage_error">Couldn\'t load the management page. Please try again.</string>
-    <!-- Under the subscription card's buttons that open Paddle's customer portal. BEO is the seller's
-         trading name in Paddle's emails: keep it as it is. -->
-    <string name="spp_manage_note">Paddle will ask for the email address you used to subscribe. Paddle\'s emails name the seller as BEO.</string>
+    <!-- Under the subscription card's buttons that open Paddle's customer portal. Keep Paddle as it is. -->
+    <string name="spp_manage_note">Paddle will ask for the email address you used to subscribe and email you a sign-in link.</string>
     <string name="spp_manage_loading">Contacting Paddle…</string>
     <string name="spp_manage_unavailable">The subscription service is unavailable. Please try again later.</string>
     <string name="spp_manage_no_connection">No connection. Check that your phone is online, then try again.</string>

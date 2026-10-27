@@ -26,8 +26,8 @@ android {
         applicationId = "me.proton.sync"
         minSdk = 29
         targetSdk = 36
-        versionCode = 200002
-        versionName = "2.0.2"
+        versionCode = 200003
+        versionName = "2.0.3"
     }
 
     // Needed only so AGP can find llvm-objcopy for `debugSymbolLevel` below. There is no

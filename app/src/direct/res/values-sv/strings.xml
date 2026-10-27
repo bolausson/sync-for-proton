@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Ange prenumerations-ID</string>
     <string name="spp_subscribe_dialog_title">Ange prenumerations-ID</string>
-    <string name="spp_subscribe_dialog_message">Klistra in ditt prenumerations-ID (det börjar med sub_ och visas på sidan efter betalningen) eller transaktions-ID:t från Paddles faktura (det börjar med txn_). Har du tappat bort båda? Kvittomejlet från Paddle har en länk ”Manage subscription” till din prenumeration (i mejl från Paddle står BEO som säljare). Om du fortfarande inte hittar något ID trycker du på ”Skicka rapport till utvecklaren” i Inställningar. En Google Play-prenumeration fungerar bara i Google Play-versionen av den här appen.</string>
+    <string name="spp_subscribe_dialog_message">Klistra in ditt prenumerations-ID (det börjar med sub_ och visas på sidan efter betalningen) eller transaktions-ID:t från Paddles faktura (det börjar med txn_). Har du tappat bort båda? Mejlet från Paddle om din prenumeration har en länk för att uppdatera betalmetoden: kopiera den länken (inte den för att avsluta) och klistra in den här, för ID:t finns i den. Adressen till sidan för din prenumeration i Paddles kundportal fungerar också, liksom ett transaktions-ID från någon av betalningarna där. Om du fortfarande inte hittar något ID trycker du på ”Skicka rapport till utvecklaren” i Inställningar. En Google Play-prenumeration fungerar bara i Google Play-versionen av den här appen.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivera</string>
     <string name="spp_subscribe_validating">Kontrollerar din prenumeration…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Det här prenumerations-ID:t är ofullständigt eller innehåller ett skrivfel. Kopiera det igen.</string>
     <string name="spp_subscribe_error_not_an_id">Det här är inte ett prenumerations-ID. Prenumerations-ID:n börjar med ”sub_”.</string>
     <string name="spp_subscribe_error_several_ids">Det här innehåller mer än ett ID. Ange bara ett.</string>
+    <string name="spp_subscribe_error_too_long">Det här är för långt. Klistra bara in ID:t eller länken från Paddles mejl.</string>
     <string name="spp_manage_dialog_title">Hantera prenumeration</string>
     <string name="spp_manage_action_update_payment">Uppdatera betalmetod</string>
     <string name="spp_manage_action_cancel">Avsluta prenumeration</string>
     <string name="spp_manage_error">Hanteringssidan kunde inte laddas. Försök igen.</string>
-    <string name="spp_manage_note">Paddle frågar efter e-postadressen som du använde för prenumerationen. I mejl från Paddle står BEO som säljare.</string>
+    <string name="spp_manage_note">Paddle frågar efter e-postadressen som du använde för prenumerationen och mejlar dig en inloggningslänk.</string>
     <string name="spp_manage_loading">Kontaktar Paddle…</string>
     <string name="spp_manage_unavailable">Prenumerationstjänsten är inte tillgänglig. Försök igen senare.</string>
     <string name="spp_manage_no_connection">Ingen anslutning. Kontrollera att din telefon är online och försök sedan igen.</string>

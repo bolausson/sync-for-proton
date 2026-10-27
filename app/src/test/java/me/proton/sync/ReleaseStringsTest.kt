@@ -8,9 +8,9 @@ import org.junit.Test
 import java.io.File
 
 /**
- * The strings 2.0.2 added or reworded exist once in every language, in the main set and in the direct flavour's
- * subscription set, and none of them has an em or en dash. A language without one falls back to English on that
- * screen, which lint reports only as a warning. The keys 2.0.2 removed stay removed. The files are read as in
+ * The strings 2.0.2 and 2.0.3 added or reworded exist once in every language, in the main set and in the direct
+ * flavour's subscription set, and none of them has an em or en dash. A language without one falls back to English on
+ * that screen, which lint reports only as a warning. The keys 2.0.2 removed stay removed. The files are read as in
  * [me.proton.sync.billing.ActiveStatusLineTest]; app/build.gradle.kts declares both sets as test inputs, so an
  * edited translation alone re-runs this test.
  */
@@ -55,6 +55,8 @@ class ReleaseStringsTest {
         "spp_subscribe_error_mistyped",
         "spp_subscribe_error_not_an_id",
         "spp_subscribe_error_several_ids",
+        "spp_subscribe_error_too_long",
+        "spp_manage_note",
     )
 
     // spp_subscribe_error_transaction said a transaction id was not a subscription id; the dialog takes one now, and
@@ -110,6 +112,23 @@ class ReleaseStringsTest {
             assertTrue("${label(xml)}: no quantities", items.any { it.groupValues[1] == "other" })
             for (item in items) {
                 assertTrue("${label(xml)}: ${item.groupValues[1]}: ${item.groupValues[2]}", item.groupValues[2].contains("%1\$d"))
+            }
+        }
+    }
+
+    @Test
+    fun `no language names the seller or quotes a Manage subscription link Paddle's email does not have`() {
+        // Checked against a real Paddle email (2.0.3): "Manage subscription" is a heading there, in the customer's
+        // language, over a payment-method link and a cancel link; and the seller's display name is no longer BEO.
+        for (xml in languages("direct")) {
+            for (key in listOf("spp_subscribe_dialog_message", "spp_manage_note")) {
+                val text = value(xml, key)!!
+                assertFalse("${label(xml)}: $key names BEO: $text", text.contains("BEO"))
+                assertFalse("${label(xml)}: $key quotes Manage subscription: $text", text.contains("Manage subscription"))
+            }
+            val message = value(xml, "spp_subscribe_dialog_message")!!
+            for (kept in listOf("sub_", "txn_", "Paddle", "Google Play")) {
+                assertTrue("${label(xml)}: the dialog lost $kept: $message", message.contains(kept))
             }
         }
     }

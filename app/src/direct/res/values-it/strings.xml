@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Inserisci ID abbonamento</string>
     <string name="spp_subscribe_dialog_title">Inserisci ID abbonamento</string>
-    <string name="spp_subscribe_dialog_message">Incolla il tuo ID abbonamento (inizia con sub_ e viene mostrato nella pagina dopo il pagamento) oppure l\'ID transazione riportato nella fattura di Paddle (inizia con txn_). Li hai persi entrambi? L\'email di ricevuta di Paddle contiene un link \"Manage subscription\" al tuo abbonamento (nelle email di Paddle il venditore è indicato come BEO). Se ancora non trovi un ID, tocca \"Invia rapporto allo sviluppatore\" in Impostazioni. Un abbonamento Google Play funziona solo nella versione Google Play di questa app.</string>
+    <string name="spp_subscribe_dialog_message">Incolla il tuo ID abbonamento (inizia con sub_ e viene mostrato nella pagina dopo il pagamento) oppure l\'ID transazione riportato nella fattura di Paddle (inizia con txn_). Li hai persi entrambi? L\'email di Paddle relativa al tuo abbonamento contiene un link per aggiornare il metodo di pagamento: copia quel link (non quello per annullare) e incollalo qui, l\'ID è al suo interno. Funziona anche l\'indirizzo della pagina del tuo abbonamento nel portale clienti di Paddle, così come l\'ID transazione di uno dei pagamenti elencati nel portale. Se ancora non trovi un ID, tocca \"Invia rapporto allo sviluppatore\" in Impostazioni. Un abbonamento Google Play funziona solo nella versione Google Play di questa app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Attiva</string>
     <string name="spp_subscribe_validating">Verifica dell\'abbonamento in corso…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Questo ID abbonamento è incompleto o contiene un errore di battitura. Copialo di nuovo.</string>
     <string name="spp_subscribe_error_not_an_id">Questo non è un ID abbonamento. Gli ID abbonamento iniziano con \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Il testo contiene più di un ID. Inseriscine solo uno.</string>
+    <string name="spp_subscribe_error_too_long">Il testo è troppo lungo. Incolla solo l\'ID o il link dell\'email di Paddle.</string>
     <string name="spp_manage_dialog_title">Gestisci abbonamento</string>
     <string name="spp_manage_action_update_payment">Aggiorna metodo di pagamento</string>
     <string name="spp_manage_action_cancel">Annulla abbonamento</string>
     <string name="spp_manage_error">Impossibile caricare la pagina di gestione. Riprova.</string>
-    <string name="spp_manage_note">Paddle ti chiederà l\'indirizzo email che hai usato per abbonarti. Nelle email di Paddle il venditore è indicato come BEO.</string>
+    <string name="spp_manage_note">Paddle ti chiederà l\'indirizzo email che hai usato per abbonarti e ti invierà via email un link di accesso.</string>
     <string name="spp_manage_loading">Connessione a Paddle in corso…</string>
     <string name="spp_manage_unavailable">Il servizio di abbonamento non è disponibile. Riprova più tardi.</string>
     <string name="spp_manage_no_connection">Nessuna connessione. Controlla che il tuo telefono sia connesso a Internet, poi riprova.</string>

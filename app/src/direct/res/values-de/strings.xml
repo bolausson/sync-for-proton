@@ -6,7 +6,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Abo-ID eingeben</string>
     <string name="spp_subscribe_dialog_title">Abo-ID eingeben</string>
-    <string name="spp_subscribe_dialog_message">Fügen Sie Ihre Abo-ID ein (sie beginnt mit sub_ und steht auf der Seite, die nach dem Bezahlen erscheint) oder die Transaktions-ID aus der Rechnung von Paddle (sie beginnt mit txn_). Beides nicht mehr zur Hand? Die Beleg-E-Mail von Paddle enthält einen Link „Manage subscription“ zu Ihrem Abonnement (in den E-Mails von Paddle wird BEO als Verkäufer genannt). Finden Sie trotzdem keine ID, tippen Sie in den Einstellungen auf „Bericht an Entwickler senden“. Ein Google Play-Abonnement funktioniert nur in der Google Play-Version dieser App.</string>
+    <string name="spp_subscribe_dialog_message">Fügen Sie Ihre Abo-ID ein (sie beginnt mit sub_ und steht auf der Seite, die nach dem Bezahlen erscheint) oder die Transaktions-ID aus der Rechnung von Paddle (sie beginnt mit txn_). Beides nicht mehr zur Hand? Die E-Mail von Paddle zu Ihrem Abonnement enthält einen Link zum Aktualisieren Ihrer Zahlungsmethode: Kopieren Sie diesen Link (nicht den zum Kündigen) und fügen Sie ihn hier ein, denn er enthält die ID. Die Adresse Ihrer Abonnementseite im Kundenportal von Paddle funktioniert ebenfalls, genauso wie eine Transaktions-ID aus den dort aufgeführten Zahlungen. Finden Sie trotzdem keine ID, tippen Sie in den Einstellungen auf „Bericht an Entwickler senden“. Ein Google Play-Abonnement funktioniert nur in der Google Play-Version dieser App.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivieren</string>
     <string name="spp_subscribe_validating">Abonnement wird geprüft…</string>
@@ -24,11 +24,12 @@
     <string name="spp_subscribe_error_mistyped">Diese Abo-ID ist unvollständig oder enthält einen Tippfehler. Kopieren Sie sie erneut.</string>
     <string name="spp_subscribe_error_not_an_id">Dies ist keine Abo-ID. Abo-IDs beginnen mit „sub_“.</string>
     <string name="spp_subscribe_error_several_ids">Die Eingabe enthält mehr als eine ID. Geben Sie nur eine ein.</string>
+    <string name="spp_subscribe_error_too_long">Der Text ist zu lang. Fügen Sie nur die ID oder den Link aus der E-Mail von Paddle ein.</string>
     <string name="spp_manage_dialog_title">Abonnement verwalten</string>
     <string name="spp_manage_action_update_payment">Zahlungsmethode aktualisieren</string>
     <string name="spp_manage_action_cancel">Abonnement kündigen</string>
     <string name="spp_manage_error">Die Verwaltungsseite konnte nicht geladen werden. Bitte versuchen Sie es erneut.</string>
-    <string name="spp_manage_note">Paddle fragt nach der E-Mail-Adresse, mit der Sie das Abonnement abgeschlossen haben. In den E-Mails von Paddle wird BEO als Verkäufer genannt.</string>
+    <string name="spp_manage_note">Paddle fragt nach der E-Mail-Adresse, mit der Sie das Abonnement abgeschlossen haben, und schickt Ihnen einen Anmeldelink per E-Mail.</string>
     <string name="spp_manage_loading">Paddle wird kontaktiert…</string>
     <string name="spp_manage_unavailable">Der Abonnementdienst ist nicht verfügbar. Bitte versuchen Sie es später erneut.</string>
     <string name="spp_manage_no_connection">Keine Verbindung. Prüfen Sie, ob Ihr Telefon online ist, und versuchen Sie es dann erneut.</string>

@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Skriv inn abonnements-ID</string>
     <string name="spp_subscribe_dialog_title">Skriv inn abonnements-ID</string>
-    <string name="spp_subscribe_dialog_message">Lim inn abonnements-ID-en din (den starter med sub_ og vises på siden etter betalingen) eller transaksjons-ID-en fra Paddles faktura (den starter med txn_). Har du mistet begge? Kvitterings-e-posten fra Paddle har en lenke «Manage subscription» til abonnementet ditt (i e-poster fra Paddle står selgeren oppført som BEO). Hvis du fortsatt ikke finner noen ID, trykker du på «Send rapport til utvikler» i Innstillinger. Et Google Play-abonnement fungerer bare i Google Play-versjonen av denne appen.</string>
+    <string name="spp_subscribe_dialog_message">Lim inn abonnements-ID-en din (den starter med sub_ og vises på siden etter betalingen) eller transaksjons-ID-en fra Paddles faktura (den starter med txn_). Har du mistet begge? E-posten fra Paddle om abonnementet ditt har en lenke for å oppdatere betalingsmetoden: Kopier den lenken (ikke lenken for å si opp) og lim den inn her, for ID-en står i den. Adressen til abonnementssiden din i Paddles kundeportal fungerer også, i likhet med en transaksjons-ID fra en av betalingene der. Hvis du fortsatt ikke finner noen ID, trykker du på «Send rapport til utvikler» i Innstillinger. Et Google Play-abonnement fungerer bare i Google Play-versjonen av denne appen.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiver</string>
     <string name="spp_subscribe_validating">Kontrollerer abonnementet ditt…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Denne abonnements-ID-en er ufullstendig eller inneholder en skrivefeil. Kopier den på nytt.</string>
     <string name="spp_subscribe_error_not_an_id">Dette er ikke en abonnements-ID. Abonnements-ID-er starter med «sub_».</string>
     <string name="spp_subscribe_error_several_ids">Dette inneholder mer enn én ID. Skriv inn bare én.</string>
+    <string name="spp_subscribe_error_too_long">Dette er for langt. Lim inn bare ID-en eller lenken fra e-posten fra Paddle.</string>
     <string name="spp_manage_dialog_title">Administrer abonnement</string>
     <string name="spp_manage_action_update_payment">Oppdater betalingsmetode</string>
     <string name="spp_manage_action_cancel">Si opp abonnementet</string>
     <string name="spp_manage_error">Administrasjonssiden kunne ikke lastes. Prøv på nytt.</string>
-    <string name="spp_manage_note">Paddle ber om e-postadressen du brukte da du tegnet abonnementet. I e-poster fra Paddle står selgeren oppført som BEO.</string>
+    <string name="spp_manage_note">Paddle ber om e-postadressen du brukte da du tegnet abonnementet, og sender deg en påloggingslenke på e-post.</string>
     <string name="spp_manage_loading">Kontakter Paddle…</string>
     <string name="spp_manage_unavailable">Abonnementstjenesten er ikke tilgjengelig. Prøv igjen senere.</string>
     <string name="spp_manage_no_connection">Ingen tilkobling. Sjekk at telefonen er på nett, og prøv deretter igjen.</string>

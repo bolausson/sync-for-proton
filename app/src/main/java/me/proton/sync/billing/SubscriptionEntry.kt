@@ -39,7 +39,18 @@ internal sealed class SubscriptionEntry(val kind: String) {
     data object MistypedSubId : SubscriptionEntry("mistyped_sub_id")
     data object Email : SubscriptionEntry("email")
     data object NotAnId : SubscriptionEntry("not_an_id")
+
+    /** Longer than [MAX_ENTRY_CHARS]: not searched at all (some of the checks take long on very long text). */
+    data object TooLong : SubscriptionEntry("too_long")
 }
+
+/**
+ * The longest text the dialog searches for an id, as long as Android 13 and later let a single-line field be. A
+ * pasted receipt, a Paddle customer-portal link (about 1,500 characters with its token) or an Outlook safelink around
+ * one fit easily; tens of thousands of characters kept the main thread busy for seconds. The dialog's field holds one
+ * character more, so a longer paste is answered as too long on every version instead of being cut short silently.
+ */
+internal const val MAX_ENTRY_CHARS = 5_000
 
 // Mirrors the licence proxy's SUB_ID check (a Crockford base32 ULID: no
 // i, l, o or u, first character 0-7); change both together. No lookbehind on purpose: in an Outlook safelink
@@ -86,6 +97,11 @@ private val PLAY_ORDER = Regex("gpa\\.[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{5}")
 // (16 s for 50,000 characters on a PC) on the main thread.
 private val EMAIL = Regex("(?:(?<![^\\s@])|\\G)[^\\s@]+@[^\\s@]+\\.[a-z]{2,}")
 private val WHITESPACE = Regex("\\s+")
+// A link's token parameter. The payment-method link in Paddle's email carries a 1,300-character base64url one, whose
+// random letters spelled "sub-3" or "txn_5" in about 1 link in 4,000: read as a broken second id, the link was refused.
+// Left out wherever what is left over is searched for one (never where the id itself is searched for). Also in its
+// percent-encoded form, as in an Outlook safelink (%26token%3d); the value ends at "%", which base64url never has.
+private val URL_TOKEN = Regex("(?:(?<=[?&])|(?<=%26)|(?<=%3f))token(?:=|%3d)[^&%\\s]*")
 
 /**
  * Read the dialog's text. One subscription id gives [SubscriptionEntry.Valid] with the id as the proxy expects it
@@ -108,6 +124,7 @@ private val WHITESPACE = Regex("\\s+")
 internal fun parseSubscriptionEntry(raw: String, prefilled: String? = null): SubscriptionEntry {
     val text = cleaned(raw)
     if (text.isEmpty()) return SubscriptionEntry.Empty
+    if (text.length > MAX_ENTRY_CHARS) return SubscriptionEntry.TooLong
     // Whitespace kept first, so the lookahead ends an id at the space in "sub_... is my id". Only when
     // that finds nothing is the text searched again without it, for an id broken by a space or a line wrap.
     val ids = idsIn(SUB_ID_IN_TEXT, text).ifEmpty { idsIn(SUB_ID_IN_TEXT, text.replace(WHITESPACE, "")) }
@@ -138,8 +155,13 @@ private fun subscriptionIdEntry(text: String, ids: List<String>): SubscriptionEn
     // A broken second id beside the one found, typically a paste next to the dialog's pre-filled id: refused,
     // so the pre-filled id is not checked again in place of what was pasted. Looked for without whitespace,
     // after taking out every copy of the id (a line wrap can split one) together with any "sub_" typed right in
-    // front of it: the field says ids start with "sub_", so "sub_" and then a pasted id is still that id.
-    val leftover = text.replace(WHITESPACE, "").replace(Regex("(?:sub[_-])*" + Regex.escape(id)), " ")
+    // front of it: the field says ids start with "sub_", so "sub_" and then a pasted id is still that id. Not tried
+    // where a prefix that itself follows a "_" or "-" comes right before (from a run's third prefix on): a run is
+    // then read from its first two prefixes only, not from every one in it, which took a quarter of a second for
+    // 2,500 of them. The same copies are taken out: past an id's own prefix there is no "_" or "-", so the end of a
+    // copy never passes for such a prefix.
+    val leftover = text.replace(URL_TOKEN, "").replace(WHITESPACE, "")
+        .replace(Regex("(?<![_-]sub[_-])(?:sub[_-])*" + Regex.escape(id)), " ")
     if (BROKEN_ID.containsMatchIn(leftover)) return SubscriptionEntry.MistypedSubId
     // The same for a transaction id pasted straight in front of the pre-filled id: with nothing between the two it
     // is no receipt line, and the pre-filled id would be checked again in place of the paste. Two ids when what was
@@ -163,9 +185,17 @@ private fun subscriptionIdEntry(text: String, ids: List<String>): SubscriptionEn
  */
 private fun pastedBesidePrefilled(text: String, stored: String): SubscriptionEntry? {
     // Every copy, also one split by a line wrap or a space (the whitespace-free second search finds those), with any
-    // "sub_" typed in front: a receipt for the stored subscription may wrap its id.
-    val spread = stored.map { Regex.escape(it.toString()) }.joinToString("\\s*")
-    val rest = text.replace(Regex("(?:s\\s*u\\s*b\\s*[_-]\\s*)*$spread"), " ").trim()
+    // "sub_" typed in front: a receipt for the stored subscription may wrap its id. The prefixes are taken
+    // possessively (++), the id's own "sub_" with them: repeated without that, each one cost the matcher a level
+    // of stack, and 2,500 of them ran out of it. Not tried from a run's third
+    // prefix on, as in subscriptionIdEntry (a lookbehind must be bounded: up to 8 spaces at each place inside it are
+    // seen, wider gaps only cost time). The "s" is checked first: the lookbehind alone, tried at every position, took
+    // longer on 10,000 ordinary characters than everything else here together.
+    val spread = stored.removePrefix("sub_").map { Regex.escape(it.toString()) }.joinToString("\\s*")
+    val rest = text.replace(
+        Regex("(?=s)(?<![_-]\\s{0,8}s\\s{0,8}u\\s{0,8}b\\s{0,8}[_-]\\s{0,8})(?:s\\s*u\\s*b\\s*[_-]\\s*)++$spread"),
+        " ",
+    ).trim()
     if (rest.isEmpty()) return null
     val txnIds = idsIn(TXN_ID_IN_TEXT, rest).ifEmpty { idsIn(TXN_ID_IN_TEXT, rest.replace(WHITESPACE, "")) }
     if (txnIds.isNotEmpty()) {
@@ -175,7 +205,11 @@ private fun pastedBesidePrefilled(text: String, stored: String): SubscriptionEnt
             else -> entry
         }
     }
-    return if (BROKEN_TXN_ID.containsMatchIn(rest.replace(WHITESPACE, ""))) SubscriptionEntry.MistypedTransactionId else null
+    return if (BROKEN_TXN_ID.containsMatchIn(rest.replace(URL_TOKEN, "").replace(WHITESPACE, ""))) {
+        SubscriptionEntry.MistypedTransactionId
+    } else {
+        null
+    }
 }
 
 /** [text], which holds no subscription id, with the transaction [txnIds] found in it. */
@@ -189,8 +223,10 @@ private fun transactionIdEntry(text: String, txnIds: List<String>): Subscription
     // Another whole transaction id there (one split by a line wrap, which the first search cannot see) makes two;
     // a broken one is a mistyped transaction id, so the first is not looked up in place of what was pasted, as
     // BROKEN_ID does for subscription ids. A subscription id begun beside it but not a whole one: the customer meant
-    // the subscription id, so that one is called mistyped instead of the transaction id being looked up.
-    val leftover = text.replace(WHITESPACE, "").replace(Regex("(?:txn[_-])*" + Regex.escape(txnId)), " ")
+    // the subscription id, so that one is called mistyped instead of the transaction id being looked up. Not tried
+    // from a run's third prefix on, as in subscriptionIdEntry.
+    val leftover = text.replace(URL_TOKEN, "").replace(WHITESPACE, "")
+        .replace(Regex("(?<![_-]txn[_-])(?:txn[_-])*" + Regex.escape(txnId)), " ")
     if (WHOLE_TXN_ID.containsMatchIn(leftover)) return SubscriptionEntry.SeveralIds
     if (BROKEN_TXN_ID.containsMatchIn(leftover)) return SubscriptionEntry.MistypedTransactionId
     if (BROKEN_SUB_ID.containsMatchIn(leftover)) return SubscriptionEntry.MistypedSubId
@@ -200,7 +236,10 @@ private fun transactionIdEntry(text: String, txnIds: List<String>): Subscription
 /**
  * NFKC turns full-width letters and non-breaking or ideographic spaces into plain ones; invisible format
  * characters a copy can carry along (zero-width space, byte order mark, soft hyphen, word joiner, bidi
- * marks) are dropped. Kotlin's lowercase() ignores the phone's locale, so a Turkish phone gets no dotless i.
+ * marks) are dropped. The whitespace NFKC keeps (the line and paragraph separators, NEL, the Ogham space mark)
+ * becomes plain spaces: the phone's regex engine (ICU) counts it as whitespace and the JVM the tests run on does
+ * not, so the tests see what the phone does (checked on Android 12 and 16). Kotlin's lowercase() ignores the
+ * phone's locale, so a Turkish phone gets no dotless i.
  */
 private fun cleaned(raw: String): String {
     val nfkc = Normalizer.normalize(raw, Normalizer.Form.NFKC)
@@ -208,7 +247,10 @@ private fun cleaned(raw: String): String {
     var i = 0
     while (i < nfkc.length) {
         val cp = nfkc.codePointAt(i)
-        if (Character.getType(cp) != Character.FORMAT.toInt()) out.appendCodePoint(cp)
+        when {
+            cp == 0x85 || cp == 0x1680 || cp == 0x2028 || cp == 0x2029 -> out.append(' ')
+            Character.getType(cp) != Character.FORMAT.toInt() -> out.appendCodePoint(cp)
+        }
         i += Character.charCount(cp)
     }
     return out.toString().trim().lowercase()

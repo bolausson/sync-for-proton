@@ -2,8 +2,10 @@ package me.proton.sync.billing
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Locale
+import kotlin.system.measureNanoTime
 
 /**
  * What the subscription dialog makes of the text a customer enters. Only [SubscriptionEntry.Valid] reaches
@@ -60,6 +62,19 @@ class SubscriptionEntryTest {
         valid("\u00A0$V\u00A0", inText = false)
         valid("\u3000$V\u3000", inText = false)
         valid(fullWidth(V), inText = false)
+    }
+
+    @Test
+    fun `whitespace that only the phone's regex engine knows is whitespace in the tests too`() {
+        // Android's regex (ICU) counts these as whitespace, the JVM does not, and NFKC keeps them: cleaned() makes them
+        // spaces, so the answers here are the phone's (compared on Android 12 and 16 over 15,000 texts).
+        for (sp in listOf("\u2028", "\u2029", "\u0085", "\u1680")) {
+            valid(V.substring(0, 12) + sp + V.substring(12), inText = true)
+            valid("s${sp}u${sp}b${sp}_$sp" + V.substring(4), inText = true)
+            transaction(T.substring(0, 10) + sp + T.substring(10), inText = true)
+            kind("name${sp}@example.com", SubscriptionEntry.NotAnId)
+            valid("$sp$V$sp", inText = false)
+        }
     }
 
     // ---------------------------------------------------------------- the id in other text
@@ -299,16 +314,90 @@ class SubscriptionEntryTest {
     @Test(timeout = 10_000)
     fun `a very long paste is answered at once`() {
         // The dialog parses on the main thread. The email pattern once took seconds on a long run without a space
-        // (tried at every position), long enough for Android to report the app as not responding.
-        val long = "a".repeat(200_000)
-        kind(long, SubscriptionEntry.NotAnId)
-        kind("$long@", SubscriptionEntry.NotAnId)
-        kind("$long@b", SubscriptionEntry.NotAnId)
-        kind("$long $V", SubscriptionEntry.Valid(V, inText = true))
-        kind("$long name@example.com", SubscriptionEntry.Email)
-        kind("sub_".repeat(50_000), SubscriptionEntry.MistypedSubId)
-        kind("txn_".repeat(50_000), SubscriptionEntry.MistypedTransactionId)
-        prefilled("s".repeat(100_000) + " " + V, SubscriptionEntry.Valid(V, inText = true))
+        // (tried at every position), long enough for Android to report the app as not responding; and 12,500 typed
+        // "sub_" with an id after them stalled the leftover checks. So text over MAX_ENTRY_CHARS is not searched, and
+        // everything up to it is answered quickly (the next test has the prefix runs).
+        val limit = "a".repeat(MAX_ENTRY_CHARS)
+        kind(limit, SubscriptionEntry.NotAnId)
+        kind(limit + "a", SubscriptionEntry.TooLong)
+        kind("a".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, SubscriptionEntry.Valid(V, inText = true))
+        kind("a".repeat(200_000) + " " + V, SubscriptionEntry.TooLong)
+        kind("sub_".repeat(12_500) + "x " + V, SubscriptionEntry.TooLong)
+        prefilled("sub_".repeat(12_500) + "x " + V, SubscriptionEntry.TooLong)
+        // The worst of it just under the limit, parsed 30 times: a run without a space before an "@", which the email
+        // pattern once tried at every position (about a second each on a PC), then runs past the timeout.
+        repeat(30) {
+            kind("a".repeat(MAX_ENTRY_CHARS - 1) + "@", SubscriptionEntry.NotAnId)
+            kind("a".repeat(MAX_ENTRY_CHARS - 2) + "@b", SubscriptionEntry.NotAnId)
+            kind("a".repeat(MAX_ENTRY_CHARS - 17) + " name@example.com", SubscriptionEntry.Email)
+        }
+        kind("txn_".repeat(MAX_ENTRY_CHARS / 4), SubscriptionEntry.MistypedTransactionId)
+        prefilled("s".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, SubscriptionEntry.Valid(V, inText = true))
+    }
+
+    @Test(timeout = 60_000)
+    fun `a run of typed prefixes is read once, not again from every prefix in it`() {
+        // Runs of prefixes that do not lead to the id, just under the limit (with a stored id, the longest ran the
+        // matcher out of stack before 2.0.3). Read again from every prefix in them, each took 20 to 180 times as long
+        // as a plain text of the same length; read once, about as long. Measured against that text on the same
+        // machine, as the best of several runs, so a slow or busy one does not fail it (a fixed timeout did).
+        val prefixes = "sub_".repeat((MAX_ENTRY_CHARS - V.length - 2) / 4) + "x " + V
+        val spaced = "s u b _ ".repeat((MAX_ENTRY_CHARS - V.length - 2) / 8) + "x " + V
+        val txnPrefixes = "txn_".repeat((MAX_ENTRY_CHARS - T.length - 2) / 4) + "x " + T
+        kind(prefixes, SubscriptionEntry.Valid(V, inText = true))
+        prefilled(prefixes, SubscriptionEntry.Valid(V, inText = true))
+        prefilled(spaced, SubscriptionEntry.Valid(V, inText = true))
+        transaction(txnPrefixes, inText = true)
+        fun best(text: String, stored: String?): Long {
+            repeat(5) { parseSubscriptionEntry(text, stored) }
+            return (1..15).minOf { measureNanoTime { parseSubscriptionEntry(text, stored) } }
+        }
+        val plain = best("a".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, V)
+        for ((text, stored) in listOf(prefixes to null, prefixes to V, spaced to V, txnPrefixes to null)) {
+            val ratio = best(text, stored).toDouble() / plain
+            assertTrue("${text.take(12)}... (stored id: ${stored != null}) took ${"%.1f".format(ratio)} times the plain text", ratio < 10)
+        }
+    }
+
+    @Test
+    fun `the payment-method link in Paddle's email and the portal page's address give the id, whatever the token spells`() {
+        // Made up: the cpl_ id and the tokens. The real token is 1,300 base64url characters; these spell, case-folded,
+        // what once read as a broken second id ("sub-3", "sub_5") and refused about 1 such link in 4,000.
+        val portal = "https://customer-portal.paddle.com/cpl_07" + "a".repeat(24)
+        for (token in listOf("pga_ab12", "pga_x9SUB-3yz", "pga_q_sub_5w", "pga_k-TXN_7m", "pga_aSub-0b_txn-1c")) {
+            val link = "$portal?action=update_subscription_payment_method&subscription_id=$V&token=$token&source=email"
+            // The sign-in email's link, once the first one's token has expired.
+            val signIn = "$portal?action=update_subscription_payment_method&origin-intended=true&source=email&subscription_id=$V&token=$token"
+            // The same link as Outlook's Safe Links rewrites it: "%26token%3D" there.
+            val safelink = "https://eur01.safelinks.protection.outlook.com/?url=" +
+                java.net.URLEncoder.encode(link, "UTF-8") + "&data=05%7C02%7C%7C0&sdata=AbCd%3D&reserved=0"
+            for (pasted in listOf(link, signIn, safelink)) {
+                valid(pasted, inText = true)
+                // Pasted over the dialog's pre-filled id, or beside it: a token spelling a broken transaction id
+                // once read as one there too.
+                prefilled(pasted, SubscriptionEntry.Valid(V, inText = true))
+                prefilled("$V $pasted", SubscriptionEntry.Valid(V, inText = true))
+                // A transaction id beside it: the link's subscription id decides, as in a receipt line, unless that
+                // is the stored id (then the transaction id is what was pasted).
+                valid("$T $pasted", inText = true)
+                prefilled("$T $pasted", SubscriptionEntry.ValidTransaction(T, inText = true))
+            }
+        }
+        // Beside a link that carries no subscription id, a transaction id is looked up, whatever the token spells.
+        transaction("$T $portal?token=pga_k-TXN_7m", inText = true)
+        prefilled("$V $T $portal?subscription_id=$V&token=pga_k-TXN_7m", SubscriptionEntry.ValidTransaction(T, inText = true))
+        // The address of the subscription's page in the portal.
+        valid("https://customer-portal.paddle.com/subscriptions/$V/cpl_07" + "a".repeat(24) + "?origin-intended=true&source=email", inText = true)
+        // Its own link pasted beside the dialog's pre-filled id: the stored id is meant.
+        prefilled("$V $portal?subscription_id=$V&token=pga_x9SUB-3yz", SubscriptionEntry.Valid(V, inText = true))
+        // A broken second id outside the token is still refused, also after a wrapped link.
+        kind("$portal?subscription_id=$V&token=pga_ab12 sub_07aaa", SubscriptionEntry.MistypedSubId)
+        kind(
+            "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fcustomer-portal.paddle.com%2Fcpl_07" +
+                "a".repeat(24) + "%3Fsubscription_id%3D$V%26token%3Dpga_ab12%26source%3Demail&data=05 sub_07aaa",
+            SubscriptionEntry.MistypedSubId,
+        )
+        prefilled("$V $portal?subscription_id=$V&token=pga_ab12 txn_07aaa", SubscriptionEntry.MistypedTransactionId)
     }
 
     @Test

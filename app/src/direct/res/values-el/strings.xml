@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Εισαγωγή αναγνωριστικού συνδρομής</string>
     <string name="spp_subscribe_dialog_title">Εισαγωγή αναγνωριστικού συνδρομής</string>
-    <string name="spp_subscribe_dialog_message">Επικολλήστε το αναγνωριστικό συνδρομής σας (ξεκινά με sub_ και εμφανίζεται στη σελίδα μετά την ολοκλήρωση της πληρωμής) ή το αναγνωριστικό συναλλαγής από το τιμολόγιο του Paddle (ξεκινά με txn_). Τα χάσατε και τα δύο; Το email απόδειξης του Paddle περιέχει έναν σύνδεσμο \"Manage subscription\" προς τη συνδρομή σας (στα email του Paddle ο πωλητής αναφέρεται ως BEO). Αν εξακολουθείτε να μη βρίσκετε κανένα αναγνωριστικό, πατήστε \"Αποστολή αναφοράς στον προγραμματιστή\" στις Ρυθμίσεις. Μια συνδρομή Google Play λειτουργεί μόνο στην έκδοση Google Play αυτής της εφαρμογής.</string>
+    <string name="spp_subscribe_dialog_message">Επικολλήστε το αναγνωριστικό συνδρομής σας (ξεκινά με sub_ και εμφανίζεται στη σελίδα μετά την ολοκλήρωση της πληρωμής) ή το αναγνωριστικό συναλλαγής από το τιμολόγιο του Paddle (ξεκινά με txn_). Τα χάσατε και τα δύο; Στο email του Paddle για τη συνδρομή σας υπάρχει ένας σύνδεσμος για την ενημέρωση του τρόπου πληρωμής: αντιγράψτε αυτόν τον σύνδεσμο (όχι εκείνον για την ακύρωση) και επικολλήστε τον εδώ, καθώς περιέχει το αναγνωριστικό. Μπορείτε επίσης να χρησιμοποιήσετε τη διεύθυνση της σελίδας της συνδρομής σας στην πύλη πελατών του Paddle ή ένα αναγνωριστικό συναλλαγής από τις πληρωμές που εμφανίζονται εκεί. Αν εξακολουθείτε να μη βρίσκετε κανένα αναγνωριστικό, πατήστε \"Αποστολή αναφοράς στον προγραμματιστή\" στις Ρυθμίσεις. Μια συνδρομή Google Play λειτουργεί μόνο στην έκδοση Google Play αυτής της εφαρμογής.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Ενεργοποίηση</string>
     <string name="spp_subscribe_validating">Έλεγχος της συνδρομής σας…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Αυτό το αναγνωριστικό συνδρομής είναι ελλιπές ή περιέχει τυπογραφικό λάθος. Αντιγράψτε το ξανά.</string>
     <string name="spp_subscribe_error_not_an_id">Αυτό δεν είναι αναγνωριστικό συνδρομής. Τα αναγνωριστικά συνδρομής ξεκινούν με \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Το κείμενο περιέχει περισσότερα από ένα αναγνωριστικά. Εισαγάγετε μόνο ένα.</string>
+    <string name="spp_subscribe_error_too_long">Το κείμενο είναι πολύ μεγάλο. Επικολλήστε μόνο το αναγνωριστικό ή τον σύνδεσμο από το email του Paddle.</string>
     <string name="spp_manage_dialog_title">Διαχείριση συνδρομής</string>
     <string name="spp_manage_action_update_payment">Ενημέρωση τρόπου πληρωμής</string>
     <string name="spp_manage_action_cancel">Ακύρωση συνδρομής</string>
     <string name="spp_manage_error">Δεν ήταν δυνατή η φόρτωση της σελίδας διαχείρισης. Δοκιμάστε ξανά.</string>
-    <string name="spp_manage_note">Το Paddle θα ζητήσει τη διεύθυνση email που χρησιμοποιήσατε για τη συνδρομή. Στα email του Paddle ο πωλητής αναφέρεται ως BEO.</string>
+    <string name="spp_manage_note">Το Paddle θα ζητήσει τη διεύθυνση email που χρησιμοποιήσατε για τη συνδρομή και θα σας στείλει με email έναν σύνδεσμο για να συνδεθείτε.</string>
     <string name="spp_manage_loading">Επικοινωνία με το Paddle…</string>
     <string name="spp_manage_unavailable">Η υπηρεσία συνδρομών δεν είναι διαθέσιμη. Δοκιμάστε ξανά αργότερα.</string>
     <string name="spp_manage_no_connection">Δεν υπάρχει σύνδεση. Ελέγξτε αν το τηλέφωνό σας είναι συνδεδεμένο στο διαδίκτυο και δοκιμάστε ξανά.</string>

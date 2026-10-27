@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Saisir l\'identifiant d\'abonnement</string>
     <string name="spp_subscribe_dialog_title">Saisir l\'identifiant d\'abonnement</string>
-    <string name="spp_subscribe_dialog_message">Collez votre identifiant d\'abonnement (il commence par sub_ et s\'affiche sur la page qui suit le paiement) ou l\'identifiant de transaction indiqué sur la facture de Paddle (il commence par txn_). Vous avez perdu les deux ? L\'e-mail de reçu de Paddle contient un lien \"Manage subscription\" vers votre abonnement (dans les e-mails de Paddle, le vendeur apparaît sous le nom BEO). Si vous ne trouvez toujours aucun identifiant, appuyez sur \"Envoyer un rapport au développeur\" dans les Paramètres. Un abonnement Google Play ne fonctionne que dans la version Google Play de cette application.</string>
+    <string name="spp_subscribe_dialog_message">Collez votre identifiant d\'abonnement (il commence par sub_ et s\'affiche sur la page qui suit le paiement) ou l\'identifiant de transaction indiqué sur la facture de Paddle (il commence par txn_). Vous avez perdu les deux ? L\'e-mail de Paddle concernant votre abonnement contient un lien pour modifier votre moyen de paiement : copiez ce lien (et non celui de résiliation) et collez-le ici, il contient l\'identifiant. L\'adresse de la page de votre abonnement dans le portail client de Paddle fonctionne aussi, tout comme l\'identifiant de transaction de l\'un des paiements qui y figurent. Si vous ne trouvez toujours aucun identifiant, appuyez sur \"Envoyer un rapport au développeur\" dans les Paramètres. Un abonnement Google Play ne fonctionne que dans la version Google Play de cette application.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activer</string>
     <string name="spp_subscribe_validating">Vérification de votre abonnement…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Cet identifiant d\'abonnement est incomplet ou contient une faute de frappe. Copiez-le à nouveau.</string>
     <string name="spp_subscribe_error_not_an_id">Ce n\'est pas un identifiant d\'abonnement. Les identifiants d\'abonnement commencent par \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Ce texte contient plusieurs identifiants. Saisissez-en un seul.</string>
+    <string name="spp_subscribe_error_too_long">Ce texte est trop long. Collez uniquement l\'identifiant, ou le lien de l\'e-mail de Paddle.</string>
     <string name="spp_manage_dialog_title">Gérer l\'abonnement</string>
     <string name="spp_manage_action_update_payment">Modifier le moyen de paiement</string>
     <string name="spp_manage_action_cancel">Résilier l\'abonnement</string>
     <string name="spp_manage_error">Impossible de charger la page de gestion. Veuillez réessayer.</string>
-    <string name="spp_manage_note">Paddle vous demandera l\'adresse e-mail utilisée pour vous abonner. Dans les e-mails de Paddle, le vendeur apparaît sous le nom BEO.</string>
+    <string name="spp_manage_note">Paddle vous demandera l\'adresse e-mail utilisée pour vous abonner et vous enverra un lien de connexion par e-mail.</string>
     <string name="spp_manage_loading">Connexion à Paddle…</string>
     <string name="spp_manage_unavailable">Le service d\'abonnement est indisponible. Veuillez réessayer plus tard.</string>
     <string name="spp_manage_no_connection">Pas de connexion. Vérifiez que votre téléphone est connecté à Internet, puis réessayez.</string>

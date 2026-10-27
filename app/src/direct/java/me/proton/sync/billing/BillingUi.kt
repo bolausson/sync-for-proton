@@ -3,6 +3,7 @@ package me.proton.sync.billing
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.InputFilter
 import android.text.InputType
 import android.util.TypedValue
 import android.view.Gravity
@@ -57,7 +58,7 @@ object BillingUi {
      * The payment-failed card's button: straight to Paddle's page for a new payment method, the one
      * thing that clears a past-due subscription, instead of the chooser that also offers cancelling.
      * The links carry no sign-in token: Paddle asks whoever opens one for the email address the
-     * subscription was bought with and sends a sign-in code there (the card says so, see [manageNote]).
+     * subscription was bought with and emails a sign-in link there (the card says so, see [manageNote]).
      * Nothing in them expires, but they are still fetched on every tap rather than kept, so what opens
      * is what Paddle offers for the subscription at that moment.
      * When Paddle offers no such page for the subscription, the chooser shows what it does offer,
@@ -73,8 +74,7 @@ object BillingUi {
 
     /**
      * The card's note under its Manage subscription button, read before either button opens Paddle's portal:
-     * Paddle asks for the email address the subscription was bought with, and its emails name the seller as
-     * BEO, a name customers may not recognise.
+     * Paddle asks for the email address the subscription was bought with and emails a sign-in link there.
      */
     fun manageNote(context: Context): String? = context.getString(R.string.spp_manage_note)
 
@@ -222,6 +222,11 @@ object BillingUi {
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine()
+            // One character more than the parser reads, so a longer paste is answered as too long instead of being
+            // cut silently. Set after setSingleLine(): on Android 13 and later that adds a cut at 5,000 characters
+            // of its own unless the field has a length filter, and this replaces it (other filters stay).
+            filters = filters.filterNot { it is InputFilter.LengthFilter }.toTypedArray() +
+                InputFilter.LengthFilter(MAX_ENTRY_CHARS + 1)
             setText(prefilledId.orEmpty())
             // Focus selects the pre-filled id, so a paste replaces it instead of landing next to it.
             setSelectAllOnFocus(true)
@@ -325,6 +330,7 @@ object BillingUi {
         SubscriptionEntry.Email -> R.string.spp_subscribe_error_email
         SubscriptionEntry.MistypedSubId -> R.string.spp_subscribe_error_mistyped
         SubscriptionEntry.SeveralIds -> R.string.spp_subscribe_error_several_ids
+        SubscriptionEntry.TooLong -> R.string.spp_subscribe_error_too_long
         SubscriptionEntry.Empty, SubscriptionEntry.NotAnId, is SubscriptionEntry.Valid, is SubscriptionEntry.ValidTransaction ->
             R.string.spp_subscribe_error_not_an_id
     }

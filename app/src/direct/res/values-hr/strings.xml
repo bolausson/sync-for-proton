@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Unesi ID pretplate</string>
     <string name="spp_subscribe_dialog_title">Unesite ID pretplate</string>
-    <string name="spp_subscribe_dialog_message">Zalijepite svoj ID pretplate (počinje sa sub_ i prikazuje se na stranici nakon plaćanja) ili ID transakcije s računa koji izdaje Paddle (počinje s txn_). Izgubili ste oba? E-poruka s potvrdom plaćanja koju šalje Paddle sadrži poveznicu \"Manage subscription\" na vašu pretplatu (Paddle navodi prodavatelja kao BEO). Ako ID i dalje ne možete pronaći, dodirnite \"Pošalji izvještaj razvijatelju\" u Postavkama. Pretplata putem Google Play radi samo u Google Play verziji ove aplikacije.</string>
+    <string name="spp_subscribe_dialog_message">Zalijepite svoj ID pretplate (počinje sa sub_ i prikazuje se na stranici nakon plaćanja) ili ID transakcije s računa koji izdaje Paddle (počinje s txn_). Izgubili ste oba? E-poruka koju vam Paddle šalje o pretplati sadrži poveznicu za ažuriranje načina plaćanja: kopirajte tu poveznicu (ne onu za otkazivanje) i zalijepite je ovdje, ID se nalazi u njoj. Možete zalijepiti i adresu stranice vaše pretplate na korisničkom portalu tvrtke Paddle ili ID transakcije s popisa plaćanja na portalu. Ako ID i dalje ne možete pronaći, dodirnite \"Pošalji izvještaj razvijatelju\" u Postavkama. Pretplata putem Google Play radi samo u Google Play verziji ove aplikacije.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiviraj</string>
     <string name="spp_subscribe_validating">Provjera pretplate…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Ovaj ID pretplate nije potpun ili sadrži pogrešku pri upisu. Ponovno ga kopirajte.</string>
     <string name="spp_subscribe_error_not_an_id">Ovo nije ID pretplate. ID-ovi pretplate počinju sa \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Ovo sadrži više od jednog ID-a. Unesite samo jedan.</string>
+    <string name="spp_subscribe_error_too_long">Tekst je predug. Zalijepite samo ID ili poveznicu iz e-poruke koju šalje Paddle.</string>
     <string name="spp_manage_dialog_title">Upravljaj pretplatom</string>
     <string name="spp_manage_action_update_payment">Ažuriraj način plaćanja</string>
     <string name="spp_manage_action_cancel">Otkaži pretplatu</string>
     <string name="spp_manage_error">Stranicu za upravljanje nije moguće učitati. Pokušajte ponovno.</string>
-    <string name="spp_manage_note">Paddle će zatražiti adresu e-pošte koju ste koristili za pretplatu. Paddle u svojim porukama e-pošte navodi prodavatelja kao BEO.</string>
+    <string name="spp_manage_note">Paddle će zatražiti adresu e-pošte koju ste koristili za pretplatu i na nju vam poslati poveznicu za prijavu.</string>
     <string name="spp_manage_loading">Povezivanje s Paddleom…</string>
     <string name="spp_manage_unavailable">Usluga pretplate nije dostupna. Pokušajte ponovno kasnije.</string>
     <string name="spp_manage_no_connection">Nema veze s poslužiteljem. Provjerite je li vaš telefon povezan s internetom, a zatim pokušajte ponovno.</string>

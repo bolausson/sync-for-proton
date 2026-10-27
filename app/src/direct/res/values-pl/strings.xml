@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Wprowadź identyfikator subskrypcji</string>
     <string name="spp_subscribe_dialog_title">Wprowadź identyfikator subskrypcji</string>
-    <string name="spp_subscribe_dialog_message">Wklej swój identyfikator subskrypcji (zaczyna się od sub_ i jest wyświetlany na stronie po dokonaniu zakupu) lub identyfikator transakcji z faktury Paddle (zaczyna się od txn_). Nie masz żadnego z nich? E-mail z potwierdzeniem zakupu od Paddle zawiera link \"Manage subscription\" do Twojej subskrypcji (Paddle podaje BEO jako sprzedawcę). Jeśli nadal nie możesz znaleźć identyfikatora, dotknij \"Wyślij raport do dewelopera\" w Ustawieniach. Subskrypcja z Google Play działa tylko w wersji tej aplikacji z Google Play.</string>
+    <string name="spp_subscribe_dialog_message">Wklej swój identyfikator subskrypcji (zaczyna się od sub_ i jest wyświetlany na stronie po dokonaniu zakupu) lub identyfikator transakcji z faktury Paddle (zaczyna się od txn_). Nie masz żadnego z nich? E-mail od Paddle dotyczący Twojej subskrypcji zawiera link do aktualizacji metody płatności: skopiuj ten link (nie link do anulowania) i wklej go tutaj, zawiera on identyfikator. Możesz też wkleić adres strony Twojej subskrypcji w portalu klienta Paddle albo identyfikator transakcji z listy płatności w tym portalu. Jeśli nadal nie możesz znaleźć identyfikatora, dotknij \"Wyślij raport do dewelopera\" w Ustawieniach. Subskrypcja z Google Play działa tylko w wersji tej aplikacji z Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktywuj</string>
     <string name="spp_subscribe_validating">Sprawdzanie subskrypcji…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Ten identyfikator subskrypcji jest niekompletny lub zawiera literówkę. Skopiuj go ponownie.</string>
     <string name="spp_subscribe_error_not_an_id">To nie jest identyfikator subskrypcji. Identyfikatory subskrypcji zaczynają się od \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Ten tekst zawiera więcej niż jeden identyfikator. Wprowadź tylko jeden.</string>
+    <string name="spp_subscribe_error_too_long">Ten tekst jest za długi. Wklej tylko identyfikator lub link z e-maila od Paddle.</string>
     <string name="spp_manage_dialog_title">Zarządzaj subskrypcją</string>
     <string name="spp_manage_action_update_payment">Zaktualizuj metodę płatności</string>
     <string name="spp_manage_action_cancel">Anuluj subskrypcję</string>
     <string name="spp_manage_error">Nie udało się załadować strony zarządzania. Spróbuj ponownie.</string>
-    <string name="spp_manage_note">Paddle poprosi o adres e-mail użyty przy wykupieniu subskrypcji. Paddle w swoich e-mailach podaje BEO jako sprzedawcę.</string>
+    <string name="spp_manage_note">Paddle poprosi o adres e-mail użyty przy wykupieniu subskrypcji i wyśle na niego link do logowania.</string>
     <string name="spp_manage_loading">Łączenie z Paddle…</string>
     <string name="spp_manage_unavailable">Usługa subskrypcji jest niedostępna. Spróbuj ponownie później.</string>
     <string name="spp_manage_no_connection">Brak połączenia. Sprawdź, czy telefon jest połączony z internetem, a następnie spróbuj ponownie.</string>

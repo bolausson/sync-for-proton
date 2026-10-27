@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Sisesta tellimuse ID</string>
     <string name="spp_subscribe_dialog_title">Sisesta tellimuse ID</string>
-    <string name="spp_subscribe_dialog_message">Kleepige oma tellimuse ID (see algab eesliitega sub_ ja seda näidatakse pärast maksmist avaneval lehel) või Paddle\'i arvel olev tehingu ID (see algab eesliitega txn_). Kaotasite mõlemad? Paddle\'i kviitungi e-kirjas on link \"Manage subscription\", mis viib teie tellimuseni (Paddle\'i e-kirjades on müüjana märgitud BEO). Kui te ikka ühtegi ID-d ei leia, puudutage jaotises Seaded nuppu \"Saada aruanne arendajale\". Google Play tellimus töötab ainult selle rakenduse Google Play versioonis.</string>
+    <string name="spp_subscribe_dialog_message">Kleepige oma tellimuse ID (see algab eesliitega sub_ ja seda näidatakse pärast maksmist avaneval lehel) või Paddle\'i arvel olev tehingu ID (see algab eesliitega txn_). Kaotasite mõlemad? Paddle\'i e-kirjas teie tellimuse kohta on link makseviisi uuendamiseks: kopeerige see link (mitte tühistamislinki) ja kleepige see siia, sest ID sisaldub selles. Sobib ka teie tellimuse lehe aadress Paddle\'i kliendiportaalis, nagu ka portaali maksete juures olev tehingu ID. Kui te ikka ühtegi ID-d ei leia, puudutage jaotises Seaded nuppu \"Saada aruanne arendajale\". Google Play tellimus töötab ainult selle rakenduse Google Play versioonis.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiveeri</string>
     <string name="spp_subscribe_validating">Tellimuse kontrollimine…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">See tellimuse ID on puudulik või sisaldab trükiviga. Kopeerige see uuesti.</string>
     <string name="spp_subscribe_error_not_an_id">See ei ole tellimuse ID. Tellimuse ID-d algavad eesliitega \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">See sisaldab rohkem kui ühte ID-d. Sisestage ainult üks.</string>
+    <string name="spp_subscribe_error_too_long">See on liiga pikk. Kleepige ainult ID või Paddle\'i e-kirjas olev link.</string>
     <string name="spp_manage_dialog_title">Halda tellimust</string>
     <string name="spp_manage_action_update_payment">Uuenda makseviisi</string>
     <string name="spp_manage_action_cancel">Tühista tellimus</string>
     <string name="spp_manage_error">Haldamise lehte ei õnnestunud laadida. Proovi uuesti.</string>
-    <string name="spp_manage_note">Paddle küsib e-posti aadressi, mida tellimisel kasutasite. Paddle\'i e-kirjades on müüjana märgitud BEO.</string>
+    <string name="spp_manage_note">Paddle küsib e-posti aadressi, mida tellimisel kasutasite, ja saadab teile e-kirjaga sisselogimislingi.</string>
     <string name="spp_manage_loading">Ühenduse loomine Paddle\'iga…</string>
     <string name="spp_manage_unavailable">Tellimusteenus pole saadaval. Palun proovige hiljem uuesti.</string>
     <string name="spp_manage_no_connection">Ühendus puudub. Kontrollige, kas telefon on internetiga ühendatud, ja proovige seejärel uuesti.</string>

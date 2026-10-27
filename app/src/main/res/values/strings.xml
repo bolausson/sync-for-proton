@@ -38,7 +38,7 @@
     <string name="error_login_proton_refused">Proton could not complete the sign-in. Please try again in a moment.</string>
     <!-- %1$s is the name of the error type, for example IllegalStateException; keep it untranslated -->
     <string name="error_login_unexpected">Sign-in failed because of an unexpected error (%1$s). Please try again.</string>
-    <string name="version_label" translatable="false">v2.0.2</string>
+    <string name="version_label" translatable="false">v2.0.3</string>
 
     <!-- Legal footer (settings, just above the brand/version line) -->
     <string name="link_privacy_policy">Privacy Policy</string>

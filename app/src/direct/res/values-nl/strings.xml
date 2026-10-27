@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Abonnements-ID invoeren</string>
     <string name="spp_subscribe_dialog_title">Abonnements-ID invoeren</string>
-    <string name="spp_subscribe_dialog_message">Plak je abonnements-ID (die begint met sub_ en staat op de pagina die na het afrekenen verschijnt) of de transactie-ID van de factuur van Paddle (die begint met txn_). Allebei kwijt? De e-mail met het betaalbewijs van Paddle bevat een link “Manage subscription” naar je abonnement (in e-mails van Paddle staat BEO als verkoper). Kun je nog steeds geen ID vinden, tik dan in Instellingen op “Rapport sturen naar ontwikkelaar”. Een Google Play-abonnement werkt alleen in de Google Play-versie van deze app.</string>
+    <string name="spp_subscribe_dialog_message">Plak je abonnements-ID (die begint met sub_ en staat op de pagina die na het afrekenen verschijnt) of de transactie-ID van de factuur van Paddle (die begint met txn_). Allebei kwijt? De e-mail van Paddle over je abonnement bevat een link om je betaalmethode bij te werken: kopieer die link (niet de link om op te zeggen) en plak hem hier, want de ID staat erin. Het adres van je abonnementspagina in het klantenportaal van Paddle werkt ook, net als een transactie-ID van een van de betalingen die daar staan. Kun je nog steeds geen ID vinden, tik dan in Instellingen op “Rapport sturen naar ontwikkelaar”. Een Google Play-abonnement werkt alleen in de Google Play-versie van deze app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activeren</string>
     <string name="spp_subscribe_validating">Je abonnement wordt gecontroleerd…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Deze abonnements-ID is onvolledig of bevat een typfout. Kopieer de ID opnieuw.</string>
     <string name="spp_subscribe_error_not_an_id">Dit is geen abonnements-ID. Abonnements-ID\'s beginnen met “sub_”.</string>
     <string name="spp_subscribe_error_several_ids">Dit bevat meer dan één ID. Voer er maar één in.</string>
+    <string name="spp_subscribe_error_too_long">Dit is te lang. Plak alleen de ID of de link uit de e-mail van Paddle.</string>
     <string name="spp_manage_dialog_title">Abonnement beheren</string>
     <string name="spp_manage_action_update_payment">Betaalmethode bijwerken</string>
     <string name="spp_manage_action_cancel">Abonnement opzeggen</string>
     <string name="spp_manage_error">De beheerpagina kon niet worden geladen. Probeer het opnieuw.</string>
-    <string name="spp_manage_note">Paddle vraagt naar het e-mailadres waarmee het abonnement is afgesloten. In e-mails van Paddle staat BEO als verkoper.</string>
+    <string name="spp_manage_note">Paddle vraagt naar het e-mailadres waarmee het abonnement is afgesloten en stuurt je per e-mail een inloglink.</string>
     <string name="spp_manage_loading">Contact opnemen met Paddle…</string>
     <string name="spp_manage_unavailable">De abonnementsdienst is niet beschikbaar. Probeer het later opnieuw.</string>
     <string name="spp_manage_no_connection">Geen verbinding. Controleer of de telefoon online is en probeer het dan opnieuw.</string>

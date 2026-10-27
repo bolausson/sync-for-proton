@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Vnesi ID naročnine</string>
     <string name="spp_subscribe_dialog_title">Vnesite ID naročnine</string>
-    <string name="spp_subscribe_dialog_message">Prilepite svoj ID naročnine (začne se s sub_ in je prikazan na strani po zaključku nakupa) ali ID transakcije z računa, ki ga izda Paddle (začne se s txn_). Ste izgubili oba? Potrdilo o plačilu, ki ga Paddle pošlje po e-pošti, vsebuje povezavo \"Manage subscription\" do vaše naročnine (Paddle prodajalca navaja kot BEO). Če ID-ja še vedno ne najdete, v Nastavitvah tapnite \"Pošlji poročilo razvijalcu\". Naročnina Google Play deluje samo v različici te aplikacije za Google Play.</string>
+    <string name="spp_subscribe_dialog_message">Prilepite svoj ID naročnine (začne se s sub_ in je prikazan na strani po zaključku nakupa) ali ID transakcije z računa, ki ga izda Paddle (začne se s txn_). Ste izgubili oba? E-poštno sporočilo, ki vam ga Paddle pošlje o naročnini, vsebuje povezavo za posodobitev načina plačila: kopirajte to povezavo (ne tiste za preklic) in jo prilepite sem, saj vsebuje ID. Prilepite lahko tudi naslov strani vaše naročnine na portalu za stranke Paddle ali ID transakcije s seznama plačil na portalu. Če ID-ja še vedno ne najdete, v Nastavitvah tapnite \"Pošlji poročilo razvijalcu\". Naročnina Google Play deluje samo v različici te aplikacije za Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktiviraj</string>
     <string name="spp_subscribe_validating">Preverjanje naročnine…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Ta ID naročnine je nepopoln ali vsebuje tipkarsko napako. Znova ga kopirajte.</string>
     <string name="spp_subscribe_error_not_an_id">To ni ID naročnine. ID-ji naročnin se začnejo s \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Besedilo vsebuje več kot en ID. Vnesite samo enega.</string>
+    <string name="spp_subscribe_error_too_long">Besedilo je predolgo. Prilepite samo ID ali povezavo iz e-poštnega sporočila, ki ga pošlje Paddle.</string>
     <string name="spp_manage_dialog_title">Upravljaj naročnino</string>
     <string name="spp_manage_action_update_payment">Posodobi način plačila</string>
     <string name="spp_manage_action_cancel">Prekliči naročnino</string>
     <string name="spp_manage_error">Strani za upravljanje ni bilo mogoče naložiti. Poskusite znova.</string>
-    <string name="spp_manage_note">Paddle bo zahteval e-poštni naslov, s katerim ste se naročili. Paddle v svojih e-poštnih sporočilih prodajalca navaja kot BEO.</string>
+    <string name="spp_manage_note">Paddle bo zahteval e-poštni naslov, s katerim ste se naročili, in vam nanj poslal povezavo za prijavo.</string>
     <string name="spp_manage_loading">Povezovanje s Paddle…</string>
     <string name="spp_manage_unavailable">Storitev za naročnine ni na voljo. Poskusite znova pozneje.</string>
     <string name="spp_manage_no_connection">Ni povezave. Preverite, ali je telefon povezan z internetom, in poskusite znova.</string>

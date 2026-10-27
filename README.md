@@ -68,12 +68,14 @@ This build is paid via the web (no Google Play Billing):
    subscription is paused, unpaid or expired, the card keeps its **Enter subscription ID**
    button, and the dialog shows the ID this phone has stored.
 
-Lost the ID? The transaction ID (`txn_`) on Paddle's invoice activates too. Otherwise open the
-**Manage subscription** link in your Paddle receipt email (Paddle names the seller as BEO) and
-copy the subscription ID from Paddle's page. A Google Play subscription does not unlock
-this build: it only works in the Google Play version.
+Lost the ID? The transaction ID (`txn_`) on Paddle's invoice activates too. Otherwise, in the
+email Paddle sent you about your subscription, copy the link to update your payment method (not
+the one to cancel) and paste it into the app: the ID is in it. The address of your subscription's
+page in Paddle's customer portal works too, as does a transaction ID from its payments. A Google
+Play subscription does not unlock this build: it only works in the Google Play version.
 
-Manage or cancel anytime via the link in your Paddle receipt email.
+Manage or cancel anytime: **Manage subscription** on the app's Subscription card, or the links in
+Paddle's email. Paddle asks for the email address you subscribed with and emails you a sign-in link.
 
 ## Updates & signing
 

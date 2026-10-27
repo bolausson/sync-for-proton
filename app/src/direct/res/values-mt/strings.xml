@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Daħħal l-ID tal-abbonament</string>
     <string name="spp_subscribe_dialog_title">Daħħal l-ID tal-abbonament</string>
-    <string name="spp_subscribe_dialog_message">Waħħal l-ID tal-abbonament tiegħek (jibda bi sub_ u jidher fil-paġna wara l-ħlas) jew l-ID tat-tranżazzjoni mill-fattura ta\' Paddle (jibda bi txn_). Tlift it-tnejn? L-email tal-irċevuta ta\' Paddle fiha link \"Manage subscription\" għall-abbonament tiegħek (fl-emails ta\' Paddle, il-bejjiegħ jidher bħala BEO). Jekk xorta ma ssib l-ebda ID, ikklikkja \"Ibgħat rapport lill-iżviluppatur\" fis-Settings. Abbonament ta\' Google Play jaħdem biss fil-verżjoni Google Play ta\' din l-app.</string>
+    <string name="spp_subscribe_dialog_message">Waħħal l-ID tal-abbonament tiegħek (jibda bi sub_ u jidher fil-paġna wara l-ħlas) jew l-ID tat-tranżazzjoni mill-fattura ta\' Paddle (jibda bi txn_). Tlift it-tnejn? L-email ta\' Paddle dwar l-abbonament tiegħek fiha link biex taġġorna l-metodu ta\' pagament: ikkopja dak il-link (mhux dak biex tikkanċella) u waħħlu hawn, l-ID jinsab fih. Jaħdem ukoll l-indirizz tal-paġna tal-abbonament tiegħek fil-portal tal-klijenti ta\' Paddle, kif ukoll l-ID tat-tranżazzjoni ta\' wieħed mill-ħlasijiet elenkati hemmhekk. Jekk xorta ma ssib l-ebda ID, ikklikkja \"Ibgħat rapport lill-iżviluppatur\" fis-Settings. Abbonament ta\' Google Play jaħdem biss fil-verżjoni Google Play ta\' din l-app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Attiva</string>
     <string name="spp_subscribe_validating">Qed niċċekkjaw l-abbonament tiegħek…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Dan l-ID tal-abbonament mhux komplut jew fih żball tal-ittajpjar. Erġa\' kkopjah.</string>
     <string name="spp_subscribe_error_not_an_id">Dan mhux ID tal-abbonament. L-IDs tal-abbonament jibdew bi \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Dan fih aktar minn ID wieħed. Daħħal wieħed biss.</string>
+    <string name="spp_subscribe_error_too_long">Dan twil wisq. Waħħal l-ID biss, jew il-link mill-email ta\' Paddle.</string>
     <string name="spp_manage_dialog_title">Immaniġġja l-abbonament</string>
     <string name="spp_manage_action_update_payment">Aġġorna l-metodu ta\' pagament</string>
     <string name="spp_manage_action_cancel">Ikkanċella l-abbonament</string>
     <string name="spp_manage_error">Il-paġna ta\' mmaniġġjar ma setgħetx tinxteħet. Erġa\' pprova.</string>
-    <string name="spp_manage_note">Paddle se jitolbok l-indirizz tal-email li użajt biex tabbona. Fl-emails ta\' Paddle, il-bejjiegħ jidher bħala BEO.</string>
+    <string name="spp_manage_note">Paddle se jitolbok l-indirizz tal-email li użajt biex tabbona u jibgħatlek email b\'link biex tidħol.</string>
     <string name="spp_manage_loading">Qed nikkuntattjaw lil Paddle…</string>
     <string name="spp_manage_unavailable">Is-servizz tal-abbonament mhux disponibbli. Jekk jogħġbok erġa\' pprova iktar tard.</string>
     <string name="spp_manage_no_connection">M\'hemmx konnessjoni. Iċċekkja li t-telefon tiegħek huwa online, imbagħad erġa\' pprova.</string>

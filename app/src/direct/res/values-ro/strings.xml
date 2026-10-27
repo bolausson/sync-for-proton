@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Introdu ID-ul abonamentului</string>
     <string name="spp_subscribe_dialog_title">Introdu ID-ul abonamentului</string>
-    <string name="spp_subscribe_dialog_message">Lipește ID-ul abonamentului (începe cu sub_ și apare pe pagina afișată după plată) sau ID-ul tranzacției de pe factura de la Paddle (începe cu txn_). Le-ai pierdut pe amândouă? E-mailul cu chitanța de la Paddle conține un link \"Manage subscription\" către abonamentul tău (în e-mailurile de la Paddle, vânzătorul apare sub numele BEO). Dacă tot nu găsești niciun ID, atinge \"Trimite raport către dezvoltator\" în Setări. Un abonament Google Play funcționează doar în versiunea Google Play a acestei aplicații.</string>
+    <string name="spp_subscribe_dialog_message">Lipește ID-ul abonamentului (începe cu sub_ și apare pe pagina afișată după plată) sau ID-ul tranzacției de pe factura de la Paddle (începe cu txn_). Le-ai pierdut pe amândouă? E-mailul de la Paddle despre abonamentul tău conține un link pentru actualizarea metodei de plată: copiază acel link (nu pe cel de anulare) și lipește-l aici, ID-ul se află în el. Funcționează și adresa paginii abonamentului tău din portalul pentru clienți Paddle, la fel ca ID-ul tranzacției oricărei plăți afișate acolo. Dacă tot nu găsești niciun ID, atinge \"Trimite raport către dezvoltator\" în Setări. Un abonament Google Play funcționează doar în versiunea Google Play a acestei aplicații.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activează</string>
     <string name="spp_subscribe_validating">Se verifică abonamentul…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Acest ID de abonament este incomplet sau conține o greșeală de tastare. Copiază-l din nou.</string>
     <string name="spp_subscribe_error_not_an_id">Acesta nu este un ID de abonament. ID-urile de abonament încep cu \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Textul conține mai multe ID-uri. Introdu doar unul.</string>
+    <string name="spp_subscribe_error_too_long">Textul este prea lung. Lipește doar ID-ul sau linkul din e-mailul de la Paddle.</string>
     <string name="spp_manage_dialog_title">Gestionează abonamentul</string>
     <string name="spp_manage_action_update_payment">Actualizează metoda de plată</string>
     <string name="spp_manage_action_cancel">Anulează abonamentul</string>
     <string name="spp_manage_error">Pagina de gestionare nu a putut fi încărcată. Încearcă din nou.</string>
-    <string name="spp_manage_note">Paddle îți va cere adresa de e-mail cu care te-ai abonat. În e-mailurile de la Paddle, vânzătorul apare sub numele BEO.</string>
+    <string name="spp_manage_note">Paddle îți va cere adresa de e-mail cu care te-ai abonat și îți va trimite pe e-mail un link de conectare.</string>
     <string name="spp_manage_loading">Se contactează Paddle…</string>
     <string name="spp_manage_unavailable">Serviciul de abonamente nu este disponibil. Încearcă din nou mai târziu.</string>
     <string name="spp_manage_no_connection">Nu există conexiune. Verifică dacă telefonul este conectat la internet, apoi încearcă din nou.</string>

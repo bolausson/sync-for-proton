@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Introduzir ID de subscrição</string>
     <string name="spp_subscribe_dialog_title">Introduzir ID de subscrição</string>
-    <string name="spp_subscribe_dialog_message">Cole o seu ID de subscrição (começa por sub_ e é apresentado na página após o pagamento) ou o ID de transação da fatura da Paddle (começa por txn_). Perdeu ambos? O e-mail de recibo da Paddle tem uma ligação \"Manage subscription\" para a sua subscrição (nos e-mails da Paddle, o vendedor aparece como BEO). Se continuar sem encontrar um ID, toque em \"Enviar relatório ao programador\" nas Definições. Uma subscrição do Google Play só funciona na versão Google Play desta aplicação.</string>
+    <string name="spp_subscribe_dialog_message">Cole o seu ID de subscrição (começa por sub_ e é apresentado na página após o pagamento) ou o ID de transação da fatura da Paddle (começa por txn_). Perdeu ambos? O e-mail da Paddle sobre a sua subscrição tem uma ligação para atualizar o método de pagamento: copie essa ligação (não a de cancelar) e cole-a aqui, pois contém o ID. Também funciona o endereço da página da sua subscrição no portal do cliente da Paddle, tal como o ID de transação de um dos pagamentos aí listados. Se continuar sem encontrar um ID, toque em \"Enviar relatório ao programador\" nas Definições. Uma subscrição do Google Play só funciona na versão Google Play desta aplicação.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Ativar</string>
     <string name="spp_subscribe_validating">A verificar a sua subscrição…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Este ID de subscrição está incompleto ou tem um erro de digitação. Copie-o novamente.</string>
     <string name="spp_subscribe_error_not_an_id">Isto não é um ID de subscrição. Os IDs de subscrição começam por \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Isto contém mais do que um ID. Introduza apenas um.</string>
+    <string name="spp_subscribe_error_too_long">Isto é demasiado longo. Cole apenas o ID ou a ligação do e-mail da Paddle.</string>
     <string name="spp_manage_dialog_title">Gerir subscrição</string>
     <string name="spp_manage_action_update_payment">Atualizar método de pagamento</string>
     <string name="spp_manage_action_cancel">Cancelar subscrição</string>
     <string name="spp_manage_error">Não foi possível carregar a página de gestão. Tente novamente.</string>
-    <string name="spp_manage_note">A Paddle vai pedir-lhe o endereço de e-mail que utilizou para subscrever. Nos e-mails da Paddle, o vendedor aparece como BEO.</string>
+    <string name="spp_manage_note">A Paddle vai pedir-lhe o endereço de e-mail que utilizou para subscrever e enviar-lhe por e-mail uma ligação para iniciar sessão.</string>
     <string name="spp_manage_loading">A contactar a Paddle…</string>
     <string name="spp_manage_unavailable">O serviço de subscrição não está disponível. Tente novamente mais tarde.</string>
     <string name="spp_manage_no_connection">Sem ligação. Verifique se o seu telemóvel está ligado à Internet e tente novamente.</string>

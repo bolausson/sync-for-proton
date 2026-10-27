@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Ievadīt abonementa ID</string>
     <string name="spp_subscribe_dialog_title">Ievadīt abonementa ID</string>
-    <string name="spp_subscribe_dialog_message">Ielīmējiet savu abonementa ID (tas sākas ar sub_ un ir redzams lapā, kas tiek parādīta pēc apmaksas) vai darījuma ID no Paddle rēķina (tas sākas ar txn_). Pazaudējāt abus? Paddle kvīts e-pastā ir saite \"Manage subscription\" uz jūsu abonementu (Paddle e-pastos pārdevējs ir norādīts kā BEO). Ja joprojām nevarat atrast nevienu ID, sadaļā Iestatījumi pieskarieties \"Sūtīt ziņojumu izstrādātājam\". Google Play abonements darbojas tikai šīs lietotnes Google Play versijā.</string>
+    <string name="spp_subscribe_dialog_message">Ielīmējiet savu abonementa ID (tas sākas ar sub_ un ir redzams lapā, kas tiek parādīta pēc apmaksas) vai darījuma ID no Paddle rēķina (tas sākas ar txn_). Pazaudējāt abus? Paddle e-pastā par jūsu abonementu ir saite maksājuma metodes atjaunināšanai: nokopējiet šo saiti (nevis atcelšanas saiti) un ielīmējiet to šeit, jo tajā ir ID. Der arī jūsu abonementa lapas adrese Paddle klientu portālā, kā arī jebkura tur norādītā maksājuma darījuma ID. Ja joprojām nevarat atrast nevienu ID, sadaļā Iestatījumi pieskarieties \"Sūtīt ziņojumu izstrādātājam\". Google Play abonements darbojas tikai šīs lietotnes Google Play versijā.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivizēt</string>
     <string name="spp_subscribe_validating">Notiek abonementa pārbaude…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Šis abonementa ID ir nepilnīgs vai satur drukas kļūdu. Nokopējiet to vēlreiz.</string>
     <string name="spp_subscribe_error_not_an_id">Šis nav abonementa ID. Abonementu ID sākas ar \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Tas satur vairāk nekā vienu ID. Ievadiet tikai vienu.</string>
+    <string name="spp_subscribe_error_too_long">Teksts ir pārāk garš. Ielīmējiet tikai ID vai saiti no Paddle e-pasta.</string>
     <string name="spp_manage_dialog_title">Pārvaldīt abonementu</string>
     <string name="spp_manage_action_update_payment">Atjaunināt maksājuma metodi</string>
     <string name="spp_manage_action_cancel">Atcelt abonementu</string>
     <string name="spp_manage_error">Pārvaldības lapu neizdevās ielādēt. Mēģiniet vēlreiz.</string>
-    <string name="spp_manage_note">Paddle prasīs e-pasta adresi, kuru izmantojāt abonēšanai. Paddle e-pastos pārdevējs ir norādīts kā BEO.</string>
+    <string name="spp_manage_note">Paddle prasīs e-pasta adresi, kuru izmantojāt abonēšanai, un nosūtīs jums pa e-pastu pierakstīšanās saiti.</string>
     <string name="spp_manage_loading">Notiek saziņa ar Paddle…</string>
     <string name="spp_manage_unavailable">Abonementu pakalpojums nav pieejams. Lūdzu, vēlāk mēģiniet vēlreiz.</string>
     <string name="spp_manage_no_connection">Nav savienojuma. Pārbaudiet, vai jūsu tālrunis ir tiešsaistē, un pēc tam mēģiniet vēlreiz.</string>

@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Въведете идентификатор на абонамента</string>
     <string name="spp_subscribe_dialog_title">Въведете идентификатор на абонамента</string>
-    <string name="spp_subscribe_dialog_message">Поставете идентификатора на абонамента си (той започва със sub_ и се показва на страницата след плащането) или идентификатора на транзакцията от фактурата от Paddle (той започва с txn_). Загубили сте и двата? Имейлът с разписката от Paddle съдържа връзка \"Manage subscription\" към абонамента ви (Paddle посочва продавача като BEO). Ако все още не можете да намерите идентификатор, докоснете \"Изпращане на доклад до разработчика\" в Настройки. Абонамент от Google Play работи само във версията на това приложение от Google Play.</string>
+    <string name="spp_subscribe_dialog_message">Поставете идентификатора на абонамента си (той започва със sub_ и се показва на страницата след плащането) или идентификатора на транзакцията от фактурата от Paddle (той започва с txn_). Загубили сте и двата? Имейлът от Paddle за абонамента ви съдържа връзка за актуализиране на метода на плащане: копирайте тази връзка (а не връзката за отмяна) и я поставете тук, тъй като тя съдържа идентификатора. Можете да поставите и адреса на страницата на абонамента си в клиентския портал на Paddle или идентификатор на транзакция от списъка с плащания в портала. Ако все още не можете да намерите идентификатор, докоснете \"Изпращане на доклад до разработчика\" в Настройки. Абонамент от Google Play работи само във версията на това приложение от Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Активиране</string>
     <string name="spp_subscribe_validating">Проверка на абонамента ви…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Този идентификатор на абонамент е непълен или съдържа печатна грешка. Копирайте го отново.</string>
     <string name="spp_subscribe_error_not_an_id">Това не е идентификатор на абонамент. Идентификаторите на абонаменти започват със \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Текстът съдържа повече от един идентификатор. Въведете само един.</string>
+    <string name="spp_subscribe_error_too_long">Текстът е твърде дълъг. Поставете само идентификатора или връзката от имейла от Paddle.</string>
     <string name="spp_manage_dialog_title">Управление на абонамента</string>
     <string name="spp_manage_action_update_payment">Актуализиране на метода на плащане</string>
     <string name="spp_manage_action_cancel">Отмяна на абонамента</string>
     <string name="spp_manage_error">Страницата за управление не може да бъде заредена. Опитайте отново.</string>
-    <string name="spp_manage_note">Paddle ще поиска имейл адреса, с който сте се абонирали. В имейлите от Paddle продавачът е посочен като BEO.</string>
+    <string name="spp_manage_note">Paddle ще поиска имейл адреса, с който сте се абонирали, и ще ви изпрати по имейл връзка за вход.</string>
     <string name="spp_manage_loading">Свързване с Paddle…</string>
     <string name="spp_manage_unavailable">Услугата за абонаменти е недостъпна. Моля, опитайте отново по-късно.</string>
     <string name="spp_manage_no_connection">Няма връзка. Проверете дали телефонът ви е свързан с интернет, след което опитайте отново.</string>

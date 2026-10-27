@@ -9,7 +9,7 @@ import java.util.Locale
  * payment method buttons. Pure, so it can be tested.
  *
  * Since the proxy's contract 3 the links are Paddle customer-portal pages without a sign-in token: whoever opens
- * one is asked for the email address the subscription was bought with, and Paddle sends a sign-in code to it.
+ * one is asked for the email address the subscription was bought with, and Paddle emails a sign-in link to it.
  */
 internal sealed class ManageLinks {
     /**

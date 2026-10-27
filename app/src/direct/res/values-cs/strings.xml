@@ -2,7 +2,7 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Zadat ID předplatného</string>
     <string name="spp_subscribe_dialog_title">Zadejte ID předplatného</string>
-    <string name="spp_subscribe_dialog_message">Vložte své ID předplatného (začíná na sub_ a zobrazí se na stránce po dokončení platby) nebo ID transakce z faktury od Paddle (začíná na txn_). Ztratili jste obojí? E-mail s potvrzením platby od Paddle obsahuje odkaz \"Manage subscription\" na vaše předplatné (Paddle uvádí jako prodejce BEO). Pokud ID stále nemůžete najít, klepněte v Nastavení na \"Odeslat hlášení vývojáři\". Předplatné z Google Play funguje pouze ve verzi této aplikace z Google Play.</string>
+    <string name="spp_subscribe_dialog_message">Vložte své ID předplatného (začíná na sub_ a zobrazí se na stránce po dokončení platby) nebo ID transakce z faktury od Paddle (začíná na txn_). Ztratili jste obojí? E-mail od Paddle o vašem předplatném obsahuje odkaz pro aktualizaci platební metody: zkopírujte tento odkaz (nikoli odkaz pro zrušení) a vložte ho sem, obsahuje ID. Můžete také vložit adresu stránky vašeho předplatného v zákaznickém portálu Paddle nebo ID transakce ze seznamu plateb v portálu. Pokud ID stále nemůžete najít, klepněte v Nastavení na \"Odeslat hlášení vývojáři\". Předplatné z Google Play funguje pouze ve verzi této aplikace z Google Play.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Aktivovat</string>
     <string name="spp_subscribe_validating">Ověřování předplatného…</string>
@@ -20,11 +20,12 @@
     <string name="spp_subscribe_error_mistyped">Toto ID předplatného je neúplné nebo obsahuje překlep. Zkopírujte ID znovu.</string>
     <string name="spp_subscribe_error_not_an_id">Toto není ID předplatného. ID předplatného začínají na \"sub_\".</string>
     <string name="spp_subscribe_error_several_ids">Text obsahuje více než jedno ID. Zadejte pouze jedno.</string>
+    <string name="spp_subscribe_error_too_long">Text je příliš dlouhý. Vložte pouze ID nebo odkaz z e-mailu od Paddle.</string>
     <string name="spp_manage_dialog_title">Spravovat předplatné</string>
     <string name="spp_manage_action_update_payment">Aktualizovat platební metodu</string>
     <string name="spp_manage_action_cancel">Zrušit předplatné</string>
     <string name="spp_manage_error">Stránku správy se nepodařilo načíst. Zkuste to znovu.</string>
-    <string name="spp_manage_note">Paddle vás požádá o e-mailovou adresu, kterou jste použili při objednání předplatného. Paddle ve svých e-mailech uvádí jako prodejce BEO.</string>
+    <string name="spp_manage_note">Paddle vás požádá o e-mailovou adresu, kterou jste použili při objednání předplatného, a pošle vám na ni odkaz pro přihlášení.</string>
     <string name="spp_manage_loading">Připojování k Paddle…</string>
     <string name="spp_manage_unavailable">Služba předplatného není dostupná. Zkuste to znovu později.</string>
     <string name="spp_manage_no_connection">Žádné připojení. Zkontrolujte, zda je telefon připojen k internetu, a zkuste to znovu.</string>
