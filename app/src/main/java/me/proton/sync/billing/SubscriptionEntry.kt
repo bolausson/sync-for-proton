@@ -47,8 +47,9 @@ internal sealed class SubscriptionEntry(val kind: String) {
 /**
  * The longest text the dialog searches for an id, as long as Android 13 and later let a single-line field be. A
  * pasted receipt, a Paddle customer-portal link (about 1,500 characters with its token) or an Outlook safelink around
- * one fit easily; tens of thousands of characters kept the main thread busy for seconds. The dialog's field holds one
- * character more, so a longer paste is answered as too long on every version instead of being cut short silently.
+ * one fit easily; tens of thousands of characters kept the main thread busy for seconds. The dialog's field holds two
+ * characters more, and a field longer than this is answered as too long ([parseSubscriptionField]), so a longer paste
+ * is answered as too long on every version instead of being cut short silently.
  */
 internal const val MAX_ENTRY_CHARS = 5_000
 
@@ -97,6 +98,25 @@ private val PLAY_ORDER = Regex("gpa\\.[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{5}")
 // (16 s for 50,000 characters on a PC) on the main thread.
 private val EMAIL = Regex("(?:(?<![^\\s@])|\\G)[^\\s@]+@[^\\s@]+\\.[a-z]{2,}")
 private val WHITESPACE = Regex("\\s+")
+// An email address's local part: the ASCII letters, digits, ".", "_", "+", "'" and "-" in front of its "@", or of the
+// "%40" or "%2540" a link or a link inside a link writes for it, from where such a run starts, whether a domain
+// follows or not (ASCII as written: nothing here depends on what \s or a Unicode class counts). Taken out once, from
+// the text as it is, before the text is searched for an id (idsFound; the whitespace-free search reads that text with
+// its whitespace taken out, without taking the local parts out again) and before what is left over is searched for
+// another (the leftovers below), so an address is never read as an id, as part of one or as an id begun: the second
+// search made a whole id out of a cut-short transaction id and the start of the address pasted after it, and sent it
+// to the proxy, and "me+sub_3@" beside an id refused it as a second id begun. An id run straight into an address goes
+// with it. Only the local part goes: the domain after the "@" holds no id in a real address, and is read as other
+// text is. The "@" left in its place ends what comes before it, so an id split by a line wrap is found with an
+// address after it. The other characters an address may hold, such as "=", "&" or "?", are left out: in a link or a
+// sentence they stand right in front of one ("&email="), and an id before them is kept. A local part that holds one
+// of them, or any other character (an accented letter, or a "+" a link writes as "%2B"), is taken out only from the
+// character after it, and one that a line wrap or a space breaks only from the break: what comes before is read as a
+// word in front of an address. In a leftover the local parts go after the token and before the whitespace: once the
+// whitespace is gone, a broken second id in front of an address ("sub_07h0 name@") would run into the local part and
+// go with it. The one-character lookbehind lets a match start only where such a run starts, so a long run without an
+// "@" is read from its start only, not again from every character in it.
+private val LOCAL_PART = Regex("(?<![0-9a-z._+'-])[0-9a-z._+'-]+(?=@|%40|%2540)")
 // A link's token parameter. The payment-method link in Paddle's email carries a 1,300-character base64url one, whose
 // random letters spelled "sub-3" or "txn_5" in about 1 link in 4,000: read as a broken second id, the link was refused.
 // Left out wherever what is left over is searched for one (never where the id itself is searched for). Also in its
@@ -115,6 +135,9 @@ private val URL_TOKEN = Regex("(?:(?<=[?&])|(?<=%26)|(?<=%3f))token(?:=|%3d)[^&%
  * An email address is taken out before the text is searched for a mistyped id, so "sub_" or "txn_" typed in front
  * of the address (seen in the proxy's logs) is answered as an email address, while a real attempt at an id next
  * to one (a receipt line) is still a mistyped id. A bare "sub_" or "txn_" with nothing else is a mistyped id too.
+ * An email address is never read as an id, as part of one or as an id begun: its local part is taken out before the
+ * text is searched for an id and before what is left over is searched for another ([LOCAL_PART]), so an id run
+ * straight into an address goes with the address.
  *
  * [prefilled] is the stored subscription id the dialog's field starts with. When it is the only subscription id in
  * the text, a transaction id beside it is what was pasted (a new purchase), so that one is looked up instead of the
@@ -125,16 +148,14 @@ internal fun parseSubscriptionEntry(raw: String, prefilled: String? = null): Sub
     val text = cleaned(raw)
     if (text.isEmpty()) return SubscriptionEntry.Empty
     if (text.length > MAX_ENTRY_CHARS) return SubscriptionEntry.TooLong
-    // Whitespace kept first, so the lookahead ends an id at the space in "sub_... is my id". Only when
-    // that finds nothing is the text searched again without it, for an id broken by a space or a line wrap.
-    val ids = idsIn(SUB_ID_IN_TEXT, text).ifEmpty { idsIn(SUB_ID_IN_TEXT, text.replace(WHITESPACE, "")) }
+    val ids = idsFound(SUB_ID_IN_TEXT, text)
     if (ids.isNotEmpty()) {
         val entry = subscriptionIdEntry(text, ids)
         val stored = prefilled?.let { cleaned(it) }?.takeIf { it.isNotEmpty() }
         if (entry is SubscriptionEntry.Valid && entry.subId == stored) pastedBesidePrefilled(text, stored)?.let { return it }
         return entry
     }
-    val txnIds = idsIn(TXN_ID_IN_TEXT, text).ifEmpty { idsIn(TXN_ID_IN_TEXT, text.replace(WHITESPACE, "")) }
+    val txnIds = idsFound(TXN_ID_IN_TEXT, text)
     if (txnIds.isNotEmpty()) return transactionIdEntry(text, txnIds)
     val withoutEmail = EMAIL.replace(text, " ")
     return when {
@@ -148,6 +169,16 @@ internal fun parseSubscriptionEntry(raw: String, prefilled: String? = null): Sub
     }
 }
 
+/**
+ * The dialog's [field] as [parseSubscriptionEntry] reads it, except that a field longer than [MAX_ENTRY_CHARS] is
+ * [SubscriptionEntry.TooLong] before it is cleaned. The field holds two characters more and cuts a longer paste there
+ * (one less where the cut would split a surrogate pair); cleaning can take such a cut text back under the limit
+ * (spaces, invisible characters), and it was then searched as if it were all that was pasted, an id past the cut lost
+ * without a word.
+ */
+internal fun parseSubscriptionField(field: String, prefilled: String? = null): SubscriptionEntry =
+    if (field.length > MAX_ENTRY_CHARS) SubscriptionEntry.TooLong else parseSubscriptionEntry(field, prefilled)
+
 /** [text] with the subscription [ids] found in it; any transaction id beside them is not looked up. */
 private fun subscriptionIdEntry(text: String, ids: List<String>): SubscriptionEntry {
     if (ids.size > 1) return SubscriptionEntry.SeveralIds
@@ -160,7 +191,7 @@ private fun subscriptionIdEntry(text: String, ids: List<String>): SubscriptionEn
     // then read from its first two prefixes only, not from every one in it, which took a quarter of a second for
     // 2,500 of them. The same copies are taken out: past an id's own prefix there is no "_" or "-", so the end of a
     // copy never passes for such a prefix.
-    val leftover = text.replace(URL_TOKEN, "").replace(WHITESPACE, "")
+    val leftover = text.replace(URL_TOKEN, "").replace(LOCAL_PART, "").replace(WHITESPACE, "")
         .replace(Regex("(?<![_-]sub[_-])(?:sub[_-])*" + Regex.escape(id)), " ")
     if (BROKEN_ID.containsMatchIn(leftover)) return SubscriptionEntry.MistypedSubId
     // The same for a transaction id pasted straight in front of the pre-filled id: with nothing between the two it
@@ -197,7 +228,7 @@ private fun pastedBesidePrefilled(text: String, stored: String): SubscriptionEnt
         " ",
     ).trim()
     if (rest.isEmpty()) return null
-    val txnIds = idsIn(TXN_ID_IN_TEXT, rest).ifEmpty { idsIn(TXN_ID_IN_TEXT, rest.replace(WHITESPACE, "")) }
+    val txnIds = idsFound(TXN_ID_IN_TEXT, rest)
     if (txnIds.isNotEmpty()) {
         // The stored id was in the text too, so the transaction id never stood alone in it.
         return when (val entry = transactionIdEntry(rest, txnIds)) {
@@ -205,7 +236,8 @@ private fun pastedBesidePrefilled(text: String, stored: String): SubscriptionEnt
             else -> entry
         }
     }
-    return if (BROKEN_TXN_ID.containsMatchIn(rest.replace(URL_TOKEN, "").replace(WHITESPACE, ""))) {
+    val leftover = rest.replace(URL_TOKEN, "").replace(LOCAL_PART, "").replace(WHITESPACE, "")
+    return if (BROKEN_TXN_ID.containsMatchIn(leftover)) {
         SubscriptionEntry.MistypedTransactionId
     } else {
         null
@@ -225,7 +257,7 @@ private fun transactionIdEntry(text: String, txnIds: List<String>): Subscription
     // BROKEN_ID does for subscription ids. A subscription id begun beside it but not a whole one: the customer meant
     // the subscription id, so that one is called mistyped instead of the transaction id being looked up. Not tried
     // from a run's third prefix on, as in subscriptionIdEntry.
-    val leftover = text.replace(URL_TOKEN, "").replace(WHITESPACE, "")
+    val leftover = text.replace(URL_TOKEN, "").replace(LOCAL_PART, "").replace(WHITESPACE, "")
         .replace(Regex("(?<![_-]txn[_-])(?:txn[_-])*" + Regex.escape(txnId)), " ")
     if (WHOLE_TXN_ID.containsMatchIn(leftover)) return SubscriptionEntry.SeveralIds
     if (BROKEN_TXN_ID.containsMatchIn(leftover)) return SubscriptionEntry.MistypedTransactionId
@@ -254,6 +286,16 @@ private fun cleaned(raw: String): String {
         i += Character.charCount(cp)
     }
     return out.toString().trim().lowercase()
+}
+
+/**
+ * The ids [pattern] finds in [text] without the local part of any email address ([LOCAL_PART]). Whitespace kept first,
+ * so the lookahead ends an id at the space in "sub_... is my id". Only when that finds nothing is the text searched
+ * again without it, for an id broken by a space or a line wrap.
+ */
+private fun idsFound(pattern: Regex, text: String): List<String> {
+    val searched = text.replace(LOCAL_PART, "")
+    return idsIn(pattern, searched).ifEmpty { idsIn(pattern, searched.replace(WHITESPACE, "")) }
 }
 
 private fun idsIn(pattern: Regex, text: String): List<String> = pattern.findAll(text).map { it.value }.distinct().toList()

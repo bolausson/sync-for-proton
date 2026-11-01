@@ -15,6 +15,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.proton.sync.Plurals
 import me.proton.sync.R
 import me.proton.sync.SyncLog
 import me.proton.sync.account.AccountSessionManager
@@ -353,7 +354,7 @@ class BackupFlowController(
         if (n == 0) {
             sb.append(activity.getString(R.string.backup_preflight_settings_only))
         } else {
-            sb.append(activity.resources.getQuantityString(R.plurals.backup_preflight_accounts, n, n))
+            sb.append(Plurals.text(activity, R.plurals.backup_preflight_accounts, n, n))
         }
         if (info.flavorMismatch && info.sourceFlavor != null) {
             sb.append("\n\n").append(activity.getString(R.string.backup_preflight_flavor_mismatch, info.sourceFlavor))

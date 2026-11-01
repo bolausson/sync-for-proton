@@ -8,9 +8,9 @@ import org.junit.Test
 import java.io.File
 
 /**
- * The strings 2.0.2 and 2.0.3 added or reworded exist once in every language, in the main set and in the direct
+ * The strings 2.0.2 to 2.0.4 added or reworded exist once in every language, in the main set and in the direct
  * flavour's subscription set, and none of them has an em or en dash. A language without one falls back to English on
- * that screen, which lint reports only as a warning. The keys 2.0.2 removed stay removed. The files are read as in
+ * that screen, which lint reports only as a warning. The keys 2.0.2 and 2.0.4 removed stay removed. The files are read as in
  * [me.proton.sync.billing.ActiveStatusLineTest]; app/build.gradle.kts declares both sets as test inputs, so an
  * edited translation alone re-runs this test.
  */
@@ -35,6 +35,11 @@ class ReleaseStringsTest {
         "setup_choose_saved_inactive",
         "sfp_hero_sync_off",
         "sfp_hero_subtitle_sync_off",
+        "label_subscription_suspended_play",
+        "info_verbose_logging_body",
+        "info_file_logging_body",
+        "backup_result_done",
+        "backup_result_partial",
     )
 
     private val directKeys = listOf(
@@ -61,7 +66,11 @@ class ReleaseStringsTest {
 
     // spp_subscribe_error_transaction said a transaction id was not a subscription id; the dialog takes one now, and
     // the transaction answers have their own keys.
-    private val removedKeys = listOf("label_subscription_trial", "spp_subscribe_open_checkout", "spp_subscribe_error_transaction")
+    private val removedKeys = listOf(
+        "label_subscription_trial", "spp_subscribe_open_checkout", "spp_subscribe_error_transaction",
+        // 2.0.4: three counts in one string; a template with three plurals replaces each.
+        "backup_result_success", "backup_result_incomplete",
+    )
 
     /** values plus every values-xx that has a strings.xml: English and the 24 translations. */
     private fun languages(sourceSet: String): List<File> =
@@ -130,6 +139,23 @@ class ReleaseStringsTest {
             for (kept in listOf("sub_", "txn_", "Paddle", "Google Play")) {
                 assertTrue("${label(xml)}: the dialog lost $kept: $message", message.contains(kept))
             }
+        }
+    }
+
+    /**
+     * A quote opened with „ closes with a typographic mark (“ or ”). An unescaped ASCII " is Android's own quoting
+     * character: the resource compiler drops it, and the screen showed an opened quote that never closed (15 texts
+     * until 2.0.4). \u escapes are read decoded, as values-et writes them.
+     */
+    @Test
+    fun `no quote opened with the low mark closes with an ASCII quote`() {
+        val escape = Regex("\\\\u([0-9a-fA-F]{4})")
+        val open = Char(0x201E)
+        val bad = Regex("$open[^\"“”<]*?(?<!\\\\)\"")
+        for (xml in languages("main") + languages("direct")) {
+            val text = escape.replace(xml.readText()) { it.groupValues[1].toInt(16).toChar().toString() }
+            val found = bad.findAll(text).map { it.value }.toList()
+            assertTrue("${label(xml)}: $found", found.isEmpty())
         }
     }
 

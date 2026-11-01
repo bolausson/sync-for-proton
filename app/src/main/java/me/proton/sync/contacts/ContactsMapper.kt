@@ -13,6 +13,7 @@ import me.proton.sync.SyncUtils
 import ezvcard.VCard
 import ezvcard.parameter.EmailType
 import ezvcard.parameter.TelephoneType
+import java.util.Locale
 
 /**
  * Maps between ez-vcard VCard objects and Android ContactsContract operations.
@@ -653,6 +654,9 @@ object ContactsMapper {
      * this writes one. `VCardContactView` used to do its own two-branch `text ?: date` read, so a
      * year-less BDAY looked absent to a rule and present to the row this mapper had just written
      * from the very same card, and the two disagreed about the same contact.
+     *
+     * Formatted with Locale.ROOT: with the phone's locale, String.format writes that locale's digits, so a phone set
+     * to Arabic or Persian stored a birthday Android and Proton cannot read as a date.
      */
     internal fun parseDateProperty(prop: ezvcard.property.DateOrTimeProperty?): String? {
         if (prop == null) return null
@@ -662,9 +666,9 @@ object ContactsMapper {
                 val localDate = java.time.LocalDate.from(date)
                 val omitYear = prop.getParameter("X-APPLE-OMIT-YEAR")?.toIntOrNull()
                 if (omitYear != null && omitYear == localDate.year) {
-                    String.format("--%02d-%02d", localDate.monthValue, localDate.dayOfMonth)
+                    String.format(Locale.ROOT, "--%02d-%02d", localDate.monthValue, localDate.dayOfMonth)
                 } else {
-                    String.format("%04d-%02d-%02d", localDate.year, localDate.monthValue, localDate.dayOfMonth)
+                    String.format(Locale.ROOT, "%04d-%02d-%02d", localDate.year, localDate.monthValue, localDate.dayOfMonth)
                 }
             } catch (e: Exception) {
                 null
@@ -676,9 +680,9 @@ object ContactsMapper {
             val day = partial.date
             return when {
                 year != null && month != null && day != null ->
-                    String.format("%04d-%02d-%02d", year, month, day)
+                    String.format(Locale.ROOT, "%04d-%02d-%02d", year, month, day)
                 month != null && day != null ->
-                    String.format("--%02d-%02d", month, day)
+                    String.format(Locale.ROOT, "--%02d-%02d", month, day)
                 else -> null
             }
         }

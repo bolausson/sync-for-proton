@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import me.proton.sync.Plurals
 import me.proton.sync.ProtonSyncApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.sync.FileLogController
+import me.proton.sync.LogRedaction
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncNotificationHelper
@@ -178,7 +180,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         /** Debug builds only: the adb command extra, see [handleDebugCommand]. */
         const val DEBUG_COMMAND_EXTRA = "debug_command"
 
-        /** How long after returning to this screen the paused or unpaid licence is checked again. */
+        /** How long after returning to this screen a paused, unpaid or suspended subscription is checked again. */
         const val LICENCE_RECHECK_DELAY_MS = 20_000L
 
         /** savedInstanceState key for the in-flight export's include-accounts choice. */
@@ -409,7 +411,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             androidx.appcompat.app.AlertDialog.Builder(this@SyncSettingsActivity)
                 .setTitle(R.string.label_name_repair)
                 .setMessage(
-                    getString(R.string.name_repair_found, findings.size) +
+                    Plurals.text(this@SyncSettingsActivity, R.plurals.name_repair_found, findings.size, findings.size) +
                         LINE_BREAK + LINE_BREAK + preview
                 )
                 .setPositiveButton(R.string.name_repair_action) { _, _ ->
@@ -432,9 +434,9 @@ class SyncSettingsActivity : AppCompatActivity() {
                             return@launch
                         }
                         val text = if (outcome.failed == 0) {
-                            getString(R.string.name_repair_done, outcome.repaired)
+                            Plurals.text(this@SyncSettingsActivity, R.plurals.name_repair_done, outcome.repaired, outcome.repaired)
                         } else {
-                            getString(R.string.name_repair_partial, outcome.repaired, outcome.failed)
+                            Plurals.text(this@SyncSettingsActivity, R.plurals.name_repair_partial, outcome.repaired, outcome.repaired, outcome.failed)
                         }
                         Toast.makeText(this@SyncSettingsActivity, text, Toast.LENGTH_LONG).show()
                     }
@@ -676,6 +678,9 @@ class SyncSettingsActivity : AppCompatActivity() {
     /** The second licence check after returning to this screen; see onResume. */
     private var licenceRecheck: Job? = null
 
+    /** The wait for Billing before Google Play's payment message; see onResume. */
+    private var paymentMessages: Job? = null
+
     override fun onResume() {
         super.onResume()
         subscriptionManager.connect()
@@ -683,17 +688,25 @@ class SyncSettingsActivity : AppCompatActivity() {
             subscriptionManager.refreshState()
             withContext(Dispatchers.Main) { updateSubscriptionBanner() }
         }
-        // Back from Paddle's payment page with sync paused or unpaid: Paddle can take a moment to
-        // collect and to move the subscription out of past due, and while sync is off nothing else
-        // re-checks the licence until the next app start. So look once more, shortly after.
+        // Back from Paddle's payment page (direct) or Google Play's subscription page (play) with sync off for a
+        // pause, an unpaid renewal or a Google Play hold or pause: the provider can take a moment to collect, to
+        // lift the hold or to resume, and while sync is off nothing else re-checks until the next app start. So look
+        // once more, shortly after.
         val sub = subscriptionManager.currentState()
         licenceRecheck?.cancel()
-        licenceRecheck = if (sub is SubscriptionState.Expired && (sub.paused || sub.paymentFailed)) {
+        licenceRecheck = if (sub is SubscriptionState.Expired && (sub.paused || sub.paymentFailed || sub.suspended)) {
             lifecycleScope.launch {
                 delay(LICENCE_RECHECK_DELAY_MS)
                 withContext(Dispatchers.IO) { subscriptionManager.refreshState() }
             }
         } else null
+        // Google Play's own message about a declined payment (play version; nothing in the direct one). On the
+        // phone it is the only word about a grace period, which a Play purchase does not show. Not on a screen a
+        // debug command opened: Google's snackbar would cover what the command is there to show.
+        paymentMessages?.cancel()
+        paymentMessages = if (openedByDebugCommand) null else lifecycleScope.launch {
+            BillingUi.showPaymentMessages(this@SyncSettingsActivity, subscriptionManager)
+        }
         updateSubscriptionBanner()
         buildAccountCards()
         maybeOfferDisplayNameRecovery()
@@ -720,6 +733,8 @@ class SyncSettingsActivity : AppCompatActivity() {
         super.onPause()
         licenceRecheck?.cancel()
         licenceRecheck = null
+        paymentMessages?.cancel()
+        paymentMessages = null
         // Push any buffered log lines to disk now, so a user who leaves the app to grab the
         // file (e.g. to send it in) finds it up to date.
         if (FileLogController.isActive()) FileLogController.flushNow()
@@ -908,7 +923,7 @@ class SyncSettingsActivity : AppCompatActivity() {
      *                   backup_restore_subscription   (see handleDebugBackupCommand) |
      *                   billing_offers | plan_picker | billing_start | billing_sheet (plan = monthly | yearly) |
      *                   billing_manage | billing_update_payment | licences | debug_log (file) |
-     *                   log_redaction_probe |
+     *                   log_redaction_probe | email_code (address) |
      *                   backup_reminder (part = export) | srp_modulus (username) | signin_probe (username) |
      *                   license_fixture (status) | license_enter (text or text_file, offline) |
      *                   tz_updates (state = on | off) | tz_info |
@@ -986,16 +1001,33 @@ class SyncSettingsActivity : AppCompatActivity() {
                 }
                 return
             }
-            // Test fixture: one line in each form the redaction knows, with made-up values; logcat keeps the raw
-            // line, as it does every line, while the file copy and the debug log get it redacted.
+            // Test fixture: one line in each form the redaction knows, with made-up values. Since 2.0.4 SyncLog redacts
+            // every line before any copy, so logcat, the viewer, the file copy and the debug log all show the same
+            // line: five <redacted>, one code at proton.me, one code three times at *.com (case and %40 make no
+            // difference), and the UUID uid as it is.
             "log_redaction_probe" -> {
                 SyncLog.i(
                     tag,
                     "log_redaction_probe: token=probe0000000001 \"AccessToken\":\"probe0000000002\" " +
-                        "Bearer probe0000000003 sub_${"0".repeat(26)} txn_${"0".repeat(26)}"
+                        "Bearer probe0000000003 sub_${"0".repeat(26)} txn_${"0".repeat(26)} " +
+                        "guest=a.b_c-d+x@proton.me case=Guest@Example.com encoded=guest%40example.com " +
+                        "plain=guest@example.com uid=123e4567-e89b-12d3-a456-426614174000@proton.me"
                 )
                 FileLogController.flushNow()
                 SyncLog.i(tag, "log_redaction_probe: file copy ${if (FileLogController.isActive()) "flushed" else "is off"}")
+                return
+            }
+            // Test fixture: the code an address gets in this run's log, so a test phone's lines about one guest can be
+            // found. Logged like any line, so it shows the code, never the address. The address is on the adb command
+            // line, which adbd logs: test addresses only.
+            "email_code" -> {
+                val address = intent.getStringExtra("address").orEmpty()
+                intent.removeExtra("address")
+                if (LogRedaction.redact(address) == address) {
+                    SyncLog.w(tag, "email_code ignored: not an address the log masks")
+                    return
+                }
+                SyncLog.i(tag, "email_code: $address")
                 return
             }
             "billing_sheet" -> {
@@ -1010,8 +1042,9 @@ class SyncSettingsActivity : AppCompatActivity() {
                 BillingUi.debugManage(this, subscriptionManager, updatePayment = command == "billing_update_payment")
                 return
             }
-            // Test fixture, not a user action: a Paddle licence answer (past_due, unpaid, paused, scheduled_cancel,
-            // scheduled_pause or trialing) run through the real handling, or "refresh" to ask the licence proxy again.
+            // Test fixture, not a user action: in the direct version a Paddle licence answer (past_due, unpaid, paused,
+            // scheduled_cancel, scheduled_pause or trialing) run through the real handling; in the play version
+            // "suspended", Google's answer for a held or paused subscription; "refresh" asks for the truth again.
             "license_fixture" -> {
                 val status = intent.getStringExtra("status").orEmpty()
                 intent.removeExtra("status")
@@ -1354,7 +1387,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             is SubscriptionState.Trial -> {
                 val daysLeft = trialDaysLeft(state.expiresAtMs, System.currentTimeMillis())
                 card.textSubscriptionStatus.text = scheduledChangeText(state.scheduledChange, dateFmt)
-                    ?: resources.getQuantityString(R.plurals.label_subscription_trial_days, daysLeft, daysLeft)
+                    ?: Plurals.text(this@SyncSettingsActivity, R.plurals.label_subscription_trial_days, daysLeft, daysLeft)
                 // None in the direct version: its trial already is the subscription (BillingUi.upgradeLabel).
                 val upgrade = BillingUi.upgradeLabel(this)
                 upgrade?.let { card.btnSubscriptionAction.text = it }
@@ -1394,7 +1427,18 @@ class SyncSettingsActivity : AppCompatActivity() {
                 card.btnSubscriptionManage.visibility = View.GONE
                 card.iconSubscription.setImageResource(android.R.drawable.stat_sys_warning)
             }
-            is SubscriptionState.Expired -> if (state.paused) {
+            is SubscriptionState.Expired -> if (state.suspended) {
+                // Play version only: Google Play holds the subscription after a declined renewal, or the subscriber
+                // paused it, and the phone cannot tell which. Google's subscription page undoes either, so Manage
+                // subscription is the one button. No Renew: Google's guidance for a suspended subscription is its
+                // subscriptions center, where a fix restores the subscription the user already pays for, while Renew
+                // would sell a new one (and a paused subscription looks the same as a held one here).
+                card.textSubscriptionStatus.text =
+                    BillingUi.suspendedStatusText(this) ?: getString(R.string.label_subscription_expired)
+                card.btnSubscriptionAction.visibility = View.GONE
+                card.btnSubscriptionManage.visibility = View.VISIBLE
+                card.iconSubscription.setImageResource(android.R.drawable.stat_sys_warning)
+            } else if (state.paused) {
                 // Paused, not ended: the subscription id is kept, so sync comes back by itself if the
                 // subscription is resumed. Manage reaches the paused subscription itself. Renew stays
                 // too, because a customer cannot usually resume a paused subscription on their own: it
@@ -1455,8 +1499,8 @@ class SyncSettingsActivity : AppCompatActivity() {
      * The card's Enter subscription ID button (direct version only; the play version has no label for it, so
      * nothing changes on its cards): on the cards where sync is off and a subscription id is the way back (no
      * subscription, paused, unpaid, expired), and on the trial card, whose dialog shows the id a second phone
-     * needs. Not on the active cards. Stacked under the other buttons, because two long labels do not fit side
-     * by side.
+     * needs. Not on the active cards, nor on the play version's suspended card: Google Play needs no id. Stacked
+     * under the other buttons, because two long labels do not fit side by side.
      */
     private fun showEnterIdButton(card: SettingsSubscriptionCardBinding) {
         val label = BillingUi.enterIdLabel(this) ?: return
@@ -2434,7 +2478,9 @@ class SyncSettingsActivity : AppCompatActivity() {
                 if (number != null && number > 0) {
                     val storedValue = if (isInterval) (number * 60).toString() else number.toString()
                     prefs.edit().putString(prefKey, storedValue).apply()
-                    val label = if (isInterval) "$number ${getString(R.string.label_minutes)}" else getString(R.string.label_days_format, number.toInt())
+                    // The form is picked from an Int, the number shown as typed: %d formats the Long.
+                    val q = number.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+                    val label = Plurals.text(this@SyncSettingsActivity, if (isInterval) R.plurals.label_minutes_format else R.plurals.label_days_format, q, number)
                     onSelected(label)
                 }
             }
@@ -2739,9 +2785,10 @@ class SyncSettingsActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             this@SyncSettingsActivity,
-                            getString(
-                                if (calendar) R.string.remove_synced_calendar_done
-                                else R.string.remove_synced_contacts_done,
+                            Plurals.text(this@SyncSettingsActivity, 
+                                if (calendar) R.plurals.remove_synced_calendar_done
+                                else R.plurals.remove_synced_contacts_done,
+                                removed,
                                 removed,
                             ),
                             Toast.LENGTH_LONG,
@@ -3115,7 +3162,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         val idx = values.indexOf(value)
         if (idx >= 0 && values[idx] != "custom") return entries[idx]
         val days = value.toLongOrNull() ?: return "6 months"
-        return if (days == 0L) getString(R.string.label_all) else getString(R.string.label_days_format, days.toInt())
+        return if (days == 0L) getString(R.string.label_all) else Plurals.text(this@SyncSettingsActivity, R.plurals.label_days_format, days.toInt(), days.toInt())
     }
 
     private fun formatIntervalLabel(value: String, entries: Array<String>, values: Array<String>): String {
@@ -3383,7 +3430,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 if (syncing == 0) getString(R.string.toast_sync_nothing_enabled)
-                else resources.getQuantityString(R.plurals.toast_sync_all_started, syncing, syncing),
+                else Plurals.text(this@SyncSettingsActivity, R.plurals.toast_sync_all_started, syncing, syncing),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -3409,7 +3456,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         val accounts = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
         if (accounts.isEmpty()) return
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.dialog_title_full_resync_all, accounts.size))
+            .setTitle(Plurals.text(this@SyncSettingsActivity, R.plurals.dialog_title_full_resync_all, accounts.size, accounts.size))
             .setMessage(getString(R.string.dialog_message_full_resync_all))
             .setPositiveButton(getString(R.string.btn_remote_to_local)) { _, _ ->
                 Toast.makeText(this, getString(R.string.toast_preparing_resync), Toast.LENGTH_SHORT).show()

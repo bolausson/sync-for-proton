@@ -219,8 +219,12 @@ object IcsSerializer {
      *
      * Android's tz database is updated with the platform, so java.time is the authority here and
      * the bundled copy is only a fallback for an id java.time does not know.
+     *
+     * The times and offsets are written with Locale.ROOT: with the phone's locale, an Arabic or Persian phone wrote
+     * its own digits, the text did not parse, and every zone fell back to the stale bundled copy (until 2.0.4).
+     * Internal for IcsSerializerLocaleTest.
      */
-    private fun platformDefinition(tzid: String): VTimeZone? = try {
+    internal fun platformDefinition(tzid: String): VTimeZone? = try {
         val rules = java.time.ZoneId.of(tzid).rules
         val body = StringBuilder()
 
@@ -274,7 +278,7 @@ object IcsSerializer {
 
     /** Local date-time in iCal form. */
     private fun stamp(t: java.time.LocalDateTime): String =
-        "%04d%02d%02dT%02d%02d%02d".format(t.year, t.monthValue, t.dayOfMonth, t.hour, t.minute, t.second)
+        "%04d%02d%02dT%02d%02d%02d".format(java.util.Locale.ROOT, t.year, t.monthValue, t.dayOfMonth, t.hour, t.minute, t.second)
 
     /** iCal offset form, e.g. +0200 / -0330. */
     private fun offsetOf(offset: java.time.ZoneOffset): String = offsetOf(offset.totalSeconds)
@@ -282,7 +286,7 @@ object IcsSerializer {
     private fun offsetOf(total: Int): String {
         val sign = if (total < 0) "-" else "+"
         val abs = kotlin.math.abs(total)
-        return "%s%02d%02d".format(sign, abs / 3600, (abs % 3600) / 60)
+        return "%s%02d%02d".format(java.util.Locale.ROOT, sign, abs / 3600, (abs % 3600) / 60)
     }
 
     /**
@@ -308,7 +312,7 @@ object IcsSerializer {
             else -> "BYDAY=" + ((dom - 1) / 7 + 1) + dow.name.take(2)
         }
         return "BEGIN:" + kind + "\r\n" +
-            "DTSTART:" + "%04d%02d%02dT%02d%02d%02d".format(
+            "DTSTART:" + "%04d%02d%02dT%02d%02d%02d".format(java.util.Locale.ROOT,
                 start.year, start.monthValue, start.dayOfMonth, start.hour, start.minute, start.second
             ) + "\r\n" +
             "TZOFFSETFROM:" + offsetOf(rule.offsetBefore) + "\r\n" +

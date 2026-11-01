@@ -38,7 +38,7 @@
     <string name="error_login_proton_refused">Proton could not complete the sign-in. Please try again in a moment.</string>
     <!-- %1$s is the name of the error type, for example IllegalStateException; keep it untranslated -->
     <string name="error_login_unexpected">Sign-in failed because of an unexpected error (%1$s). Please try again.</string>
-    <string name="version_label" translatable="false">v2.0.3</string>
+    <string name="version_label" translatable="false">v2.0.4</string>
 
     <!-- Legal footer (settings, just above the brand/version line) -->
     <string name="link_privacy_policy">Privacy Policy</string>
@@ -130,7 +130,10 @@
     <string name="btn_sync_all_accounts">Sync all accounts</string>
     <string name="btn_sync_now">Sync now</string>
     <string name="label_sync_all_long_press_hint">Long-press for forced full re-sync</string>
-    <string name="dialog_title_full_resync_all">Full re-sync (%1$d accounts)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Full re-sync (%1$d account)</item>
+        <item quantity="other">Full re-sync (%1$d accounts)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Choose sync direction for all accounts:\n\nRemote → Local: Delete local data and re-download from Proton.\n\nLocal → Remote: Upload all local data to Proton (overwrites remote).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sync started for %d account</item>
@@ -213,7 +216,14 @@
     <string name="btn_open_settings">Open settings</string>
     <string name="btn_later">Later</string>
     <string name="label_custom_suffix">, custom</string>
-    <string name="label_days_format">%d days</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
 
     <!-- SyncNotificationHelper.kt -->
@@ -242,22 +252,34 @@
     <string name="notification_channel_alerts">Sync alerts</string>
     <string name="notification_channel_alerts_description">Important safety alerts that need your decision</string>
     <string name="notification_bulk_delete_title">Large calendar change detected</string>
-    <string name="notification_bulk_delete_body">%1$d calendar events vanished from this phone (%2$s). To protect your data they were NOT deleted from Proton. Keep them on your phone, or delete them from Proton too?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d calendar event vanished from this phone (%2$s). To protect your data it was NOT deleted from Proton. Keep it on your phone, or delete it from Proton too?</item>
+        <item quantity="other">%1$d calendar events vanished from this phone (%2$s). To protect your data they were NOT deleted from Proton. Keep them on your phone, or delete them from Proton too?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Keep on Proton</string>
     <string name="notification_bulk_delete_delete">Delete on Proton</string>
     <!-- Server→local deletion confirmation (RemoteDeletionGuard). Shown when many items vanished
          from Proton at once; the user decides whether to remove them from the phone too.
          %1$d is the number of items, %2$s is the account name. -->
     <string name="remote_deletion_title">Items removed from Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d contacts are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</string>
-    <string name="remote_deletion_body_calendar">%1$d calendar events are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d contact is no longer on Proton (%2$s). To protect your data it was NOT deleted from this phone yet. Delete it here too, or keep it on the phone?</item>
+        <item quantity="other">%1$d contacts are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d calendar event is no longer on Proton (%2$s). To protect your data it was NOT deleted from this phone yet. Delete it here too, or keep it on the phone?</item>
+        <item quantity="other">%1$d calendar events are no longer on Proton (%2$s). To protect your data they were NOT deleted from this phone yet. Delete them here too, or keep them on the phone?</item>
+    </plurals>
     <string name="remote_deletion_delete">Delete from phone</string>
     <string name="remote_deletion_keep">Keep on phone</string>
     <!-- Contact filter removals. Separate from the strings above because those say the items are
          gone from Proton, which is false here: the contacts are untouched on Proton and only stop
          being copied to this phone. -->
     <string name="contact_filter_removal_title">Contact rules would remove contacts</string>
-    <string name="contact_filter_removal_body">Your contact rules no longer match %1$d contacts on this phone (%2$s). They are still in your Proton account and will not be deleted there. Remove them from this phone, or keep them?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Your contact rules no longer match %1$d contact on this phone (%2$s). It is still in your Proton account and will not be deleted there. Remove it from this phone, or keep it?</item>
+        <item quantity="other">Your contact rules no longer match %1$d contacts on this phone (%2$s). They are still in your Proton account and will not be deleted there. Remove them from this phone, or keep them?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Keep on phone</string>
 
     <!-- Contact filter rules: entry row, list screen -->
@@ -364,8 +386,8 @@
     <string name="info_send_cancellations_body">Email attendees when you delete an event they\'re invited to, so their calendars remove it too. Off by default.</string>
     <string name="info_invite_subject_title_body">When sending invitation emails, put the event\'s title in the email subject line so recipients recognize it at a glance. Off by default for privacy: email subjects aren\'t encrypted in standard mail transport, so the title would be visible to mail servers along the route.</string>
     <string name="info_background_sync_body">Android may pause background sync to save battery, which can delay or stop automatic syncing. Excluding this app from battery optimization keeps scheduled syncs running reliably. Use the button to open the system battery settings for the app.</string>
-    <string name="info_verbose_logging_body">Captures extra diagnostic detail (auth state, key unlock, sync internals) in the log, helpful when reporting a problem. It may include account email addresses and calendar names, so only share logs with the developer. Leave off for normal use.</string>
-    <string name="info_file_logging_body">Writes the app log to a timestamped text file (sync-for-proton-log-….txt) in a folder you choose. The app otherwise keeps its log in memory only, so turn this on to capture a problem that is hard to reproduce. A new file is created each time the app starts; it may contain account email addresses and calendar names, so only share it with the developer. Leave off for normal use.</string>
+    <string name="info_verbose_logging_body">Captures extra diagnostic detail (auth state, key unlock, sync internals) in the log, helpful when reporting a problem. The app replaces email addresses in it with short codes, but it may include account and calendar names, so only share logs with the developer. Leave off for normal use.</string>
+    <string name="info_file_logging_body">Writes the app log to a timestamped text file (sync-for-proton-log-….txt) in a folder you choose. The app otherwise keeps its log in memory only, so turn this on to capture a problem that is hard to reproduce. A new file is created each time the app starts. The app replaces email addresses in it with short codes, but it may include account and calendar names, so only share it with the developer. Leave off for normal use.</string>
     <string name="info_timezone_updates_text">Event times depend on time zone rules, and countries change these rules from time to time. Android keeps them in the phone\'s time zone data, which arrives with system updates. A phone that no longer gets them, for example an older Android version or a phone without Google Play system updates, keeps the old rules, and events in places whose rules have changed since then can show at the wrong time.\n\nTime zone data on this phone: version %1$s\n\nWhen off (the default), the app uses the phone\'s own time zone data and sends nothing to www.tzurl.org.\n\nWhen on, the app downloads the current rules for each time zone your events use from www.tzurl.org, a third-party service, at most once per time zone each time the app starts, and uses them only if they are newer than the phone\'s own. www.tzurl.org then sees your IP address and the names of those time zones, for example Europe/Berlin. Nothing else about your events or accounts is sent. If www.tzurl.org cannot be reached, the phone\'s own data is used. Repeating events are still calculated from the phone\'s own data.\n\nAfter a change, events already on the phone are checked and corrected at the next sync.</string>
     <string name="tz_data_version_unknown">unknown</string>
     <string name="tz_outdated_title">Time zone data is out of date</string>
@@ -395,6 +417,11 @@
     <string name="label_subscription_expired">Subscription expired: renew to resume sync.</string>
     <string name="label_subscription_paused">Subscription paused: sync is off until the subscription is resumed.</string>
     <string name="label_subscription_unpaid">Payment failed: update payment method to turn sync back on.</string>
+    <!-- Play version: Google Play suspended the subscription, either account hold (a renewal payment was declined) or
+         a pause the subscriber chose. The app cannot tell which, so both are named. Prefer the words Google Play itself
+         uses for them in your language, distinct from this app's own "paused" (label_subscription_paused). "where"
+         means Google Play: the card's Manage subscription button opens it. -->
+    <string name="label_subscription_suspended_play">Sync is off: the subscription is on hold or paused in Google Play, where you can fix the payment or resume it.</string>
     <string name="notification_payment_failed_title">Subscription payment failed</string>
     <string name="btn_update_payment_method">Update payment method</string>
     <string name="label_subscription_grace">Payment issue: update payment method to keep syncing.</string>
@@ -578,7 +605,21 @@
     <string name="backup_decrypt_failed">Could not decrypt this file.</string>
     <string name="backup_restore_hint">To restore: import an .ics into Proton Calendar (Settings → Import) and a .vcf into Proton Contacts. Encrypted backups can also be opened on a computer with: gpg --decrypt file.gpg</string>
 
-    <string name="backup_result_success">Backed up %1$d calendar(s), %2$d event(s) and %3$d contact(s).</string>
+    <!-- %1$s, %2$s and %3$s are backup_count_calendars, backup_count_events and backup_count_contacts. -->
+    <string name="backup_result_done">Backed up %1$s, %2$s and %3$s.</string>
+    <string name="backup_result_partial">Backed up %1$s, %2$s and %3$s, but some items couldn\'t be read (locked keys or a network error), so the backup may be incomplete. Check the sync logs, then try again.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d calendar</item>
+        <item quantity="other">%d calendars</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d event</item>
+        <item quantity="other">%d events</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
     <string name="backup_result_skipped">Skipped: the source returned no data, so the last good backup was kept.</string>
     <string name="backup_result_failed">Backup failed: %1$s</string>
     <string name="backup_result_folder_lost">Backup folder is no longer accessible.</string>
@@ -602,7 +643,6 @@
     <string name="backup_reminder_optout_confirm">Yes, stop reminding me</string>
     <string name="backup_reminder_optout_cancel">No, keep reminding me</string>
 
-    <string name="backup_result_incomplete">Backed up %1$d calendar(s), %2$d event(s) and %3$d contact(s), but some items couldn\'t be read (locked keys or a network error), so the backup may be incomplete. Check the sync logs, then try again.</string>
     <string name="backup_notif_incomplete_title">Backup may be incomplete</string>
 
     <!-- Collision prompt: event changed on the phone AND in Proton since the last sync -->
@@ -618,7 +658,10 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">All</string>
-    <string name="label_log_count">%1$d of %2$d lines</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d of %2$d line</item>
+        <item quantity="other">%1$d of %2$d lines</item>
+    </plurals>
     <string name="label_share_sends_full_log">Sharing always sends the full debug log</string>
     <string name="btn_clear_view">Clear view</string>
     <string name="btn_copy_debug_log">Copy debug log</string>
@@ -659,10 +702,19 @@
     <string name="label_name_repair">Check for invented names</string>
     <string name="name_repair_scanning">Checking your Proton contacts…</string>
     <string name="name_repair_none">No contact on Proton has a name that Android invented.</string>
-    <string name="name_repair_found">%1$d contacts on Proton have a first and last name that Android made up by splitting their email address. An earlier version of this app sent those names to Proton.\n\nRemove them? Nothing else about the contacts changes, and their display name stays as it is.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d contact on Proton has a first and last name that Android made up by splitting its email address. An earlier version of this app sent that name to Proton.\n\nRemove it? Nothing else about the contact changes, and its display name stays as it is.</item>
+        <item quantity="other">%1$d contacts on Proton have a first and last name that Android made up by splitting their email address. An earlier version of this app sent those names to Proton.\n\nRemove them? Nothing else about the contacts changes, and their display name stays as it is.</item>
+    </plurals>
     <string name="name_repair_action">Remove the invented names</string>
-    <string name="name_repair_done">%1$d contacts repaired.</string>
-    <string name="name_repair_partial">%1$d contacts repaired, %2$d left alone.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d contact repaired.</item>
+        <item quantity="other">%1$d contacts repaired.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d contact repaired, %2$d left alone.</item>
+        <item quantity="other">%1$d contacts repaired, %2$d left alone.</item>
+    </plurals>
     <string name="name_repair_failed">Could not check your contacts: %1$s</string>
     <string name="contact_filter_condition_values_hint">One value per line</string>
     <string name="contact_filter_condition_number">Number</string>
@@ -677,20 +729,35 @@
     <string name="contact_filter_needs_name">Give the rule a name so you can recognise it in the list.</string>
     <string name="contact_filter_delete_confirm">Delete this rule?</string>
     <string name="contact_filter_preview_running">Checking your contacts…</string>
-    <string name="contact_filter_preview_result">Of the %1$d contacts checked on this phone, these rules would keep %2$d and remove %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Of the %1$d contact checked on this phone, these rules would keep %2$d and remove %3$d.</item>
+        <item quantity="other">Of the %1$d contacts checked on this phone, these rules would keep %2$d and remove %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">These rules would not remove any contacts.</string>
-    <string name="contact_filter_preview_undecided">%1$d cannot be checked on the phone, because this rule looks at details only Proton keeps. The next sync decides those, and still asks before removing anything.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d cannot be checked on the phone, because this rule looks at details only Proton keeps. The next sync decides it, and still asks before removing anything.</item>
+        <item quantity="other">%1$d cannot be checked on the phone, because this rule looks at details only Proton keeps. The next sync decides those, and still asks before removing anything.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">There are no contacts on this phone for this account yet.</string>
     <string name="contact_filter_preview_title">Test result</string>
     <string name="contact_filter_preview_failed">Could not check your contacts: %1$s</string>
     <string name="contact_filter_preview_reading">Reading your Proton contacts…</string>
     <string name="contact_filter_preview_progress">Checking contact %1$d of %2$d…</string>
-    <string name="contact_filter_preview_server_result">Of %1$d contacts in this Proton account, these rules would sync %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Of %1$d contact in this Proton account, these rules would sync %2$d.</item>
+        <item quantity="other">Of %1$d contacts in this Proton account, these rules would sync %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Taken off this phone (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Not copied to this phone (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…and %1$d more.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…and %1$d more.</item>
+        <item quantity="other">…and %1$d more.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Show all</string>
-    <string name="contact_filter_preview_unreadable">%1$d could not be read, and would be left alone.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d could not be read, and would be left alone.</item>
+        <item quantity="other">%1$d could not be read, and would be left alone.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton could not be reached, so this test could only use what is already on the phone.</string>
     <string name="contact_filter_preview_nothing_removed">Nothing would be taken off this phone.</string>
 
@@ -759,10 +826,16 @@
     <!-- Asked when a sync switch is turned off: the data already on the phone does not leave with it. -->
     <string name="remove_synced_calendar_title">Remove these calendars from this phone?</string>
     <string name="remove_synced_calendar_body">Calendar sync is now off, so nothing further will be downloaded. The calendars already on this phone stay until you remove them. Removing them deletes them from this phone only; your calendars in Proton are not touched. You can also remove them later in the Android account settings, and if you turn calendar sync back on they will be created again.</string>
-    <string name="remove_synced_calendar_done">Removed %1$d event(s) from this phone</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Removed %1$d event from this phone</item>
+        <item quantity="other">Removed %1$d events from this phone</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Remove these contacts from this phone?</string>
     <string name="remove_synced_contacts_body">Contact sync is now off, so nothing further will be downloaded. The contacts already on this phone stay until you remove them. Removing them deletes them from this phone only; your contacts in Proton are not touched. You can also remove them later in the Android account settings, and if you turn contact sync back on they will be added again.</string>
-    <string name="remove_synced_contacts_done">Removed %1$d contact(s) from this phone</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Removed %1$d contact from this phone</item>
+        <item quantity="other">Removed %1$d contacts from this phone</item>
+    </plurals>
     <string name="remove_synced_keep">Keep them</string>
     <string name="remove_synced_remove">Remove</string>
 
@@ -793,4 +866,6 @@
     <!-- A forced resync deletes before it rebuilds, so it must not touch a switched-off type.
          %1$s is the type name or names, e.g. "Calendar" or "Contacts & Calendar". -->
     <string name="toast_resync_skipped">Nothing to resync: sync is off for %1$s</string>
+    <!-- The language code of this file (en, de, fr... as in its folder name), never translated: plurals pick their form by the rules of the language their text is in (Plurals.kt). -->
+    <string name="plural_rules_language">en</string>
 </resources>

@@ -65,7 +65,10 @@
     <string name="btn_sync_all_accounts">Synkronisér alle konti</string>
     <string name="btn_sync_now">Synkronisér</string>
     <string name="label_sync_all_long_press_hint">Langt tryk for tvungen fuld gensynkronisering</string>
-    <string name="dialog_title_full_resync_all">Fuld gensynkronisering (%1$d konti)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Fuld gensynkronisering (%1$d konto)</item>
+        <item quantity="other">Fuld gensynkronisering (%1$d konti)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Vælg synkroniseringsretning for alle konti:\n\nFjern → Lokal: Slet lokale data og download igen fra Proton.\n\nLokal → Fjern: Upload alle lokale data til Proton (overskriver fjerndata).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Synkronisering startet for %d konto</item>
@@ -135,7 +138,14 @@
     <string name="btn_open_settings">Åbn indstillinger</string>
     <string name="btn_later">Senere</string>
     <string name="label_custom_suffix">, brugerdefineret</string>
-    <string name="label_days_format">%d dage</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dage</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minut</item>
+        <item quantity="other">%d minutter</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
 
     <string name="notification_channel_sync_failures">Synkroniseringsfejl</string>
@@ -201,6 +211,7 @@
     <string name="label_subscription_expired">Abonnement udløbet: forny for at genoptage synkronisering.</string>
     <string name="label_subscription_paused">Abonnement sat på pause: synkronisering er slået fra, indtil det genoptages.</string>
     <string name="label_subscription_unpaid">Betaling mislykkedes: opdater betalingsmetode for at genoptage synkroniseringen.</string>
+    <string name="label_subscription_suspended_play">Synkronisering er slået fra: abonnementet er suspenderet eller sat på pause i Google Play, hvor du kan rette betalingen eller genoptage det.</string>
     <string name="notification_payment_failed_title">Betaling for abonnement mislykkedes</string>
     <string name="btn_update_payment_method">Opdater betalingsmetode</string>
     <string name="label_subscription_grace">Betalingsproblem: opdater betalingsmetode for at fortsætte synkroniseringen.</string>
@@ -285,8 +296,8 @@
     <string name="info_send_cancellations_body">Send e-mail til deltagere, når du sletter en begivenhed, de er inviteret til, så deres kalendere også fjerner den. Fra som standard.</string>
     <string name="info_invite_subject_title_body">Når der sendes invitationsmails, så placer begivenhedens titel i e-mailens emnelinje, så modtagerne genkender den med et blik. Fra som standard af hensyn til privatlivet: e-mail-emner krypteres ikke ved standard mailtransport, så titlen ville være synlig for mailservere undervejs.</string>
     <string name="info_background_sync_body">Android kan sætte baggrundssynkronisering på pause for at spare batteri, hvilket kan forsinke eller stoppe automatisk synkronisering. At udelukke denne app fra batterioptimering holder planlagte synkroniseringer i gang pålideligt. Brug knappen til at åbne systemets batteriindstillinger for appen.</string>
-    <string name="info_verbose_logging_body">Opfanger ekstra diagnostiske detaljer (loginstatus, nøgleoplåsning, synkroniseringens interne dele) i loggen, nyttigt, når du rapporterer et problem. Den kan indeholde kontoens e-mailadresser og kalendernavne, så del kun logfiler med udvikleren. Lad den være slået fra ved normal brug.</string>
-    <string name="info_file_logging_body">Skriver appens log til en tekstfil med tidsstempel (sync-for-proton-log-….txt) i en mappe, du vælger. Ellers holder appen kun loggen i hukommelsen, så slå dette til for at fange et problem, der er svært at genskabe. Der oprettes en ny fil, hver gang appen starter; den kan indeholde kontoers e-mailadresser og kalendernavne, så del den kun med udvikleren. Lad den være slået fra ved normal brug.</string>
+    <string name="info_verbose_logging_body">Opfanger ekstra diagnostiske detaljer (loginstatus, nøgleoplåsning, synkroniseringens interne dele) i loggen, nyttigt, når du rapporterer et problem. Appen erstatter e-mailadresser i den med korte koder, men loggen kan indeholde konto- og kalendernavne, så del kun logfiler med udvikleren. Lad den være slået fra ved normal brug.</string>
+    <string name="info_file_logging_body">Skriver appens log til en tekstfil med tidsstempel (sync-for-proton-log-….txt) i en mappe, du vælger. Ellers holder appen kun loggen i hukommelsen, så slå dette til for at fange et problem, der er svært at genskabe. Der oprettes en ny fil, hver gang appen starter. Appen erstatter e-mailadresser i den med korte koder, men filen kan indeholde konto- og kalendernavne, så del den kun med udvikleren. Lad den være slået fra ved normal brug.</string>
     <string name="info_timezone_updates_text">Tidspunkterne for begivenheder afhænger af tidszoneregler, og lande ændrer disse regler fra tid til anden. Android gemmer dem i telefonens tidszonedata, som kommer med systemopdateringer. En telefon, der ikke længere får dem, for eksempel med en ældre Android-version eller uden Google Play-systemopdateringer, beholder de gamle regler, og begivenheder på steder, hvor reglerne er ændret siden da, kan blive vist på et forkert tidspunkt.\n\nTidszonedata på denne telefon: version %1$s\n\nNår den er slået fra (standard), bruger appen telefonens egne tidszonedata og sender intet til www.tzurl.org.\n\nNår den er slået til, henter appen de aktuelle regler for hver tidszone, som dine begivenheder bruger, fra www.tzurl.org, en tredjepartstjeneste, højst én gang pr. tidszone, hver gang appen starter, og bruger dem kun, hvis de er nyere end telefonens. www.tzurl.org ser så din IP-adresse og navnene på disse tidszoner, for eksempel Europe/Berlin. Intet andet om dine begivenheder eller konti sendes. Hvis www.tzurl.org ikke kan nås, bruges telefonens data. Gentagne begivenheder beregnes stadig med telefonens data.\n\nEfter en ændring bliver begivenheder, der allerede er på telefonen, kontrolleret og rettet ved næste synkronisering.</string>
     <string name="tz_data_version_unknown">ukendt</string>
     <string name="tz_outdated_title">Tidszonedata er forældede</string>
@@ -348,7 +359,10 @@
     <string name="notification_channel_alerts">Synkroniseringsadvarsler</string>
     <string name="notification_channel_alerts_description">Vigtige sikkerhedsadvarsler, der kræver din beslutning</string>
     <string name="notification_bulk_delete_title">Stor kalenderændring registreret</string>
-    <string name="notification_bulk_delete_body">%1$d kalenderbegivenheder forsvandt fra denne telefon (%2$s). For at beskytte dine data blev de IKKE slettet fra Proton. Vil du beholde dem på din telefon eller også slette dem fra Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d kalenderbegivenhed forsvandt fra denne telefon (%2$s). For at beskytte dine data blev den IKKE slettet fra Proton. Vil du beholde den på din telefon eller også slette den fra Proton?</item>
+        <item quantity="other">%1$d kalenderbegivenheder forsvandt fra denne telefon (%2$s). For at beskytte dine data blev de IKKE slettet fra Proton. Vil du beholde dem på din telefon eller også slette dem fra Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Behold i Proton</string>
     <string name="notification_bulk_delete_delete">Slet i Proton</string>
 
@@ -395,7 +409,20 @@
     <string name="backup_decrypt_done">Dekrypteret til \"%1$s\" i din sikkerhedskopimappe.</string>
     <string name="backup_decrypt_failed">Kunne ikke dekryptere denne fil.</string>
     <string name="backup_restore_hint">Sådan gendanner du: importer en .ics i Proton Calendar (Indstillinger → Importér) og en .vcf i Proton Contacts. Krypterede sikkerhedskopier kan også åbnes på en computer med: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Sikkerhedskopierede %1$d kalender(e), %2$d begivenhed(er) og %3$d kontakt(er).</string>
+    <string name="backup_result_done">Sikkerhedskopierede %1$s, %2$s og %3$s.</string>
+    <string name="backup_result_partial">Sikkerhedskopierede %1$s, %2$s og %3$s, men nogle elementer kunne ikke læses (låste nøgler eller en netværksfejl), så sikkerhedskopien kan være ufuldstændig. Tjek synkroniseringslogfilerne, og prøv igen.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalender</item>
+        <item quantity="other">%d kalendere</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d begivenhed</item>
+        <item quantity="other">%d begivenheder</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d kontakt</item>
+        <item quantity="other">%d kontakter</item>
+    </plurals>
     <string name="backup_result_skipped">Sprunget over: kilden returnerede ingen data, så den seneste gode sikkerhedskopi blev bevaret.</string>
     <string name="backup_result_failed">Sikkerhedskopiering mislykkedes: %1$s</string>
     <string name="backup_result_folder_lost">Sikkerhedskopimappen er ikke længere tilgængelig.</string>
@@ -417,11 +444,16 @@
     <string name="backup_reminder_optout_body">Er du sikker på, at du ikke vil opsætte sikkerhedskopier? Du beholder ikke dine egne sikkerhedskopier af dine kalendere og kontakter, og vi minder dig ikke om det igen!</string>
     <string name="backup_reminder_optout_confirm">Ja, stop med at minde mig</string>
     <string name="backup_reminder_optout_cancel">Nej, bliv ved med at minde mig</string>
-    <string name="backup_result_incomplete">Sikkerhedskopierede %1$d kalender(e), %2$d begivenhed(er) og %3$d kontakt(er), men nogle elementer kunne ikke læses (låste nøgler eller en netværksfejl), så sikkerhedskopien kan være ufuldstændig. Tjek synkroniseringslogfilerne, og prøv igen.</string>
     <string name="backup_notif_incomplete_title">Sikkerhedskopien kan være ufuldstændig</string>
     <string name="remote_deletion_title">Elementer fjernet fra Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d kontakter findes ikke længere i Proton (%2$s). For at beskytte dine data blev de IKKE slettet fra denne telefon endnu. Slet dem også her, eller behold dem på telefonen?</string>
-    <string name="remote_deletion_body_calendar">%1$d kalenderbegivenheder findes ikke længere i Proton (%2$s). For at beskytte dine data blev de IKKE slettet fra denne telefon endnu. Slet dem også her, eller behold dem på telefonen?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d kontakt findes ikke længere i Proton (%2$s). For at beskytte dine data blev den IKKE slettet fra denne telefon endnu. Slet den også her, eller behold den på telefonen?</item>
+        <item quantity="other">%1$d kontakter findes ikke længere i Proton (%2$s). For at beskytte dine data blev de IKKE slettet fra denne telefon endnu. Slet dem også her, eller behold dem på telefonen?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d kalenderbegivenhed findes ikke længere i Proton (%2$s). For at beskytte dine data blev den IKKE slettet fra denne telefon endnu. Slet den også her, eller behold den på telefonen?</item>
+        <item quantity="other">%1$d kalenderbegivenheder findes ikke længere i Proton (%2$s). For at beskytte dine data blev de IKKE slettet fra denne telefon endnu. Slet dem også her, eller behold dem på telefonen?</item>
+    </plurals>
     <string name="remote_deletion_delete">Slet fra telefon</string>
     <string name="remote_deletion_keep">Behold på telefon</string>
 
@@ -490,7 +522,10 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Alle</string>
-    <string name="label_log_count">%1$d af %2$d linjer</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d af %2$d linje</item>
+        <item quantity="other">%1$d af %2$d linjer</item>
+    </plurals>
     <string name="label_share_sends_full_log">Deling sender altid hele fejlfindingsloggen</string>
     <string name="btn_clear_view">Ryd visning</string>
     <string name="btn_copy_debug_log">Kopiér fejlfindingslog</string>
@@ -519,7 +554,10 @@
     <string name="contact_filters_delete">Slet</string>
     <string name="contact_filters_saved">Regler gemt. De træder i kraft ved næste synkronisering.</string>
     <string name="contact_filter_removal_title">Kontaktregler ville fjerne kontakter</string>
-    <string name="contact_filter_removal_body">Dine kontaktregler passer ikke længere til %1$d kontakter på denne telefon (%2$s). De er stadig i din Proton-konto og bliver ikke slettet der. Fjern dem fra denne telefon, eller behold dem?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Dine kontaktregler passer ikke længere til %1$d kontakt på denne telefon (%2$s). Den er stadig i din Proton-konto og bliver ikke slettet der. Fjern den fra denne telefon, eller behold den?</item>
+        <item quantity="other">Dine kontaktregler passer ikke længere til %1$d kontakter på denne telefon (%2$s). De er stadig i din Proton-konto og bliver ikke slettet der. Fjern dem fra denne telefon, eller behold dem?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Behold på telefonen</string>
     <string name="contact_filter_tpl_auto_created">Kontakter som Proton har oprettet automatisk</string>
     <string name="contact_filter_tpl_auto_created_desc">Udelader kontakter, der kun har et vist navn og en e-mailadresse, uden for- eller efternavn. Sådan ser en kontakt ud, som Proton opretter ud fra en e-mail.</string>
@@ -548,20 +586,35 @@
     <string name="contact_filter_needs_name">Giv reglen et navn, så du kan genkende den på listen.</string>
     <string name="contact_filter_delete_confirm">Slet denne regel?</string>
     <string name="contact_filter_preview_running">Tjekker dine kontakter…</string>
-    <string name="contact_filter_preview_result">Af de %1$d kontakter, der er tjekket på denne telefon, ville disse regler beholde %2$d og fjerne %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Af den %1$d kontakt, der er tjekket på denne telefon, ville disse regler beholde %2$d og fjerne %3$d.</item>
+        <item quantity="other">Af de %1$d kontakter, der er tjekket på denne telefon, ville disse regler beholde %2$d og fjerne %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Disse regler ville ikke fjerne nogen kontakter.</string>
-    <string name="contact_filter_preview_undecided">%1$d kan ikke tjekkes på telefonen, fordi denne regel ser på detaljer, som kun Proton har. Det afgør næste synkronisering, og der spørges stadig, før noget fjernes.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d kan ikke tjekkes på telefonen, fordi denne regel ser på detaljer, som kun Proton har. Det afgør næste synkronisering, og der spørges stadig, før noget fjernes.</item>
+        <item quantity="other">%1$d kan ikke tjekkes på telefonen, fordi denne regel ser på detaljer, som kun Proton har. Det afgør næste synkronisering, og der spørges stadig, før noget fjernes.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Der er endnu ingen kontakter på denne telefon for denne konto.</string>
     <string name="contact_filter_preview_title">Testresultat</string>
     <string name="contact_filter_preview_failed">Kunne ikke tjekke dine kontakter: %1$s</string>
     <string name="contact_filter_preview_reading">Læser dine Proton-kontakter…</string>
     <string name="contact_filter_preview_progress">Tjekker kontakt %1$d af %2$d…</string>
-    <string name="contact_filter_preview_server_result">Af %1$d kontakter i denne Proton-konto ville disse regler synkronisere %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Af %1$d kontakt i denne Proton-konto ville disse regler synkronisere %2$d.</item>
+        <item quantity="other">Af %1$d kontakter i denne Proton-konto ville disse regler synkronisere %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Fjernet fra denne telefon (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Ikke kopieret til denne telefon (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…og %1$d mere.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…og %1$d mere.</item>
+        <item quantity="other">…og %1$d mere.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Vis alle</string>
-    <string name="contact_filter_preview_unreadable">%1$d kunne ikke læses og ville blive ladt i fred.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d kunne ikke læses og ville blive ladt i fred.</item>
+        <item quantity="other">%1$d kunne ikke læses og ville blive ladt i fred.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton kunne ikke nås, så denne test kunne kun bruge det, der allerede er på telefonen.</string>
     <string name="contact_filter_preview_nothing_removed">Intet ville blive fjernet fra denne telefon.</string>
     <string name="contact_filter_condition_values_hint">Én værdi pr. linje</string>
@@ -643,10 +696,19 @@
     <string name="label_name_repair">Søg efter opfundne navne</string>
     <string name="name_repair_scanning">Kontrollerer dine Proton-kontakter…</string>
     <string name="name_repair_none">Ingen kontakt på Proton har et navn, som Android har fundet på.</string>
-    <string name="name_repair_found">%1$d kontakter på Proton har et for- og efternavn, som Android har fundet på ved at dele deres e-mailadresse op. En tidligere version af denne app sendte de navne til Proton.\n\nVil du fjerne dem? Intet andet ved kontakterne ændres, og deres visningsnavn forbliver, som det er.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d kontakt på Proton har et for- og efternavn, som Android har fundet på ved at dele kontaktens e-mailadresse op. En tidligere version af denne app sendte det navn til Proton.\n\nVil du fjerne det? Intet andet ved kontakten ændres, og dens visningsnavn forbliver, som det er.</item>
+        <item quantity="other">%1$d kontakter på Proton har et for- og efternavn, som Android har fundet på ved at dele deres e-mailadresse op. En tidligere version af denne app sendte de navne til Proton.\n\nVil du fjerne dem? Intet andet ved kontakterne ændres, og deres visningsnavn forbliver, som det er.</item>
+    </plurals>
     <string name="name_repair_action">Fjern de opfundne navne</string>
-    <string name="name_repair_done">%1$d kontakter repareret.</string>
-    <string name="name_repair_partial">%1$d kontakter repareret, %2$d urørte.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d kontakt repareret.</item>
+        <item quantity="other">%1$d kontakter repareret.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d kontakt repareret, %2$d ladt i fred.</item>
+        <item quantity="other">%1$d kontakter repareret, %2$d ladt i fred.</item>
+    </plurals>
     <string name="name_repair_failed">Kunne ikke kontrollere dine kontakter: %1$s</string>
     <string name="filter_op_num_eq">er</string>
     <string name="filter_field_other_content">Andre oplysninger</string>
@@ -655,10 +717,16 @@
     <string name="contact_filters_empty_none">Ingen kontakter på denne Proton-konto når frem til din telefon, fordi indstillingen nedenfor siger, at der ikke skal synkroniseres noget, som ingen regel har taget med. Tilføj en regel for at lukke nogle igennem.</string>
     <string name="remove_synced_calendar_title">Fjern disse kalendere fra denne telefon?</string>
     <string name="remove_synced_calendar_body">Kalendersynkronisering er nu slået fra, så der bliver ikke hentet mere. De kalendere, der allerede er på denne telefon, bliver liggende, indtil du fjerner dem. Fjerner du dem, bliver de kun slettet fra denne telefon; dine kalendere i Proton bliver ikke rørt. Du kan også fjerne dem senere i Android-kontoindstillingerne, og slår du kalendersynkronisering til igen, bliver de oprettet på ny.</string>
-    <string name="remove_synced_calendar_done">%1$d begivenheder fjernet fra denne telefon</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">%1$d begivenhed fjernet fra denne telefon</item>
+        <item quantity="other">%1$d begivenheder fjernet fra denne telefon</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Fjern disse kontakter fra denne telefon?</string>
     <string name="remove_synced_contacts_body">Kontaktsynkronisering er nu slået fra, så der bliver ikke hentet mere. De kontakter, der allerede er på denne telefon, bliver liggende, indtil du fjerner dem. Fjerner du dem, bliver de kun slettet fra denne telefon; dine kontakter i Proton bliver ikke rørt. Du kan også fjerne dem senere i Android-kontoindstillingerne, og slår du kontaktsynkronisering til igen, bliver de tilføjet igen.</string>
-    <string name="remove_synced_contacts_done">%1$d kontakter fjernet fra denne telefon</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">%1$d kontakt fjernet fra denne telefon</item>
+        <item quantity="other">%1$d kontakter fjernet fra denne telefon</item>
+    </plurals>
     <string name="remove_synced_keep">Behold dem</string>
     <string name="remove_synced_remove">Fjern</string>
     <string name="setup_choose_title">Hvad skal denne konto synkronisere?</string>
@@ -674,4 +742,5 @@
     <string name="sfp_hero_subtitle_sync_off">Synkronisering forbliver slået fra, indtil et abonnement er aktivt. Se Abonnement ovenfor.</string>
 
     <string name="toast_resync_skipped">Intet at synkronisere: synkronisering for %1$s er slået fra</string>
+    <string name="plural_rules_language">da</string>
 </resources>

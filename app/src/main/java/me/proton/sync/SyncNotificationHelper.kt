@@ -706,7 +706,7 @@ object SyncNotificationHelper {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val body = context.getString(R.string.notification_bulk_delete_body, count, accountName)
+        val body = Plurals.text(context, R.plurals.notification_bulk_delete_body, count, count, accountName)
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle(context.getString(R.string.notification_bulk_delete_title))
@@ -773,13 +773,13 @@ object SyncNotificationHelper {
         // A filter removal is not a remote deletion and must not claim to be one: those contacts
         // are untouched on Proton and only stop being copied here.
         val isFilter = type == RemoteDeletionGuard.TYPE_CONTACTS_FILTER
-        val body = context.getString(
+        val body = Plurals.text(context, 
             when {
-                isFilter -> R.string.contact_filter_removal_body
-                type == RemoteDeletionGuard.TYPE_CALENDAR -> R.string.remote_deletion_body_calendar
-                else -> R.string.remote_deletion_body_contacts
+                isFilter -> R.plurals.contact_filter_removal_body
+                type == RemoteDeletionGuard.TYPE_CALENDAR -> R.plurals.remote_deletion_body_calendar
+                else -> R.plurals.remote_deletion_body_contacts
             },
-            count, accountName
+            count, count, accountName
         )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
             .setSmallIcon(android.R.drawable.stat_sys_warning)

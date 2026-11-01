@@ -65,7 +65,10 @@
     <string name="btn_sync_all_accounts">Alle accounts synchroniseren</string>
     <string name="btn_sync_now">Synchroniseren</string>
     <string name="label_sync_all_long_press_hint">Houd ingedrukt voor een volledige hersynchronisatie</string>
-    <string name="dialog_title_full_resync_all">Volledige hersynchronisatie (%1$d accounts)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Volledige hersynchronisatie (%1$d account)</item>
+        <item quantity="other">Volledige hersynchronisatie (%1$d accounts)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Kies synchronisatierichting voor alle accounts:\n\nExtern → Lokaal: Lokale gegevens verwijderen en opnieuw downloaden van Proton.\n\nLokaal → Extern: Alle lokale gegevens uploaden naar Proton (overschrijft extern).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Synchronisatie gestart voor %d account</item>
@@ -77,7 +80,7 @@
     <string name="label_verbose_logging_title">Uitgebreide logboekregistratie</string>
     <string name="label_file_logging_title">Logboek opslaan in een bestand</string>
     <string name="label_timezone_updates_title">Tijdzones online bijwerken</string>
-    <string name="sfp_timezone_updates_summary">Wanneer ingeschakeld, komen actuele tijdzoneregels van www.tzurl.org, dat je IP-adres en de tijdzones van je afspraken ziet. Wanneer uitgeschakeld, worden de tijdzonegegevens van de telefoon gebruikt.</string>
+    <string name="sfp_timezone_updates_summary">Wanneer ingeschakeld, komen actuele tijdzoneregels van www.tzurl.org, dat uw IP-adres en de tijdzones van uw afspraken ziet. Wanneer uitgeschakeld, worden de tijdzonegegevens van de telefoon gebruikt.</string>
     <string name="sfp_timezone_data_outdated">De tijdzonegegevens van deze telefoon zijn verouderd (versie %1$s).</string>
     <string name="btn_choose_log_folder">Map wijzigen</string>
     <string name="label_log_folder_path">Opslaan in: %1$s</string>
@@ -101,7 +104,7 @@
     <string name="label_sync_mode_custom">Aangepast bereik</string>
     <string name="label_manual_only">Alleen handmatig</string>
     <string name="dialog_title_display_name">Weergavenaam</string>
-    <string name="dialog_message_display_name">Kies een nieuwe weergavenaam voor dit account. Wordt gebruikt in Instellingen → Accounts beheren en in de ondertitel „Account" van het contact.</string>
+    <string name="dialog_message_display_name">Kies een nieuwe weergavenaam voor dit account. Wordt gebruikt in Instellingen → Accounts beheren en in de ondertitel „Account“ van het contact.</string>
     <string name="dialog_hint_display_name">Weergavenaam</string>
     <string name="toast_display_name_blank">Weergavenaam mag niet leeg zijn.</string>
     <string name="toast_display_name_taken">Er bestaat al een account met de naam \"%s\".</string>
@@ -147,7 +150,14 @@
     <string name="btn_open_settings">Instellingen openen</string>
     <string name="btn_later">Later</string>
     <string name="label_custom_suffix">, aangepast</string>
-    <string name="label_days_format">%d dagen</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dagen</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minuut</item>
+        <item quantity="other">%d minuten</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
 
     <string name="notification_channel_sync_failures">Synchronisatiefouten</string>
@@ -214,6 +224,7 @@
     <string name="label_subscription_expired">Abonnement verlopen: verleng om synchronisatie te hervatten.</string>
     <string name="label_subscription_paused">Abonnement gepauzeerd: synchronisatie staat uit totdat het wordt hervat.</string>
     <string name="label_subscription_unpaid">Betaling mislukt: werk betaalmethode bij om synchronisatie weer aan te zetten.</string>
+    <string name="label_subscription_suspended_play">Synchronisatie staat uit: het abonnement staat in de wacht of is onderbroken in Google Play, waar u de betaling kunt herstellen of het kunt hervatten.</string>
     <string name="notification_payment_failed_title">Betaling voor abonnement mislukt</string>
     <string name="btn_update_payment_method">Betaalmethode bijwerken</string>
     <string name="label_subscription_grace">Betalingsprobleem: werk betaalmethode bij om te blijven synchroniseren.</string>
@@ -268,26 +279,26 @@
 
     <string name="btn_info_dismiss">Begrepen</string>
     <string name="label_info">Meer informatie</string>
-    <string name="info_language_body">Stelt de taal in die wordt gebruikt voor de eigen schermen van deze app. \"Auto\" volgt de systeemtaal van je telefoon. Dit verandert alleen de app-interface, het vertaalt niet je gesynchroniseerde agenda-afspraken of contacten.</string>
-    <string name="info_display_name_body">De naam die voor dit account wordt getoond in Android-instellingen → Accounts en in de accountkiezers van agenda-/contactapps. Het is alleen een lokaal label; het wijzigen ervan heeft geen invloed op je Proton-account.\n\nLet op: Samsung Calendar en Samsung Contacts negeren aangepaste accountnamen en tonen altijd hun eigen label (bijv. \"Proton\"). De naam die je hebt gekozen verschijnt daar mogelijk niet, dit is een Samsung-beperking die we niet kunnen wijzigen. Andere apps (Google Calendar/Contacts) tonen hem normaal.</string>
-    <string name="info_event_loop_body">Hoe vaak de app op de achtergrond Proton controleert op externe wijzigingen aan je contacten en agenda. Kortere intervallen tonen wijzigingen sneller maar gebruiken meer batterij en data. Dit staat los van handmatige synchronisatie, die je op elk moment kunt starten met de synchronisatieknoppen.</string>
-    <string name="info_notify_in_progress_body">Toont een stille, doorlopende melding terwijl een synchronisatie loopt, met live voortgang (scannen, downloaden, ontsleutelen). Hij staat onderaan het meldingenpaneel en maakt nooit geluid. Schakel hem uit als je liever hebt dat de synchronisatie onzichtbaar verloopt.</string>
-    <string name="info_sync_contacts_body">Wanneer ingeschakeld, synchroniseren je Proton-contacten in twee richtingen met de contacten van Android: wijzigingen aan beide kanten worden samengevoegd.\n\nLet op: Samsung Contacts toont contacten onder één accountlabel \"Proton contacts\" en verbergt de e-mailondertitel voor accounts van derden zoals het onze, een hard ingebouwde Samsung-beperking die we niet kunnen wijzigen. Google Contacts en de meeste andere apps tonen ze normaal.</string>
-    <string name="info_fallback_full_sync_body">Hoe vaak de app een volledige hercontrole doet in plaats van een snelle incrementele synchronisatie. Een volledige synchronisatie vangt alles op wat een incrementele doorloop zou kunnen missen (bijv. wijzigingen die offline zijn gemaakt) ten koste van meer tijd en data. Laat op de standaardwaarde staan tenzij je vermoedt dat items niet synchroniseren.</string>
-    <string name="info_notify_on_failure_body">Toont een melding als een synchronisatie mislukt (bijv. netwerkfout of verlopen sessie). Tik erop voor een uitleg in gewone taal en een link naar de logboeken. Schakel hem uit als je niet gewaarschuwd wilt worden over tijdelijke fouten.</string>
-    <string name="info_sync_calendar_body">Wanneer ingeschakeld, synchroniseren je Proton-agenda\'s naar de agenda van Android, zodat afspraken verschijnen in Google Calendar, Samsung Calendar en elke andere agenda-app. In twee richtingen: bewerkingen die je op de telefoon maakt, worden teruggeüpload naar Proton voor agenda\'s die je bezit.</string>
-    <string name="info_include_external_calendars_body">Proton kan geabonneerde agenda\'s (bijv. een externe ICS-feed) en feestdagenagenda\'s bevatten. Deze zijn alleen-lezen aan de kant van Proton. Wanneer uitgeschakeld, slaat de app ze over en synchroniseert alleen je eigen bewerkbare agenda\'s. Schakel in als je wilt dat die alleen-lezen agenda\'s ook op je telefoon worden weerspiegeld.</string>
-    <string name="info_sync_mode_body">\"Alle gebeurtenissen\" synchroniseert je volledige agendageschiedenis en alle toekomstige afspraken, het beste als je alles op je telefoon wilt (de eerste synchronisatie van een grote agenda kan enkele minuten duren). \"Aangepast bereik\" synchroniseert alleen een venster van dagen rond vandaag, waardoor grote agenda\'s snel en licht blijven. Afspraken buiten het venster worden niet gedownload.</string>
-    <string name="info_sync_range_window_body">Hoeveel dagen voor en na vandaag synchroniseren wanneer \"Aangepast bereik\" is geselecteerd. Grotere vensters tonen meer van je agenda maar duren langer om te synchroniseren. Heeft geen effect in de modus \"Alle gebeurtenissen\".</string>
-    <string name="info_poll_attendee_body">Wanneer ingeschakeld, controleert de app periodiek afspraken met deelnemers opnieuw om accepteer-/weiger-/voorlopige reacties te detecteren. De wijzigingenfeed van Proton meldt geen RSVP-wijzigingen, dus dit vereist extra API-aanroepen, alleen de moeite waard om in te schakelen als je afhankelijk bent van het zien van de reacties van deelnemers op je telefoon.</string>
-    <string name="info_send_invites_body">Wanneer je deelnemers toevoegt aan een afspraak op je telefoon, hun een uitnodiging e-mailen. Standaard uit: schakel alleen in als je wilt dat de app namens jou e-mails naar deelnemers stuurt.</string>
-    <string name="info_send_updates_body">Deelnemers e-mailen wanneer je de details (tijd, locatie, enz.) wijzigt van een afspraak waarvoor ze zijn uitgenodigd. Standaard uit.</string>
-    <string name="info_send_cancellations_body">Deelnemers e-mailen wanneer je een afspraak verwijdert waarvoor ze zijn uitgenodigd, zodat hun agenda\'s deze ook verwijderen. Standaard uit.</string>
+    <string name="info_language_body">Stelt de taal in die wordt gebruikt voor de eigen schermen van deze app. \"Auto\" volgt de systeemtaal van uw telefoon. Dit verandert alleen de app-interface, het vertaalt niet uw gesynchroniseerde agenda-afspraken of contacten.</string>
+    <string name="info_display_name_body">De naam die voor dit account wordt getoond in Android-instellingen → Accounts en in de accountkiezers van agenda-/contactapps. Het is alleen een lokaal label; het wijzigen ervan heeft geen invloed op uw Proton-account.\n\nLet op: Samsung Calendar en Samsung Contacts negeren aangepaste accountnamen en tonen altijd hun eigen label (bijv. \"Proton\"). De naam die u hebt gekozen verschijnt daar mogelijk niet, dit is een Samsung-beperking die we niet kunnen wijzigen. Andere apps (Google Calendar/Contacts) tonen hem normaal.</string>
+    <string name="info_event_loop_body">Hoe vaak de app op de achtergrond Proton controleert op externe wijzigingen aan uw contacten en agenda. Kortere intervallen tonen wijzigingen sneller maar gebruiken meer batterij en data. Dit staat los van handmatige synchronisatie, die u op elk moment kunt starten met de synchronisatieknoppen.</string>
+    <string name="info_notify_in_progress_body">Toont een stille, doorlopende melding terwijl een synchronisatie loopt, met live voortgang (scannen, downloaden, ontsleutelen). Hij staat onderaan het meldingenpaneel en maakt nooit geluid. Schakel hem uit als u liever hebt dat de synchronisatie onzichtbaar verloopt.</string>
+    <string name="info_sync_contacts_body">Wanneer ingeschakeld, synchroniseren uw Proton-contacten in twee richtingen met de contacten van Android: wijzigingen aan beide kanten worden samengevoegd.\n\nLet op: Samsung Contacts toont contacten onder één accountlabel \"Proton contacts\" en verbergt de e-mailondertitel voor accounts van derden zoals het onze, een hard ingebouwde Samsung-beperking die we niet kunnen wijzigen. Google Contacts en de meeste andere apps tonen ze normaal.</string>
+    <string name="info_fallback_full_sync_body">Hoe vaak de app een volledige hercontrole doet in plaats van een snelle incrementele synchronisatie. Een volledige synchronisatie vangt alles op wat een incrementele doorloop zou kunnen missen (bijv. wijzigingen die offline zijn gemaakt) ten koste van meer tijd en data. Laat op de standaardwaarde staan tenzij u vermoedt dat items niet synchroniseren.</string>
+    <string name="info_notify_on_failure_body">Toont een melding als een synchronisatie mislukt (bijv. netwerkfout of verlopen sessie). Tik erop voor een uitleg in gewone taal en een link naar de logboeken. Schakel hem uit als u niet gewaarschuwd wilt worden over tijdelijke fouten.</string>
+    <string name="info_sync_calendar_body">Wanneer ingeschakeld, synchroniseren uw Proton-agenda\'s naar de agenda van Android, zodat afspraken verschijnen in Google Calendar, Samsung Calendar en elke andere agenda-app. In twee richtingen: bewerkingen die u op de telefoon maakt, worden teruggeüpload naar Proton voor agenda\'s die u bezit.</string>
+    <string name="info_include_external_calendars_body">Proton kan geabonneerde agenda\'s (bijv. een externe ICS-feed) en feestdagenagenda\'s bevatten. Deze zijn alleen-lezen aan de kant van Proton. Wanneer uitgeschakeld, slaat de app ze over en synchroniseert alleen uw eigen bewerkbare agenda\'s. Schakel in als u wilt dat die alleen-lezen agenda\'s ook op uw telefoon worden weerspiegeld.</string>
+    <string name="info_sync_mode_body">\"Alle gebeurtenissen\" synchroniseert uw volledige agendageschiedenis en alle toekomstige afspraken, het beste als u alles op uw telefoon wilt (de eerste synchronisatie van een grote agenda kan enkele minuten duren). \"Aangepast bereik\" synchroniseert alleen een venster van dagen rond vandaag, waardoor grote agenda\'s snel en licht blijven. Afspraken buiten het venster worden niet gedownload.</string>
+    <string name="info_sync_range_window_body">Hoeveel dagen voor en na vandaag synchroniseren wanneer \"Aangepast bereik\" is geselecteerd. Grotere vensters tonen meer van uw agenda maar duren langer om te synchroniseren. Heeft geen effect in de modus \"Alle gebeurtenissen\".</string>
+    <string name="info_poll_attendee_body">Wanneer ingeschakeld, controleert de app periodiek afspraken met deelnemers opnieuw om accepteer-/weiger-/voorlopige reacties te detecteren. De wijzigingenfeed van Proton meldt geen RSVP-wijzigingen, dus dit vereist extra API-aanroepen, alleen de moeite waard om in te schakelen als u afhankelijk bent van het zien van de reacties van deelnemers op uw telefoon.</string>
+    <string name="info_send_invites_body">Wanneer u deelnemers toevoegt aan een afspraak op uw telefoon, hun een uitnodiging e-mailen. Standaard uit: schakel alleen in als u wilt dat de app namens u e-mails naar deelnemers stuurt.</string>
+    <string name="info_send_updates_body">Deelnemers e-mailen wanneer u de details (tijd, locatie, enz.) wijzigt van een afspraak waarvoor ze zijn uitgenodigd. Standaard uit.</string>
+    <string name="info_send_cancellations_body">Deelnemers e-mailen wanneer u een afspraak verwijdert waarvoor ze zijn uitgenodigd, zodat hun agenda\'s deze ook verwijderen. Standaard uit.</string>
     <string name="info_invite_subject_title_body">Bij het verzenden van uitnodigings-e-mails de titel van de afspraak in de onderwerpregel van de e-mail zetten zodat ontvangers hem in één oogopslag herkennen. Standaard uit vanwege privacy: e-mailonderwerpen worden niet versleuteld bij standaard e-mailtransport, dus de titel zou zichtbaar zijn voor de mailservers onderweg.</string>
     <string name="info_background_sync_body">Android kan achtergrondsynchronisatie pauzeren om batterij te besparen, wat automatische synchronisatie kan vertragen of stoppen. Door deze app uit te sluiten van batterijoptimalisatie blijven geplande synchronisaties betrouwbaar lopen. Gebruik de knop om de batterij-instellingen van het systeem voor de app te openen.</string>
-    <string name="info_verbose_logging_body">Legt extra diagnostische details vast (authenticatiestatus, sleutelontgrendeling, interne synchronisatiegegevens) in het logboek, handig bij het melden van een probleem. Het kan e-mailadressen van accounts en agendanamen bevatten, dus deel logboeken alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
-    <string name="info_file_logging_body">Schrijft het app-logboek naar een tekstbestand met tijdstempel (sync-for-proton-log-….txt) in een map die u kiest. Verder bewaart de app het logboek alleen in het geheugen, dus zet dit aan om een moeilijk reproduceerbaar probleem vast te leggen. Bij elke start van de app wordt een nieuw bestand aangemaakt; het kan e-mailadressen van accounts en agendanamen bevatten, deel het daarom alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
-    <string name="info_timezone_updates_text">De tijden van afspraken hangen af van tijdzoneregels, en landen veranderen die regels af en toe. Android bewaart ze in de tijdzonegegevens van de telefoon, die met systeemupdates binnenkomen. Een telefoon die ze niet meer krijgt, bijvoorbeeld met een oudere Android-versie of zonder Google Play-systeemupdates, houdt de oude regels, en afspraken op plekken waar de regels sindsdien zijn veranderd, kunnen op de verkeerde tijd worden getoond.\n\nTijdzonegegevens op deze telefoon: versie %1$s\n\nWanneer uitgeschakeld (standaard), gebruikt de app de eigen tijdzonegegevens van de telefoon en wordt er niets naar www.tzurl.org verzonden.\n\nWanneer ingeschakeld, downloadt de app de actuele regels voor elke tijdzone die je afspraken gebruiken van www.tzurl.org, een dienst van derden, hoogstens één keer per tijdzone telkens wanneer de app start, en gebruikt ze alleen als ze nieuwer zijn dan die van de telefoon. www.tzurl.org ziet dan je IP-adres en de namen van die tijdzones, bijvoorbeeld Europe/Berlin. Verder wordt er niets over je afspraken of accounts verzonden. Als www.tzurl.org niet bereikbaar is, worden de gegevens van de telefoon gebruikt. Terugkerende afspraken worden nog steeds met de gegevens van de telefoon berekend.\n\nNa een wijziging worden afspraken die al op de telefoon staan bij de volgende synchronisatie gecontroleerd en gecorrigeerd.</string>
+    <string name="info_verbose_logging_body">Legt extra diagnostische details vast (authenticatiestatus, sleutelontgrendeling, interne synchronisatiegegevens) in het logboek, handig bij het melden van een probleem. De app vervangt e-mailadressen daarin door korte codes, maar het logboek kan account- en agendanamen bevatten, dus deel logboeken alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
+    <string name="info_file_logging_body">Schrijft het app-logboek naar een tekstbestand met tijdstempel (sync-for-proton-log-….txt) in een map die u kiest. Verder bewaart de app het logboek alleen in het geheugen, dus zet dit aan om een moeilijk reproduceerbaar probleem vast te leggen. Bij elke start van de app wordt een nieuw bestand aangemaakt. De app vervangt e-mailadressen daarin door korte codes, maar het bestand kan account- en agendanamen bevatten, dus deel het alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
+    <string name="info_timezone_updates_text">De tijden van afspraken hangen af van tijdzoneregels, en landen veranderen die regels af en toe. Android bewaart ze in de tijdzonegegevens van de telefoon, die met systeemupdates binnenkomen. Een telefoon die ze niet meer krijgt, bijvoorbeeld met een oudere Android-versie of zonder Google Play-systeemupdates, houdt de oude regels, en afspraken op plekken waar de regels sindsdien zijn veranderd, kunnen op de verkeerde tijd worden getoond.\n\nTijdzonegegevens op deze telefoon: versie %1$s\n\nWanneer uitgeschakeld (standaard), gebruikt de app de eigen tijdzonegegevens van de telefoon en wordt er niets naar www.tzurl.org verzonden.\n\nWanneer ingeschakeld, downloadt de app de actuele regels voor elke tijdzone die uw afspraken gebruiken van www.tzurl.org, een dienst van derden, hoogstens één keer per tijdzone telkens wanneer de app start, en gebruikt ze alleen als ze nieuwer zijn dan die van de telefoon. www.tzurl.org ziet dan uw IP-adres en de namen van die tijdzones, bijvoorbeeld Europe/Berlin. Verder wordt er niets over uw afspraken of accounts verzonden. Als www.tzurl.org niet bereikbaar is, worden de gegevens van de telefoon gebruikt. Terugkerende afspraken worden nog steeds met de gegevens van de telefoon berekend.\n\nNa een wijziging worden afspraken die al op de telefoon staan bij de volgende synchronisatie gecontroleerd en gecorrigeerd.</string>
     <string name="tz_data_version_unknown">onbekend</string>
     <string name="tz_outdated_title">Tijdzonegegevens zijn verouderd</string>
     <string name="tz_outdated_body">De tijdzonegegevens van deze telefoon hebben versie %1$s en worden blijkbaar niet meer bijgewerkt. Afspraken op plekken die hun tijdregels sindsdien hebben veranderd, kunnen op de verkeerde tijd worden getoond.\n\nSchakel “%2$s” in om in plaats daarvan actuele regels van www.tzurl.org te gebruiken. De app stuurt dan verzoeken naar https://www.tzurl.org, dat uw IP-adres en de namen van de tijdzones van uw afspraken ziet, bijvoorbeeld Europe/Berlin. Verder wordt er niets over uw afspraken of accounts verzonden. Terugkerende afspraken worden nog steeds met de gegevens van de telefoon berekend.\n\nU kunt dit op elk moment op dit scherm wijzigen.</string>
@@ -347,7 +358,10 @@
     <string name="notification_channel_alerts">Synchronisatiemeldingen</string>
     <string name="notification_channel_alerts_description">Belangrijke veiligheidsmeldingen die uw beslissing vereisen</string>
     <string name="notification_bulk_delete_title">Grote agendawijziging gedetecteerd</string>
-    <string name="notification_bulk_delete_body">%1$d agendagebeurtenissen zijn van deze telefoon verdwenen (%2$s). Om uw gegevens te beschermen zijn ze NIET verwijderd van Proton. Wilt u ze op uw telefoon behouden, of ze ook van Proton verwijderen?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d agendagebeurtenis is van deze telefoon verdwenen (%2$s). Om uw gegevens te beschermen is die NIET verwijderd van Proton. Wilt u die op uw telefoon behouden, of ook van Proton verwijderen?</item>
+        <item quantity="other">%1$d agendagebeurtenissen zijn van deze telefoon verdwenen (%2$s). Om uw gegevens te beschermen zijn ze NIET verwijderd van Proton. Wilt u ze op uw telefoon behouden, of ze ook van Proton verwijderen?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Behouden op Proton</string>
     <string name="notification_bulk_delete_delete">Verwijderen op Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -393,7 +407,20 @@
     <string name="backup_decrypt_done">Ontsleuteld naar \"%1$s\" in uw back-upmap.</string>
     <string name="backup_decrypt_failed">Kan dit bestand niet ontsleutelen.</string>
     <string name="backup_restore_hint">Om te herstellen: importeer een .ics in Proton Calendar (Instellingen → Importeren) en een .vcf in Proton Contacts. Versleutelde back-ups kunnen ook op een computer worden geopend met: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">%1$d agenda(\'s), %2$d gebeurtenis(sen) en %3$d contact(en) geback-upt.</string>
+    <string name="backup_result_done">%1$s, %2$s en %3$s geback-upt.</string>
+    <string name="backup_result_partial">%1$s, %2$s en %3$s geback-upt, maar sommige items konden niet worden gelezen (vergrendelde sleutels of een netwerkfout), dus de back-up is mogelijk onvolledig. Controleer het synchronisatielogboek en probeer het opnieuw.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d agenda</item>
+        <item quantity="other">%d agenda\'s</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d gebeurtenis</item>
+        <item quantity="other">%d gebeurtenissen</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacten</item>
+    </plurals>
     <string name="backup_result_skipped">Overgeslagen: de bron retourneerde geen gegevens, dus de laatste goede back-up is behouden.</string>
     <string name="backup_result_failed">Back-up mislukt: %1$s</string>
     <string name="backup_result_folder_lost">Back-upmap is niet langer toegankelijk.</string>
@@ -415,11 +442,16 @@
     <string name="backup_reminder_optout_body">Weet u zeker dat u geen back-ups wilt instellen? U bewaart dan geen eigen back-ups van uw agenda\'s en contacten, en wij herinneren u hier niet meer aan!</string>
     <string name="backup_reminder_optout_confirm">Ja, stop met herinneren</string>
     <string name="backup_reminder_optout_cancel">Nee, blijf mij herinneren</string>
-    <string name="backup_result_incomplete">%1$d agenda(\'s), %2$d gebeurtenis(sen) en %3$d contact(en) geback-upt, maar sommige items konden niet worden gelezen (vergrendelde sleutels of een netwerkfout), dus de back-up is mogelijk onvolledig. Controleer het synchronisatielogboek en probeer het opnieuw.</string>
     <string name="backup_notif_incomplete_title">Back-up is mogelijk onvolledig</string>
     <string name="remote_deletion_title">Items verwijderd uit Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d contacten staan niet meer in Proton (%2$s). Om je gegevens te beschermen zijn ze nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</string>
-    <string name="remote_deletion_body_calendar">%1$d agenda-afspraken staan niet meer in Proton (%2$s). Om je gegevens te beschermen zijn ze nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d contact staat niet meer in Proton (%2$s). Om uw gegevens te beschermen is het nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</item>
+        <item quantity="other">%1$d contacten staan niet meer in Proton (%2$s). Om uw gegevens te beschermen zijn ze nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d agenda-afspraak staat niet meer in Proton (%2$s). Om uw gegevens te beschermen is die nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</item>
+        <item quantity="other">%1$d agenda-afspraken staan niet meer in Proton (%2$s). Om uw gegevens te beschermen zijn ze nog NIET van deze telefoon verwijderd. Ook hier verwijderen of op de telefoon houden?</item>
+    </plurals>
     <string name="remote_deletion_delete">Van telefoon verwijderen</string>
     <string name="remote_deletion_keep">Op telefoon houden</string>
     <!-- Redesigned settings UI: sections, status hero, quick tools, sign-in, first-run -->
@@ -467,27 +499,30 @@
     <string name="notification_contacts_rejected_summary">Deze nieuwe contacten op %1$s konden niet in Proton worden opgeslagen. Voorlopig staan ze alleen op deze telefoon:</string>
     <string name="notification_contacts_rejected_unnamed">(zonder naam)</string>
     <string name="notification_contacts_rejected_local_reason">kon op deze telefoon niet worden voorbereid voor uploaden</string>
-    <string name="notification_events_rejected_guests_create">gasten kun je alleen uitnodigen in agenda\'s die van jou zijn. De gebeurtenis staat alleen op deze telefoon; verwijder de gasten of verplaats hem naar een van je eigen agenda\'s om hem te synchroniseren.</string>
+    <string name="notification_events_rejected_guests_create">gasten kunt u alleen uitnodigen in agenda\'s die van u zijn. De gebeurtenis staat alleen op deze telefoon; verwijder de gasten of verplaats hem naar een van uw eigen agenda\'s om hem te synchroniseren.</string>
     <string name="notification_events_rejected_guests_update">alleen de eigenaar van deze gedeelde agenda kan gebeurtenissen met gasten wijzigen, dus deze wijziging is niet in Proton opgeslagen.</string>
     <string name="notification_events_rejected_delete">dit account kan hem niet verwijderen in Proton, dus hij komt bij de volgende synchronisatie terug op deze telefoon.</string>
-    <string name="notification_events_rejected_personal">je herinneringen of kleur konden niet in Proton worden opgeslagen, dus ze gelden voorlopig alleen op deze telefoon. Wijzig ze opnieuw om het nog eens te proberen.</string>
+    <string name="notification_events_rejected_personal">uw herinneringen of kleur konden niet in Proton worden opgeslagen, dus ze gelden voorlopig alleen op deze telefoon. Wijzig ze opnieuw om het nog eens te proberen.</string>
     <string name="notification_contacts_too_large_title">Sommige contacten zijn te groot voor deze telefoon</string>
     <string name="notification_contacts_too_large_summary">Deze contacten op %1$s zijn te groot voor de contactopslag van Android. In Proton blijven ze volledig:</string>
     <string name="notification_contacts_too_large_outdated">deze telefoon houdt een oudere versie</string>
     <string name="notification_contacts_too_large_missing">niet op deze telefoon</string>
     <string name="notification_conflict_title">Afspraak op twee plekken gewijzigd</string>
-    <string name="notification_conflict_body">“%1$s” is op deze telefoon en in Proton Calendar bewerkt. Welke versie wil je behouden?</string>
-    <string name="notification_conflict_body_shared">“%1$s” is op deze telefoon bewerkt en door %2$s in Proton Calendar. Als je jouw versie behoudt, vervang je die van hem.</string>
+    <string name="notification_conflict_body">“%1$s” is op deze telefoon en in Proton Calendar bewerkt. Welke versie wilt u behouden?</string>
+    <string name="notification_conflict_body_shared">“%1$s” is op deze telefoon bewerkt en door %2$s in Proton Calendar. Als u uw versie behoudt, vervangt u die van hem.</string>
     <string name="notification_conflict_keep_remote">Proton behouden</string>
     <string name="notification_conflict_keep_local">Mijne behouden</string>
     <string name="notification_conflict_untitled_event">(geen titel)</string>
     <string name="notification_contact_conflict_title">Contact op twee plekken gewijzigd</string>
-    <string name="notification_contact_conflict_body">Contact “%1$s” is op deze telefoon en in Proton bewerkt. Welke versie wil je behouden? Als je overslaat, blijven beide zoals ze zijn tot je volgende handmatige synchronisatie.</string>
+    <string name="notification_contact_conflict_body">Contact “%1$s” is op deze telefoon en in Proton bewerkt. Welke versie wilt u behouden? Als u overslaat, blijven beide zoals ze zijn tot uw volgende handmatige synchronisatie.</string>
     <string name="notification_contact_conflict_unnamed">(geen naam)</string>
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Alles</string>
-    <string name="label_log_count">%1$d van %2$d regels</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d van %2$d regel</item>
+        <item quantity="other">%1$d van %2$d regels</item>
+    </plurals>
     <string name="label_share_sends_full_log">Delen verstuurt altijd het volledige debuglogboek</string>
     <string name="btn_clear_view">Weergave wissen</string>
     <string name="btn_copy_debug_log">Debuglogboek kopiëren</string>
@@ -516,7 +551,10 @@
     <string name="contact_filters_delete">Verwijderen</string>
     <string name="contact_filters_saved">Regels opgeslagen. Ze gaan in bij de volgende synchronisatie.</string>
     <string name="contact_filter_removal_title">Contactregels zouden contacten verwijderen</string>
-    <string name="contact_filter_removal_body">Uw contactregels passen niet meer bij %1$d contacten op deze telefoon (%2$s). Ze staan nog in uw Proton-account en worden daar niet verwijderd. Van deze telefoon verwijderen of behouden?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Uw contactregels passen niet meer bij %1$d contact op deze telefoon (%2$s). Het staat nog in uw Proton-account en wordt daar niet verwijderd. Van deze telefoon verwijderen of behouden?</item>
+        <item quantity="other">Uw contactregels passen niet meer bij %1$d contacten op deze telefoon (%2$s). Ze staan nog in uw Proton-account en worden daar niet verwijderd. Van deze telefoon verwijderen of behouden?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Op telefoon houden</string>
     <string name="contact_filter_tpl_auto_created">Contacten die Proton automatisch heeft aangemaakt</string>
     <string name="contact_filter_tpl_auto_created_desc">Sluit contacten uit die alleen een weergavenaam en een e-mailadres hebben, zonder voor- of achternaam. Dat is de vorm die Proton geeft aan een contact dat het uit een e-mail aanmaakt.</string>
@@ -545,20 +583,35 @@
     <string name="contact_filter_needs_name">Geef de regel een naam zodat u die in de lijst herkent.</string>
     <string name="contact_filter_delete_confirm">Deze regel verwijderen?</string>
     <string name="contact_filter_preview_running">Uw contacten worden gecontroleerd…</string>
-    <string name="contact_filter_preview_result">Van de %1$d gecontroleerde contacten op deze telefoon zouden deze regels er %2$d behouden en %3$d verwijderen.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Van het %1$d gecontroleerde contact op deze telefoon zouden deze regels er %2$d behouden en %3$d verwijderen.</item>
+        <item quantity="other">Van de %1$d gecontroleerde contacten op deze telefoon zouden deze regels er %2$d behouden en %3$d verwijderen.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Deze regels zouden geen contacten verwijderen.</string>
-    <string name="contact_filter_preview_undecided">%1$d kunnen niet op de telefoon worden gecontroleerd, omdat deze regel kijkt naar gegevens die alleen Proton heeft. De volgende synchronisatie beslist daarover en vraagt nog steeds voordat er iets wordt verwijderd.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d kan niet op de telefoon worden gecontroleerd, omdat deze regel kijkt naar gegevens die alleen Proton heeft. De volgende synchronisatie beslist daarover en vraagt nog steeds voordat er iets wordt verwijderd.</item>
+        <item quantity="other">%1$d kunnen niet op de telefoon worden gecontroleerd, omdat deze regel kijkt naar gegevens die alleen Proton heeft. De volgende synchronisatie beslist daarover en vraagt nog steeds voordat er iets wordt verwijderd.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Er staan nog geen contacten van dit account op deze telefoon.</string>
     <string name="contact_filter_preview_title">Testresultaat</string>
-    <string name="contact_filter_preview_failed">Kon je contacten niet controleren: %1$s</string>
-    <string name="contact_filter_preview_reading">Je Proton-contacten worden gelezen…</string>
+    <string name="contact_filter_preview_failed">Kon uw contacten niet controleren: %1$s</string>
+    <string name="contact_filter_preview_reading">Uw Proton-contacten worden gelezen…</string>
     <string name="contact_filter_preview_progress">Contact %1$d van %2$d wordt gecontroleerd…</string>
-    <string name="contact_filter_preview_server_result">Van %1$d contacten in dit Proton-account zouden deze regels er %2$d synchroniseren.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Van %1$d contact in dit Proton-account zouden deze regels er %2$d synchroniseren.</item>
+        <item quantity="other">Van %1$d contacten in dit Proton-account zouden deze regels er %2$d synchroniseren.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Van deze telefoon verwijderd (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Niet naar deze telefoon gekopieerd (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…en nog %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…en nog %1$d.</item>
+        <item quantity="other">…en nog %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Alles tonen</string>
-    <string name="contact_filter_preview_unreadable">%1$d konden niet worden gelezen en blijven ongemoeid.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d kon niet worden gelezen en zou ongemoeid blijven.</item>
+        <item quantity="other">%1$d konden niet worden gelezen en zouden ongemoeid blijven.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton was niet bereikbaar, dus deze test kon alleen gebruiken wat al op de telefoon staat.</string>
     <string name="contact_filter_preview_nothing_removed">Er zou niets van deze telefoon worden verwijderd.</string>
     <string name="contact_filter_condition_values_hint">Eén waarde per regel</string>
@@ -627,9 +680,9 @@
     <string name="filter_op_exactly">zijn precies</string>
     <string name="label_name_mode">Contacten met alleen een weergavenaam</string>
     <string name="name_mode_title">Contacten met alleen een weergavenaam</string>
-    <string name="name_mode_info">Proton maakt een contact aan voor iedereen met wie je e-mail uitwisselt, en die contacten hebben alleen een weergavenaam en verder niets. Android slaat geen naam op die het niet kan aanvullen, dus splitst het er zelf een uit de weergavenaam: een adres als app@example.com wordt de voornaam app@example en de achternaam com, en de naam die je telefoon dan toont is app@example com, met de punt vervangen door een spatie.
+    <string name="name_mode_info">Proton maakt een contact aan voor iedereen met wie u e-mail uitwisselt, en die contacten hebben alleen een weergavenaam en verder niets. Android slaat geen naam op die het niet kan aanvullen, dus splitst het er zelf een uit de weergavenaam: een adres als app@example.com wordt de voornaam app@example en de achternaam com, en de naam die uw telefoon dan toont is app@example com, met de punt vervangen door een spatie.
 
-Als je zelf een veld kiest, valt er voor Android niets meer te verzinnen. Alleen contacten die op Proton geen voornaam of achternaam hebben, worden geraakt, en op Proton wordt nooit iets gewijzigd.</string>
+Als u zelf een veld kiest, valt er voor Android niets meer te verzinnen. Alleen contacten die op Proton geen voornaam of achternaam hebben, worden geraakt, en op Proton wordt nooit iets gewijzigd.</string>
     <string name="name_mode_android">Android laten beslissen</string>
     <string name="name_mode_android_desc">Huidig gedrag. Android splitst de weergavenaam en toont die mogelijk verkeerd.</string>
     <string name="name_mode_nickname">Bijnaam</string>
@@ -638,17 +691,24 @@ Als je zelf een veld kiest, valt er voor Android niets meer te verzinnen. Alleen
     <string name="name_mode_given_desc">Naam wordt correct getoond, met de hele weergavenaam in de voornaam.</string>
     <string name="name_mode_family">Achternaam</string>
     <string name="name_mode_family_desc">Naam wordt correct getoond, met de hele weergavenaam in de achternaam.</string>
-    <string name="name_mode_changed">Gewijzigd. Je contacten worden bij de volgende synchronisatie bijgewerkt.</string>
+    <string name="name_mode_changed">Gewijzigd. Uw contacten worden bij de volgende synchronisatie bijgewerkt.</string>
     <string name="label_name_repair">Controleren op verzonnen namen</string>
-    <string name="name_repair_scanning">Je Proton-contacten worden gecontroleerd…</string>
+    <string name="name_repair_scanning">Uw Proton-contacten worden gecontroleerd…</string>
     <string name="name_repair_none">Geen enkel contact op Proton heeft een naam die Android heeft verzonnen.</string>
-    <string name="name_repair_found">%1$d contacten op Proton hebben een voornaam en achternaam die Android heeft verzonnen door hun e-mailadres te splitsen. Een eerdere versie van deze app heeft die namen naar Proton gestuurd.
-
-Wil je ze verwijderen? Verder verandert er niets aan de contacten en hun weergavenaam blijft zoals die is.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d contact op Proton heeft een voornaam en achternaam die Android heeft verzonnen door zijn e-mailadres te splitsen. Een eerdere versie van deze app heeft die naam naar Proton gestuurd.\n\nWilt u die verwijderen? Verder verandert er niets aan het contact en zijn weergavenaam blijft zoals die is.</item>
+        <item quantity="other">%1$d contacten op Proton hebben een voornaam en achternaam die Android heeft verzonnen door hun e-mailadres te splitsen. Een eerdere versie van deze app heeft die namen naar Proton gestuurd.\n\nWilt u ze verwijderen? Verder verandert er niets aan de contacten en hun weergavenaam blijft zoals die is.</item>
+    </plurals>
     <string name="name_repair_action">Verwijder de verzonnen namen</string>
-    <string name="name_repair_done">%1$d contacten hersteld.</string>
-    <string name="name_repair_partial">%1$d contacten hersteld, %2$d ongewijzigd gelaten.</string>
-    <string name="name_repair_failed">Kan je contacten niet controleren: %1$s</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d contact hersteld.</item>
+        <item quantity="other">%1$d contacten hersteld.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d contact hersteld, %2$d ongewijzigd gelaten.</item>
+        <item quantity="other">%1$d contacten hersteld, %2$d ongewijzigd gelaten.</item>
+    </plurals>
+    <string name="name_repair_failed">Kan uw contacten niet controleren: %1$s</string>
     <string name="filter_op_num_eq">is</string>
     <string name="filter_field_other_content">Overige gegevens</string>
     <string name="filter_op_num_gte">is minstens</string>
@@ -657,10 +717,16 @@ Wil je ze verwijderen? Verder verandert er niets aan de contacten en hun weergav
 
     <string name="remove_synced_calendar_title">Deze agenda\'s van deze telefoon verwijderen?</string>
     <string name="remove_synced_calendar_body">Agendasynchronisatie staat nu uit, dus er wordt niets meer gedownload. De agenda\'s die al op deze telefoon staan, blijven staan totdat u ze verwijdert. Verwijderen wist ze alleen van deze telefoon; uw agenda\'s in Proton blijven ongemoeid. U kunt ze ook later verwijderen in de Android-accountinstellingen, en als u agendasynchronisatie weer inschakelt, worden ze opnieuw aangemaakt.</string>
-    <string name="remove_synced_calendar_done">%1$d gebeurtenis(sen) van deze telefoon verwijderd</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">%1$d gebeurtenis van deze telefoon verwijderd</item>
+        <item quantity="other">%1$d gebeurtenissen van deze telefoon verwijderd</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Deze contacten van deze telefoon verwijderen?</string>
     <string name="remove_synced_contacts_body">Contactsynchronisatie staat nu uit, dus er wordt niets meer gedownload. De contacten die al op deze telefoon staan, blijven staan totdat u ze verwijdert. Verwijderen wist ze alleen van deze telefoon; uw contacten in Proton blijven ongemoeid. U kunt ze ook later verwijderen in de Android-accountinstellingen, en als u contactsynchronisatie weer inschakelt, worden ze opnieuw toegevoegd.</string>
-    <string name="remove_synced_contacts_done">%1$d contact(en) van deze telefoon verwijderd</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">%1$d contact van deze telefoon verwijderd</item>
+        <item quantity="other">%1$d contacten van deze telefoon verwijderd</item>
+    </plurals>
     <string name="remove_synced_keep">Behouden</string>
     <string name="remove_synced_remove">Verwijderen</string>
     <string name="setup_choose_title">Wat moet dit account synchroniseren?</string>
@@ -676,4 +742,5 @@ Wil je ze verwijderen? Verder verandert er niets aan de contacten en hun weergav
     <string name="sfp_hero_subtitle_sync_off">Synchronisatie blijft uit totdat er een abonnement actief is. Zie Abonnement hierboven.</string>
 
     <string name="toast_resync_skipped">Niets te synchroniseren: synchronisatie voor %1$s staat uit</string>
+    <string name="plural_rules_language">nl</string>
 </resources>

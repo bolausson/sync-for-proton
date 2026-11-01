@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import me.proton.sync.DebugLog
 import me.proton.sync.LogBuffer
 import me.proton.sync.LogRecord
+import me.proton.sync.Plurals
 import me.proton.sync.R
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncLogTags
@@ -262,7 +263,7 @@ class LogViewerActivity : AppCompatActivity() {
     }
 
     private fun updateCount() {
-        binding.textLogCount.text = getString(R.string.label_log_count, shownCount, totalCount)
+        binding.textLogCount.text = Plurals.text(this@LogViewerActivity, R.plurals.label_log_count, totalCount, shownCount, totalCount)
     }
 
     private fun updateAutoScrollButton() {

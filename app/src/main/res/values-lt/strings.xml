@@ -62,7 +62,12 @@
     <string name="btn_sync_all_accounts">Sinchronizuoti visas paskyras</string>
     <string name="btn_sync_now">Sinchronizuoti</string>
     <string name="label_sync_all_long_press_hint">Ilgai paspauskite priverstinei pilnai pakartotinei sinchronizacijai</string>
-    <string name="dialog_title_full_resync_all">Pilna pakartotinė sinchronizacija (%1$d paskyros)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Pilna pakartotinė sinchronizacija (%1$d paskyra)</item>
+        <item quantity="few">Pilna pakartotinė sinchronizacija (%1$d paskyros)</item>
+        <item quantity="many">Pilna pakartotinė sinchronizacija (%1$d paskyros)</item>
+        <item quantity="other">Pilna pakartotinė sinchronizacija (%1$d paskyrų)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Pasirinkite sinchronizavimo kryptį visoms paskyroms:\n\nNuotolinis → Vietinis: Ištrinti vietinius duomenis ir iš naujo atsisiųsti iš Proton.\n\nVietinis → Nuotolinis: Įkelti visus vietinius duomenis į Proton (perrašo nuotolinius).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sinchronizavimas pradėtas %d paskyrai</item>
@@ -98,7 +103,7 @@
     <string name="label_sync_mode_all">Visi įvykiai</string>
     <string name="label_sync_mode_custom">Pasirinktinis intervalas</string>
     <string name="dialog_title_display_name">Rodomas vardas</string>
-    <string name="dialog_message_display_name">Pasirinkite naują rodomą šios paskyros vardą. Naudojamas Nustatymai → Tvarkyti paskyras ir kontakto „Paskyra" paantraštėje.</string>
+    <string name="dialog_message_display_name">Pasirinkite naują rodomą šios paskyros vardą. Naudojamas Nustatymai → Tvarkyti paskyras ir kontakto „Paskyra“ paantraštėje.</string>
     <string name="dialog_hint_display_name">Rodomas vardas</string>
     <string name="toast_display_name_blank">Rodomas vardas negali būti tuščias.</string>
     <string name="toast_display_name_taken">Paskyra pavadinimu \"%s\" jau egzistuoja.</string>
@@ -144,7 +149,18 @@
     <string name="btn_open_settings">Atidaryti nustatymus</string>
     <string name="btn_later">Vėliau</string>
     <string name="label_custom_suffix">, pasirinktinis</string>
-    <string name="label_days_format">%d dienos</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d diena</item>
+        <item quantity="few">%d dienos</item>
+        <item quantity="many">%d dienos</item>
+        <item quantity="other">%d dienų</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minutė</item>
+        <item quantity="few">%d minutės</item>
+        <item quantity="many">%d minutės</item>
+        <item quantity="other">%d minučių</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Sinchronizavimo klaidos</string>
     <string name="notification_channel_sync_description">Pranešimai, kai nepavyksta kalendoriaus arba kontaktų sinchronizavimas</string>
@@ -207,6 +223,7 @@
     <string name="label_subscription_expired">Prenumerata pasibaigė: atnaujinkite, kad tęstumėte sinchronizavimą.</string>
     <string name="label_subscription_paused">Prenumerata pristabdyta: sinchronizavimas išjungtas, kol ji nebus atnaujinta.</string>
     <string name="label_subscription_unpaid">Mokėjimas nepavyko: atnaujinkite mokėjimo būdą, kad vėl įjungtumėte sinchronizavimą.</string>
+    <string name="label_subscription_suspended_play">Sinchronizavimas išjungtas: prenumerata „Google Play“ parduotuvėje sulaikyta arba pristabdyta. Ten galite sutvarkyti mokėjimą arba ją atnaujinti.</string>
     <string name="notification_payment_failed_title">Prenumeratos mokėjimas nepavyko</string>
     <string name="btn_update_payment_method">Atnaujinti mokėjimo būdą</string>
     <string name="label_subscription_grace">Mokėjimo problema: atnaujinkite mokėjimo būdą, kad tęstumėte sinchronizavimą.</string>
@@ -275,8 +292,8 @@
     <string name="info_send_cancellations_body">Išsiųskite dalyviams el. laišką, kai ištrinate įvykį, į kurį jie pakviesti, kad jį pašalintų ir jų kalendoriai. Pagal numatytuosius nustatymus išjungta.</string>
     <string name="info_invite_subject_title_body">Siųsdami kvietimo el. laiškus, įrašykite įvykio pavadinimą į el. laiško temos eilutę, kad gavėjai jį iškart atpažintų. Pagal numatytuosius nustatymus išjungta dėl privatumo: el. laiškų temos standartiniame pašto perdavime nėra šifruojamos, todėl pavadinimas būtų matomas pašto serveriams maršrute.</string>
     <string name="info_background_sync_body">Android gali pristabdyti foninį sinchronizavimą, kad taupytų bateriją, o tai gali atidėti arba sustabdyti automatinį sinchronizavimą. Šios programėlės pašalinimas iš baterijos optimizavimo užtikrina patikimą suplanuotų sinchronizavimų veikimą. Naudokite mygtuką, kad atidarytumėte programėlės sistemos baterijos nustatymus.</string>
-    <string name="info_verbose_logging_body">Į žurnalą fiksuoja papildomas diagnostines detales (autentifikavimo būseną, raktų atrakinimą, sinchronizavimo vidinę veiklą), naudinga pranešant apie problemą. Tai gali apimti paskyrų el. pašto adresus ir kalendorių pavadinimus, todėl žurnalais dalykitės tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
-    <string name="info_file_logging_body">Įrašo programos žurnalą į tekstinį failą su laiko žyma (sync-for-proton-log-….txt) jūsų pasirinktame aplanke. Kitaip programa žurnalą laiko tik atmintyje, todėl įjunkite tai, kad užfiksuotumėte sunkiai atkuriamą problemą. Kiekvieną kartą paleidus programą sukuriamas naujas failas; jame gali būti paskyrų el. pašto adresų ir kalendorių pavadinimų, todėl bendrinkite jį tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
+    <string name="info_verbose_logging_body">Į žurnalą fiksuoja papildomas diagnostines detales (autentifikavimo būseną, raktų atrakinimą, sinchronizavimo vidinę veiklą), naudinga pranešant apie problemą. Programa el. pašto adresus žurnale pakeičia trumpais kodais, tačiau jame gali būti paskyrų ir kalendorių pavadinimų, todėl žurnalais dalykitės tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
+    <string name="info_file_logging_body">Įrašo programos žurnalą į tekstinį failą su laiko žyma (sync-for-proton-log-….txt) jūsų pasirinktame aplanke. Kitaip programa žurnalą laiko tik atmintyje, todėl įjunkite tai, kad užfiksuotumėte sunkiai atkuriamą problemą. Kiekvieną kartą paleidus programą sukuriamas naujas failas. Programa el. pašto adresus faile pakeičia trumpais kodais, tačiau jame gali būti paskyrų ir kalendorių pavadinimų, todėl bendrinkite jį tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
     <string name="info_timezone_updates_text">Įvykių laikas priklauso nuo laiko juostų taisyklių, o šalys jas retkarčiais keičia. Android jas saugo telefono laiko juostų duomenyse, kurie gaunami su sistemos naujiniais. Telefonas, kuris jų nebegauna, pavyzdžiui, su senesne Android versija arba be „Google Play“ sistemos naujinių, išlaiko senas taisykles, o įvykiai vietose, kurių taisyklės nuo to laiko pasikeitė, gali būti rodomi netinkamu laiku.\n\nLaiko juostų duomenys šiame telefone: versija %1$s\n\nKai išjungta (numatytoji), programėlė naudoja paties telefono laiko juostų duomenis ir į www.tzurl.org nieko nesiunčia.\n\nKai įjungta, programėlė iš www.tzurl.org, trečiosios šalies paslaugos, atsisiunčia dabartines kiekvienos jūsų įvykiuose naudojamos laiko juostos taisykles, ne daugiau kaip kartą kiekvienai laiko juostai kiekvieną kartą paleidus programėlę, ir naudoja jas tik tada, jei jos naujesnės už telefono duomenis. www.tzurl.org tada mato jūsų IP adresą ir šių laiko juostų pavadinimus, pavyzdžiui, Europe/Berlin. Jokia kita informacija apie jūsų įvykius ar paskyras nesiunčiama. Jei www.tzurl.org nepasiekiama, naudojami telefono duomenys. Pasikartojantys įvykiai ir toliau skaičiuojami pagal telefono duomenis.\n\nPo pakeitimo telefone jau esantys įvykiai patikrinami ir pataisomi kito sinchronizavimo metu.</string>
     <string name="tz_data_version_unknown">nežinoma</string>
     <string name="tz_outdated_title">Laiko juostų duomenys pasenę</string>
@@ -338,7 +355,12 @@
     <string name="notification_channel_alerts">Sinchronizavimo įspėjimai</string>
     <string name="notification_channel_alerts_description">Svarbūs saugos įspėjimai, kuriems reikia jūsų sprendimo</string>
     <string name="notification_bulk_delete_title">Aptiktas didelis kalendoriaus pakeitimas</string>
-    <string name="notification_bulk_delete_body">%1$d kalendoriaus įvykiai dingo iš šio telefono (%2$s). Siekiant apsaugoti jūsų duomenis, jie NEBUVO ištrinti iš Proton. Palikti juos telefone ar ištrinti ir iš Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d kalendoriaus įvykis dingo iš šio telefono (%2$s). Siekiant apsaugoti jūsų duomenis, jis NEBUVO ištrintas iš Proton. Palikti jį telefone ar ištrinti ir iš Proton?</item>
+        <item quantity="few">%1$d kalendoriaus įvykiai dingo iš šio telefono (%2$s). Siekiant apsaugoti jūsų duomenis, jie NEBUVO ištrinti iš Proton. Palikti juos telefone ar ištrinti ir iš Proton?</item>
+        <item quantity="many">%1$d kalendoriaus įvykio dingo iš šio telefono (%2$s). Siekiant apsaugoti jūsų duomenis, jie NEBUVO ištrinti iš Proton. Palikti juos telefone ar ištrinti ir iš Proton?</item>
+        <item quantity="other">%1$d kalendoriaus įvykių dingo iš šio telefono (%2$s). Siekiant apsaugoti jūsų duomenis, jie NEBUVO ištrinti iš Proton. Palikti juos telefone ar ištrinti ir iš Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Palikti Proton</string>
     <string name="notification_bulk_delete_delete">Ištrinti iš Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -381,10 +403,29 @@
     <string name="backup_decrypt_action">Iššifruoti atsarginę kopiją…</string>
     <string name="backup_decrypt_body">Pasirinkite šifruotą atsarginės kopijos failą (.gpg) ir įveskite jo slaptažodį. Turinys bus iššifruotas ir įrašytas į jūsų atsarginių kopijų aplanką.</string>
     <string name="backup_decrypting">Iššifruojama…</string>
-    <string name="backup_decrypt_done">Iššifruota į „%1$s" jūsų atsarginių kopijų aplanke.</string>
+    <string name="backup_decrypt_done">Iššifruota į „%1$s“ jūsų atsarginių kopijų aplanke.</string>
     <string name="backup_decrypt_failed">Nepavyko iššifruoti šio failo.</string>
     <string name="backup_restore_hint">Norėdami atkurti: importuokite .ics į Proton Calendar (Nustatymai → Importuoti), o .vcf, į Proton Contacts. Šifruotas atsargines kopijas taip pat galima atidaryti kompiuteryje komanda: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Sukurta %1$d kalendorių, %2$d įvykių ir %3$d kontaktų atsarginė kopija.</string>
+    <string name="backup_result_done">Atsarginė kopija sukurta: %1$s, %2$s ir %3$s.</string>
+    <string name="backup_result_partial">Atsarginė kopija sukurta: %1$s, %2$s ir %3$s, tačiau kai kurių elementų nepavyko nuskaityti (užrakinti raktai arba tinklo klaida), todėl atsarginė kopija gali būti nepilna. Patikrinkite sinchronizavimo žurnalus ir bandykite dar kartą.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalendorius</item>
+        <item quantity="few">%d kalendoriai</item>
+        <item quantity="many">%d kalendoriaus</item>
+        <item quantity="other">%d kalendorių</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d įvykis</item>
+        <item quantity="few">%d įvykiai</item>
+        <item quantity="many">%d įvykio</item>
+        <item quantity="other">%d įvykių</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d kontaktas</item>
+        <item quantity="few">%d kontaktai</item>
+        <item quantity="many">%d kontakto</item>
+        <item quantity="other">%d kontaktų</item>
+    </plurals>
     <string name="backup_result_skipped">Praleista: šaltinis negrąžino duomenų, todėl išsaugota paskutinė tinkama atsarginė kopija.</string>
     <string name="backup_result_failed">Atsarginės kopijos kūrimas nepavyko: %1$s</string>
     <string name="backup_result_folder_lost">Atsarginių kopijų aplankas nebepasiekiamas.</string>
@@ -406,11 +447,20 @@
     <string name="backup_reminder_optout_body">Ar tikrai nenorite nustatyti atsarginių kopijų? Neturėsite savo kalendorių ir kontaktų atsarginių kopijų, o mes daugiau apie tai nepriminsime!</string>
     <string name="backup_reminder_optout_confirm">Taip, nustokite priminti</string>
     <string name="backup_reminder_optout_cancel">Ne, priminkite toliau</string>
-    <string name="backup_result_incomplete">Sukurta %1$d kalendorių, %2$d įvykių ir %3$d kontaktų atsarginė kopija, tačiau kai kurių elementų nepavyko nuskaityti (užrakinti raktai arba tinklo klaida), todėl atsarginė kopija gali būti nepilna. Patikrinkite sinchronizavimo žurnalus ir bandykite dar kartą.</string>
     <string name="backup_notif_incomplete_title">Atsarginė kopija gali būti nepilna</string>
     <string name="remote_deletion_title">Elementai pašalinti iš Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d kontaktų nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</string>
-    <string name="remote_deletion_body_calendar">%1$d kalendoriaus įvykių nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d kontakto nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jis DAR nebuvo ištrintas iš šio telefono. Ištrinti jį ir čia ar palikti telefone?</item>
+        <item quantity="few">%1$d kontaktų nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+        <item quantity="many">%1$d kontakto nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+        <item quantity="other">%1$d kontaktų nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d kalendoriaus įvykio nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jis DAR nebuvo ištrintas iš šio telefono. Ištrinti jį ir čia ar palikti telefone?</item>
+        <item quantity="few">%1$d kalendoriaus įvykių nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+        <item quantity="many">%1$d kalendoriaus įvykio nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+        <item quantity="other">%1$d kalendoriaus įvykių nebėra Proton (%2$s). Siekiant apsaugoti jūsų duomenis, jie DAR nebuvo ištrinti iš šio telefono. Ištrinti juos ir čia ar palikti telefone?</item>
+    </plurals>
     <string name="remote_deletion_delete">Ištrinti iš telefono</string>
     <string name="remote_deletion_keep">Palikti telefone</string>
     <!-- Redesigned settings UI: sections, status hero, quick-tool tiles, sign-in & first-run -->
@@ -478,7 +528,12 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Visi</string>
-    <string name="label_log_count">%1$d iš %2$d eilučių</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d iš %2$d eilutės</item>
+        <item quantity="few">%1$d iš %2$d eilučių</item>
+        <item quantity="many">%1$d iš %2$d eilutės</item>
+        <item quantity="other">%1$d iš %2$d eilučių</item>
+    </plurals>
     <string name="label_share_sends_full_log">Bendrinant visada siunčiamas visas derinimo žurnalas</string>
     <string name="btn_clear_view">Išvalyti rodinį</string>
     <string name="btn_copy_debug_log">Kopijuoti derinimo žurnalą</string>
@@ -507,7 +562,12 @@
     <string name="contact_filters_delete">Ištrinti</string>
     <string name="contact_filters_saved">Taisyklės įrašytos. Jos įsigalios per kitą sinchronizavimą.</string>
     <string name="contact_filter_removal_title">Adresatų taisyklės pašalintų adresatus</string>
-    <string name="contact_filter_removal_body">Jūsų adresatų taisyklės nebeatitinka %1$d adresatų šiame telefone (%2$s). Jie tebėra jūsų Proton paskyroje ir ten nebus ištrinti. Pašalinti juos iš šio telefono ar palikti?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Jūsų adresatų taisyklės nebeatitinka %1$d adresato šiame telefone (%2$s). Jis tebėra jūsų Proton paskyroje ir ten nebus ištrintas. Pašalinti jį iš šio telefono ar palikti?</item>
+        <item quantity="few">Jūsų adresatų taisyklės nebeatitinka %1$d adresatų šiame telefone (%2$s). Jie tebėra jūsų Proton paskyroje ir ten nebus ištrinti. Pašalinti juos iš šio telefono ar palikti?</item>
+        <item quantity="many">Jūsų adresatų taisyklės nebeatitinka %1$d adresato šiame telefone (%2$s). Jie tebėra jūsų Proton paskyroje ir ten nebus ištrinti. Pašalinti juos iš šio telefono ar palikti?</item>
+        <item quantity="other">Jūsų adresatų taisyklės nebeatitinka %1$d adresatų šiame telefone (%2$s). Jie tebėra jūsų Proton paskyroje ir ten nebus ištrinti. Pašalinti juos iš šio telefono ar palikti?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Palikti telefone</string>
     <string name="contact_filter_tpl_auto_created">Adresatai, kuriuos Proton sukūrė automatiškai</string>
     <string name="contact_filter_tpl_auto_created_desc">Neįtraukia adresatų, turinčių tik rodomą vardą ir el. pašto adresą, be vardo ar pavardės. Būtent taip atrodo adresatas, kurį Proton sukuria iš laiško.</string>
@@ -536,20 +596,45 @@
     <string name="contact_filter_needs_name">Suteikite taisyklei pavadinimą, kad atpažintumėte ją sąraše.</string>
     <string name="contact_filter_delete_confirm">Ištrinti šią taisyklę?</string>
     <string name="contact_filter_preview_running">Tikrinami jūsų adresatai…</string>
-    <string name="contact_filter_preview_result">Iš %1$d šiame telefone patikrintų adresatų šios taisyklės paliktų %2$d, o pašalintų %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Iš %1$d šiame telefone patikrinto adresato šios taisyklės paliktų %2$d, o pašalintų %3$d.</item>
+        <item quantity="few">Iš %1$d šiame telefone patikrintų adresatų šios taisyklės paliktų %2$d, o pašalintų %3$d.</item>
+        <item quantity="many">Iš %1$d šiame telefone patikrinto adresato šios taisyklės paliktų %2$d, o pašalintų %3$d.</item>
+        <item quantity="other">Iš %1$d šiame telefone patikrintų adresatų šios taisyklės paliktų %2$d, o pašalintų %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Šios taisyklės nepašalintų nė vieno adresato.</string>
-    <string name="contact_filter_preview_undecided">%1$d telefone patikrinti negalima, nes ši taisyklė žiūri į duomenis, kuriuos turi tik Proton. Juos nuspręs kitas sinchronizavimas ir vis tiek paklaus prieš ką nors pašalindamas.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d adresato negalima patikrinti telefone, nes ši taisyklė žiūri į duomenis, kuriuos turi tik Proton. Dėl jo nuspręs kitas sinchronizavimas ir vis tiek paklaus prieš ką nors pašalindamas.</item>
+        <item quantity="few">%1$d adresatų negalima patikrinti telefone, nes ši taisyklė žiūri į duomenis, kuriuos turi tik Proton. Dėl jų nuspręs kitas sinchronizavimas ir vis tiek paklaus prieš ką nors pašalindamas.</item>
+        <item quantity="many">%1$d adresato negalima patikrinti telefone, nes ši taisyklė žiūri į duomenis, kuriuos turi tik Proton. Dėl jų nuspręs kitas sinchronizavimas ir vis tiek paklaus prieš ką nors pašalindamas.</item>
+        <item quantity="other">%1$d adresatų negalima patikrinti telefone, nes ši taisyklė žiūri į duomenis, kuriuos turi tik Proton. Dėl jų nuspręs kitas sinchronizavimas ir vis tiek paklaus prieš ką nors pašalindamas.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Šiame telefone šios paskyros adresatų dar nėra.</string>
     <string name="contact_filter_preview_title">Bandymo rezultatas</string>
     <string name="contact_filter_preview_failed">Nepavyko patikrinti jūsų adresatų: %1$s</string>
     <string name="contact_filter_preview_reading">Skaitomi jūsų Proton adresatai…</string>
     <string name="contact_filter_preview_progress">Tikrinamas adresatas %1$d iš %2$d…</string>
-    <string name="contact_filter_preview_server_result">Iš %1$d adresatų šioje Proton paskyroje šios taisyklės sinchronizuotų %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Iš %1$d adresato šioje Proton paskyroje šios taisyklės sinchronizuotų %2$d.</item>
+        <item quantity="few">Iš %1$d adresatų šioje Proton paskyroje šios taisyklės sinchronizuotų %2$d.</item>
+        <item quantity="many">Iš %1$d adresato šioje Proton paskyroje šios taisyklės sinchronizuotų %2$d.</item>
+        <item quantity="other">Iš %1$d adresatų šioje Proton paskyroje šios taisyklės sinchronizuotų %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Pašalinti iš šio telefono (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Nenukopijuoti į šį telefoną (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…ir dar %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…ir dar %1$d.</item>
+        <item quantity="few">…ir dar %1$d.</item>
+        <item quantity="many">…ir dar %1$d.</item>
+        <item quantity="other">…ir dar %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Rodyti visus</string>
-    <string name="contact_filter_preview_unreadable">%1$d nepavyko perskaityti, jie liktų nepaliesti.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d adresato nepavyko perskaityti, jis liktų nepaliestas.</item>
+        <item quantity="few">%1$d adresatų nepavyko perskaityti, jie liktų nepaliesti.</item>
+        <item quantity="many">%1$d adresato nepavyko perskaityti, jie liktų nepaliesti.</item>
+        <item quantity="other">%1$d adresatų nepavyko perskaityti, jie liktų nepaliesti.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Nepavyko pasiekti Proton, todėl šis bandymas galėjo naudoti tik tai, kas jau yra telefone.</string>
     <string name="contact_filter_preview_nothing_removed">Iš šio telefono nieko nebūtų pašalinta.</string>
     <string name="contact_filter_condition_values_hint">Po vieną reikšmę eilutėje</string>
@@ -633,12 +718,25 @@ Jei lauką pasirenkate patys, Android nebeturi ko sugalvoti. Tai liečia tik tuo
     <string name="label_name_repair">Patikrinti, ar nėra sugalvotų vardų</string>
     <string name="name_repair_scanning">Tikrinami jūsų Proton kontaktai…</string>
     <string name="name_repair_none">Nė vienas Proton kontaktas neturi Android sugalvoto vardo.</string>
-    <string name="name_repair_found">Rasta Proton kontaktų, kuriems Android sugalvojo vardą ir pavardę išskaidęs jų el. pašto adresą: %1$d. Ankstesnė šios programos versija tuos vardus išsiuntė į Proton.
-
-Pašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas vardas lieka toks pat.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d Proton kontaktas turi vardą ir pavardę, kuriuos Android sugalvojo išskaidęs jo el. pašto adresą. Ankstesnė šios programos versija tą vardą išsiuntė į Proton.\n\nPašalinti jį? Daugiau niekas šiame kontakte nesikeičia, o rodomas vardas lieka toks pat.</item>
+        <item quantity="few">%1$d Proton kontaktai turi vardą ir pavardę, kuriuos Android sugalvojo išskaidęs jų el. pašto adresą. Ankstesnė šios programos versija tuos vardus išsiuntė į Proton.\n\nPašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas vardas lieka toks pat.</item>
+        <item quantity="many">%1$d Proton kontakto turi vardą ir pavardę, kuriuos Android sugalvojo išskaidęs jų el. pašto adresą. Ankstesnė šios programos versija tuos vardus išsiuntė į Proton.\n\nPašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas vardas lieka toks pat.</item>
+        <item quantity="other">%1$d Proton kontaktų turi vardą ir pavardę, kuriuos Android sugalvojo išskaidęs jų el. pašto adresą. Ankstesnė šios programos versija tuos vardus išsiuntė į Proton.\n\nPašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas vardas lieka toks pat.</item>
+    </plurals>
     <string name="name_repair_action">Pašalinti sugalvotus vardus</string>
-    <string name="name_repair_done">Sutvarkyta kontaktų: %1$d.</string>
-    <string name="name_repair_partial">Sutvarkyta kontaktų: %1$d, nepaliesta: %2$d.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">Sutvarkytas %1$d kontaktas.</item>
+        <item quantity="few">Sutvarkyti %1$d kontaktai.</item>
+        <item quantity="many">Sutvarkyta %1$d kontakto.</item>
+        <item quantity="other">Sutvarkyta %1$d kontaktų.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">Sutvarkytas %1$d kontaktas, nepaliesta: %2$d.</item>
+        <item quantity="few">Sutvarkyti %1$d kontaktai, nepaliesta: %2$d.</item>
+        <item quantity="many">Sutvarkyta %1$d kontakto, nepaliesta: %2$d.</item>
+        <item quantity="other">Sutvarkyta %1$d kontaktų, nepaliesta: %2$d.</item>
+    </plurals>
     <string name="name_repair_failed">Nepavyko patikrinti kontaktų: %1$s</string>
     <string name="filter_op_num_eq">yra</string>
     <string name="filter_field_other_content">Kita informacija</string>
@@ -647,10 +745,20 @@ Pašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas varda
     <string name="contact_filters_empty_none">Nė vienas šios Proton paskyros adresatas nepatenka į jūsų telefoną, nes nuostata apačioje nurodo nesinchronizuoti nieko, ko nepaliečia jokia taisyklė. Pridėkite taisyklę, kad dalis jų patektų į telefoną.</string>
     <string name="remove_synced_calendar_title">Pašalinti šiuos kalendorius iš šio telefono?</string>
     <string name="remove_synced_calendar_body">Kalendoriaus sinchronizavimas dabar išjungtas, todėl daugiau nieko nebus atsisiunčiama. Kalendoriai, jau esantys šiame telefone, lieka tol, kol jų nepašalinsite. Pašalinus jie ištrinami tik iš šio telefono; jūsų kalendoriai Proton lieka nepaliesti. Juos taip pat galite pašalinti vėliau Android paskyrų nustatymuose, o vėl įjungus kalendoriaus sinchronizavimą jie bus sukurti iš naujo.</string>
-    <string name="remove_synced_calendar_done">Iš šio telefono pašalinta įvykių: %1$d</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Iš šio telefono pašalintas %1$d įvykis</item>
+        <item quantity="few">Iš šio telefono pašalinti %1$d įvykiai</item>
+        <item quantity="many">Iš šio telefono pašalinta %1$d įvykio</item>
+        <item quantity="other">Iš šio telefono pašalinta %1$d įvykių</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Pašalinti šiuos kontaktus iš šio telefono?</string>
     <string name="remove_synced_contacts_body">Kontaktų sinchronizavimas dabar išjungtas, todėl daugiau nieko nebus atsisiunčiama. Kontaktai, jau esantys šiame telefone, lieka tol, kol jų nepašalinsite. Pašalinus jie ištrinami tik iš šio telefono; jūsų kontaktai Proton lieka nepaliesti. Juos taip pat galite pašalinti vėliau Android paskyrų nustatymuose, o vėl įjungus kontaktų sinchronizavimą jie bus pridėti iš naujo.</string>
-    <string name="remove_synced_contacts_done">Iš šio telefono pašalinta kontaktų: %1$d</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Iš šio telefono pašalintas %1$d kontaktas</item>
+        <item quantity="few">Iš šio telefono pašalinti %1$d kontaktai</item>
+        <item quantity="many">Iš šio telefono pašalinta %1$d kontakto</item>
+        <item quantity="other">Iš šio telefono pašalinta %1$d kontaktų</item>
+    </plurals>
     <string name="remove_synced_keep">Palikti</string>
     <string name="remove_synced_remove">Pašalinti</string>
     <string name="setup_choose_title">Ką turėtų sinchronizuoti ši paskyra?</string>
@@ -666,4 +774,5 @@ Pašalinti juos? Daugiau niekas šiuose kontaktuose nesikeičia, o rodomas varda
     <string name="sfp_hero_subtitle_sync_off">Sinchronizavimas lieka išjungtas, kol nebus aktyvios prenumeratos. Žr. skiltį „Prenumerata“ aukščiau.</string>
 
     <string name="toast_resync_skipped">Nėra ko sinchronizuoti: sinchronizavimas išjungtas (%1$s)</string>
+    <string name="plural_rules_language">lt</string>
 </resources>

@@ -35,6 +35,14 @@ class LicenceSummaryTest {
     }
 
     @Test
+    fun `a Google Play suspension is named`() {
+        val prefs = FakePrefs()
+        prefs.values[SyncPreferences.KEY_SUBSCRIPTION_STATE] = "Expired"
+        prefs.values[SyncPreferences.KEY_SUBSCRIPTION_SUSPENDED] = true
+        assertEquals("Expired, suspended by Google Play (on hold or paused)", LicenceSummary.line(prefs, paddle = false))
+    }
+
+    @Test
     fun `a direct trial gives its end and a confirmed id, without the id`() {
         val prefs = FakePrefs()
         prefs.values[SyncPreferences.KEY_SUBSCRIPTION_STATE] = "Trial"

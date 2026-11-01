@@ -335,6 +335,25 @@ class SubscriptionEntryTest {
         prefilled("s".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, SubscriptionEntry.Valid(V, inText = true))
     }
 
+    @Test
+    fun `a full field is answered as too long, however short its text cleans to`() {
+        // The dialog's field holds MAX_ENTRY_CHARS + 2 characters and cuts a longer paste there, or one less where the
+        // cut would split a surrogate pair. Cleaned, the cut text can be back under the limit; searched, it lost the id
+        // past the cut without a word.
+        val pasted = "   " + "a".repeat(MAX_ENTRY_CHARS - 3) + "  " + V
+        for (field in listOf(pasted.take(MAX_ENTRY_CHARS + 2), pasted.take(MAX_ENTRY_CHARS + 1))) {
+            assertEquals(SubscriptionEntry.NotAnId, parseSubscriptionEntry(field))
+            assertEquals(SubscriptionEntry.TooLong, parseSubscriptionField(field))
+            assertEquals(SubscriptionEntry.TooLong, parseSubscriptionField(field, prefilled = V))
+        }
+        // A field that is not full is read as before.
+        val fits = " " + "a".repeat(MAX_ENTRY_CHARS - V.length - 2) + " " + V
+        assertEquals(MAX_ENTRY_CHARS, fits.length)
+        assertEquals(SubscriptionEntry.Valid(V, inText = true), parseSubscriptionField(fits))
+        assertEquals(SubscriptionEntry.Valid(V, inText = true), parseSubscriptionField(fits, prefilled = V))
+        assertEquals(SubscriptionEntry.Empty, parseSubscriptionField(""))
+    }
+
     @Test(timeout = 60_000)
     fun `a run of typed prefixes is read once, not again from every prefix in it`() {
         // Runs of prefixes that do not lead to the id, just under the limit (with a stored id, the longest ran the
@@ -406,6 +425,215 @@ class SubscriptionEntryTest {
         kind("Order ${T.dropLast(3)}, receipt sent to name@example.com", SubscriptionEntry.MistypedTransactionId)
     }
 
+    // ---------------------------------------------------------------- email addresses beside or around an id
+
+    @Test
+    fun `an email address is never read as an id, as part of one or as an id begun`() {
+        // The local part in front of an address's "@" is left out of every search for an id. The dialog keeps its
+        // text when an activation fails, so an address pasted after a cut-short id must not make it whole, and an
+        // address beside an id must not refuse it as a second id begun.
+        val cutT = T.dropLast(4)
+        // A cut-short id is not made whole with the start of an address after it, with or without whitespace
+        // between, whatever the address is made of. All but the two at example.org made up an id out of the
+        // address, such as "txn_07h04vsc0qhwtsbsxh3422name", and sent it to the proxy.
+        kind("https://apps.example/checkout.html?_ptxn=$cutT name@example.com", SubscriptionEntry.MistypedTransactionId)
+        kind(cutT + "name@example.com", SubscriptionEntry.Email)
+        kind(cutT + "\nname@example.com", SubscriptionEntry.MistypedTransactionId)
+        kind("$cutT first.last@example.org", SubscriptionEntry.MistypedTransactionId)
+        kind("$cutT ab-c+tag@example.org", SubscriptionEntry.MistypedTransactionId)
+        kind(V.dropLast(4) + "\r\nname@example.com", SubscriptionEntry.MistypedSubId)
+        kind(V.dropLast(2) + " ab'cd@example.com", SubscriptionEntry.MistypedSubId)
+        // An id run straight into an address is part of the address, whatever joins the two (it was the id, except
+        // after "_"); with whitespace or other punctuation between them, it is found.
+        kind("$V@example.com", SubscriptionEntry.Email)
+        kind("$V.support@example.com", SubscriptionEntry.Email)
+        kind("$V+tag@example.com", SubscriptionEntry.Email)
+        kind("$V-x@example.com", SubscriptionEntry.Email)
+        kind("${V}_x@example.com", SubscriptionEntry.Email)
+        kind("$V'x@example.com", SubscriptionEntry.Email)
+        kind("Your ID is $V.support@example.com", SubscriptionEntry.Email)
+        kind("$T+tag@example.com", SubscriptionEntry.Email)
+        valid("$V name@example.com", inText = true)
+        valid("$V,name@example.com", inText = true)
+        valid("$V (name@example.com)", inText = true)
+        // Whatever follows the "@", "%40" or "%2540", a domain or nothing, the run in front of it is a local part: an
+        // id run into it goes with it (it was that id), and a transaction id beside it is the one found (it was the
+        // subscription id).
+        kind("$V@", SubscriptionEntry.MistypedSubId)
+        kind("$V%40", SubscriptionEntry.MistypedSubId)
+        transaction("$T $V@example.com", inText = true)
+        // The ends of the ranges a local part is read with ("0" to "9", "a" to "z"). Any other character ends one: an
+        // id right in front of it is found with the address after it taken out, and an address right after it is
+        // still taken out.
+        kind("$V.z9@example.com", SubscriptionEntry.Email)
+        for (c in listOf("=", "&", "?", "/", ":", "<", "(", ",", ";")) valid(V + c + "name@example.com", inText = true)
+        for (c in listOf("mailto:", "/", "<", "(", "\"", "=")) valid("$V ${c}me+sub_3@example.com", inText = true)
+        // Only "@", "%40" and "%2540" end a local part, not an encoding that starts as one of them does.
+        for (after in listOf("%4", "%41", "%25", "%2526", "%254", "%2541")) valid(V + after, inText = true)
+        // A local part of one character is taken out too, and one of any length.
+        kind(T2.dropLast(1) + " b@example.com", SubscriptionEntry.MistypedTransactionId)
+        valid(V.substring(0, 15) + "\n" + V.substring(15) + " a@example.com", inText = true)
+        kind("$V." + "a".repeat(40) + "@example.com", SubscriptionEntry.Email)
+        // A link's token is taken out before the local parts: the other way round, an "@" in its value would take the
+        // "3d" of its "%3d" along, and the token, "sub-3" and all, would be left in.
+        valid(
+            "$V https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fapps.example%2Fp" +
+                "%3Ftoken%3Dpga_x9@sub-3%26a&data=05",
+            inText = true,
+        )
+        // A sentence with an address after it, with or without a space after the full stop.
+        valid("Your ID is $V. Questions? support@example.com", inText = true)
+        valid("Your ID is $V.Questions? support@example.com", inText = true)
+        valid("Your ID is $V. Questions?support@example.com", inText = true)
+        valid("Your ID is $V. support@example.com", inText = true)
+        valid("Your ID is $V.\nsupport@example.com", inText = true)
+        transaction("Your transaction ID is $T.Questions? support@example.com", inText = true)
+        // An id at the end of a line, the address on the next one.
+        valid("$V\nname@example.com", inText = true)
+        valid("Subscription ID: $V\r\nEmail: name@example.com", inText = true)
+        valid("> Subscription ID: $V\n> name@example.com", inText = true)
+        transaction("Transaction ID: $T\nname@example.com", inText = true)
+        transaction("Receipt | $T | EUR 2.49\nname@example.com", inText = true)
+        // An id split by a line wrap or a space is found with an address after it, on the same line or the next.
+        // All but the one with " - " between were a mistyped id.
+        valid(V.substring(0, 16) + "\n" + V.substring(16) + " name@example.com", inText = true)
+        valid(V.substring(0, 15) + "\n" + V.substring(15) + " name@example.com", inText = true)
+        valid(V.substring(0, 15) + "\n" + V.substring(15) + "\nname@example.com", inText = true)
+        valid("Subscription " + V.substring(0, 15) + " " + V.substring(15) + " - name@example.com", inText = true)
+        transaction("Transaction " + T.substring(0, 13) + " " + T.substring(13) + " name@example.com", inText = true)
+        // A wrapped link whose query carries the address, plain or encoded. The two whose address holds an id begun
+        // were a mistyped id.
+        transaction(
+            "https://apps.example/checkout.html?_ptxn=" + T.substring(0, 18) + "\n" + T.substring(18) +
+                "&email=name@example.com",
+            inText = true,
+        )
+        transaction("https://apps.example/checkout.html?_ptxn=$T&email=na\nme@example.com", inText = true)
+        transaction(
+            "https://apps.example/checkout.html?_ptxn=" + T.substring(0, 18) + "\n" + T.substring(18) +
+                "&email=jane.sub-2%40example.com",
+            inText = true,
+        )
+        valid(
+            "https://customer-portal.paddle.com/cpl_07" + "a".repeat(24) + "?subscription_id=" + V.substring(0, 18) +
+                "\n" + V.substring(18) + "&email=me+sub_3%40example.com",
+            inText = true,
+        )
+        transaction(
+            "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fapps.example%2Fcheckout.html" +
+                "%3F_ptxn%3D" + T.substring(0, 20) + "\n" + T.substring(20) + "%26email%3Dname%2540example.com&data=05",
+            inText = true,
+        )
+        // An address that holds an id begun is no second id beside a whole one, also where a link writes its "@" as
+        // "%40", or a link inside a link as "%2540". Each was a mistyped id, except "me+txn_0@" in front of a
+        // subscription id.
+        valid("$V me+sub_3@example.com", inText = true)
+        valid("$V jane.sub-2@example.com", inText = true)
+        valid("$V club-sub-1@example.com", inText = true)
+        valid("me+txn_0@example.com\n$V", inText = true)
+        transaction("$T sub-1@example.com", inText = true)
+        transaction("$T txn-2@example.com", inText = true)
+        valid(V.substring(0, 15) + "\n" + V.substring(15) + " me+sub_3@example.com", inText = true)
+        transaction("https://apps.example/checkout.html?_ptxn=$T&email=me+sub_3@example.com", inText = true)
+        transaction("https://apps.example/checkout.html?_ptxn=$T&email=jane.sub-2%40example.com", inText = true)
+        valid(
+            "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fcustomer-portal.paddle.com%2Fcpl_07" +
+                "a".repeat(24) + "%3Fsubscription_id%3D$V%26a&data=05%7C02%7Cclub-sub-1%40example.com%7C0",
+            inText = true,
+        )
+        transaction(
+            "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fapps.example%2Fcheckout.html" +
+                "%3F_ptxn%3D$T%26email%3Djane.sub-2%2540example.com&data=05",
+            inText = true,
+        )
+        // Nor is a whole id in an address a second id (they were several ids).
+        transaction("$T $T2.x@example.com", inText = true)
+        valid("$V sub_07" + "a".repeat(24) + "@example.com", inText = true)
+        // A broken second id apart from the address still refuses the id.
+        kind("$V sub_07h0 name@example.com", SubscriptionEntry.MistypedSubId)
+        kind("$V sub_07h0, name@example.com", SubscriptionEntry.MistypedSubId)
+        kind("$V sub_07h0\nname@example.com", SubscriptionEntry.MistypedSubId)
+        kind("$V sub_07h0 me+sub_3@example.com", SubscriptionEntry.MistypedSubId)
+        kind("$T txn_07h0 name@example.com", SubscriptionEntry.MistypedTransactionId)
+        kind("$T sub_07h0 name@example.com", SubscriptionEntry.MistypedSubId)
+        // Run straight into the address, it is part of the address, as an id would be, and the id beside it is found
+        // (it was a mistyped id).
+        valid("$V sub_07h0name@example.com", inText = true)
+        // Only the local part goes: an id in an address's domain, where a real address has none, is still found.
+        valid("user@$V.example.com", inText = true)
+        // A cut-short id with an ordinary word after it, then an address, is character for character an id split by
+        // a space with an address after it: nothing tells the two apart, so both are read as one id. Both were a
+        // mistyped id, the address run into the word in front of it.
+        kind("$cutT data name@example.com", SubscriptionEntry.ValidTransaction(cutT + "data", inText = true))
+        transaction("$cutT " + T.takeLast(4) + " name@example.com", inText = true)
+    }
+
+    @Test
+    fun `beside the pre-filled stored id, an email address is never read as a transaction id or one begun`() {
+        val cutT = T.dropLast(4)
+        val looked = SubscriptionEntry.ValidTransaction(T, inText = true)
+        // A cut-short transaction id beside the stored id is not made whole with the start of an address (both made
+        // one up and sent it).
+        prefilled("$V $cutT name@example.com", SubscriptionEntry.MistypedTransactionId)
+        prefilled(
+            "$V https://apps.example/checkout.html?_ptxn=$cutT name@example.com",
+            SubscriptionEntry.MistypedTransactionId,
+        )
+        // Run straight into an address, it is part of the address, so the stored id is what is meant (it made up a
+        // transaction id out of the address).
+        prefilled("$V " + cutT + "name@example.com", SubscriptionEntry.Valid(V, inText = true))
+        // A whole one split by a line wrap is still what was pasted, with an address after it (it was a mistyped
+        // transaction id).
+        prefilled("$V\nTransaction " + T.substring(0, 15) + "\n" + T.substring(15) + " name@example.com", looked)
+        // An address that holds an id begun is no second id begun (each was a mistyped id).
+        prefilled("$V $T sub-1@example.com", looked)
+        prefilled("$V https://apps.example/checkout.html?_ptxn=$T&email=me+txn_2@example.com", looked)
+        prefilled("$V me+txn-2@example.com", SubscriptionEntry.Valid(V, inText = true))
+        // A broken transaction id apart from the address is still refused.
+        prefilled("$V txn_07h0 name@example.com", SubscriptionEntry.MistypedTransactionId)
+    }
+
+    @Test(timeout = 60_000)
+    fun `a local part is tried only where a run of address characters starts`() {
+        // Runs of address characters before an "@" or its "%2540" form, cut short by a "=" or by a "%254" that never
+        // becomes "%2540", many dots or "@" between spaces, one run of every character a local part is read with and
+        // no "@", all just under the limit, and an id beside many addresses that each hold an id begun. A local part
+        // is tried only where a run starts, so each run is read from its start only, not again from every character
+        // in it. Measured against a plain text of the same length on the same machine, as the best of several runs.
+        val beside = "$V me+sub_3@example.com ".repeat(MAX_ENTRY_CHARS / 52)
+        val texts = listOf(
+            "a.".repeat((MAX_ENTRY_CHARS - 1) / 2) + "@",
+            "a@ ".repeat(MAX_ENTRY_CHARS / 3),
+            "  a@".repeat(MAX_ENTRY_CHARS / 4),
+            " .".repeat(MAX_ENTRY_CHARS / 2),
+            ("a".repeat(99) + "=").repeat(MAX_ENTRY_CHARS / 100 - 1) + "@",
+            ("a".repeat(96) + "%254").repeat(MAX_ENTRY_CHARS / 100),
+            "a%2540".repeat(MAX_ENTRY_CHARS / 6),
+            "09az._+'-".repeat(MAX_ENTRY_CHARS / 9),
+        )
+        for (text in texts) kind(text, SubscriptionEntry.NotAnId)
+        valid(beside, inText = true)
+        prefilled(beside, SubscriptionEntry.Valid(V, inText = true))
+        fun best(text: String, stored: String?): Long {
+            repeat(5) { parseSubscriptionEntry(text, stored) }
+            return (1..15).minOf { measureNanoTime { parseSubscriptionEntry(text, stored) } }
+        }
+        val plain = best("a".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, V)
+        val cases: List<Pair<String, String?>> = texts.map { it to null } + listOf(beside to null, beside to V)
+        for ((text, stored) in cases) {
+            val ratio = best(text, stored).toDouble() / plain
+            assertTrue("${text.take(12)}... (stored id: ${stored != null}) took ${"%.1f".format(ratio)} times the plain text", ratio < 10)
+        }
+        // The plain text is such a run too, so it would be as slow as they are: both are also measured against short
+        // words, which take as long however a local part is tried.
+        val words = best("id is ".repeat((MAX_ENTRY_CHARS - V.length) / 6) + V, V)
+        val runs = listOf("a".repeat(MAX_ENTRY_CHARS - V.length - 1) + " " + V, "09az._+'-".repeat(MAX_ENTRY_CHARS / 9))
+        for (text in runs) {
+            val ratio = best(text, V).toDouble() / words
+            assertTrue("${text.take(12)}... took ${"%.1f".format(ratio)} times short words", ratio < 10)
+        }
+    }
+
     @Test
     fun `blank text is empty`() {
         kind("", SubscriptionEntry.Empty)
@@ -439,6 +667,8 @@ class SubscriptionEntryTest {
         `a transaction id wins over an email address in the same text`()
         `an email address is named as one`()
         `the prefix alone, or typed in front of an email address, is answered as what it is`()
+        `an email address is never read as an id, as part of one or as an id begun`()
+        `beside the pre-filled stored id, an email address is never read as a transaction id or one begun`()
         `anything else is not an id`()
         val secret = Regex("sub_[0-9]|txn_[0-9]|@")
         for (entry in seen) {

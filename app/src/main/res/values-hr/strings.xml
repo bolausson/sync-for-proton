@@ -62,7 +62,11 @@
     <string name="btn_sync_all_accounts">Sinkroniziraj sve račune</string>
     <string name="btn_sync_now">Sinkroniziraj</string>
     <string name="label_sync_all_long_press_hint">Dugo pritisnite za prisilnu potpunu ponovnu sinkronizaciju</string>
-    <string name="dialog_title_full_resync_all">Potpuna ponovna sinkronizacija (%1$d računa)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Potpuna ponovna sinkronizacija (%1$d račun)</item>
+        <item quantity="few">Potpuna ponovna sinkronizacija (%1$d računa)</item>
+        <item quantity="other">Potpuna ponovna sinkronizacija (%1$d računa)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Odaberite smjer sinkronizacije za sve račune:\n\nUdaljeno → Lokalno: Izbriši lokalne podatke i ponovo preuzmi iz Proton.\n\nLokalno → Udaljeno: Prenesi sve lokalne podatke u Proton (prebrisuje udaljene).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sinkronizacija pokrenuta za %d račun</item>
@@ -97,7 +101,7 @@
     <string name="label_sync_mode_all">Svi događaji</string>
     <string name="label_sync_mode_custom">Prilagođeni raspon</string>
     <string name="dialog_title_display_name">Prikazni naziv</string>
-    <string name="dialog_message_display_name">Odaberite novi prikazni naziv za ovaj račun. Koristi se u Postavke → Upravljanje računima i kao podnaslov „Račun" u kontaktima.</string>
+    <string name="dialog_message_display_name">Odaberite novi prikazni naziv za ovaj račun. Koristi se u Postavke → Upravljanje računima i kao podnaslov „Račun“ u kontaktima.</string>
     <string name="dialog_hint_display_name">Prikazni naziv</string>
     <string name="toast_display_name_blank">Prikazni naziv ne može biti prazan.</string>
     <string name="toast_display_name_taken">Račun pod nazivom \"%s\" već postoji.</string>
@@ -139,11 +143,20 @@
     <string name="label_calendar_lower">kalendar</string>
     <string name="label_all_data">svi podaci</string>
     <string name="dialog_title_battery">Omogući neograničeno korištenje baterije</string>
-    <string name="dialog_message_battery">Za pouzdanu pozadinsku sinkronizaciju, postavite korištenje baterije na „Neograničeno" na sljedećem zaslonu.\n\nIdite na Baterija → Neograničeno.</string>
+    <string name="dialog_message_battery">Za pouzdanu pozadinsku sinkronizaciju, postavite korištenje baterije na „Neograničeno“ na sljedećem zaslonu.\n\nIdite na Baterija → Neograničeno.</string>
     <string name="btn_open_settings">Otvori postavke</string>
     <string name="btn_later">Kasnije</string>
     <string name="label_custom_suffix">, prilagođeno</string>
-    <string name="label_days_format">%d dana</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d dan</item>
+        <item quantity="few">%d dana</item>
+        <item quantity="other">%d dana</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minuta</item>
+        <item quantity="few">%d minute</item>
+        <item quantity="other">%d minuta</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Pogreške sinkronizacije</string>
     <string name="notification_channel_sync_description">Obavijesti kada sinkronizacija kalendara ili kontakata ne uspije</string>
@@ -205,6 +218,7 @@
     <string name="label_subscription_expired">Pretplata je istekla: obnovite je da biste nastavili sinkronizaciju.</string>
     <string name="label_subscription_paused">Pretplata je pauzirana: sinkronizacija je isključena dok se pretplata ne nastavi.</string>
     <string name="label_subscription_unpaid">Plaćanje nije uspjelo: ažurirajte način plaćanja kako biste ponovno uključili sinkronizaciju.</string>
+    <string name="label_subscription_suspended_play">Sinkronizacija je isključena: pretplata je obustavljena ili pauzirana na Google Playu, gdje možete riješiti problem s plaćanjem ili nastaviti pretplatu.</string>
     <string name="notification_payment_failed_title">Plaćanje pretplate nije uspjelo</string>
     <string name="btn_update_payment_method">Ažuriraj način plaćanja</string>
     <string name="label_subscription_grace">Problem s plaćanjem: ažurirajte način plaćanja kako biste nastavili sinkronizaciju.</string>
@@ -273,8 +287,8 @@
     <string name="info_send_cancellations_body">Pošaljite sudionicima e-poštu kada izbrišete događaj na koji su pozvani, kako bi ga i njihovi kalendari uklonili. Isključeno prema zadanim postavkama.</string>
     <string name="info_invite_subject_title_body">Pri slanju pozivnica e-poštom, stavite naziv događaja u predmet e-pošte kako bi ga primatelji odmah prepoznali. Isključeno prema zadanim postavkama radi privatnosti: predmeti e-pošte nisu šifrirani u standardnom prijenosu pošte, pa bi naslov bio vidljiv poštanskim poslužiteljima na putu.</string>
     <string name="info_background_sync_body">Android može pauzirati pozadinsku sinkronizaciju radi uštede baterije, što može odgoditi ili zaustaviti automatsku sinkronizaciju. Isključivanje ove aplikacije iz optimizacije baterije održava zakazane sinkronizacije pouzdano pokrenutima. Upotrijebite gumb za otvaranje sistemskih postavki baterije za aplikaciju.</string>
-    <string name="info_verbose_logging_body">Bilježi dodatne dijagnostičke detalje (stanje autentifikacije, otključavanje ključeva, unutarnje procese sinkronizacije) u zapis, korisno pri prijavi problema. Može uključivati e-adrese računa i nazive kalendara, stoga zapise dijelite samo s razvojnim programerom. Ostavite isključeno za uobičajenu upotrebu.</string>
-    <string name="info_file_logging_body">Zapisuje zapisnik aplikacije u tekstualnu datoteku s vremenskom oznakom (sync-for-proton-log-….txt) u mapu koju odaberete. Inače aplikacija zapisnik čuva samo u memoriji, pa ovo uključite kako biste zabilježili problem koji je teško ponoviti. Pri svakom pokretanju aplikacije stvara se nova datoteka; može sadržavati adrese e-pošte računa i nazive kalendara, pa je dijelite samo s razvijateljem. Za uobičajenu upotrebu ostavite isključeno.</string>
+    <string name="info_verbose_logging_body">Bilježi dodatne dijagnostičke detalje (stanje autentifikacije, otključavanje ključeva, unutarnje procese sinkronizacije) u zapis, korisno pri prijavi problema. Aplikacija u njemu zamjenjuje e-adrese kratkim kodovima, ali zapis može uključivati nazive računa i kalendara, stoga zapise dijelite samo s razvojnim programerom. Ostavite isključeno za uobičajenu upotrebu.</string>
+    <string name="info_file_logging_body">Zapisuje zapisnik aplikacije u tekstualnu datoteku s vremenskom oznakom (sync-for-proton-log-….txt) u mapu koju odaberete. Inače aplikacija zapisnik čuva samo u memoriji, pa ovo uključite kako biste zabilježili problem koji je teško ponoviti. Pri svakom pokretanju aplikacije stvara se nova datoteka. Aplikacija u njoj zamjenjuje adrese e-pošte kratkim kodovima, ali datoteka može sadržavati nazive računa i kalendara, pa je dijelite samo s razvijateljem. Za uobičajenu upotrebu ostavite isključeno.</string>
     <string name="info_timezone_updates_text">Vremena događaja ovise o pravilima vremenskih zona, a države ta pravila povremeno mijenjaju. Android ih čuva u podacima o vremenskim zonama telefona, koji stižu s ažuriranjima sustava. Telefon koji ih više ne prima, primjerice sa starijom verzijom Androida ili bez ažuriranja sustava Google Playa, zadržava stara pravila, a događaji na mjestima čija su se pravila od tada promijenila mogu se prikazati u pogrešno vrijeme.\n\nPodaci o vremenskim zonama na ovom telefonu: verzija %1$s\n\nKada je isključeno (zadano), aplikacija koristi vlastite podatke o vremenskim zonama telefona i ništa ne šalje na www.tzurl.org.\n\nKada je uključeno, aplikacija s www.tzurl.org, usluge treće strane, preuzima aktualna pravila za svaku vremensku zonu koju koriste vaši događaji, najviše jednom po vremenskoj zoni pri svakom pokretanju aplikacije, i koristi ih samo ako su novija od podataka telefona. www.tzurl.org tada vidi vašu IP adresu i nazive tih vremenskih zona, primjerice Europe/Berlin. O vašim događajima ili računima ništa se drugo ne šalje. Ako www.tzurl.org nije dostupan, koriste se podaci telefona. Ponavljajući događaji i dalje se izračunavaju iz podataka telefona.\n\nNakon promjene događaji koji su već na telefonu provjeravaju se i ispravljaju pri sljedećoj sinkronizaciji.</string>
     <string name="tz_data_version_unknown">nepoznata</string>
     <string name="tz_outdated_title">Podaci o vremenskim zonama su zastarjeli</string>
@@ -335,7 +349,11 @@
     <string name="notification_channel_alerts">Upozorenja sinkronizacije</string>
     <string name="notification_channel_alerts_description">Važna sigurnosna upozorenja koja zahtijevaju vašu odluku</string>
     <string name="notification_bulk_delete_title">Otkrivena velika promjena u kalendaru</string>
-    <string name="notification_bulk_delete_body">%1$d kalendarskih događaja nestalo je s ovog telefona (%2$s). Radi zaštite vaših podataka NISU izbrisani iz Proton. Želite li ih zadržati na telefonu ili ih izbrisati i iz Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d kalendarski događaj nestao je s ovog telefona (%2$s). Radi zaštite vaših podataka NIJE izbrisan iz Protona. Želite li ga zadržati na telefonu ili ga izbrisati i iz Protona?</item>
+        <item quantity="few">%1$d kalendarska događaja nestala su s ovog telefona (%2$s). Radi zaštite vaših podataka NISU izbrisani iz Protona. Želite li ih zadržati na telefonu ili ih izbrisati i iz Protona?</item>
+        <item quantity="other">%1$d kalendarskih događaja nestalo je s ovog telefona (%2$s). Radi zaštite vaših podataka NISU izbrisani iz Protona. Želite li ih zadržati na telefonu ili ih izbrisati i iz Protona?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Zadrži u Proton</string>
     <string name="notification_bulk_delete_delete">Izbriši u Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -381,7 +399,23 @@
     <string name="backup_decrypt_done">Dešifrirano u \"%1$s\" u vašoj mapi za sigurnosne kopije.</string>
     <string name="backup_decrypt_failed">Ovu datoteku nije bilo moguće dešifrirati.</string>
     <string name="backup_restore_hint">Za vraćanje: uvezite .ics u Proton Calendar (Postavke → Uvoz) i .vcf u Proton Contacts. Šifrirane sigurnosne kopije mogu se otvoriti i na računalu s: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Sigurnosno kopirano: %1$d kalendara, %2$d događaja i %3$d kontakata.</string>
+    <string name="backup_result_done">Sigurnosno kopirano: %1$s, %2$s i %3$s.</string>
+    <string name="backup_result_partial">Sigurnosno kopirano: %1$s, %2$s i %3$s, ali neke stavke nije bilo moguće pročitati (zaključani ključevi ili mrežna pogreška), pa sigurnosna kopija može biti nepotpuna. Provjerite zapise sinkronizacije, a zatim pokušajte ponovno.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalendar</item>
+        <item quantity="few">%d kalendara</item>
+        <item quantity="other">%d kalendara</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d događaj</item>
+        <item quantity="few">%d događaja</item>
+        <item quantity="other">%d događaja</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d kontakt</item>
+        <item quantity="few">%d kontakta</item>
+        <item quantity="other">%d kontakata</item>
+    </plurals>
     <string name="backup_result_skipped">Preskočeno: izvor nije vratio podatke, pa je zadržana posljednja ispravna sigurnosna kopija.</string>
     <string name="backup_result_failed">Sigurnosno kopiranje nije uspjelo: %1$s</string>
     <string name="backup_result_folder_lost">Mapa za sigurnosne kopije više nije dostupna.</string>
@@ -403,11 +437,18 @@
     <string name="backup_reminder_optout_body">Jeste li sigurni da ne želite postaviti sigurnosne kopije? Nećete čuvati vlastite kopije svojih kalendara i kontakata, a mi vas više nećemo podsjećati na ovo!</string>
     <string name="backup_reminder_optout_confirm">Da, prestani me podsjećati</string>
     <string name="backup_reminder_optout_cancel">Ne, nastavi me podsjećati</string>
-    <string name="backup_result_incomplete">Sigurnosno kopirano: %1$d kalendara, %2$d događaja i %3$d kontakata, ali neke stavke nije bilo moguće pročitati (zaključani ključevi ili mrežna pogreška), pa sigurnosna kopija može biti nepotpuna. Provjerite zapise sinkronizacije, a zatim pokušajte ponovno.</string>
     <string name="backup_notif_incomplete_title">Sigurnosna kopija može biti nepotpuna</string>
     <string name="remote_deletion_title">Stavke uklonjene iz Protona</string>
-    <string name="remote_deletion_body_contacts">%1$d kontakata više nije u Protonu (%2$s). Radi zaštite vaših podataka JOŠ nisu izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</string>
-    <string name="remote_deletion_body_calendar">%1$d kalendarskih događaja više nije u Protonu (%2$s). Radi zaštite vaših podataka JOŠ nisu izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d kontakt više nije u Protonu (%2$s). Radi zaštite vaših podataka NIJE još izbrisan s ovog telefona. Izbrisati ga i ovdje ili zadržati na telefonu?</item>
+        <item quantity="few">%1$d kontakta više nisu u Protonu (%2$s). Radi zaštite vaših podataka NISU još izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</item>
+        <item quantity="other">%1$d kontakata više nije u Protonu (%2$s). Radi zaštite vaših podataka NISU još izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d kalendarski događaj više nije u Protonu (%2$s). Radi zaštite vaših podataka NIJE još izbrisan s ovog telefona. Izbrisati ga i ovdje ili zadržati na telefonu?</item>
+        <item quantity="few">%1$d kalendarska događaja više nisu u Protonu (%2$s). Radi zaštite vaših podataka NISU još izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</item>
+        <item quantity="other">%1$d kalendarskih događaja više nije u Protonu (%2$s). Radi zaštite vaših podataka NISU još izbrisani s ovog telefona. Izbrisati ih i ovdje ili zadržati na telefonu?</item>
+    </plurals>
     <string name="remote_deletion_delete">Izbriši s telefona</string>
     <string name="remote_deletion_keep">Zadrži na telefonu</string>
     <!-- Redesigned settings UI: sections, status hero, quick-tool tiles, sign-in, first-run -->
@@ -475,7 +516,11 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Sve</string>
-    <string name="label_log_count">%1$d od %2$d redaka</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d od %2$d retka</item>
+        <item quantity="few">%1$d od %2$d retka</item>
+        <item quantity="other">%1$d od %2$d redaka</item>
+    </plurals>
     <string name="label_share_sends_full_log">Dijeljenje uvijek šalje cijeli zapisnik za ispravljanje pogrešaka</string>
     <string name="btn_clear_view">Očisti prikaz</string>
     <string name="btn_copy_debug_log">Kopiraj zapisnik za ispravljanje pogrešaka</string>
@@ -504,7 +549,11 @@
     <string name="contact_filters_delete">Izbriši</string>
     <string name="contact_filters_saved">Pravila su spremljena. Stupaju na snagu pri sljedećoj sinkronizaciji.</string>
     <string name="contact_filter_removal_title">Pravila kontakata uklonila bi kontakte</string>
-    <string name="contact_filter_removal_body">Vaša pravila kontakata više ne odgovaraju za %1$d kontakata na ovom telefonu (%2$s). Oni ostaju na vašem Proton računu i ondje neće biti izbrisani. Ukloniti ih s ovog telefona ili zadržati?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">%1$d kontakt na ovom telefonu (%2$s) više ne odgovara vašim pravilima kontakata. Ostaje na vašem Proton računu i ondje neće biti izbrisan. Ukloniti ga s ovog telefona ili zadržati?</item>
+        <item quantity="few">%1$d kontakta na ovom telefonu (%2$s) više ne odgovaraju vašim pravilima kontakata. Ostaju na vašem Proton računu i ondje neće biti izbrisani. Ukloniti ih s ovog telefona ili zadržati?</item>
+        <item quantity="other">%1$d kontakata na ovom telefonu (%2$s) više ne odgovara vašim pravilima kontakata. Ostaju na vašem Proton računu i ondje neće biti izbrisani. Ukloniti ih s ovog telefona ili zadržati?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Zadrži na telefonu</string>
     <string name="contact_filter_tpl_auto_created">Kontakti koje je Proton stvorio automatski</string>
     <string name="contact_filter_tpl_auto_created_desc">Izostavlja kontakte koji imaju samo prikazano ime i adresu e-pošte, bez imena i prezimena. Upravo tako izgleda kontakt koji Proton stvori iz razmijenjene e-pošte.</string>
@@ -533,20 +582,40 @@
     <string name="contact_filter_needs_name">Dajte pravilu naziv kako biste ga prepoznali na popisu.</string>
     <string name="contact_filter_delete_confirm">Izbrisati ovo pravilo?</string>
     <string name="contact_filter_preview_running">Provjeravam vaše kontakte…</string>
-    <string name="contact_filter_preview_result">Od %1$d kontakata provjerenih na ovom telefonu ova bi pravila zadržala %2$d, a uklonila %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Od %1$d kontakta provjerenog na ovom telefonu ova bi pravila zadržala %2$d, a uklonila %3$d.</item>
+        <item quantity="few">Od %1$d kontakta provjerena na ovom telefonu ova bi pravila zadržala %2$d, a uklonila %3$d.</item>
+        <item quantity="other">Od %1$d kontakata provjerenih na ovom telefonu ova bi pravila zadržala %2$d, a uklonila %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Ova pravila ne bi uklonila nijedan kontakt.</string>
-    <string name="contact_filter_preview_undecided">%1$d se ne mogu provjeriti na telefonu jer ovo pravilo gleda podatke koje ima samo Proton. O njima će odlučiti sljedeća sinkronizacija, koja će svejedno pitati prije nego što išta ukloni.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d se ne može provjeriti na telefonu jer ovo pravilo gleda podatke koje ima samo Proton. O njemu će odlučiti sljedeća sinkronizacija, koja će svejedno pitati prije nego što išta ukloni.</item>
+        <item quantity="few">%1$d se ne mogu provjeriti na telefonu jer ovo pravilo gleda podatke koje ima samo Proton. O njima će odlučiti sljedeća sinkronizacija, koja će svejedno pitati prije nego što išta ukloni.</item>
+        <item quantity="other">%1$d se ne može provjeriti na telefonu jer ovo pravilo gleda podatke koje ima samo Proton. O njima će odlučiti sljedeća sinkronizacija, koja će svejedno pitati prije nego što išta ukloni.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Na ovom telefonu još nema kontakata za ovaj račun.</string>
     <string name="contact_filter_preview_title">Rezultat provjere</string>
     <string name="contact_filter_preview_failed">Nije bilo moguće provjeriti vaše kontakte: %1$s</string>
     <string name="contact_filter_preview_reading">Čitam vaše Proton kontakte…</string>
     <string name="contact_filter_preview_progress">Provjeravam kontakt %1$d od %2$d…</string>
-    <string name="contact_filter_preview_server_result">Od %1$d kontakata na ovom Proton računu ova bi pravila sinkronizirala %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Od %1$d kontakta na ovom Proton računu ova bi pravila sinkronizirala %2$d.</item>
+        <item quantity="few">Od %1$d kontakta na ovom Proton računu ova bi pravila sinkronizirala %2$d.</item>
+        <item quantity="other">Od %1$d kontakata na ovom Proton računu ova bi pravila sinkronizirala %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Uklonjeno s ovog telefona (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Nije kopirano na ovaj telefon (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…i još %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…i još %1$d.</item>
+        <item quantity="few">…i još %1$d.</item>
+        <item quantity="other">…i još %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Prikaži sve</string>
-    <string name="contact_filter_preview_unreadable">%1$d nije bilo moguće pročitati i ostali bi netaknuti.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d nije bilo moguće pročitati i ostao bi netaknut.</item>
+        <item quantity="few">%1$d nije bilo moguće pročitati i ostala bi netaknuta.</item>
+        <item quantity="other">%1$d nije bilo moguće pročitati i ostali bi netaknuti.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton nije bio dostupan, pa je ova provjera mogla koristiti samo ono što je već na telefonu.</string>
     <string name="contact_filter_preview_nothing_removed">S ovog telefona ne bi bilo ništa uklonjeno.</string>
     <string name="contact_filter_condition_values_hint">Jedna vrijednost po retku</string>
@@ -628,10 +697,22 @@
     <string name="label_name_repair">Provjeri ima li izmišljenih imena</string>
     <string name="name_repair_scanning">Provjera vaših Proton kontakata…</string>
     <string name="name_repair_none">Nijedan kontakt na Protonu nema ime koje je Android izmislio.</string>
-    <string name="name_repair_found">Ovoliko kontakata na Protonu ima ime i prezime koje je Android sastavio razdvajanjem njihove adrese e-pošte: %1$d. Ranija verzija ove aplikacije poslala je ta imena na Proton.\n\nŽelite li ih ukloniti? Ništa se drugo na kontaktima ne mijenja, a njihovo prikazano ime ostaje isto.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d kontakt na Protonu ima ime i prezime koja je Android izmislio razdvajanjem njegove adrese e-pošte. Ranija verzija ove aplikacije poslala ih je na Proton.\n\nŽelite li ih ukloniti? Ništa se drugo na kontaktu ne mijenja, a njegovo prikazano ime ostaje isto.</item>
+        <item quantity="few">%1$d kontakta na Protonu imaju ime i prezime koja je Android izmislio razdvajanjem njihove adrese e-pošte. Ranija verzija ove aplikacije poslala je ta imena na Proton.\n\nŽelite li ih ukloniti? Ništa se drugo na kontaktima ne mijenja, a njihovo prikazano ime ostaje isto.</item>
+        <item quantity="other">%1$d kontakata na Protonu ima ime i prezime koja je Android izmislio razdvajanjem njihove adrese e-pošte. Ranija verzija ove aplikacije poslala je ta imena na Proton.\n\nŽelite li ih ukloniti? Ništa se drugo na kontaktima ne mijenja, a njihovo prikazano ime ostaje isto.</item>
+    </plurals>
     <string name="name_repair_action">Ukloni izmišljena imena</string>
-    <string name="name_repair_done">Popravljeno kontakata: %1$d.</string>
-    <string name="name_repair_partial">Popravljeno kontakata: %1$d, netaknuto: %2$d.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">Popravljen je %1$d kontakt.</item>
+        <item quantity="few">Popravljena su %1$d kontakta.</item>
+        <item quantity="other">Popravljeno je %1$d kontakata.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">Popravljen je %1$d kontakt, netaknuto: %2$d.</item>
+        <item quantity="few">Popravljena su %1$d kontakta, netaknuto: %2$d.</item>
+        <item quantity="other">Popravljeno je %1$d kontakata, netaknuto: %2$d.</item>
+    </plurals>
     <string name="name_repair_failed">Provjera kontakata nije uspjela: %1$s</string>
     <string name="filter_op_num_eq">je</string>
     <string name="filter_field_other_content">Ostali podaci</string>
@@ -642,10 +723,18 @@
     <!-- Asked when a sync switch is turned off: the data already on the phone does not leave with it. -->
     <string name="remove_synced_calendar_title">Ukloniti ove kalendare s ovog telefona?</string>
     <string name="remove_synced_calendar_body">Sinkronizacija kalendara sada je isključena pa se više ništa neće preuzimati. Kalendari koji su već na ovom telefonu ostaju dok ih ne uklonite. Uklanjanjem se brišu samo s ovog telefona; vaši kalendari u Proton ostaju nedirnuti. Možete ih ukloniti i kasnije u postavkama Android računa, a ako ponovno uključite sinkronizaciju kalendara, bit će ponovno stvoreni.</string>
-    <string name="remove_synced_calendar_done">Uklonjeno %1$d događaja s ovog telefona</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Uklonjen je %1$d događaj s ovog telefona</item>
+        <item quantity="few">Uklonjena su %1$d događaja s ovog telefona</item>
+        <item quantity="other">Uklonjeno je %1$d događaja s ovog telefona</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Ukloniti ove kontakte s ovog telefona?</string>
     <string name="remove_synced_contacts_body">Sinkronizacija kontakata sada je isključena pa se više ništa neće preuzimati. Kontakti koji su već na ovom telefonu ostaju dok ih ne uklonite. Uklanjanjem se brišu samo s ovog telefona; vaši kontakti u Proton ostaju nedirnuti. Možete ih ukloniti i kasnije u postavkama Android računa, a ako ponovno uključite sinkronizaciju kontakata, bit će ponovno dodani.</string>
-    <string name="remove_synced_contacts_done">Uklonjeno %1$d kontakata s ovog telefona</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Uklonjen je %1$d kontakt s ovog telefona</item>
+        <item quantity="few">Uklonjena su %1$d kontakta s ovog telefona</item>
+        <item quantity="other">Uklonjeno je %1$d kontakata s ovog telefona</item>
+    </plurals>
     <string name="remove_synced_keep">Zadrži ih</string>
     <string name="remove_synced_remove">Ukloni</string>
 
@@ -663,4 +752,5 @@
     <string name="sfp_hero_subtitle_sync_off">Sinkronizacija ostaje isključena dok pretplata ne bude aktivna. Pogledajte odjeljak Pretplata iznad.</string>
 
     <string name="toast_resync_skipped">Nema se što sinkronizirati: sinkronizacija za %1$s je isključena</string>
+    <string name="plural_rules_language">hr</string>
 </resources>

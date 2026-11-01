@@ -283,6 +283,13 @@ object SyncPreferences {
     const val KEY_SUBSCRIPTION_PAUSED = "subscription_paused"
 
     /**
+     * (play flavor) Google Play returned the subscription suspended on the last check: in account hold after a
+     * declined renewal payment, or paused by the subscriber (a Purchase does not say which). Paired with an
+     * Expired state, so sync is off. Written with every state, so it never outlives the one it describes.
+     */
+    const val KEY_SUBSCRIPTION_SUSPENDED = "subscription_suspended"
+
+    /**
      * (direct flavor) A change Paddle has scheduled for the subscription, as of the last validation: its action
      * ("cancel" or "pause") here and when it takes effect (epoch millis) in [KEY_SUBSCRIPTION_SCHEDULED_CHANGE_AT].
      * Persisted with a Trial or Active state, absent with any other or when nothing is scheduled.
@@ -455,7 +462,7 @@ object SyncPreferences {
         LAST_SYNC_DATE_FORMAT_KEY,
         KEY_SUBSCRIPTION_STATE, KEY_SUBSCRIPTION_EXPIRY, KEY_SUBSCRIPTION_PRODUCT,
         KEY_SUBSCRIPTION_LAST_CHECK, KEY_SUBSCRIPTION_PURCHASE_TOKEN, KEY_PADDLE_SUB_ID,
-        KEY_LICENSE_FIRST_FAILED, KEY_SUBSCRIPTION_PAYMENT_FAILED, KEY_SUBSCRIPTION_PAUSED,
+        KEY_LICENSE_FIRST_FAILED, KEY_SUBSCRIPTION_PAYMENT_FAILED, KEY_SUBSCRIPTION_PAUSED, KEY_SUBSCRIPTION_SUSPENDED,
         KEY_SUBSCRIPTION_SCHEDULED_CHANGE, KEY_SUBSCRIPTION_SCHEDULED_CHANGE_AT, KEY_LICENSE_CONFIRMED,
         KEY_APP_LANGUAGE_TAG, KEY_VERBOSE_LOGGING, KEY_FILE_LOGGING, KEY_LOG_FOLDER_URI,
         KEY_TIMEZONE_UPDATES, KEY_TZ_OUTDATED_NOTICE_ANSWER, KEY_TZ_OUTDATED_NOTICE_LAST_SHOWN_MS,

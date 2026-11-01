@@ -62,7 +62,13 @@
     <string name="btn_sync_all_accounts">Sioncronaigh gach cuntas</string>
     <string name="btn_sync_now">Sioncronaigh</string>
     <string name="label_sync_all_long_press_hint">Brúigh go fada le haghaidh ath-shioncronú iomlán éigeantach</string>
-    <string name="dialog_title_full_resync_all">Ath-shioncronú iomlán (%1$d cuntas)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Ath-shioncronú iomlán (%1$d chuntas)</item>
+        <item quantity="two">Ath-shioncronú iomlán (%1$d chuntas)</item>
+        <item quantity="few">Ath-shioncronú iomlán (%1$d chuntas)</item>
+        <item quantity="many">Ath-shioncronú iomlán (%1$d gcuntas)</item>
+        <item quantity="other">Ath-shioncronú iomlán (%1$d cuntas)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Roghnaigh treo sioncronaithe do gach cuntas:\n\nCianda → Áitiúil: Scrios sonraí áitiúla agus íoslódáil arís ó Proton.\n\nÁitiúil → Cianda: Uaslódáil gach sonra áitiúil go Proton (forscríobhann an cianda).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sioncronú tosaithe le haghaidh %d chuntas</item>
@@ -99,7 +105,7 @@
     <string name="label_sync_mode_all">Gach imeacht</string>
     <string name="label_sync_mode_custom">Raon saincheaptha</string>
     <string name="dialog_title_display_name">Ainm taispeána</string>
-    <string name="dialog_message_display_name">Roghnaigh ainm taispeána nua don chuntas seo. Úsáidtear é i Socruithe → Bainistigh cuntais agus mar fhotheideal „Cuntas" sa teagmhálaí.</string>
+    <string name="dialog_message_display_name">Roghnaigh ainm taispeána nua don chuntas seo. Úsáidtear é i Socruithe → Bainistigh cuntais agus mar fhotheideal „Cuntas“ sa teagmhálaí.</string>
     <string name="dialog_hint_display_name">Ainm taispeána</string>
     <string name="toast_display_name_blank">Ní féidir leis an ainm taispeána a bheith folamh.</string>
     <string name="toast_display_name_taken">Tá cuntas darb ainm \"%s\" ann cheana.</string>
@@ -145,7 +151,20 @@
     <string name="btn_open_settings">Oscail socruithe</string>
     <string name="btn_later">Níos déanaí</string>
     <string name="label_custom_suffix">, saincheaptha</string>
-    <string name="label_days_format">%d lá</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d lá</item>
+        <item quantity="two">%d lá</item>
+        <item quantity="few">%d lá</item>
+        <item quantity="many">%d lá</item>
+        <item quantity="other">%d lá</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d nóiméad</item>
+        <item quantity="two">%d nóiméad</item>
+        <item quantity="few">%d nóiméad</item>
+        <item quantity="many">%d nóiméad</item>
+        <item quantity="other">%d nóiméad</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Teipeanna sioncronaithe</string>
     <string name="notification_channel_sync_description">Fógraí nuair a theipeann ar shioncronú féilire nó teagmhálaithe</string>
@@ -209,6 +228,7 @@
     <string name="label_subscription_expired">Tá an síntiús imithe in éag: athnuaigh chun sioncronú a atosú.</string>
     <string name="label_subscription_paused">Síntiús ar sos: tá sioncronú múchta go dtí go n-atosófar an síntiús.</string>
     <string name="label_subscription_unpaid">Theip ar an íocaíocht: nuashonraigh an modh íocaíochta chun sioncronú a chasadh air arís.</string>
+    <string name="label_subscription_suspended_play">Tá sioncronú múchta: tá an síntiús ar fionraí nó ar sos in Google Play, áit ar féidir leat an íocaíocht a cheartú nó an síntiús a atosú.</string>
     <string name="notification_payment_failed_title">Theip ar íocaíocht an tsíntiúis</string>
     <string name="btn_update_payment_method">Nuashonraigh modh íocaíochta</string>
     <string name="label_subscription_grace">Fadhb íocaíochta: nuashonraigh an modh íocaíochta chun leanúint ag sioncronú.</string>
@@ -277,8 +297,8 @@
     <string name="info_send_cancellations_body">Seol ríomhphost chuig freastalaithe nuair a scriosann tú imeacht ar tugadh cuireadh dóibh chuige, ionas go mbainfidh a bhféilirí é freisin. Múchta de réir réamhshocraithe.</string>
     <string name="info_invite_subject_title_body">Agus ríomhphoist chuiridh á seoladh, cuir teideal an imeachta i líne ábhair an ríomhphoist ionas go n-aithneoidh faighteoirí láithreach é. Múchta de réir réamhshocraithe ar mhaithe le príobháideacht: níl ábhair ríomhphoist criptithe in iompar caighdeánach poist, mar sin bheadh an teideal le feiceáil ag freastalaithe poist ar feadh an bhealaigh.</string>
     <string name="info_background_sync_body">D\'fhéadfadh Android sioncronú cúlra a chur ar sos chun ceallra a choigilt, rud a d\'fhéadfadh moill a chur ar shioncronú uathoibríoch nó é a stopadh. Coinníonn eisiamh na haipe seo ó optamú ceallra na sioncronuithe sceidealta ag rith go hiontaofa. Úsáid an cnaipe chun socruithe ceallra an chórais don aip a oscailt.</string>
-    <string name="info_verbose_logging_body">Gabhann sé sonraí diagnóiseacha breise (staid fhíordheimhnithe, díghlasáil eochracha, gnéithe inmheánacha sioncronaithe) sa log, cabhrach agus tú ag tuairisciú faidhbe. D\'fhéadfadh sé seoltaí ríomhphoist cuntais agus ainmneacha féilire a áireamh, mar sin ná roinn na logaí ach leis an bhforbróir. Fág múchta le haghaidh gnáthúsáide.</string>
-    <string name="info_file_logging_body">Scríobhann sé logchomhad an fheidhmchláir chuig comhad téacs le stampa ama (sync-for-proton-log-….txt) i bhfillteán a roghnaíonn tú. Seachas sin ní choinníonn an feidhmchlár a logchomhad ach sa chuimhne, mar sin cuir seo ar siúl chun fadhb atá deacair a atháirgeadh a ghabháil. Cruthaítear comhad nua gach uair a thosaíonn an feidhmchlár; d\'fhéadfadh seoltaí ríomhphoist cuntas agus ainmneacha féilirí a bheith ann, mar sin ná roinn é ach leis an bhforbróir. Fág múchta é le haghaidh gnáthúsáide.</string>
+    <string name="info_verbose_logging_body">Gabhann sé sonraí diagnóiseacha breise (staid fhíordheimhnithe, díghlasáil eochracha, gnéithe inmheánacha sioncronaithe) sa log, cabhrach agus tú ag tuairisciú faidhbe. Cuireann an feidhmchlár cóid ghearra in ionad seoltaí ríomhphoist sa log, ach d\'fhéadfadh ainmneacha cuntas agus féilirí a bheith ann, mar sin ná roinn na logaí ach leis an bhforbróir. Fág múchta le haghaidh gnáthúsáide.</string>
+    <string name="info_file_logging_body">Scríobhann sé logchomhad an fheidhmchláir chuig comhad téacs le stampa ama (sync-for-proton-log-….txt) i bhfillteán a roghnaíonn tú. Seachas sin ní choinníonn an feidhmchlár a logchomhad ach sa chuimhne, mar sin cuir seo ar siúl chun fadhb atá deacair a atháirgeadh a ghabháil. Cruthaítear comhad nua gach uair a thosaíonn an feidhmchlár. Cuireann an feidhmchlár cóid ghearra in ionad seoltaí ríomhphoist sa chomhad, ach d\'fhéadfadh ainmneacha cuntas agus féilirí a bheith ann, mar sin ná roinn é ach leis an bhforbróir. Fág múchta é le haghaidh gnáthúsáide.</string>
     <string name="info_timezone_updates_text">Braitheann amanna imeachtaí ar rialacha criosanna ama, agus athraíonn tíortha na rialacha seo ó am go chéile. Coinníonn Android iad i sonraí criosanna ama an ghutháin, a thagann le nuashonruithe córais. Coinníonn guthán nach bhfaigheann iad a thuilleadh, mar shampla le leagan níos sine de Android nó gan nuashonruithe córais Google Play, na seanrialacha, agus d\'fhéadfadh imeachtaí in áiteanna ar athraíodh a rialacha ó shin a bheith le feiceáil ag an am mícheart.\n\nSonraí criosanna ama ar an nguthán seo: leagan %1$s\n\nNuair atá sé múchta (an réamhshocrú), úsáideann an aip sonraí criosanna ama an ghutháin féin agus ní sheolann sí aon rud chuig www.tzurl.org.\n\nNuair atá sé ar siúl, íoslódálann an aip na rialacha reatha do gach crios ama a úsáideann d\'imeachtaí ó www.tzurl.org, seirbhís tríú páirtí, uair amháin ar a mhéad in aghaidh an chreasa ama gach uair a thosaíonn an aip, agus ní úsáideann sí iad ach amháin má tá siad níos nuaí ná rialacha an ghutháin. Feiceann www.tzurl.org ansin do sheoladh IP agus ainmneacha na gcriosanna ama sin, mar shampla Europe/Berlin. Ní sheoltar aon rud eile faoi d\'imeachtaí ná faoi do chuntais. Mura féidir teacht ar www.tzurl.org, úsáidtear sonraí an ghutháin. Ríomhtar imeachtaí athfhillteacha fós le sonraí an ghutháin.\n\nTar éis athraithe, déantar na himeachtaí atá ar an nguthán cheana a sheiceáil agus a cheartú ag an gcéad sioncronú eile.</string>
     <string name="tz_data_version_unknown">anaithnid</string>
     <string name="tz_outdated_title">Tá sonraí criosanna ama as dáta</string>
@@ -341,7 +361,13 @@
     <string name="notification_channel_alerts">Foláirimh sioncronaithe</string>
     <string name="notification_channel_alerts_description">Foláirimh shábháilteachta tábhachtacha a éilíonn do chinneadh</string>
     <string name="notification_bulk_delete_title">Braitheadh athrú mór ar an bhféilire</string>
-    <string name="notification_bulk_delete_body">D\'imigh %1$d imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton iad. Iad a choinneáil ar do ghuthán, nó iad a scriosadh ó Proton chomh maith?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">D\'imigh %1$d imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton é. É a choinneáil ar do ghuthán, nó é a scriosadh ó Proton chomh maith?</item>
+        <item quantity="two">D\'imigh %1$d imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton iad. Iad a choinneáil ar do ghuthán, nó iad a scriosadh ó Proton chomh maith?</item>
+        <item quantity="few">D\'imigh %1$d imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton iad. Iad a choinneáil ar do ghuthán, nó iad a scriosadh ó Proton chomh maith?</item>
+        <item quantity="many">D\'imigh %1$d n-imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton iad. Iad a choinneáil ar do ghuthán, nó iad a scriosadh ó Proton chomh maith?</item>
+        <item quantity="other">D\'imigh %1$d imeacht féilire ón nguthán seo (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh ó Proton iad. Iad a choinneáil ar do ghuthán, nó iad a scriosadh ó Proton chomh maith?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Coinnigh ar Proton</string>
     <string name="notification_bulk_delete_delete">Scrios ar Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -384,10 +410,32 @@
     <string name="backup_decrypt_action">Díchriptigh cúltaca…</string>
     <string name="backup_decrypt_body">Roghnaigh comhad cúltaca criptithe (.gpg) agus cuir isteach a phasfhocal. Sábhálfar an t-ábhar, díchriptithe, i d\'fhillteán cúltaca.</string>
     <string name="backup_decrypting">Ag díchriptiú…</string>
-    <string name="backup_decrypt_done">Díchriptithe isteach i „%1$s" i d\'fhillteán cúltaca.</string>
+    <string name="backup_decrypt_done">Díchriptithe isteach i „%1$s“ i d\'fhillteán cúltaca.</string>
     <string name="backup_decrypt_failed">Níorbh fhéidir an comhad seo a dhíchriptiú.</string>
     <string name="backup_restore_hint">Chun athchóiriú: iompórtáil .ics isteach i bhFéilire Proton (Socruithe → Iompórtáil) agus .vcf isteach i dTeagmhálaithe Proton. Is féidir cúltacaí criptithe a oscailt ar ríomhaire freisin le: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Rinneadh cúltaca de %1$d fhéilire, %2$d imeacht agus %3$d teagmhálaí.</string>
+    <string name="backup_result_done">Rinneadh cúltaca de %1$s, %2$s agus %3$s.</string>
+    <string name="backup_result_partial">Rinneadh cúltaca de %1$s, %2$s agus %3$s, ach níorbh fhéidir roinnt míreanna a léamh (eochracha glasáilte nó earráid líonra), mar sin d\'fhéadfadh an cúltaca a bheith neamhiomlán. Seiceáil na logaí sioncronaithe, ansin bain triail eile as.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d fhéilire</item>
+        <item quantity="two">%d fhéilire</item>
+        <item quantity="few">%d fhéilire</item>
+        <item quantity="many">%d bhféilire</item>
+        <item quantity="other">%d féilire</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d imeacht</item>
+        <item quantity="two">%d imeacht</item>
+        <item quantity="few">%d imeacht</item>
+        <item quantity="many">%d n-imeacht</item>
+        <item quantity="other">%d imeacht</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d teagmhálaí</item>
+        <item quantity="two">%d theagmhálaí</item>
+        <item quantity="few">%d theagmhálaí</item>
+        <item quantity="many">%d dteagmhálaí</item>
+        <item quantity="other">%d teagmhálaí</item>
+    </plurals>
     <string name="backup_result_skipped">Scipeáilte: níor sheol an fhoinse aon sonraí, mar sin coinníodh an cúltaca maith deireanach.</string>
     <string name="backup_result_failed">Theip ar an gcúltaca: %1$s</string>
     <string name="backup_result_folder_lost">Níl an fillteán cúltaca inrochtana a thuilleadh.</string>
@@ -409,11 +457,22 @@
     <string name="backup_reminder_optout_body">An bhfuil tú cinnte nach bhfuil fonn ort cúltacaí a shocrú? Ní choinneoidh tú do chúltacaí féin de do fhéilirí agus de do theagmhálaithe, agus ní chuirfimid i gcuimhne duit arís é!</string>
     <string name="backup_reminder_optout_confirm">Tá, stop á chur i gcuimhne dom</string>
     <string name="backup_reminder_optout_cancel">Níl, lean á chur i gcuimhne dom</string>
-    <string name="backup_result_incomplete">Rinneadh cúltaca de %1$d fhéilire, %2$d imeacht agus %3$d teagmhálaí, ach níorbh fhéidir roinnt míreanna a léamh (eochracha glasáilte nó earráid líonra), mar sin d\'fhéadfadh an cúltaca a bheith neamhiomlán. Seiceáil na logaí sioncronaithe, ansin bain triail eile as.</string>
     <string name="backup_notif_incomplete_title">D\'fhéadfadh an cúltaca a bheith neamhiomlán</string>
     <string name="remote_deletion_title">Míreanna bainte de Proton</string>
-    <string name="remote_deletion_body_contacts">Níl %1$d teagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</string>
-    <string name="remote_deletion_body_calendar">Níl %1$d imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">Níl %1$d teagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo í fós. Í a scriosadh anseo freisin, nó í a choinneáil ar an bhfón?</item>
+        <item quantity="two">Níl %1$d theagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="few">Níl %1$d theagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="many">Níl %1$d dteagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="other">Níl %1$d teagmháil ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">Níl %1$d imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo é fós. É a scriosadh anseo freisin, nó é a choinneáil ar an bhfón?</item>
+        <item quantity="two">Níl %1$d imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="few">Níl %1$d imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="many">Níl %1$d n-imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+        <item quantity="other">Níl %1$d imeacht féilire ar Proton a thuilleadh (%2$s). Chun do shonraí a chosaint, NÍOR scriosadh den fhón seo iad fós. Iad a scriosadh anseo freisin, nó iad a choinneáil ar an bhfón?</item>
+    </plurals>
     <string name="remote_deletion_delete">Scrios den fhón</string>
     <string name="remote_deletion_keep">Coinnigh ar an bhfón</string>
     <!-- Redesigned settings UI: sections, status hero, quick-tool tiles, sign-in, empty/first-run -->
@@ -481,7 +540,13 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Uile</string>
-    <string name="label_log_count">%1$d as %2$d líne</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d as %2$d líne</item>
+        <item quantity="two">%1$d as %2$d líne</item>
+        <item quantity="few">%1$d as %2$d líne</item>
+        <item quantity="many">%1$d as %2$d líne</item>
+        <item quantity="other">%1$d as %2$d líne</item>
+    </plurals>
     <string name="label_share_sends_full_log">Seolann comhroinnt an logchomhad dífhabhtaithe iomlán i gcónaí</string>
     <string name="btn_clear_view">Glan an t-amharc</string>
     <string name="btn_copy_debug_log">Cóipeáil an logchomhad dífhabhtaithe</string>
@@ -510,7 +575,13 @@
     <string name="contact_filters_delete">Scrios</string>
     <string name="contact_filters_saved">Rialacha sábháilte. Tiocfaidh siad i bhfeidhm ag an gcéad sioncrónú eile.</string>
     <string name="contact_filter_removal_title">Bhainfeadh na rialacha teagmhálaithe teagmhálaithe</string>
-    <string name="contact_filter_removal_body">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d teagmhálaí ar an bhfón seo (%2$s). Fanann siad i do chuntas Proton agus ní scriosfar ansin iad. An mbainfear den fhón seo iad, nó an gcoimeádfar iad?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d teagmhálaí ar an bhfón seo (%2$s). Fanann sé i do chuntas Proton agus ní scriosfar ansin é. An mbainfear den fhón seo é, nó an gcoimeádfar é?</item>
+        <item quantity="two">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d theagmhálaí ar an bhfón seo (%2$s). Fanann siad i do chuntas Proton agus ní scriosfar ansin iad. An mbainfear den fhón seo iad, nó an gcoimeádfar iad?</item>
+        <item quantity="few">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d theagmhálaí ar an bhfón seo (%2$s). Fanann siad i do chuntas Proton agus ní scriosfar ansin iad. An mbainfear den fhón seo iad, nó an gcoimeádfar iad?</item>
+        <item quantity="many">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d dteagmhálaí ar an bhfón seo (%2$s). Fanann siad i do chuntas Proton agus ní scriosfar ansin iad. An mbainfear den fhón seo iad, nó an gcoimeádfar iad?</item>
+        <item quantity="other">Ní oireann do chuid rialacha teagmhálaithe a thuilleadh do %1$d teagmhálaí ar an bhfón seo (%2$s). Fanann siad i do chuntas Proton agus ní scriosfar ansin iad. An mbainfear den fhón seo iad, nó an gcoimeádfar iad?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Coimeád ar an bhfón</string>
     <string name="contact_filter_tpl_auto_created">Teagmhálaithe a chruthaigh Proton go huathoibríoch</string>
     <string name="contact_filter_tpl_auto_created_desc">Fágann sé ar lár teagmhálaithe nach bhfuil acu ach ainm taispeána agus seoladh ríomhphoist, gan céadainm ná sloinne. Sin díreach an chuma atá ar theagmhálaí a chruthaíonn Proton ó ríomhphost.</string>
@@ -539,20 +610,50 @@
     <string name="contact_filter_needs_name">Tabhair ainm ar an riail le go n-aithneoidh tú sa liosta í.</string>
     <string name="contact_filter_delete_confirm">An riail seo a scriosadh?</string>
     <string name="contact_filter_preview_running">Do theagmhálaithe á seiceáil…</string>
-    <string name="contact_filter_preview_result">As na %1$d teagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">As %1$d teagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</item>
+        <item quantity="two">As na %1$d theagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</item>
+        <item quantity="few">As na %1$d theagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</item>
+        <item quantity="many">As na %1$d dteagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</item>
+        <item quantity="other">As na %1$d teagmhálaí a seiceáladh ar an bhfón seo, choimeádfadh na rialacha seo %2$d agus bhainfidís %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Ní bhainfeadh na rialacha seo aon teagmhálaí.</string>
-    <string name="contact_filter_preview_undecided">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile iad, agus fiafróidh sé fós sula mbainfidh sé aon rud.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile é, agus fiafróidh sé fós sula mbainfidh sé aon rud.</item>
+        <item quantity="two">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile iad, agus fiafróidh sé fós sula mbainfidh sé aon rud.</item>
+        <item quantity="few">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile iad, agus fiafróidh sé fós sula mbainfidh sé aon rud.</item>
+        <item quantity="many">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile iad, agus fiafróidh sé fós sula mbainfidh sé aon rud.</item>
+        <item quantity="other">Ní féidir %1$d a sheiceáil ar an bhfón, mar go bhféachann an riail seo ar shonraí nach bhfuil ach ag Proton. Socróidh an chéad sioncrónú eile iad, agus fiafróidh sé fós sula mbainfidh sé aon rud.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Níl aon teagmhálaí ar an bhfón seo don chuntas seo go fóill.</string>
     <string name="contact_filter_preview_title">Toradh na tástála</string>
     <string name="contact_filter_preview_failed">Níorbh fhéidir do theagmhálaithe a sheiceáil: %1$s</string>
     <string name="contact_filter_preview_reading">Do theagmhálaithe Proton á léamh…</string>
     <string name="contact_filter_preview_progress">Teagmhálaí %1$d as %2$d á sheiceáil…</string>
-    <string name="contact_filter_preview_server_result">As %1$d teagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">As %1$d teagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</item>
+        <item quantity="two">As %1$d theagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</item>
+        <item quantity="few">As %1$d theagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</item>
+        <item quantity="many">As %1$d dteagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</item>
+        <item quantity="other">As %1$d teagmhálaí sa chuntas Proton seo, shioncrónódh na rialacha seo %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Bainte den fhón seo (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Gan chóipeáil chuig an bhfón seo (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…agus %1$d eile.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…agus %1$d eile.</item>
+        <item quantity="two">…agus %1$d eile.</item>
+        <item quantity="few">…agus %1$d eile.</item>
+        <item quantity="many">…agus %1$d eile.</item>
+        <item quantity="other">…agus %1$d eile.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Taispeáin uile</string>
-    <string name="contact_filter_preview_unreadable">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá iad.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá é.</item>
+        <item quantity="two">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá iad.</item>
+        <item quantity="few">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá iad.</item>
+        <item quantity="many">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá iad.</item>
+        <item quantity="other">Níorbh fhéidir %1$d a léamh, agus d\'fhágfaí mar atá iad.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Níorbh fhéidir teagmháil a dhéanamh le Proton, mar sin níorbh fhéidir leis an tástáil seo ach an méid atá ar an bhfón cheana a úsáid.</string>
     <string name="contact_filter_preview_nothing_removed">Ní bhainfí aon rud den fhón seo.</string>
     <string name="contact_filter_condition_values_hint">Luach amháin sa líne</string>
@@ -636,12 +737,28 @@ Má roghnaíonn tú féin réimse, ní bhíonn aon rud fágtha ag Android le cum
     <string name="label_name_repair">Seiceáil an bhfuil ainmneacha cumtha ann</string>
     <string name="name_repair_scanning">Do theagmhálacha Proton á seiceáil…</string>
     <string name="name_repair_none">Níl ainm cumtha ag Android ar aon teagmháil ar Proton.</string>
-    <string name="name_repair_found">Tá céadainm agus sloinne ar %1$d teagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo na hainmneacha sin chuig Proton.
-
-Iad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a n-ainm taispeána mar atá.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">Tá céadainm agus sloinne ar %1$d teagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo an t-ainm sin chuig Proton.\n\nÉ a bhaint? Ní athraítear aon rud eile faoin teagmháil, agus fanann a hainm taispeána mar atá.</item>
+        <item quantity="two">Tá céadainm agus sloinne ar %1$d theagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo na hainmneacha sin chuig Proton.\n\nIad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a n-ainm taispeána mar atá.</item>
+        <item quantity="few">Tá céadainm agus sloinne ar %1$d theagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo na hainmneacha sin chuig Proton.\n\nIad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a n-ainm taispeána mar atá.</item>
+        <item quantity="many">Tá céadainm agus sloinne ar %1$d dteagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo na hainmneacha sin chuig Proton.\n\nIad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a n-ainm taispeána mar atá.</item>
+        <item quantity="other">Tá céadainm agus sloinne ar %1$d teagmháil ar Proton a chum Android trína seoladh ríomhphoist a scoilteadh. Sheol leagan níos luaithe den aip seo na hainmneacha sin chuig Proton.\n\nIad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a n-ainm taispeána mar atá.</item>
+    </plurals>
     <string name="name_repair_action">Bain na hainmneacha cumtha</string>
-    <string name="name_repair_done">%1$d teagmháil deisithe.</string>
-    <string name="name_repair_partial">%1$d teagmháil deisithe, %2$d fágtha mar atá.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d teagmháil deisithe.</item>
+        <item quantity="two">%1$d theagmháil deisithe.</item>
+        <item quantity="few">%1$d theagmháil deisithe.</item>
+        <item quantity="many">%1$d dteagmháil deisithe.</item>
+        <item quantity="other">%1$d teagmháil deisithe.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d teagmháil deisithe, %2$d fágtha mar atá.</item>
+        <item quantity="two">%1$d theagmháil deisithe, %2$d fágtha mar atá.</item>
+        <item quantity="few">%1$d theagmháil deisithe, %2$d fágtha mar atá.</item>
+        <item quantity="many">%1$d dteagmháil deisithe, %2$d fágtha mar atá.</item>
+        <item quantity="other">%1$d teagmháil deisithe, %2$d fágtha mar atá.</item>
+    </plurals>
     <string name="name_repair_failed">Níorbh fhéidir do theagmhálacha a sheiceáil: %1$s</string>
     <string name="filter_op_num_eq">is ionann agus</string>
     <string name="filter_field_other_content">Eolas eile</string>
@@ -652,10 +769,22 @@ Iad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a 
     <!-- Asked when a sync switch is turned off: the data already on the phone does not leave with it. -->
     <string name="remove_synced_calendar_title">Na féilirí seo a bhaint den ghuthán seo?</string>
     <string name="remove_synced_calendar_body">Tá sioncronú féilire múchta anois, mar sin ní íoslódálfar aon rud eile. Fanann na féilirí atá ar an nguthán seo cheana ann go dtí go mbaineann tú iad. Má bhaineann tú iad, scriostar den ghuthán seo amháin iad; ní chuirtear isteach ar do chuid féilirí i Proton. Is féidir leat iad a bhaint níos déanaí i socruithe cuntais Android freisin, agus má chuireann tú sioncronú féilire ar siúl arís, cruthófar arís iad.</string>
-    <string name="remove_synced_calendar_done">Baineadh %1$d imeacht den ghuthán seo</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Baineadh %1$d imeacht den ghuthán seo</item>
+        <item quantity="two">Baineadh %1$d imeacht den ghuthán seo</item>
+        <item quantity="few">Baineadh %1$d imeacht den ghuthán seo</item>
+        <item quantity="many">Baineadh %1$d n-imeacht den ghuthán seo</item>
+        <item quantity="other">Baineadh %1$d imeacht den ghuthán seo</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Na teagmhálaithe seo a bhaint den ghuthán seo?</string>
     <string name="remove_synced_contacts_body">Tá sioncronú teagmhálaithe múchta anois, mar sin ní íoslódálfar aon rud eile. Fanann na teagmhálaithe atá ar an nguthán seo cheana ann go dtí go mbaineann tú iad. Má bhaineann tú iad, scriostar den ghuthán seo amháin iad; ní chuirtear isteach ar do chuid teagmhálaithe i Proton. Is féidir leat iad a bhaint níos déanaí i socruithe cuntais Android freisin, agus má chuireann tú sioncronú teagmhálaithe ar siúl arís, cuirfear ar ais iad.</string>
-    <string name="remove_synced_contacts_done">Baineadh %1$d teagmhálaí den ghuthán seo</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Baineadh %1$d teagmhálaí den ghuthán seo</item>
+        <item quantity="two">Baineadh %1$d theagmhálaí den ghuthán seo</item>
+        <item quantity="few">Baineadh %1$d theagmhálaí den ghuthán seo</item>
+        <item quantity="many">Baineadh %1$d dteagmhálaí den ghuthán seo</item>
+        <item quantity="other">Baineadh %1$d teagmhálaí den ghuthán seo</item>
+    </plurals>
     <string name="remove_synced_keep">Coinnigh iad</string>
     <string name="remove_synced_remove">Bain</string>
 
@@ -673,4 +802,5 @@ Iad a bhaint? Ní athraítear aon rud eile faoi na teagmhálacha, agus fanann a 
     <string name="sfp_hero_subtitle_sync_off">Fanann sioncronú múchta go dtí go mbeidh síntiús gníomhach. Féach Síntiús thuas.</string>
 
     <string name="toast_resync_skipped">Níl aon rud le sioncronú: tá sioncronú do %1$s múchta</string>
+    <string name="plural_rules_language">ga</string>
 </resources>

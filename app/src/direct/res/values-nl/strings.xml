@@ -2,10 +2,10 @@
 <resources>
     <string name="spp_btn_enter_subscription_id">Abonnements-ID invoeren</string>
     <string name="spp_subscribe_dialog_title">Abonnements-ID invoeren</string>
-    <string name="spp_subscribe_dialog_message">Plak je abonnements-ID (die begint met sub_ en staat op de pagina die na het afrekenen verschijnt) of de transactie-ID van de factuur van Paddle (die begint met txn_). Allebei kwijt? De e-mail van Paddle over je abonnement bevat een link om je betaalmethode bij te werken: kopieer die link (niet de link om op te zeggen) en plak hem hier, want de ID staat erin. Het adres van je abonnementspagina in het klantenportaal van Paddle werkt ook, net als een transactie-ID van een van de betalingen die daar staan. Kun je nog steeds geen ID vinden, tik dan in Instellingen op “Rapport sturen naar ontwikkelaar”. Een Google Play-abonnement werkt alleen in de Google Play-versie van deze app.</string>
+    <string name="spp_subscribe_dialog_message">Plak uw abonnements-ID (die begint met sub_ en staat op de pagina die na het afrekenen verschijnt) of de transactie-ID van de factuur van Paddle (die begint met txn_). Allebei kwijt? De e-mail van Paddle over uw abonnement bevat een link om uw betaalmethode bij te werken: kopieer die link (niet de link om op te zeggen) en plak hem hier, want de ID staat erin. Het adres van uw abonnementspagina in het klantenportaal van Paddle werkt ook, net als een transactie-ID van een van de betalingen die daar staan. Kunt u nog steeds geen ID vinden, tik dan in Instellingen op “Rapport sturen naar ontwikkelaar”. Een Google Play-abonnement werkt alleen in de Google Play-versie van deze app.</string>
     <string name="spp_subscribe_hint">sub_…</string>
     <string name="spp_subscribe_save">Activeren</string>
-    <string name="spp_subscribe_validating">Je abonnement wordt gecontroleerd…</string>
+    <string name="spp_subscribe_validating">Uw abonnement wordt gecontroleerd…</string>
     <string name="spp_subscribe_activated">Abonnement geactiveerd.</string>
     <string name="spp_subscribe_error_not_found">Er is geen abonnement met deze ID gevonden. Controleer de ID en probeer het opnieuw.</string>
     <string name="spp_subscribe_error_wrong_product">Deze abonnements-ID hoort bij een andere app.</string>
@@ -15,8 +15,8 @@
     <string name="spp_subscribe_error_transaction_mistyped">Deze transactie-ID is onvolledig of bevat een typfout. Kopieer de ID opnieuw.</string>
     <string name="spp_subscribe_error_transaction_not_found">Er is geen aankoop met deze transactie-ID gevonden. Controleer de ID of voer de abonnements-ID in die met sub_ begint.</string>
     <string name="spp_subscribe_error_transaction_wrong_product">Deze aankoop hoort bij een andere app.</string>
-    <string name="spp_subscribe_error_transaction_not_ready">Deze aankoop heeft nog geen abonnement. Als je net hebt betaald, probeer het dan over een minuut opnieuw. Voer anders de abonnements-ID in die met sub_ begint.</string>
-    <string name="spp_subscribe_error_email">Dit is een e-mailadres. Je abonnements-ID begint met “sub_”.</string>
+    <string name="spp_subscribe_error_transaction_not_ready">Deze aankoop heeft nog geen abonnement. Als u net hebt betaald, probeer het dan over een minuut opnieuw. Voer anders de abonnements-ID in die met sub_ begint.</string>
+    <string name="spp_subscribe_error_email">Dit is een e-mailadres. Uw abonnements-ID begint met “sub_”.</string>
     <string name="spp_subscribe_error_mistyped">Deze abonnements-ID is onvolledig of bevat een typfout. Kopieer de ID opnieuw.</string>
     <string name="spp_subscribe_error_not_an_id">Dit is geen abonnements-ID. Abonnements-ID\'s beginnen met “sub_”.</string>
     <string name="spp_subscribe_error_several_ids">Dit bevat meer dan één ID. Voer er maar één in.</string>
@@ -25,7 +25,7 @@
     <string name="spp_manage_action_update_payment">Betaalmethode bijwerken</string>
     <string name="spp_manage_action_cancel">Abonnement opzeggen</string>
     <string name="spp_manage_error">De beheerpagina kon niet worden geladen. Probeer het opnieuw.</string>
-    <string name="spp_manage_note">Paddle vraagt naar het e-mailadres waarmee het abonnement is afgesloten en stuurt je per e-mail een inloglink.</string>
+    <string name="spp_manage_note">Paddle vraagt naar het e-mailadres waarmee het abonnement is afgesloten en stuurt u per e-mail een inloglink.</string>
     <string name="spp_manage_loading">Contact opnemen met Paddle…</string>
     <string name="spp_manage_unavailable">De abonnementsdienst is niet beschikbaar. Probeer het later opnieuw.</string>
     <string name="spp_manage_no_connection">Geen verbinding. Controleer of de telefoon online is en probeer het dan opnieuw.</string>

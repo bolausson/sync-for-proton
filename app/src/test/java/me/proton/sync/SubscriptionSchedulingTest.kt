@@ -67,6 +67,14 @@ class SubscriptionSchedulingTest {
     }
 
     @Test
+    fun `a Google Play hold turns sync off, and its recovery catches up`() {
+        assertEquals(
+            listOf(ARM, DISARM, ARM_AND_CATCH_UP),
+            actions(true, SubscriptionState.Active(0L, p), SubscriptionState.Expired(p, suspended = true), SubscriptionState.Active(0L, p)),
+        )
+    }
+
+    @Test
     fun `a play first start where billing finds a purchase catches up`() {
         assertEquals(
             "the gate was closed until billing answered, so a sign-in meanwhile had its sync dropped",

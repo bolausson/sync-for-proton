@@ -62,12 +62,19 @@
     <string name="btn_sync_all_accounts">Sinkronizza l-kontijiet kollha</string>
     <string name="btn_sync_now">Sinkronizza</string>
     <string name="label_sync_all_long_press_hint">Agħfas fit-tul għal ri-sinkronizzazzjoni sħiħa sfurzata</string>
-    <string name="dialog_title_full_resync_all">Ri-sinkronizzazzjoni sħiħa (%1$d kontijiet)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Ri-sinkronizzazzjoni sħiħa (%1$d kont)</item>
+        <item quantity="two">Ri-sinkronizzazzjoni sħiħa (%1$d kontijiet)</item>
+        <item quantity="few">Ri-sinkronizzazzjoni sħiħa (%1$d kontijiet)</item>
+        <item quantity="many">Ri-sinkronizzazzjoni sħiħa (%1$d kont)</item>
+        <item quantity="other">Ri-sinkronizzazzjoni sħiħa (%1$d kont)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Agħżel id-direzzjoni tas-sinkronizzazzjoni għall-kontijiet kollha:\n\nServer → Lokali: Ħassar id-data lokali u erġa\' niżżel minn Proton.\n\nLokali → Server: Ittrasferixxi d-data lokali kollha fuq Proton (jikteb fuq is-server).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sinkronizzazzjoni bdiet għal %d kont</item>
+        <item quantity="two">Sinkronizzazzjoni bdiet għal %d kontijiet</item>
         <item quantity="few">Sinkronizzazzjoni bdiet għal %d kontijiet</item>
-        <item quantity="many">Sinkronizzazzjoni bdiet għal %d kontijiet</item>
+        <item quantity="many">Sinkronizzazzjoni bdiet għal %d kont</item>
         <item quantity="other">Sinkronizzazzjoni bdiet għal %d kont</item>
     </plurals>
     <string name="label_background_sync_title">Is-sinkronizzazzjoni fl-isfond mhix taħdem?</string>
@@ -98,7 +105,7 @@
     <string name="label_sync_mode_all">L-avvenimenti kollha</string>
     <string name="label_sync_mode_custom">Firxa personalizzata</string>
     <string name="dialog_title_display_name">Isem tal-wiri</string>
-    <string name="dialog_message_display_name">Agħżel isem tal-wiri ġdid għal dan il-kont. Jintuża f\'Settings → Immaniġġja l-kontijiet u bħala s-sottotitlu „Kont" tal-kuntatt.</string>
+    <string name="dialog_message_display_name">Agħżel isem tal-wiri ġdid għal dan il-kont. Jintuża f\'Settings → Immaniġġja l-kontijiet u bħala s-sottotitlu „Kont“ tal-kuntatt.</string>
     <string name="dialog_hint_display_name">Isem tal-wiri</string>
     <string name="toast_display_name_blank">L-isem tal-wiri ma jistax ikun vojt.</string>
     <string name="toast_display_name_taken">Diġà jeżisti kont bl-isem \"%s\".</string>
@@ -144,7 +151,20 @@
     <string name="btn_open_settings">Iftaħ is-settings</string>
     <string name="btn_later">Iktar tard</string>
     <string name="label_custom_suffix">, personalizzat</string>
-    <string name="label_days_format">%d jiem</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d jum</item>
+        <item quantity="two">%d ijiem</item>
+        <item quantity="few">%d ijiem</item>
+        <item quantity="many">%d jum</item>
+        <item quantity="other">%d jum</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minuta</item>
+        <item quantity="two">%d minuti</item>
+        <item quantity="few">%d minuti</item>
+        <item quantity="many">%d minuta</item>
+        <item quantity="other">%d minuta</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Fallimenti tas-sinkronizzazzjoni</string>
     <string name="notification_channel_sync_description">Notifiki meta s-sinkronizzazzjoni tal-kalendarju jew tal-kuntatti tfalli</string>
@@ -208,6 +228,7 @@
     <string name="label_subscription_expired">L-abbonament skada: ġeddu biex tkompli s-sinkronizzazzjoni.</string>
     <string name="label_subscription_paused">L-abbonament huwa sospiż: is-sinkronizzazzjoni mitfija sakemm jerġa\' jibda.</string>
     <string name="label_subscription_unpaid">Il-ħlas ma rnexxiex: aġġorna l-metodu ta\' ħlas biex terġa\' tixgħel is-sinkronizzazzjoni.</string>
+    <string name="label_subscription_suspended_play">Is-sinkronizzazzjoni hija mitfija: f\'Google Play l-abbonament huwa miżmum jew f\'pawża. Hemmhekk tista\' tirranġa l-ħlas jew terġa\' tibda l-abbonament.</string>
     <string name="notification_payment_failed_title">Il-ħlas tal-abbonament ma rnexxiex</string>
     <string name="btn_update_payment_method">Aġġorna l-metodu ta\' pagament</string>
     <string name="label_subscription_grace">Problema ta\' ħlas: aġġorna l-metodu ta\' ħlas biex tkompli tissinkronizza.</string>
@@ -276,8 +297,8 @@
     <string name="info_send_cancellations_body">Ibgħat email lill-parteċipanti meta tħassar avveniment li huma mistiedna għalih, biex il-kalendarji tagħhom ineħħuh ukoll. Mitfi b\'mod prestabbilit.</string>
     <string name="info_invite_subject_title_body">Meta tibgħat emails ta\' stedina, poġġi t-titlu tal-avveniment fil-linja tas-suġġett tal-email biex ir-riċevituri jagħrfuh minnufih. Mitfi b\'mod prestabbilit għall-privatezza: is-suġġetti tal-email mhumiex kriptati fit-trasport standard tal-posta, għalhekk it-titlu jkun viżibbli għas-servers tal-email tul ir-rotta.</string>
     <string name="info_background_sync_body">Android jista\' jwaqqaf temporanjament is-sinkronizzazzjoni fl-isfond biex jiffranka l-batterija, li tista\' ddewwem jew twaqqaf is-sinkronizzazzjoni awtomatika. L-esklużjoni ta\' din l-app mill-ottimizzazzjoni tal-batterija żżomm is-sinkronizzazzjonijiet skedati jaħdmu b\'mod affidabbli. Uża l-buttuna biex tiftaħ is-settings tal-batterija tas-sistema għall-app.</string>
-    <string name="info_verbose_logging_body">Jaqbad dettalji djanjostiċi addizzjonali (status tal-awtentikazzjoni, qlugħ taċ-ċwievet, partijiet interni tas-sinkronizzazzjoni) fil-log, utli meta tirrapporta problema. Jista\' jinkludi indirizzi tal-email tal-kontijiet u ismijiet tal-kalendarji, għalhekk aqsam il-logs biss mal-iżviluppatur. Ħalliha mitfija għall-użu normali.</string>
-    <string name="info_file_logging_body">Jikteb ir-reġistru tal-app f\'fajl tat-test bit-timestamp (sync-for-proton-log-….txt) f\'folder li tagħżel int. Inkella l-app iżżomm ir-reġistru fil-memorja biss, mela ixgħel dan biex taqbad problema diffiċli biex terġa\' sseħħ. Jinħoloq fajl ġdid kull darba li tibda l-app; jista\' jkun fih indirizzi tal-email tal-kontijiet u ismijiet ta\' kalendarji, mela aqsmu biss mal-iżviluppatur. Ħallih mitfi għall-użu normali.</string>
+    <string name="info_verbose_logging_body">Jaqbad dettalji djanjostiċi addizzjonali (status tal-awtentikazzjoni, qlugħ taċ-ċwievet, partijiet interni tas-sinkronizzazzjoni) fil-log, utli meta tirrapporta problema. L-app tissostitwixxi l-indirizzi tal-email fih b\'kodiċijiet qosra, iżda l-log jista\' jinkludi ismijiet tal-kontijiet u tal-kalendarji, għalhekk aqsam il-logs biss mal-iżviluppatur. Ħalliha mitfija għall-użu normali.</string>
+    <string name="info_file_logging_body">Jikteb ir-reġistru tal-app f\'fajl tat-test bit-timestamp (sync-for-proton-log-….txt) f\'folder li tagħżel int. Inkella l-app iżżomm ir-reġistru fil-memorja biss, mela ixgħel dan biex taqbad problema diffiċli biex terġa\' sseħħ. Jinħoloq fajl ġdid kull darba li tibda l-app. L-app tissostitwixxi l-indirizzi tal-email fih b\'kodiċijiet qosra, iżda l-fajl jista\' jkun fih ismijiet tal-kontijiet u tal-kalendarji, mela aqsmu biss mal-iżviluppatur. Ħallih mitfi għall-użu normali.</string>
     <string name="info_timezone_updates_text">Il-ħinijiet tal-avvenimenti jiddependu fuq ir-regoli taż-żoni tal-ħin, u l-pajjiżi jibdlu dawn ir-regoli minn żmien għal żmien. Android iżommhom fid-data taż-żoni tal-ħin tat-telefon, li tasal mal-aġġornamenti tas-sistema. Telefon li ma jibqax jirċevihom, pereżempju b\'verżjoni eqdem ta\' Android jew mingħajr aġġornamenti tas-sistema ta\' Google Play, iżomm ir-regoli l-qodma, u avvenimenti f\'postijiet li r-regoli tagħhom inbidlu minn dakinhar jistgħu jidhru fil-ħin il-ħażin.\n\nData taż-żoni tal-ħin fuq dan it-telefon: verżjoni %1$s\n\nMeta mitfija (l-issettjar awtomatiku), l-app tuża d-data taż-żoni tal-ħin tat-telefon innifsu u ma tibgħat xejn lil www.tzurl.org.\n\nMeta mixgħula, l-app tniżżel ir-regoli attwali għal kull żona tal-ħin li jużaw l-avvenimenti tiegħek minn www.tzurl.org, servizz ta\' parti terza, mhux aktar minn darba għal kull żona tal-ħin kull darba li tibda l-app, u tużahom biss jekk ikunu aktar ġodda minn dawk tat-telefon. Imbagħad www.tzurl.org jara l-indirizz IP tiegħek u l-ismijiet ta\' dawk iż-żoni tal-ħin, pereżempju Europe/Berlin. Ma jintbagħat xejn aktar dwar l-avvenimenti jew il-kontijiet tiegħek. Jekk www.tzurl.org ma jkunx jista\' jintlaħaq, tintuża d-data tat-telefon. L-avvenimenti rikorrenti xorta jiġu kkalkulati bid-data tat-telefon.\n\nWara bidla, l-avvenimenti li diġà jinsabu fuq it-telefon jiġu ċċekkjati u kkoreġuti fis-sinkronizzazzjoni li jmiss.</string>
     <string name="tz_data_version_unknown">mhux magħrufa</string>
     <string name="tz_outdated_title">Id-data taż-żoni tal-ħin mhix aġġornata</string>
@@ -316,6 +337,7 @@
     <string name="backup_preflight_settings_only">Dan il-backup fih is-settings biss.</string>
     <plurals name="backup_preflight_accounts">
         <item quantity="one">Dan il-backup fih %d kont u s-settings.</item>
+        <item quantity="two">Dan il-backup fih %d kontijiet u s-settings.</item>
         <item quantity="few">Dan il-backup fih %d kontijiet u s-settings.</item>
         <item quantity="many">Dan il-backup fih %d kont u s-settings.</item>
         <item quantity="other">Dan il-backup fih %d kont u s-settings.</item>
@@ -339,7 +361,13 @@
     <string name="notification_channel_alerts">Twissijiet tas-sinkronizzazzjoni</string>
     <string name="notification_channel_alerts_description">Twissijiet importanti ta\' sigurtà li jeħtieġu d-deċiżjoni tiegħek</string>
     <string name="notification_bulk_delete_title">Instabet bidla kbira fil-kalendarju</string>
-    <string name="notification_bulk_delete_body">%1$d avvenimenti tal-kalendarju għebu minn dan it-telefon (%2$s). Biex tipproteġi d-data tiegħek MA tħassrux minn Proton. Tridhom jibqgħu fuq it-telefon tiegħek, jew tħassarhom minn Proton ukoll?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d avveniment tal-kalendarju sparixxa minn dan it-telefon (%2$s). Biex nipproteġu d-data tiegħek, MA tħassarx minn Proton. Trid iżżommu fuq it-telefon tiegħek, jew tħassru minn Proton ukoll?</item>
+        <item quantity="two">%1$d avvenimenti tal-kalendarju sparixxew minn dan it-telefon (%2$s). Biex nipproteġu d-data tiegħek, MA tħassrux minn Proton. Tridhom jibqgħu fuq it-telefon tiegħek, jew tħassarhom minn Proton ukoll?</item>
+        <item quantity="few">%1$d avvenimenti tal-kalendarju sparixxew minn dan it-telefon (%2$s). Biex nipproteġu d-data tiegħek, MA tħassrux minn Proton. Tridhom jibqgħu fuq it-telefon tiegħek, jew tħassarhom minn Proton ukoll?</item>
+        <item quantity="many">%1$d avveniment tal-kalendarju sparixxew minn dan it-telefon (%2$s). Biex nipproteġu d-data tiegħek, MA tħassrux minn Proton. Tridhom jibqgħu fuq it-telefon tiegħek, jew tħassarhom minn Proton ukoll?</item>
+        <item quantity="other">%1$d avveniment tal-kalendarju sparixxew minn dan it-telefon (%2$s). Biex nipproteġu d-data tiegħek, MA tħassrux minn Proton. Tridhom jibqgħu fuq it-telefon tiegħek, jew tħassarhom minn Proton ukoll?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Żomm fuq Proton</string>
     <string name="notification_bulk_delete_delete">Ħassar minn Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -385,7 +413,29 @@
     <string name="backup_decrypt_done">Dekriptat fi \"%1$s\" fil-folder tal-backup tiegħek.</string>
     <string name="backup_decrypt_failed">Ma setax jiddekripta dan il-fajl.</string>
     <string name="backup_restore_hint">Biex tirrestawra: importa .ics f\'Proton Calendar (Settings → Import) u .vcf f\'Proton Contacts. Il-backups ikkriptati jistgħu jinfetħu wkoll fuq kompjuter b\': gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Ittieħed backup ta\' %1$d kalendarju/i, %2$d avveniment(i) u %3$d kuntatt(i).</string>
+    <string name="backup_result_done">Ittieħed backup ta\' %1$s, %2$s u %3$s.</string>
+    <string name="backup_result_partial">Ittieħed backup ta\' %1$s, %2$s u %3$s, iżda xi elementi ma setgħux jinqraw (ċwievet imsakkra jew żball fin-netwerk), għalhekk il-backup jista\' jkun mhux komplut. Iċċekkja l-logs tas-sinkronizzazzjoni, imbagħad erġa\' pprova.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalendarju</item>
+        <item quantity="two">%d kalendarji</item>
+        <item quantity="few">%d kalendarji</item>
+        <item quantity="many">%d kalendarju</item>
+        <item quantity="other">%d kalendarju</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d avveniment</item>
+        <item quantity="two">%d avvenimenti</item>
+        <item quantity="few">%d avvenimenti</item>
+        <item quantity="many">%d avveniment</item>
+        <item quantity="other">%d avveniment</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d kuntatt</item>
+        <item quantity="two">%d kuntatti</item>
+        <item quantity="few">%d kuntatti</item>
+        <item quantity="many">%d kuntatt</item>
+        <item quantity="other">%d kuntatt</item>
+    </plurals>
     <string name="backup_result_skipped">Maqbuż: is-sors ma rritorna l-ebda data, għalhekk inżamm l-aħħar backup tajjeb.</string>
     <string name="backup_result_failed">Il-backup falla: %1$s</string>
     <string name="backup_result_folder_lost">Il-folder tal-backup m\'għadux aċċessibbli.</string>
@@ -407,11 +457,22 @@
     <string name="backup_reminder_optout_body">Żgur li ma tridx tistabbilixxi l-backups? Mhux se żżomm il-kopji tiegħek stess tal-kalendarji u l-kuntatti tiegħek, u aħna mhux se nfakkruk dwar dan iżjed!</string>
     <string name="backup_reminder_optout_confirm">Iva, ieqaf tfakkarni</string>
     <string name="backup_reminder_optout_cancel">Le, kompli fakkarni</string>
-    <string name="backup_result_incomplete">Ittieħed backup ta\' %1$d kalendarju/i, %2$d avveniment(i) u %3$d kuntatt(i), iżda xi elementi ma setgħux jinqraw (ċwievet imsakkra jew żball fin-netwerk), għalhekk il-backup jista\' jkun mhux komplut. Iċċekkja l-logs tas-sinkronizzazzjoni, imbagħad erġa\' pprova.</string>
     <string name="backup_notif_incomplete_title">Il-backup jista\' jkun mhux komplut</string>
     <string name="remote_deletion_title">Oġġetti mneħħija minn Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d kuntatti m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</string>
-    <string name="remote_deletion_body_calendar">%1$d avvenimenti tal-kalendarju m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d kuntatt m\'għadux fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADU ma tħassarx minn dan it-telefon. Trid tħassru hawn ukoll, jew iżżommu fuq it-telefon?</item>
+        <item quantity="two">%1$d kuntatti m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="few">%1$d kuntatti m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="many">%1$d kuntatt m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="other">%1$d kuntatt m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d avveniment tal-kalendarju m\'għadux fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADU ma tħassarx minn dan it-telefon. Trid tħassru hawn ukoll, jew iżżommu fuq it-telefon?</item>
+        <item quantity="two">%1$d avvenimenti tal-kalendarju m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="few">%1$d avvenimenti tal-kalendarju m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="many">%1$d avveniment tal-kalendarju m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+        <item quantity="other">%1$d avveniment tal-kalendarju m\'għadhomx fuq Proton (%2$s). Biex nipproteġu d-data tiegħek, GĦADHOM ma tħassrux minn dan it-telefon. Tħassarhom hawn ukoll jew iżżommhom fuq it-telefon?</item>
+    </plurals>
     <string name="remote_deletion_delete">Ħassar mit-telefon</string>
     <string name="remote_deletion_keep">Żomm fuq it-telefon</string>
     <string name="sfp_group_account">Kont</string>
@@ -478,7 +539,13 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Kollha</string>
-    <string name="label_log_count">%1$d minn %2$d linji</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d minn %2$d linja</item>
+        <item quantity="two">%1$d minn %2$d linji</item>
+        <item quantity="few">%1$d minn %2$d linji</item>
+        <item quantity="many">%1$d minn %2$d linja</item>
+        <item quantity="other">%1$d minn %2$d linja</item>
+    </plurals>
     <string name="label_share_sends_full_log">Il-kondiviżjoni dejjem tibgħat ir-reġistru tad-debug sħiħ</string>
     <string name="btn_clear_view">Naddaf il-view</string>
     <string name="btn_copy_debug_log">Ikkopja r-reġistru tad-debug</string>
@@ -507,7 +574,13 @@
     <string name="contact_filters_delete">Ħassar</string>
     <string name="contact_filters_saved">Ir-regoli ġew salvati. Jidħlu fis-seħħ fis-sinkronizzazzjoni li jmiss.</string>
     <string name="contact_filter_removal_title">Ir-regoli tal-kuntatti kienu jneħħu kuntatti</string>
-    <string name="contact_filter_removal_body">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatti f\'dan it-telefon (%2$s). Dawn jibqgħu fil-kont Proton tiegħek u ma jitħassrux hemm. Tneħħihom minn dan it-telefon, jew iżżommhom?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatt f\'dan it-telefon (%2$s). Dan jibqa\' fil-kont Proton tiegħek u ma jitħassarx hemm. Tneħħih minn dan it-telefon, jew iżżommu?</item>
+        <item quantity="two">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatti f\'dan it-telefon (%2$s). Dawn jibqgħu fil-kont Proton tiegħek u ma jitħassrux hemm. Tneħħihom minn dan it-telefon, jew iżżommhom?</item>
+        <item quantity="few">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatti f\'dan it-telefon (%2$s). Dawn jibqgħu fil-kont Proton tiegħek u ma jitħassrux hemm. Tneħħihom minn dan it-telefon, jew iżżommhom?</item>
+        <item quantity="many">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatt f\'dan it-telefon (%2$s). Dawn jibqgħu fil-kont Proton tiegħek u ma jitħassrux hemm. Tneħħihom minn dan it-telefon, jew iżżommhom?</item>
+        <item quantity="other">Ir-regoli tal-kuntatti tiegħek m\'għadhomx jaqblu ma\' %1$d kuntatt f\'dan it-telefon (%2$s). Dawn jibqgħu fil-kont Proton tiegħek u ma jitħassrux hemm. Tneħħihom minn dan it-telefon, jew iżżommhom?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Żomm fit-telefon</string>
     <string name="contact_filter_tpl_auto_created">Kuntatti li Proton ħoloq awtomatikament</string>
     <string name="contact_filter_tpl_auto_created_desc">Iħalli barra kuntatti li għandhom biss isem tal-wiri u indirizz tal-email, mingħajr isem jew kunjom. Hekk jidher eżatt kuntatt li Proton joħloq minn email.</string>
@@ -536,20 +609,50 @@
     <string name="contact_filter_needs_name">Agħti isem lir-regola biex tagħrafha fil-lista.</string>
     <string name="contact_filter_delete_confirm">Tħassar din ir-regola?</string>
     <string name="contact_filter_preview_running">Qed niċċekkja l-kuntatti tiegħek…</string>
-    <string name="contact_filter_preview_result">Mill-%1$d kuntatti ċċekkjati fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Mill-%1$d kuntatt li ġie ċċekkjat fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</item>
+        <item quantity="two">Mill-%1$d kuntatti li ġew iċċekkjati fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</item>
+        <item quantity="few">Mill-%1$d kuntatti li ġew iċċekkjati fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</item>
+        <item quantity="many">Mill-%1$d kuntatt li ġew iċċekkjati fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</item>
+        <item quantity="other">Mill-%1$d kuntatt li ġew iċċekkjati fuq dan it-telefon, dawn ir-regoli kienu jżommu %2$d u jneħħu %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Dawn ir-regoli ma kienu jneħħu ebda kuntatt.</string>
-    <string name="contact_filter_preview_undecided">%1$d ma jistgħux jiġu ċċekkjati fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedihom, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d ma jistax jiġi ċċekkjat fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedi dwaru, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</item>
+        <item quantity="two">%1$d ma jistgħux jiġu ċċekkjati fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedi dwarhom, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</item>
+        <item quantity="few">%1$d ma jistgħux jiġu ċċekkjati fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedi dwarhom, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</item>
+        <item quantity="many">%1$d ma jistgħux jiġu ċċekkjati fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedi dwarhom, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</item>
+        <item quantity="other">%1$d ma jistgħux jiġu ċċekkjati fuq it-telefon, għax din ir-regola tħares lejn dettalji li għandu biss Proton. Is-sinkronizzazzjoni li jmiss tiddeċiedi dwarhom, u xorta tistaqsi qabel ma tneħħi xi ħaġa.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Għad m\'hemmx kuntatti f\'dan it-telefon għal dan il-kont.</string>
     <string name="contact_filter_preview_title">Riżultat tat-test</string>
     <string name="contact_filter_preview_failed">Ma setgħux jiġu ċċekkjati l-kuntatti tiegħek: %1$s</string>
     <string name="contact_filter_preview_reading">Qed naqraw il-kuntatti tiegħek ta\' Proton…</string>
     <string name="contact_filter_preview_progress">Qed jiġi ċċekkjat il-kuntatt %1$d minn %2$d…</string>
-    <string name="contact_filter_preview_server_result">Minn %1$d kuntatti f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Minn %1$d kuntatt f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</item>
+        <item quantity="two">Minn %1$d kuntatti f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</item>
+        <item quantity="few">Minn %1$d kuntatti f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</item>
+        <item quantity="many">Minn %1$d kuntatt f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</item>
+        <item quantity="other">Minn %1$d kuntatt f\'dan il-kont Proton, dawn ir-regoli kienu jissinkronizzaw %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Imneħħija minn dan it-telefon (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Mhux ikkupjati f\'dan it-telefon (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…u %1$d oħra.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…u %1$d ieħor.</item>
+        <item quantity="two">…u %1$d oħra.</item>
+        <item quantity="few">…u %1$d oħra.</item>
+        <item quantity="many">…u %1$d oħra.</item>
+        <item quantity="other">…u %1$d oħra.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Uri kollox</string>
-    <string name="contact_filter_preview_unreadable">%1$d ma setgħux jinqraw, u jitħallew kif inhuma.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d ma setax jinqara, u jitħalla kif inhu.</item>
+        <item quantity="two">%1$d ma setgħux jinqraw, u jitħallew kif inhuma.</item>
+        <item quantity="few">%1$d ma setgħux jinqraw, u jitħallew kif inhuma.</item>
+        <item quantity="many">%1$d ma setgħux jinqraw, u jitħallew kif inhuma.</item>
+        <item quantity="other">%1$d ma setgħux jinqraw, u jitħallew kif inhuma.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton ma setax jintlaħaq, għalhekk dan it-test seta\' juża biss dak li diġà jinsab fit-telefon.</string>
     <string name="contact_filter_preview_nothing_removed">Xejn ma jitneħħa minn dan it-telefon.</string>
     <string name="contact_filter_condition_values_hint">Valur wieħed f\'kull linja</string>
@@ -631,10 +734,28 @@
     <string name="label_name_repair">Iċċekkja għal ismijiet ivvintati</string>
     <string name="name_repair_scanning">Qed jiġu ċċekkjati l-kuntatti Proton tiegħek…</string>
     <string name="name_repair_none">L-ebda kuntatt fuq Proton m\'għandu isem li vvinta Android.</string>
-    <string name="name_repair_found">%1$d kuntatti fuq Proton għandhom isem u kunjom li Android ivvinta billi qasam l-indirizz email tagħhom. Verżjoni preċedenti ta\' din l-app bagħtet dawk l-ismijiet lil Proton.\n\nTneħħihom? Xejn aktar dwar il-kuntatti ma jinbidel, u l-isem tal-wiri tagħhom jibqa\' kif inhu.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d kuntatt fuq Proton għandu isem u kunjom li Android ivvinta billi qasam l-indirizz email tiegħu. Verżjoni preċedenti ta\' din l-app bagħtet dak l-isem lil Proton.\n\nTneħħih? Xejn aktar dwar il-kuntatt ma jinbidel, u l-isem tal-wiri tiegħu jibqa\' kif inhu.</item>
+        <item quantity="two">%1$d kuntatti fuq Proton għandhom isem u kunjom li Android ivvinta billi qasam l-indirizz email tagħhom. Verżjoni preċedenti ta\' din l-app bagħtet dawk l-ismijiet lil Proton.\n\nTneħħihom? Xejn aktar dwar il-kuntatti ma jinbidel, u l-isem tal-wiri tagħhom jibqa\' kif inhu.</item>
+        <item quantity="few">%1$d kuntatti fuq Proton għandhom isem u kunjom li Android ivvinta billi qasam l-indirizz email tagħhom. Verżjoni preċedenti ta\' din l-app bagħtet dawk l-ismijiet lil Proton.\n\nTneħħihom? Xejn aktar dwar il-kuntatti ma jinbidel, u l-isem tal-wiri tagħhom jibqa\' kif inhu.</item>
+        <item quantity="many">%1$d kuntatt fuq Proton għandhom isem u kunjom li Android ivvinta billi qasam l-indirizz email tagħhom. Verżjoni preċedenti ta\' din l-app bagħtet dawk l-ismijiet lil Proton.\n\nTneħħihom? Xejn aktar dwar il-kuntatti ma jinbidel, u l-isem tal-wiri tagħhom jibqa\' kif inhu.</item>
+        <item quantity="other">%1$d kuntatt fuq Proton għandhom isem u kunjom li Android ivvinta billi qasam l-indirizz email tagħhom. Verżjoni preċedenti ta\' din l-app bagħtet dawk l-ismijiet lil Proton.\n\nTneħħihom? Xejn aktar dwar il-kuntatti ma jinbidel, u l-isem tal-wiri tagħhom jibqa\' kif inhu.</item>
+    </plurals>
     <string name="name_repair_action">Neħħi l-ismijiet ivvintati</string>
-    <string name="name_repair_done">%1$d kuntatti ġew irranġati.</string>
-    <string name="name_repair_partial">%1$d kuntatti ġew irranġati, %2$d tħallew kif kienu.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d kuntatt ġie rranġat.</item>
+        <item quantity="two">%1$d kuntatti ġew irranġati.</item>
+        <item quantity="few">%1$d kuntatti ġew irranġati.</item>
+        <item quantity="many">%1$d kuntatt ġew irranġati.</item>
+        <item quantity="other">%1$d kuntatt ġew irranġati.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d kuntatt ġie rranġat, %2$d tħallew kif kienu.</item>
+        <item quantity="two">%1$d kuntatti ġew irranġati, %2$d tħallew kif kienu.</item>
+        <item quantity="few">%1$d kuntatti ġew irranġati, %2$d tħallew kif kienu.</item>
+        <item quantity="many">%1$d kuntatt ġew irranġati, %2$d tħallew kif kienu.</item>
+        <item quantity="other">%1$d kuntatt ġew irranġati, %2$d tħallew kif kienu.</item>
+    </plurals>
     <string name="name_repair_failed">Ma kienx possibbli li jiġu ċċekkjati l-kuntatti tiegħek: %1$s</string>
     <string name="filter_op_num_eq">huwa</string>
     <string name="filter_field_other_content">Informazzjoni oħra</string>
@@ -643,10 +764,22 @@
     <string name="contact_filters_empty_none">L-ebda kuntatt f\'dan il-kont Proton ma jasal fuq it-telefon tiegħek, għax is-setting hawn taħt jgħid biex ma jiġi ssinkronizzat xejn li ma jaqbadx ebda regola. Żid regola biex tħalli xi kuntatti jgħaddu.</string>
     <string name="remove_synced_calendar_title">Tneħħi dawn il-kalendarji minn dan it-telefon?</string>
     <string name="remove_synced_calendar_body">Is-sinkronizzazzjoni tal-kalendarju issa hija diżattivata, għalhekk ma jitniżżel xejn aktar. Il-kalendarji li diġà jinsabu f\'dan it-telefon jibqgħu hemm sakemm ma tneħħihomx. It-tneħħija tħassarhom minn dan it-telefon biss; il-kalendarji tiegħek fuq Proton ma jintmessux. Tista\' tneħħihom ukoll aktar tard mis-settings tal-kontijiet ta\' Android, u jekk terġa\' tattiva s-sinkronizzazzjoni tal-kalendarju, jinħolqu mill-ġdid.</string>
-    <string name="remove_synced_calendar_done">Tneħħew %1$d avvenimenti minn dan it-telefon</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Tneħħa %1$d avveniment minn dan it-telefon</item>
+        <item quantity="two">Tneħħew %1$d avvenimenti minn dan it-telefon</item>
+        <item quantity="few">Tneħħew %1$d avvenimenti minn dan it-telefon</item>
+        <item quantity="many">Tneħħew %1$d avveniment minn dan it-telefon</item>
+        <item quantity="other">Tneħħew %1$d avveniment minn dan it-telefon</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Tneħħi dawn il-kuntatti minn dan it-telefon?</string>
     <string name="remove_synced_contacts_body">Is-sinkronizzazzjoni tal-kuntatti issa hija diżattivata, għalhekk ma jitniżżel xejn aktar. Il-kuntatti li diġà jinsabu f\'dan it-telefon jibqgħu hemm sakemm ma tneħħihomx. It-tneħħija tħassarhom minn dan it-telefon biss; il-kuntatti tiegħek fuq Proton ma jintmessux. Tista\' tneħħihom ukoll aktar tard mis-settings tal-kontijiet ta\' Android, u jekk terġa\' tattiva s-sinkronizzazzjoni tal-kuntatti, jerġgħu jiżdiedu.</string>
-    <string name="remove_synced_contacts_done">Tneħħew %1$d kuntatti minn dan it-telefon</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Tneħħa %1$d kuntatt minn dan it-telefon</item>
+        <item quantity="two">Tneħħew %1$d kuntatti minn dan it-telefon</item>
+        <item quantity="few">Tneħħew %1$d kuntatti minn dan it-telefon</item>
+        <item quantity="many">Tneħħew %1$d kuntatt minn dan it-telefon</item>
+        <item quantity="other">Tneħħew %1$d kuntatt minn dan it-telefon</item>
+    </plurals>
     <string name="remove_synced_keep">Żommhom</string>
     <string name="remove_synced_remove">Neħħi</string>
     <string name="setup_choose_title">Xi għandu jissinkronizza dan il-kont?</string>
@@ -663,4 +796,5 @@
     <string name="sfp_hero_subtitle_sync_off">Is-sinkronizzazzjoni tibqa\' mitfija sakemm ikun hemm abbonament attiv. Ara Abbonament hawn fuq.</string>
 
     <string name="toast_resync_skipped">Xejn xi jiġi sinkronizzat: is-sinkronizzazzjoni ta %1$s hija mitfija</string>
+    <string name="plural_rules_language">mt</string>
 </resources>

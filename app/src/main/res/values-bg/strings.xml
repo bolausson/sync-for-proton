@@ -62,7 +62,10 @@
     <string name="btn_sync_all_accounts">Синхронизирай всички акаунти</string>
     <string name="btn_sync_now">Синхронизирай</string>
     <string name="label_sync_all_long_press_hint">Натиснете и задръжте за принудителна пълна повторна синхронизация</string>
-    <string name="dialog_title_full_resync_all">Пълна повторна синхронизация (%1$d акаунта)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Пълна повторна синхронизация (%1$d акаунт)</item>
+        <item quantity="other">Пълна повторна синхронизация (%1$d акаунта)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Изберете посока на синхронизация за всички акаунти:\n\nОтдалечен → Локален: Изтриване на локалните данни и повторно изтегляне от Proton.\n\nЛокален → Отдалечен: Качване на всички локални данни в Proton (презаписва отдалечените).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Синхронизацията е започната за %d акаунт</item>
@@ -126,11 +129,18 @@
     <string name="label_calendar_lower">календар</string>
     <string name="label_all_data">всички данни</string>
     <string name="dialog_title_battery">Активиране на неограничено използване на батерията</string>
-    <string name="dialog_message_battery">За надеждна фонова синхронизация, моля, задайте използването на батерията на „Неограничено" на следващия екран.\n\nОтидете на Батерия → Неограничено.</string>
+    <string name="dialog_message_battery">За надеждна фонова синхронизация, моля, задайте използването на батерията на „Неограничено“ на следващия екран.\n\nОтидете на Батерия → Неограничено.</string>
     <string name="btn_open_settings">Отваряне на настройки</string>
     <string name="btn_later">По-късно</string>
     <string name="label_custom_suffix">, потребителски</string>
-    <string name="label_days_format">%d дни</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d ден</item>
+        <item quantity="other">%d дни</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d минута</item>
+        <item quantity="other">%d минути</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Грешки при синхронизация</string>
     <string name="notification_channel_sync_description">Уведомления при неуспешна синхронизация на календар или контакти</string>
@@ -191,6 +201,7 @@
     <string name="label_subscription_expired">Абонаментът е изтекъл: подновете, за да възобновите синхронизацията.</string>
     <string name="label_subscription_paused">Абонаментът е на пауза: синхронизацията е спряна, докато не бъде възобновен.</string>
     <string name="label_subscription_unpaid">Плащането не бе успешно: актуализирайте метода на плащане, за да възобновите синхронизацията.</string>
+    <string name="label_subscription_suspended_play">Синхронизацията е изключена: абонаментът е задържан или на пауза в Google Play, където можете да коригирате плащането или да възобновите абонамента.</string>
     <string name="notification_payment_failed_title">Плащането за абонамента не бе успешно</string>
     <string name="btn_update_payment_method">Актуализиране на метода на плащане</string>
     <string name="label_subscription_grace">Проблем с плащането: актуализирайте метода на плащане, за да продължите синхронизацията.</string>
@@ -272,8 +283,8 @@
     <string name="info_send_cancellations_body">Изпращайте имейл на участниците, когато изтриете събитие, на което са поканени, така че техните календари също да го премахнат. Изключено по подразбиране.</string>
     <string name="info_invite_subject_title_body">При изпращане на имейли с покани, поставете заглавието на събитието в реда за тема на имейла, така че получателите да го разпознаят с един поглед. Изключено по подразбиране от съображения за поверителност: темите на имейлите не са криптирани при стандартния транспорт на поща, така че заглавието би било видимо за пощенските сървъри по маршрута.</string>
     <string name="info_background_sync_body">Android може да постави на пауза фоновата синхронизация, за да пести батерия, което може да забави или спре автоматичната синхронизация. Изключването на това приложение от оптимизацията на батерията поддържа планираните синхронизации да се изпълняват надеждно. Използвайте бутона, за да отворите системните настройки на батерията за приложението.</string>
-    <string name="info_verbose_logging_body">Записва допълнителни диагностични подробности (състояние на удостоверяването, отключване на ключове, вътрешни механизми на синхронизацията) в лога, полезно при докладване на проблем. Може да включва имейл адреси на акаунти и имена на календари, така че споделяйте логовете само с разработчика. Оставете изключено за нормална употреба.</string>
-    <string name="info_file_logging_body">Записва дневника на приложението в текстов файл с времеви печат (sync-for-proton-log-….txt) в избрана от вас папка. В противен случай приложението пази дневника само в паметта, затова включете това, за да уловите трудно възпроизводим проблем. При всяко стартиране на приложението се създава нов файл; той може да съдържа имейл адреси на профили и имена на календари, затова го споделяйте само с разработчика. За обичайна употреба оставете изключено.</string>
+    <string name="info_verbose_logging_body">Записва допълнителни диагностични подробности (състояние на удостоверяването, отключване на ключове, вътрешни механизми на синхронизацията) в лога, полезно при докладване на проблем. Приложението заменя имейл адресите в лога с кратки кодове, но той може да съдържа имена на акаунти и календари, така че споделяйте логовете само с разработчика. Оставете изключено за нормална употреба.</string>
+    <string name="info_file_logging_body">Записва дневника на приложението в текстов файл с времеви печат (sync-for-proton-log-….txt) в избрана от вас папка. В противен случай приложението пази дневника само в паметта, затова включете това, за да уловите трудно възпроизводим проблем. При всяко стартиране на приложението се създава нов файл. Приложението заменя имейл адресите във файла с кратки кодове, но той може да съдържа имена на профили и календари, затова го споделяйте само с разработчика. За обичайна употреба оставете изключено.</string>
     <string name="info_timezone_updates_text">Часовете на събитията зависят от правилата за часовите зони, а държавите променят тези правила от време на време. Android ги пази в данните за часовите зони на телефона, които идват със системните актуализации. Телефон, който вече не ги получава, например с по-стара версия на Android или без системни актуализации от Google Play, запазва старите правила и събитията на места, чиито правила са се променили оттогава, може да се показват в грешен час.\n\nДанни за часовите зони на този телефон: версия %1$s\n\nКогато е изключено (по подразбиране), приложението използва собствените данни за часовите зони на телефона и не изпраща нищо до www.tzurl.org.\n\nКогато е включено, приложението изтегля от www.tzurl.org, услуга на трета страна, актуалните правила за всяка часова зона, използвана от събитията ви, най-много веднъж за всяка часова зона при всяко стартиране на приложението, и ги използва само ако са по-нови от тези на телефона. Тогава www.tzurl.org вижда вашия IP адрес и имената на тези часови зони, например Europe/Berlin. Нищо друго за събитията или акаунтите ви не се изпраща. Ако www.tzurl.org не е достъпен, се използват данните на телефона. Повтарящите се събития продължават да се изчисляват с данните на телефона.\n\nСлед промяна събитията, които вече са на телефона, се проверяват и коригират при следващата синхронизация.</string>
     <string name="tz_data_version_unknown">неизвестна</string>
     <string name="tz_outdated_title">Данните за часовите зони са остарели</string>
@@ -333,7 +344,10 @@
     <string name="notification_channel_alerts">Известия за синхронизация</string>
     <string name="notification_channel_alerts_description">Важни известия за безопасност, които изискват вашето решение</string>
     <string name="notification_bulk_delete_title">Открита е голяма промяна в календара</string>
-    <string name="notification_bulk_delete_body">%1$d календарни събития изчезнаха от този телефон (%2$s). За да защитим данните ви, те НЕ бяха изтрити от Proton. Да останат ли на телефона ви, или да бъдат изтрити и от Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d календарно събитие изчезна от този телефон (%2$s). За да защитим данните ви, то НЕ беше изтрито от Proton. Да остане ли на телефона ви, или да бъде изтрито и от Proton?</item>
+        <item quantity="other">%1$d календарни събития изчезнаха от този телефон (%2$s). За да защитим данните ви, те НЕ бяха изтрити от Proton. Да останат ли на телефона ви, или да бъдат изтрити и от Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Запазване в Proton</string>
     <string name="notification_bulk_delete_delete">Изтриване от Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -379,7 +393,20 @@
     <string name="backup_decrypt_done">Дешифровано в \"%1$s\" във вашата папка за резервни копия.</string>
     <string name="backup_decrypt_failed">Този файл не можа да бъде дешифрован.</string>
     <string name="backup_restore_hint">За възстановяване: импортирайте .ics в Proton Calendar (Настройки → Импортиране) и .vcf в Proton Contacts. Шифрованите резервни копия могат да се отворят и на компютър с: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Архивирани са %1$d календар(а), %2$d събитие(я) и %3$d контакт(а).</string>
+    <string name="backup_result_done">Архивирани са %1$s, %2$s и %3$s.</string>
+    <string name="backup_result_partial">Архивирани са %1$s, %2$s и %3$s, но някои елементи не можаха да бъдат прочетени (заключени ключове или мрежова грешка), затова архивът може да е непълен. Проверете логовете за синхронизация и опитайте отново.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d календар</item>
+        <item quantity="other">%d календара</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d събитие</item>
+        <item quantity="other">%d събития</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d контакт</item>
+        <item quantity="other">%d контакта</item>
+    </plurals>
     <string name="backup_result_skipped">Пропуснато: източникът не върна данни, затова последното успешно резервно копие беше запазено.</string>
     <string name="backup_result_failed">Архивирането е неуспешно: %1$s</string>
     <string name="backup_result_folder_lost">Папката за резервни копия вече не е достъпна.</string>
@@ -401,11 +428,16 @@
     <string name="backup_reminder_optout_body">Сигурни ли сте, че не искате да настроите резервни копия? Няма да пазите свои собствени резервни копия на календарите и контактите си, а ние повече няма да ви напомняме за това!</string>
     <string name="backup_reminder_optout_confirm">Да, спрете да ми напомняте</string>
     <string name="backup_reminder_optout_cancel">Не, продължавайте да ми напомняте</string>
-    <string name="backup_result_incomplete">Архивирани са %1$d календар(а), %2$d събитие(я) и %3$d контакт(а), но някои елементи не можаха да бъдат прочетени (заключени ключове или мрежова грешка), затова архивът може да е непълен. Проверете логовете за синхронизация и опитайте отново.</string>
     <string name="backup_notif_incomplete_title">Архивът може да е непълен</string>
     <string name="remote_deletion_title">Елементи, премахнати от Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d контакта вече не са в Proton (%2$s). За да защитим данните ви, те все още НЕ са изтрити от този телефон. Да ги изтрием ли и тук, или да останат на телефона?</string>
-    <string name="remote_deletion_body_calendar">%1$d събития в календара вече не са в Proton (%2$s). За да защитим данните ви, те все още НЕ са изтрити от този телефон. Да ги изтрием ли и тук, или да останат на телефона?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d контакт вече не е в Proton (%2$s). За да защитим данните ви, той все още НЕ е изтрит от този телефон. Да го изтрием ли и тук, или да остане на телефона?</item>
+        <item quantity="other">%1$d контакта вече не са в Proton (%2$s). За да защитим данните ви, те все още НЕ са изтрити от този телефон. Да ги изтрием ли и тук, или да останат на телефона?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d събитие в календара вече не е в Proton (%2$s). За да защитим данните ви, то все още НЕ е изтрито от този телефон. Да го изтрием ли и тук, или да остане на телефона?</item>
+        <item quantity="other">%1$d събития в календара вече не са в Proton (%2$s). За да защитим данните ви, те все още НЕ са изтрити от този телефон. Да ги изтрием ли и тук, или да останат на телефона?</item>
+    </plurals>
     <string name="remote_deletion_delete">Изтриване от телефона</string>
     <string name="remote_deletion_keep">Запазване на телефона</string>
     <string name="sfp_group_account">Акаунт</string>
@@ -472,7 +504,10 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Всички</string>
-    <string name="label_log_count">%1$d от %2$d реда</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d от %2$d ред</item>
+        <item quantity="other">%1$d от %2$d реда</item>
+    </plurals>
     <string name="label_share_sends_full_log">Споделянето винаги изпраща пълния дневник за отстраняване на грешки</string>
     <string name="btn_clear_view">Изчистване на изгледа</string>
     <string name="btn_copy_debug_log">Копиране на дневника за отстраняване на грешки</string>
@@ -501,7 +536,10 @@
     <string name="contact_filters_delete">Изтриване</string>
     <string name="contact_filters_saved">Правилата са запазени. Ще влязат в сила при следващото синхронизиране.</string>
     <string name="contact_filter_removal_title">Правилата за контакти биха премахнали контакти</string>
-    <string name="contact_filter_removal_body">Правилата ви за контакти вече не съответстват на %1$d контакта в този телефон (%2$s). Те остават в акаунта ви в Proton и няма да бъдат изтрити там. Да бъдат ли премахнати от този телефон, или запазени?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Правилата ви за контакти вече не съответстват на %1$d контакт в този телефон (%2$s). Той остава в акаунта ви в Proton и няма да бъде изтрит там. Да бъде ли премахнат от този телефон, или запазен?</item>
+        <item quantity="other">Правилата ви за контакти вече не съответстват на %1$d контакта в този телефон (%2$s). Те остават в акаунта ви в Proton и няма да бъдат изтрити там. Да бъдат ли премахнати от този телефон, или запазени?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Запазване в телефона</string>
     <string name="contact_filter_tpl_auto_created">Контакти, създадени автоматично от Proton</string>
     <string name="contact_filter_tpl_auto_created_desc">Изключва контактите, които имат само показвано име и имейл адрес, без собствено или фамилно име. Точно така изглежда контакт, който Proton създава от разменен имейл.</string>
@@ -530,20 +568,35 @@
     <string name="contact_filter_needs_name">Дайте име на правилото, за да го разпознавате в списъка.</string>
     <string name="contact_filter_delete_confirm">Да се изтрие ли това правило?</string>
     <string name="contact_filter_preview_running">Проверка на контактите ви…</string>
-    <string name="contact_filter_preview_result">От %1$d контакта, проверени в този телефон, тези правила биха запазили %2$d и премахнали %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">От %1$d контакт, проверен в този телефон, тези правила биха запазили %2$d и премахнали %3$d.</item>
+        <item quantity="other">От %1$d контакта, проверени в този телефон, тези правила биха запазили %2$d и премахнали %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Тези правила не биха премахнали нито един контакт.</string>
-    <string name="contact_filter_preview_undecided">%1$d не могат да се проверят на телефона, защото това правило гледа данни, които има само Proton. Те ще се решат при следващото синхронизиране, което пак ще попита, преди да премахне нещо.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d не може да се провери на телефона, защото това правило гледа данни, които има само Proton. Това ще се реши при следващото синхронизиране, което пак ще попита, преди да премахне нещо.</item>
+        <item quantity="other">%1$d не могат да се проверят на телефона, защото това правило гледа данни, които има само Proton. Те ще се решат при следващото синхронизиране, което пак ще попита, преди да премахне нещо.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">В този телефон още няма контакти за този акаунт.</string>
     <string name="contact_filter_preview_title">Резултат от проверката</string>
     <string name="contact_filter_preview_failed">Контактите не можаха да бъдат проверени: %1$s</string>
     <string name="contact_filter_preview_reading">Четене на контактите ви в Proton…</string>
     <string name="contact_filter_preview_progress">Проверка на контакт %1$d от %2$d…</string>
-    <string name="contact_filter_preview_server_result">От %1$d контакта в този акаунт Proton тези правила биха синхронизирали %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">От %1$d контакт в този акаунт Proton тези правила биха синхронизирали %2$d.</item>
+        <item quantity="other">От %1$d контакта в този акаунт Proton тези правила биха синхронизирали %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Премахнати от този телефон (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Не се копират на този телефон (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…и още %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…и още %1$d.</item>
+        <item quantity="other">…и още %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Покажи всички</string>
-    <string name="contact_filter_preview_unreadable">%1$d не можаха да бъдат прочетени и ще останат непроменени.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d не можа да бъде прочетен и ще остане непроменен.</item>
+        <item quantity="other">%1$d не можаха да бъдат прочетени и ще останат непроменени.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton не беше достъпен, затова тази проверка можа да използва само това, което вече е в телефона.</string>
     <string name="contact_filter_preview_nothing_removed">Нищо не би било премахнато от този телефон.</string>
     <string name="contact_filter_condition_values_hint">По една стойност на ред</string>
@@ -625,10 +678,19 @@
     <string name="label_name_repair">Проверка за измислени имена</string>
     <string name="name_repair_scanning">Проверяват се вашите Proton контакти…</string>
     <string name="name_repair_none">Нито един контакт в Proton няма име, измислено от Android.</string>
-    <string name="name_repair_found">%1$d контакта в Proton имат собствено име и фамилия, които Android е съставил, като е разделил имейл адреса им. По-стара версия на това приложение е изпратила тези имена към Proton.\n\nДа бъдат ли премахнати? Нищо друго в контактите не се променя, а показваното им име остава същото.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d контакт в Proton има собствено име и фамилия, които Android е съставил, като е разделил имейл адреса му. По-стара версия на това приложение е изпратила тези имена към Proton.\n\nДа бъдат ли премахнати? Нищо друго в контакта не се променя, а показваното му име остава същото.</item>
+        <item quantity="other">%1$d контакта в Proton имат собствено име и фамилия, които Android е съставил, като е разделил имейл адреса им. По-стара версия на това приложение е изпратила тези имена към Proton.\n\nДа бъдат ли премахнати? Нищо друго в контактите не се променя, а показваното им име остава същото.</item>
+    </plurals>
     <string name="name_repair_action">Премахване на измислените имена</string>
-    <string name="name_repair_done">%1$d контакта са поправени.</string>
-    <string name="name_repair_partial">%1$d контакта са поправени, %2$d са оставени без промяна.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d контакт е поправен.</item>
+        <item quantity="other">%1$d контакта са поправени.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d контакт е поправен, %2$d без промяна.</item>
+        <item quantity="other">%1$d контакта са поправени, %2$d без промяна.</item>
+    </plurals>
     <string name="name_repair_failed">Контактите ви не можаха да бъдат проверени: %1$s</string>
     <string name="filter_op_num_eq">е</string>
     <string name="filter_field_other_content">Друга информация</string>
@@ -637,10 +699,16 @@
     <string name="contact_filters_empty_none">Нито един контакт от този акаунт Proton не стига до телефона ви, защото настройката по-долу е зададена да не синхронизира нищо, което не е обхванато от правило. Добавете правило, за да пропуснете част от тях.</string>
     <string name="remove_synced_calendar_title">Да бъдат ли премахнати тези календари от този телефон?</string>
     <string name="remove_synced_calendar_body">Синхронизирането на календара вече е изключено, така че нищо повече няма да се изтегля. Календарите, които вече са на този телефон, остават, докато не ги премахнете. Премахването ги изтрива само от този телефон; календарите ви в Proton остават непокътнати. Може да ги премахнете и по-късно от настройките на акаунтите в Android, а ако включите синхронизирането на календара отново, те ще бъдат създадени наново.</string>
-    <string name="remove_synced_calendar_done">%1$d събития са премахнати от този телефон</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">%1$d събитие е премахнато от този телефон</item>
+        <item quantity="other">%1$d събития са премахнати от този телефон</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Да бъдат ли премахнати тези контакти от този телефон?</string>
     <string name="remove_synced_contacts_body">Синхронизирането на контактите вече е изключено, така че нищо повече няма да се изтегля. Контактите, които вече са на този телефон, остават, докато не ги премахнете. Премахването ги изтрива само от този телефон; контактите ви в Proton остават непокътнати. Може да ги премахнете и по-късно от настройките на акаунтите в Android, а ако включите синхронизирането на контактите отново, те ще бъдат добавени наново.</string>
-    <string name="remove_synced_contacts_done">%1$d контакта са премахнати от този телефон</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">%1$d контакт е премахнат от този телефон</item>
+        <item quantity="other">%1$d контакта са премахнати от този телефон</item>
+    </plurals>
     <string name="remove_synced_keep">Запазване</string>
     <string name="remove_synced_remove">Премахване</string>
     <string name="setup_choose_title">Какво да синхронизира този акаунт?</string>
@@ -656,4 +724,5 @@
     <string name="sfp_hero_subtitle_sync_off">Синхронизацията остава изключена, докато няма активен абонамент. Вижте раздела Абонамент по-горе.</string>
 
     <string name="toast_resync_skipped">Няма какво да се синхронизира: синхронизирането за %1$s е изключено</string>
+    <string name="plural_rules_language">bg</string>
 </resources>

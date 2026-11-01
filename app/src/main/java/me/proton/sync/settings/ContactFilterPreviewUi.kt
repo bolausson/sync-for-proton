@@ -10,6 +10,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.proton.sync.Plurals
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.R
 import me.proton.sync.backup.BackupDependenciesEntryPoint
@@ -210,24 +211,24 @@ internal object ContactFilterPreviewUi {
         val lines = mutableListOf<String>()
 
         if (outcome.serverBacked) {
-            lines += activity.getString(
-                R.string.contact_filter_preview_server_result, outcome.total, outcome.synced
+            lines += Plurals.text(activity, 
+                R.plurals.contact_filter_preview_server_result, outcome.total, outcome.total, outcome.synced
             )
         } else {
             lines += activity.getString(R.string.contact_filter_preview_offline)
             val checked = outcome.total - outcome.undecided
             if (checked > 0) {
-                lines += activity.getString(
-                    R.string.contact_filter_preview_result,
-                    checked, outcome.synced, outcome.removedFromPhone.size
+                lines += Plurals.text(activity, 
+                    R.plurals.contact_filter_preview_result,
+                    checked, checked, outcome.synced, outcome.removedFromPhone.size
                 )
             }
             if (outcome.undecided > 0) {
-                lines += activity.getString(R.string.contact_filter_preview_undecided, outcome.undecided)
+                lines += Plurals.text(activity, R.plurals.contact_filter_preview_undecided, outcome.undecided, outcome.undecided)
             }
         }
         if (outcome.unreadable > 0) {
-            lines += activity.getString(R.string.contact_filter_preview_unreadable, outcome.unreadable)
+            lines += Plurals.text(activity, R.plurals.contact_filter_preview_unreadable, outcome.unreadable, outcome.unreadable)
         }
 
         // Named, not counted. A number cannot tell somebody that the rule they just wrote is about
@@ -270,8 +271,8 @@ internal object ContactFilterPreviewUi {
     private fun names(activity: AppCompatActivity, all: List<String>, limit: Int?): String {
         if (limit == null || all.size <= limit) return all.joinToString("\n")
         val shown = all.take(limit).joinToString("\n")
-        return shown + "\n" + activity.getString(
-            R.string.contact_filter_preview_and_more, all.size - limit
+        return shown + "\n" + Plurals.text(activity, 
+            R.plurals.contact_filter_preview_and_more, all.size - limit, all.size - limit
         )
     }
 }

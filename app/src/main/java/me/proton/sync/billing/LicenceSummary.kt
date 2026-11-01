@@ -50,6 +50,7 @@ object LicenceSummary {
             if (expiry > 0L) append(" until ").append(day(expiry))
             if (prefs.getBoolean(SyncPreferences.KEY_SUBSCRIPTION_PAUSED, false)) append(", paused")
             if (prefs.getBoolean(SyncPreferences.KEY_SUBSCRIPTION_PAYMENT_FAILED, false)) append(", payment failed")
+            if (prefs.getBoolean(SyncPreferences.KEY_SUBSCRIPTION_SUSPENDED, false)) append(", suspended by Google Play (on hold or paused)")
             ScheduledChangeStore.read(prefs)?.let {
                 append(", ").append(it.action.wire).append(" scheduled for ").append(day(it.effectiveAtMs))
             }

@@ -62,10 +62,15 @@
     <string name="btn_sync_all_accounts">Sincronizar todas las cuentas</string>
     <string name="btn_sync_now">Sincronizar</string>
     <string name="label_sync_all_long_press_hint">Mantenga pulsado para forzar una resincronización completa</string>
-    <string name="dialog_title_full_resync_all">Resincronización completa (%1$d cuentas)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Resincronización completa (%1$d cuenta)</item>
+        <item quantity="many">Resincronización completa (%1$d de cuentas)</item>
+        <item quantity="other">Resincronización completa (%1$d cuentas)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Elija la dirección de sincronización para todas las cuentas:\n\nServidor → Local: Eliminar datos locales y volver a descargarlos desde Proton.\n\nLocal → Servidor: Subir todos los datos locales a Proton (sobrescribe el servidor).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Sincronización iniciada para %d cuenta</item>
+        <item quantity="many">Sincronización iniciada para %d de cuentas</item>
         <item quantity="other">Sincronización iniciada para %d cuentas</item>
     </plurals>
     <string name="label_background_sync_title">La sincronización en segundo plano no funciona?</string>
@@ -133,7 +138,7 @@
     <string name="toast_uploading">Subiendo %s locales a Proton…</string>
     <string name="toast_resync_failed">Resincronización fallida: %s</string>
     <string name="toast_preparing_resync">Preparando la resincronización, esto puede tardar unos segundos…</string>
-    <string name="toast_resync_in_flight">La resincronización ya está en curso, por favor espera</string>
+    <string name="toast_resync_in_flight">La resincronización ya está en curso, por favor espere</string>
     <string name="label_contacts_lower">contactos</string>
     <string name="label_calendar_lower">calendario</string>
     <string name="label_all_data">todos los datos</string>
@@ -142,7 +147,16 @@
     <string name="btn_open_settings">Abrir ajustes</string>
     <string name="btn_later">Más tarde</string>
     <string name="label_custom_suffix">, personalizado</string>
-    <string name="label_days_format">%d días</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d día</item>
+        <item quantity="many">%d de días</item>
+        <item quantity="other">%d días</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minuto</item>
+        <item quantity="many">%d de minutos</item>
+        <item quantity="other">%d minutos</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Errores de sincronización</string>
     <string name="notification_channel_sync_description">Notificaciones cuando la sincronización del calendario o los contactos falla</string>
@@ -191,40 +205,41 @@
     <string name="label_language">Idioma</string>
     <string name="label_language_auto">Automático (predeterminado del sistema)</string>
     <string name="label_subscription">Suscripción</string>
-    <string name="label_subscription_none">Sincronización desactivada. Gratis durante 7 días, luego comenzará el cobro a menos que canceles.</string>
+    <string name="label_subscription_none">Sincronización desactivada. Gratis durante 7 días, luego comenzará el cobro a menos que cancele.</string>
     <plurals name="label_subscription_trial_days">
         <item quantity="one">Prueba gratuita: queda %1$d día</item>
-        <item quantity="many">Prueba gratuita: quedan %1$d días</item>
+        <item quantity="many">Prueba gratuita: quedan %1$d de días</item>
         <item quantity="other">Prueba gratuita: quedan %1$d días</item>
     </plurals>
     <string name="label_subscription_active">Activa, se renueva el %1$s</string>
     <string name="label_subscription_active_play">Activa, gestionada por Google Play</string>
     <string name="label_subscription_ends">Finaliza el %1$s</string>
     <string name="label_subscription_pauses">Se pondrá en pausa el %1$s</string>
-    <string name="label_subscription_expired">Suscripción caducada: renueva para reanudar la sincronización.</string>
+    <string name="label_subscription_expired">Suscripción caducada: renueve para reanudar la sincronización.</string>
     <string name="label_subscription_paused">Suscripción en pausa: la sincronización está desactivada hasta que se reanude la suscripción.</string>
-    <string name="label_subscription_unpaid">Pago fallido: actualiza el método de pago para reactivar la sincronización.</string>
+    <string name="label_subscription_unpaid">Pago fallido: actualice el método de pago para reactivar la sincronización.</string>
+    <string name="label_subscription_suspended_play">Sincronización desactivada: la suscripción está suspendida o en pausa en Google Play, donde puede corregir el pago o reanudarla.</string>
     <string name="notification_payment_failed_title">Error en el pago de la suscripción</string>
     <string name="btn_update_payment_method">Actualizar método de pago</string>
-    <string name="label_subscription_grace">Problema de pago: actualiza el método de pago para seguir sincronizando.</string>
+    <string name="label_subscription_grace">Problema de pago: actualice el método de pago para seguir sincronizando.</string>
     <string name="btn_start_trial">Iniciar prueba gratuita de 7 días</string>
     <string name="btn_upgrade">Mejorar plan</string>
     <string name="btn_renew">Renovar</string>
     <string name="btn_manage_subscription">Gestionar suscripción</string>
-    <string name="dialog_title_choose_plan">Elige tu plan: prueba gratuita de 7 días incluida</string>
+    <string name="dialog_title_choose_plan">Elija su plan: prueba gratuita de 7 días incluida</string>
     <string name="plan_monthly_title">Mensual: %1$s</string>
     <string name="plan_monthly_subtitle">Gratis durante 7 días, luego %1$s/mes</string>
     <string name="plan_annual_title">Anual: %1$s</string>
     <string name="plan_annual_subtitle">Gratis durante 7 días, luego %1$s/año</string>
-    <string name="plan_picker_disclosure">Puedes cancelar cuando quieras en Google Play → Suscripciones. Sin cargos antes del día 7.</string>
-    <string name="dialog_title_choose_plan_plain">Elige tu plan</string>
+    <string name="plan_picker_disclosure">Puede cancelar cuando quiera en Google Play → Suscripciones. Sin cargos antes del día 7.</string>
+    <string name="dialog_title_choose_plan_plain">Elija su plan</string>
     <string name="plan_monthly_price">%1$s/mes</string>
     <string name="plan_annual_price">%1$s/año</string>
-    <string name="plan_picker_disclosure_plain">Puedes cancelar cuando quieras en Google Play → Suscripciones.</string>
+    <string name="plan_picker_disclosure_plain">Puede cancelar cuando quiera en Google Play → Suscripciones.</string>
     <string name="label_subscription_required">Sincronización desactivada: se necesita una suscripción.</string>
     <string name="btn_choose_plan">Elegir un plan</string>
     <string name="error_billing_unavailable">La facturación de Google Play no está disponible</string>
-    <string name="error_purchase_failed">La compra ha fallado: inténtalo de nuevo</string>
+    <string name="error_purchase_failed">La compra ha fallado: inténtelo de nuevo</string>
     <string name="sync_disabled_no_subscription">Sincronización pausada: se requiere suscripción</string>
 
     <string-array name="calendar_past_entries">
@@ -272,8 +287,8 @@
     <string name="info_send_cancellations_body">Enviar un correo a los asistentes cuando elimine un evento al que están invitados, para que sus calendarios también lo eliminen. Desactivado de forma predeterminada.</string>
     <string name="info_invite_subject_title_body">Al enviar correos de invitación, poner el título del evento en el asunto del correo para que los destinatarios lo reconozcan de un vistazo. Desactivado de forma predeterminada por privacidad: los asuntos de los correos no se cifran en el transporte de correo estándar, por lo que el título sería visible para los servidores de correo a lo largo de la ruta.</string>
     <string name="info_background_sync_body">Android puede pausar la sincronización en segundo plano para ahorrar batería, lo que puede retrasar o detener la sincronización automática. Excluir esta aplicación de la optimización de batería mantiene las sincronizaciones programadas funcionando de forma fiable. Use el botón para abrir los ajustes de batería del sistema para la aplicación.</string>
-    <string name="info_verbose_logging_body">Captura detalles de diagnóstico adicionales (estado de autenticación, desbloqueo de claves, internos de sincronización) en el registro, útil al informar de un problema. Puede incluir direcciones de correo de la cuenta y nombres de calendario, por lo que solo debe compartir los registros con el desarrollador. Déjelo desactivado para el uso normal.</string>
-    <string name="info_file_logging_body">Escribe el registro de la aplicación en un archivo de texto con marca de tiempo (sync-for-proton-log-….txt) en una carpeta que elijas. Por lo demás, la aplicación mantiene el registro solo en memoria, así que activa esto para capturar un problema difícil de reproducir. Se crea un archivo nuevo cada vez que se inicia la aplicación; puede contener direcciones de correo de cuentas y nombres de calendarios, así que compártelo solo con el desarrollador. Déjalo desactivado para un uso normal.</string>
+    <string name="info_verbose_logging_body">Captura detalles de diagnóstico adicionales (estado de autenticación, desbloqueo de claves, internos de sincronización) en el registro, útil al informar de un problema. La aplicación sustituye en él las direcciones de correo por códigos cortos, pero el registro puede incluir nombres de cuentas y de calendarios, por lo que solo debe compartir los registros con el desarrollador. Déjelo desactivado para el uso normal.</string>
+    <string name="info_file_logging_body">Escribe el registro de la aplicación en un archivo de texto con marca de tiempo (sync-for-proton-log-….txt) en una carpeta que usted elija. Por lo demás, la aplicación mantiene el registro solo en memoria, así que active esto para capturar un problema difícil de reproducir. Se crea un archivo nuevo cada vez que se inicia la aplicación. La aplicación sustituye en él las direcciones de correo por códigos cortos, pero el archivo puede contener nombres de cuentas y de calendarios, así que compártalo solo con el desarrollador. Déjelo desactivado para un uso normal.</string>
     <string name="info_timezone_updates_text">Las horas de los eventos dependen de las reglas de las zonas horarias, y los países cambian estas reglas de vez en cuando. Android las guarda en los datos de zonas horarias del teléfono, que llegan con las actualizaciones del sistema. Un teléfono que ya no las recibe, por ejemplo con una versión antigua de Android o sin actualizaciones del sistema de Google Play, conserva las reglas antiguas, y los eventos en lugares cuyas reglas han cambiado desde entonces pueden mostrarse a una hora incorrecta.\n\nDatos de zonas horarias de este teléfono: versión %1$s\n\nCuando está desactivado (predeterminado), la aplicación usa los datos de zonas horarias del propio teléfono y no envía nada a www.tzurl.org.\n\nCuando está activado, la aplicación descarga de www.tzurl.org, un servicio de terceros, las reglas actuales de cada zona horaria que usan sus eventos, como máximo una vez por zona horaria cada vez que se inicia la aplicación, y solo las usa si son más recientes que las del teléfono. www.tzurl.org ve entonces su dirección IP y los nombres de esas zonas horarias, por ejemplo Europe/Berlin. No se envía nada más sobre sus eventos o cuentas. Si no se puede acceder a www.tzurl.org, se usan los datos del teléfono. Los eventos periódicos se siguen calculando con los datos del teléfono.\n\nTras un cambio, los eventos que ya están en el teléfono se revisan y se corrigen en la siguiente sincronización.</string>
     <string name="tz_data_version_unknown">desconocida</string>
     <string name="tz_outdated_title">Los datos de zonas horarias están desactualizados</string>
@@ -312,7 +327,7 @@
     <string name="backup_preflight_settings_only">Esta copia de seguridad solo contiene ajustes.</string>
     <plurals name="backup_preflight_accounts">
         <item quantity="one">Esta copia de seguridad contiene %d cuenta y los ajustes.</item>
-        <item quantity="many">Esta copia de seguridad contiene %d cuentas y los ajustes.</item>
+        <item quantity="many">Esta copia de seguridad contiene %d de cuentas y los ajustes.</item>
         <item quantity="other">Esta copia de seguridad contiene %d cuentas y los ajustes.</item>
     </plurals>
     <string name="backup_preflight_flavor_mismatch">Esta copia de seguridad es de la versión \"%1$s\". Su suscripción no se transfiere: tendrá que volver a establecerla en esta versión.</string>
@@ -334,7 +349,11 @@
     <string name="notification_channel_alerts">Alertas de sincronización</string>
     <string name="notification_channel_alerts_description">Alertas de seguridad importantes que requieren su decisión</string>
     <string name="notification_bulk_delete_title">Cambio importante detectado en el calendario</string>
-    <string name="notification_bulk_delete_body">%1$d eventos de calendario desaparecieron de este teléfono (%2$s). Para proteger sus datos, NO se eliminaron de Proton. ¿Desea conservarlos en su teléfono o eliminarlos también de Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d evento de calendario desapareció de este teléfono (%2$s). Para proteger sus datos, NO se eliminó de Proton. ¿Desea conservarlo en su teléfono o eliminarlo también de Proton?</item>
+        <item quantity="many">%1$d de eventos de calendario desaparecieron de este teléfono (%2$s). Para proteger sus datos, NO se eliminaron de Proton. ¿Desea conservarlos en su teléfono o eliminarlos también de Proton?</item>
+        <item quantity="other">%1$d eventos de calendario desaparecieron de este teléfono (%2$s). Para proteger sus datos, NO se eliminaron de Proton. ¿Desea conservarlos en su teléfono o eliminarlos también de Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Conservar en Proton</string>
     <string name="notification_bulk_delete_delete">Eliminar en Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -380,7 +399,23 @@
     <string name="backup_decrypt_done">Descifrado en \"%1$s\" en su carpeta de copias de seguridad.</string>
     <string name="backup_decrypt_failed">No se pudo descifrar este archivo.</string>
     <string name="backup_restore_hint">Para restaurar: importe un .ics en Proton Calendar (Ajustes → Importar) y un .vcf en Proton Contacts. Las copias cifradas también se pueden abrir en un ordenador con: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Se hizo copia de %1$d calendario(s), %2$d evento(s) y %3$d contacto(s).</string>
+    <string name="backup_result_done">Se hizo una copia de seguridad de %1$s, %2$s y %3$s.</string>
+    <string name="backup_result_partial">Se hizo una copia de seguridad de %1$s, %2$s y %3$s, pero algunos elementos no se pudieron leer (claves bloqueadas o un error de red), por lo que la copia de seguridad puede estar incompleta. Revise los registros de sincronización y vuelva a intentarlo.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d calendario</item>
+        <item quantity="many">%d de calendarios</item>
+        <item quantity="other">%d calendarios</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d evento</item>
+        <item quantity="many">%d de eventos</item>
+        <item quantity="other">%d eventos</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d contacto</item>
+        <item quantity="many">%d de contactos</item>
+        <item quantity="other">%d contactos</item>
+    </plurals>
     <string name="backup_result_skipped">Omitido: la fuente no devolvió datos, por lo que se conservó la última copia válida.</string>
     <string name="backup_result_failed">Error en la copia de seguridad: %1$s</string>
     <string name="backup_result_folder_lost">Ya no se puede acceder a la carpeta de copias de seguridad.</string>
@@ -402,11 +437,18 @@
     <string name="backup_reminder_optout_body">¿Seguro que no desea configurar copias de seguridad? No conservará sus propias copias de seguridad de sus calendarios y contactos, ¡y no volveremos a recordárselo!</string>
     <string name="backup_reminder_optout_confirm">Sí, dejar de recordármelo</string>
     <string name="backup_reminder_optout_cancel">No, seguir recordándomelo</string>
-    <string name="backup_result_incomplete">Se hizo copia de %1$d calendario(s), %2$d evento(s) y %3$d contacto(s), pero algunos elementos no se pudieron leer (claves bloqueadas o un error de red), por lo que la copia de seguridad puede estar incompleta. Revise los registros de sincronización y vuelva a intentarlo.</string>
     <string name="backup_notif_incomplete_title">La copia de seguridad puede estar incompleta</string>
     <string name="remote_deletion_title">Elementos eliminados de Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d contactos ya no están en Proton (%2$s). Para proteger tus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</string>
-    <string name="remote_deletion_body_calendar">%1$d eventos de calendario ya no están en Proton (%2$s). Para proteger tus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d contacto ya no está en Proton (%2$s). Para proteger sus datos, AÚN no se eliminó de este teléfono. ¿Eliminarlo también aquí o conservarlo en el teléfono?</item>
+        <item quantity="many">%1$d de contactos ya no están en Proton (%2$s). Para proteger sus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</item>
+        <item quantity="other">%1$d contactos ya no están en Proton (%2$s). Para proteger sus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d evento de calendario ya no está en Proton (%2$s). Para proteger sus datos, AÚN no se eliminó de este teléfono. ¿Eliminarlo también aquí o conservarlo en el teléfono?</item>
+        <item quantity="many">%1$d de eventos de calendario ya no están en Proton (%2$s). Para proteger sus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</item>
+        <item quantity="other">%1$d eventos de calendario ya no están en Proton (%2$s). Para proteger sus datos, AÚN no se eliminaron de este teléfono. ¿Eliminarlos también aquí o conservarlos en el teléfono?</item>
+    </plurals>
     <string name="remote_deletion_delete">Eliminar del teléfono</string>
     <string name="remote_deletion_keep">Conservar en el teléfono</string>
     <string name="sfp_group_account">Cuenta</string>
@@ -446,49 +488,53 @@
     <string name="btn_navigate_back">Atrás</string>
     <!-- First-run "Import accounts & settings" restore (login screen) -->
     <string name="btn_import_accounts">Importar cuentas y ajustes</string>
-    <string name="sfp_login_import_hint">¿Cambias de instalación o de dispositivo? Restaura desde un archivo de copia de seguridad.</string>
+    <string name="sfp_login_import_hint">¿Cambia de instalación o de dispositivo? Restaure desde un archivo de copia de seguridad.</string>
     <string name="notification_events_rejected_title">Algunos eventos no se sincronizaron</string>
     <string name="notification_events_rejected_summary">Estos eventos en %1$s fueron rechazados por Proton y omitidos:</string>
     <string name="notification_contacts_rejected_title">Algunos contactos no se sincronizaron</string>
     <string name="notification_contacts_rejected_summary">Estos contactos nuevos en %1$s no se pudieron guardar en Proton. Por ahora solo existen en este teléfono:</string>
     <string name="notification_contacts_rejected_unnamed">(sin nombre)</string>
     <string name="notification_contacts_rejected_local_reason">no se pudo preparar para subirlo en este teléfono</string>
-    <string name="notification_events_rejected_guests_create">solo puedes invitar a personas en calendarios que te pertenecen. El evento se ha quedado solo en este teléfono; quita a los invitados o muévelo a uno de tus calendarios para sincronizarlo.</string>
+    <string name="notification_events_rejected_guests_create">solo puede invitar a personas en calendarios que le pertenecen. El evento se ha quedado solo en este teléfono; quite a los invitados o muévalo a uno de sus calendarios para sincronizarlo.</string>
     <string name="notification_events_rejected_guests_update">solo el propietario de este calendario compartido puede cambiar eventos con invitados, así que este cambio no se ha guardado en Proton.</string>
     <string name="notification_events_rejected_delete">esta cuenta no puede eliminarlo en Proton, así que volverá a este teléfono con la próxima sincronización.</string>
-    <string name="notification_events_rejected_personal">tus recordatorios o tu color no se han podido guardar en Proton, así que de momento solo se aplican en este teléfono. Cámbialos de nuevo para volver a intentarlo.</string>
+    <string name="notification_events_rejected_personal">sus recordatorios o su color no se han podido guardar en Proton, así que de momento solo se aplican en este teléfono. Cámbielos de nuevo para volver a intentarlo.</string>
     <string name="notification_contacts_too_large_title">Algunos contactos son demasiado grandes para este teléfono</string>
     <string name="notification_contacts_too_large_summary">Estos contactos de %1$s son demasiado grandes para el almacenamiento de contactos de Android. En Proton siguen completos:</string>
     <string name="notification_contacts_too_large_outdated">este teléfono conserva una versión anterior</string>
     <string name="notification_contacts_too_large_missing">no está en este teléfono</string>
     <string name="notification_conflict_title">Evento modificado en dos lugares</string>
-    <string name="notification_conflict_body">«%1$s» se modificó en este teléfono y en Proton Calendar. ¿Qué versión quieres conservar?</string>
-    <string name="notification_conflict_body_shared">«%1$s» se modificó en este teléfono y %2$s lo modificó en Proton Calendar. Conservar tu versión reemplazará la suya.</string>
+    <string name="notification_conflict_body">«%1$s» se modificó en este teléfono y en Proton Calendar. ¿Qué versión quiere conservar?</string>
+    <string name="notification_conflict_body_shared">«%1$s» se modificó en este teléfono y %2$s lo modificó en Proton Calendar. Si conserva su versión, reemplazará la de esa persona.</string>
     <string name="notification_conflict_keep_remote">Conservar la de Proton</string>
     <string name="notification_conflict_keep_local">Conservar la mía</string>
     <string name="notification_conflict_untitled_event">(sin título)</string>
     <string name="notification_contact_conflict_title">Contacto modificado en dos lugares</string>
-    <string name="notification_contact_conflict_body">El contacto «%1$s» se modificó en este teléfono y en Proton. ¿Qué versión quieres conservar? Si lo omites, ambas se quedan como están hasta la próxima sincronización manual.</string>
+    <string name="notification_contact_conflict_body">El contacto «%1$s» se modificó en este teléfono y en Proton. ¿Qué versión quiere conservar? Si lo omite, ambas se quedan como están hasta la próxima sincronización manual.</string>
     <string name="notification_contact_conflict_unnamed">(sin nombre)</string>
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Todo</string>
-    <string name="label_log_count">%1$d de %2$d líneas</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d de %2$d línea</item>
+        <item quantity="many">%1$d de %2$d de líneas</item>
+        <item quantity="other">%1$d de %2$d líneas</item>
+    </plurals>
     <string name="label_share_sends_full_log">Al compartir siempre se envía el registro de depuración completo</string>
     <string name="btn_clear_view">Borrar vista</string>
     <string name="btn_copy_debug_log">Copiar registro de depuración</string>
     <string name="btn_save_debug_log">Guardar registro de depuración</string>
     <string name="btn_share_debug_log">Compartir registro de depuración</string>
-    <string name="toast_log_too_large_to_copy">El registro es demasiado grande para copiarlo. Usa Compartir o Guardar.</string>
+    <string name="toast_log_too_large_to_copy">El registro es demasiado grande para copiarlo. Use Compartir o Guardar.</string>
     <string name="label_log_filter_title">Sync o Todo</string>
-    <string name="info_log_filter_body">Determina qué líneas aparecen en esta pantalla. Sync muestra lo que hizo la sincronización, además de todos los avisos y errores. Todo añade el detalle técnico: claves, inicio de sesión, red e interioridades del calendario.\n\nEsto solo cambia lo que ves. La aplicación lo registra todo en ambos casos, y Copiar, Guardar y Compartir siempre envían el registro de depuración completo.</string>
+    <string name="info_log_filter_body">Determina qué líneas aparecen en esta pantalla. Sync muestra lo que hizo la sincronización, además de todos los avisos y errores. Todo añade el detalle técnico: claves, inicio de sesión, red e interioridades del calendario.\n\nEsto solo cambia lo que usted ve. La aplicación lo registra todo en ambos casos, y Copiar, Guardar y Compartir siempre envían el registro de depuración completo.</string>
     <string name="label_contact_filters">Qué contactos se sincronizan</string>
     <string name="title_contact_filters">Filtros de contactos</string>
-    <string name="info_contact_filters_body">Proton crea un contacto para cada persona con la que intercambias correos, así que tu teléfono se llena de entradas que nunca añadiste. Las reglas deciden qué contactos llegan a este teléfono. Se comprueban en orden y decide la primera que coincide, así que el orden importa. Lo que ninguna regla toca lo resuelve el ajuste al final de la lista. Los contactos nunca se borran de tu cuenta de Proton: una regla solo impide que se copien aquí, y siempre se te pregunta antes de quitar algo del teléfono.</string>
+    <string name="info_contact_filters_body">Proton crea un contacto para cada persona con la que usted intercambia correos, así que su teléfono se llena de entradas que nunca añadió. Las reglas deciden qué contactos llegan a este teléfono. Se comprueban en orden y decide la primera que coincide, así que el orden importa. Lo que ninguna regla toca lo resuelve el ajuste al final de la lista. Los contactos nunca se borran de su cuenta de Proton: una regla solo impide que se copien aquí, y siempre se le pregunta antes de quitar algo del teléfono.</string>
     <string name="contact_filters_value_all">Todos los contactos</string>
     <string name="contact_filters_value_filtered">Filtrado</string>
     <string name="contact_filters_empty_title">Aún no hay reglas</string>
-    <string name="contact_filters_empty_body">Todos los contactos de esta cuenta de Proton se sincronizan con tu teléfono. Añade una regla para cambiarlo.</string>
+    <string name="contact_filters_empty_body">Todos los contactos de esta cuenta de Proton se sincronizan con su teléfono. Añada una regla para cambiarlo.</string>
     <string name="contact_filters_add">Añadir regla</string>
     <string name="contact_filters_templates">Usar una plantilla</string>
     <string name="contact_filters_fallthrough">Todo lo demás</string>
@@ -502,14 +548,18 @@
     <string name="contact_filters_delete">Eliminar</string>
     <string name="contact_filters_saved">Reglas guardadas. Se aplicarán en la próxima sincronización.</string>
     <string name="contact_filter_removal_title">Las reglas de contactos quitarían contactos</string>
-    <string name="contact_filter_removal_body">Tus reglas de contactos ya no coinciden con %1$d contactos de este teléfono (%2$s). Siguen en tu cuenta de Proton y no se borrarán allí. ¿Quitarlos de este teléfono o conservarlos?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Sus reglas de contactos ya no coinciden con %1$d contacto de este teléfono (%2$s). Sigue en su cuenta de Proton y no se borrará allí. ¿Quitarlo de este teléfono o conservarlo?</item>
+        <item quantity="many">Sus reglas de contactos ya no coinciden con %1$d de contactos de este teléfono (%2$s). Siguen en su cuenta de Proton y no se borrarán allí. ¿Quitarlos de este teléfono o conservarlos?</item>
+        <item quantity="other">Sus reglas de contactos ya no coinciden con %1$d contactos de este teléfono (%2$s). Siguen en su cuenta de Proton y no se borrarán allí. ¿Quitarlos de este teléfono o conservarlos?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Conservar en el teléfono</string>
     <string name="contact_filter_tpl_auto_created">Contactos creados automáticamente por Proton</string>
     <string name="contact_filter_tpl_auto_created_desc">Excluye los contactos que solo tienen un nombre visible y una dirección de correo, sin nombre ni apellidos. Esa es la forma que Proton da a un contacto creado a partir de un correo.</string>
     <string name="contact_filter_tpl_only_email">Contactos con solo una dirección de correo</string>
     <string name="contact_filter_tpl_only_email_desc">Excluye los contactos que no tienen nada más que una dirección de correo, ni siquiera un nombre.</string>
     <string name="contact_filter_tpl_name_and_email">Contactos con solo un nombre y un correo</string>
-    <string name="contact_filter_tpl_name_and_email_desc">Excluye contactos sin número de teléfono, dirección u otros datos. Esto también alcanza a contactos que introdujiste tú, así que revisa la vista previa.</string>
+    <string name="contact_filter_tpl_name_and_email_desc">Excluye contactos sin número de teléfono, dirección u otros datos. Esto también alcanza a contactos que introdujo usted, así que revise la vista previa.</string>
     <string name="contact_filter_tpl_in_any_group">Sincronizar solo contactos que estén en un grupo</string>
     <string name="contact_filter_tpl_in_any_group_desc">Sincroniza los contactos que pertenecen al menos a un grupo de Proton y deja todo lo demás sin sincronizar.</string>
     <string name="contact_filter_edit_name">Nombre de la regla</string>
@@ -527,24 +577,44 @@
     <string name="contact_filter_condition_op">Prueba</string>
     <string name="contact_filter_condition_value">Valor</string>
     <string name="contact_filter_condition_remove">Quitar condición</string>
-    <string name="contact_filter_needs_condition">Añade al menos una condición o esta regla no coincidirá nunca con nada.</string>
-    <string name="contact_filter_needs_name">Ponle un nombre a la regla para reconocerla en la lista.</string>
+    <string name="contact_filter_needs_condition">Añada al menos una condición o esta regla no coincidirá nunca con nada.</string>
+    <string name="contact_filter_needs_name">Póngale un nombre a la regla para reconocerla en la lista.</string>
     <string name="contact_filter_delete_confirm">¿Eliminar esta regla?</string>
-    <string name="contact_filter_preview_running">Comprobando tus contactos…</string>
-    <string name="contact_filter_preview_result">De los %1$d contactos comprobados en este teléfono, estas reglas conservarían %2$d y quitarían %3$d.</string>
+    <string name="contact_filter_preview_running">Comprobando sus contactos…</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">De %1$d contacto comprobado en este teléfono, estas reglas conservarían %2$d y quitarían %3$d.</item>
+        <item quantity="many">De los %1$d de contactos comprobados en este teléfono, estas reglas conservarían %2$d y quitarían %3$d.</item>
+        <item quantity="other">De los %1$d contactos comprobados en este teléfono, estas reglas conservarían %2$d y quitarían %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Estas reglas no quitarían ningún contacto.</string>
-    <string name="contact_filter_preview_undecided">%1$d no se pueden comprobar en el teléfono, porque esta regla examina datos que solo tiene Proton. La próxima sincronización lo decidirá, y seguirá preguntando antes de quitar nada.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d no se puede comprobar en el teléfono, porque esta regla examina datos que solo tiene Proton. La próxima sincronización lo decidirá, y seguirá preguntando antes de quitar nada.</item>
+        <item quantity="many">%1$d no se pueden comprobar en el teléfono, porque esta regla examina datos que solo tiene Proton. La próxima sincronización lo decidirá, y seguirá preguntando antes de quitar nada.</item>
+        <item quantity="other">%1$d no se pueden comprobar en el teléfono, porque esta regla examina datos que solo tiene Proton. La próxima sincronización lo decidirá, y seguirá preguntando antes de quitar nada.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Todavía no hay contactos en este teléfono para esta cuenta.</string>
     <string name="contact_filter_preview_title">Resultado de la prueba</string>
-    <string name="contact_filter_preview_failed">No se han podido comprobar tus contactos: %1$s</string>
-    <string name="contact_filter_preview_reading">Leyendo tus contactos de Proton…</string>
+    <string name="contact_filter_preview_failed">No se han podido comprobar sus contactos: %1$s</string>
+    <string name="contact_filter_preview_reading">Leyendo sus contactos de Proton…</string>
     <string name="contact_filter_preview_progress">Comprobando el contacto %1$d de %2$d…</string>
-    <string name="contact_filter_preview_server_result">De %1$d contactos de esta cuenta de Proton, estas reglas sincronizarían %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">De %1$d contacto de esta cuenta de Proton, estas reglas sincronizarían %2$d.</item>
+        <item quantity="many">De %1$d de contactos de esta cuenta de Proton, estas reglas sincronizarían %2$d.</item>
+        <item quantity="other">De %1$d contactos de esta cuenta de Proton, estas reglas sincronizarían %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Quitados de este teléfono (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">No copiados a este teléfono (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…y %1$d más.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…y %1$d más.</item>
+        <item quantity="many">…y %1$d más.</item>
+        <item quantity="other">…y %1$d más.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Mostrar todo</string>
-    <string name="contact_filter_preview_unreadable">%1$d no se han podido leer y se dejarían tal cual.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d no se ha podido leer y se dejaría tal cual.</item>
+        <item quantity="many">%1$d no se han podido leer y se dejarían tal cual.</item>
+        <item quantity="other">%1$d no se han podido leer y se dejarían tal cual.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">No se ha podido contactar con Proton, así que esta prueba solo ha podido usar lo que ya está en el teléfono.</string>
     <string name="contact_filter_preview_nothing_removed">No se quitaría nada de este teléfono.</string>
     <string name="contact_filter_condition_values_hint">Un valor por línea</string>
@@ -553,9 +623,9 @@
     <string name="contact_filter_condition_choose_fields">Elegir campos</string>
     <string name="contact_filter_condition_negate">Coincidir con lo contrario</string>
     <string name="contact_filter_condition_not">no (%1$s)</string>
-    <string name="contact_filter_condition_needs_value">Introduce al menos un valor, uno por línea.</string>
-    <string name="contact_filter_condition_needs_number">Introduce un número para esta prueba.</string>
-    <string name="contact_filter_condition_needs_fields">Elige al menos un campo.</string>
+    <string name="contact_filter_condition_needs_value">Introduzca al menos un valor, uno por línea.</string>
+    <string name="contact_filter_condition_needs_number">Introduzca un número para esta prueba.</string>
+    <string name="contact_filter_condition_needs_fields">Elija al menos un campo.</string>
     <string name="filter_field_proton_id">ID de Proton</string>
     <string name="filter_field_display_name">Nombre visible</string>
     <string name="filter_field_uid">UID del contacto</string>
@@ -613,7 +683,7 @@
     <string name="filter_op_exactly">son exactamente</string>
     <string name="label_name_mode">Contactos que solo tienen nombre visible</string>
     <string name="name_mode_title">Contactos que solo tienen nombre visible</string>
-    <string name="name_mode_info">Proton crea un contacto por cada persona con la que intercambias correo, y esos contactos solo tienen un nombre visible. Android no guarda un nombre que no puede completar, así que lo parte a partir del nombre visible: una dirección como app@example.com se convierte en el nombre app@example y el apellido com, y el nombre que tu teléfono muestra entonces es app@example com, con el punto convertido en un espacio.\n\nSi eliges tú el campo, Android no tiene nada que inventar. Solo afecta a los contactos que no tienen nombre ni apellidos en Proton, y en Proton no se cambia nunca nada.</string>
+    <string name="name_mode_info">Proton crea un contacto por cada persona con la que usted intercambia correo, y esos contactos solo tienen un nombre visible. Android no guarda un nombre que no puede completar, así que lo parte a partir del nombre visible: una dirección como app@example.com se convierte en el nombre app@example y el apellido com, y el nombre que su teléfono muestra entonces es app@example com, con el punto convertido en un espacio.\n\nSi elige usted el campo, Android no tiene nada que inventar. Solo afecta a los contactos que no tienen nombre ni apellidos en Proton, y en Proton no se cambia nunca nada.</string>
     <string name="name_mode_android">Dejar que decida Android</string>
     <string name="name_mode_android_desc">Comportamiento actual. Android parte el nombre visible y puede mostrarlo mal.</string>
     <string name="name_mode_nickname">Apodo</string>
@@ -622,28 +692,48 @@
     <string name="name_mode_given_desc">El nombre se muestra bien, con todo el nombre visible en el campo Nombre.</string>
     <string name="name_mode_family">Apellidos</string>
     <string name="name_mode_family_desc">El nombre se muestra bien, con todo el nombre visible en el campo Apellidos.</string>
-    <string name="name_mode_changed">Cambiado. Tus contactos se actualizarán en la próxima sincronización.</string>
+    <string name="name_mode_changed">Cambiado. Sus contactos se actualizarán en la próxima sincronización.</string>
     <string name="label_name_repair">Buscar nombres inventados</string>
-    <string name="name_repair_scanning">Comprobando tus contactos de Proton…</string>
+    <string name="name_repair_scanning">Comprobando sus contactos de Proton…</string>
     <string name="name_repair_none">Ningún contacto de Proton tiene un nombre inventado por Android.</string>
-    <string name="name_repair_found">%1$d contactos de Proton tienen un nombre y unos apellidos que Android se inventó partiendo su dirección de correo. Una versión anterior de esta aplicación envió esos nombres a Proton.\n\n¿Quieres quitarlos? No cambia nada más de los contactos y su nombre visible se mantiene igual.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d contacto de Proton tiene un nombre y unos apellidos que Android se inventó partiendo su dirección de correo. Una versión anterior de esta aplicación envió ese nombre a Proton.\n\n¿Quiere quitarlo? No cambia nada más del contacto y su nombre visible se mantiene igual.</item>
+        <item quantity="many">%1$d de contactos de Proton tienen un nombre y unos apellidos que Android se inventó partiendo su dirección de correo. Una versión anterior de esta aplicación envió esos nombres a Proton.\n\n¿Quiere quitarlos? No cambia nada más de los contactos y su nombre visible se mantiene igual.</item>
+        <item quantity="other">%1$d contactos de Proton tienen un nombre y unos apellidos que Android se inventó partiendo su dirección de correo. Una versión anterior de esta aplicación envió esos nombres a Proton.\n\n¿Quiere quitarlos? No cambia nada más de los contactos y su nombre visible se mantiene igual.</item>
+    </plurals>
     <string name="name_repair_action">Quitar los nombres inventados</string>
-    <string name="name_repair_done">%1$d contactos reparados.</string>
-    <string name="name_repair_partial">%1$d contactos reparados, %2$d sin tocar.</string>
-    <string name="name_repair_failed">No se han podido comprobar tus contactos: %1$s</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d contacto reparado.</item>
+        <item quantity="many">%1$d de contactos reparados.</item>
+        <item quantity="other">%1$d contactos reparados.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d contacto reparado, %2$d sin tocar.</item>
+        <item quantity="many">%1$d de contactos reparados, %2$d sin tocar.</item>
+        <item quantity="other">%1$d contactos reparados, %2$d sin tocar.</item>
+    </plurals>
+    <string name="name_repair_failed">No se han podido comprobar sus contactos: %1$s</string>
     <string name="filter_op_num_eq">es</string>
     <string name="filter_field_other_content">Otra información</string>
     <string name="filter_op_num_gte">es al menos</string>
     <string name="filter_op_num_lte">es como máximo</string>
-    <string name="contact_filters_empty_none">Ningún contacto de esta cuenta de Proton llega a tu teléfono, porque el ajuste de abajo indica que no se sincronice nada que no haya reclamado ninguna regla. Añade una regla para dejar pasar algunos.</string>
+    <string name="contact_filters_empty_none">Ningún contacto de esta cuenta de Proton llega a su teléfono, porque el ajuste de abajo indica que no se sincronice nada que no haya reclamado ninguna regla. Añada una regla para dejar pasar algunos.</string>
 
     <!-- Offer to clear already-synced data when a sync type is switched off. -->
     <string name="remove_synced_calendar_title">¿Eliminar estos calendarios de este teléfono?</string>
     <string name="remove_synced_calendar_body">La sincronización de calendario ya está desactivada, así que no se descargará nada más. Los calendarios que ya están en este teléfono permanecen hasta que los elimine. Al eliminarlos se borran solo de este teléfono; sus calendarios en Proton no se tocan. También puede eliminarlos más tarde en los ajustes de cuentas de Android, y si vuelve a activar la sincronización de calendario se crearán de nuevo.</string>
-    <string name="remove_synced_calendar_done">Se han eliminado %1$d evento(s) de este teléfono</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Se ha eliminado %1$d evento de este teléfono</item>
+        <item quantity="many">Se han eliminado %1$d de eventos de este teléfono</item>
+        <item quantity="other">Se han eliminado %1$d eventos de este teléfono</item>
+    </plurals>
     <string name="remove_synced_contacts_title">¿Eliminar estos contactos de este teléfono?</string>
     <string name="remove_synced_contacts_body">La sincronización de contactos ya está desactivada, así que no se descargará nada más. Los contactos que ya están en este teléfono permanecen hasta que los elimine. Al eliminarlos se borran solo de este teléfono; sus contactos en Proton no se tocan. También puede eliminarlos más tarde en los ajustes de cuentas de Android, y si vuelve a activar la sincronización de contactos se añadirán de nuevo.</string>
-    <string name="remove_synced_contacts_done">Se han eliminado %1$d contacto(s) de este teléfono</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Se ha eliminado %1$d contacto de este teléfono</item>
+        <item quantity="many">Se han eliminado %1$d de contactos de este teléfono</item>
+        <item quantity="other">Se han eliminado %1$d contactos de este teléfono</item>
+    </plurals>
     <string name="remove_synced_keep">Conservarlos</string>
     <string name="remove_synced_remove">Eliminar</string>
 
@@ -662,4 +752,5 @@
     <string name="sfp_hero_subtitle_sync_off">La sincronización permanece desactivada hasta que haya una suscripción activa. Consulte Suscripción más arriba.</string>
 
     <string name="toast_resync_skipped">Nada que sincronizar: la sincronización de %1$s está desactivada</string>
+    <string name="plural_rules_language">es</string>
 </resources>

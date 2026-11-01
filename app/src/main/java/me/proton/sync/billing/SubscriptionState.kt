@@ -53,7 +53,8 @@ sealed class SubscriptionState {
      * on the device, Play Billing shows a subscription in its grace period as an ordinary purchase. The direct
      * version keeps a past-due Paddle subscription [Active] with [Active.paymentFailed], because Paddle keeps
      * access open while it retries the payment. Both still persist and restore the state under its name, and
-     * the settings card has wording for it.
+     * the settings card has wording for it. Google's own in-app message (BillingUi.showPaymentMessages) is what
+     * tells a play subscriber in the grace period.
      */
     data class Grace(val expiresAtMs: Long, val productId: String) : SubscriptionState()
 
@@ -68,11 +69,18 @@ sealed class SubscriptionState {
      * charge after the trial failed), or has been past due too long. Sync is off and the id is kept;
      * once Paddle collects, the next licence check (every app start, every visit to settings, and a
      * second look shortly after coming back to settings) turns sync back on.
+     *
+     * [suspended] (play flavour only): Google Play returned the subscription suspended (Purchase.isSuspended): in
+     * account hold after a declined renewal payment, once any grace period is over, or paused by the subscriber.
+     * The phone cannot tell which, because a Purchase names neither reason (the Play Developer API does, and this
+     * app has no server to ask). Sync is off. Google returns the purchase unsuspended once the payment is fixed or
+     * the pause ends, and the next refresh turns sync back on.
      */
     data class Expired(
         val productId: String,
         val paused: Boolean = false,
         val paymentFailed: Boolean = false,
+        val suspended: Boolean = false,
     ) : SubscriptionState()
 
     /** Sync is allowed in Trial and Active states only. */

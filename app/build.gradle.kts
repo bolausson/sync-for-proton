@@ -26,8 +26,8 @@ android {
         applicationId = "me.proton.sync"
         minSdk = 29
         targetSdk = 36
-        versionCode = 200003
-        versionName = "2.0.3"
+        versionCode = 200004
+        versionName = "2.0.4"
     }
 
     // Needed only so AGP can find llvm-objcopy for `debugSymbolLevel` below. There is no
@@ -123,6 +123,12 @@ android {
             excludes += "META-INF/**"
         }
     }
+
+    lint {
+        // TypographyDashes asks for en dashes, which no user-facing text may have (tools/scan_user_text.py gates
+        // them); following it would break that rule in 25 languages.
+        disable += "TypographyDashes"
+    }
 }
 
 // The licences screen (LicencesActivity) shows THIRD-PARTY-NOTICES.md from the repository root, the notice the
@@ -184,11 +190,13 @@ tasks.withType<Test>().configureEach {
     inputs.file(rootProject.layout.projectDirectory.file("native/gopenpgp-bridge/modulus_test.go"))
         .withPropertyName("bridgeModulusTest")
         .withPathSensitivity(PathSensitivity.NONE)
-    // ActiveStatusLineTest reads every language's strings.xml, and a changed text alone changes no compiled class.
+    // ActiveStatusLineTest, TranslationRegisterTest and PluralFormsTest read every language's strings.xml, and a
+    // changed text alone changes no compiled class.
     inputs.files(fileTree("src/main/res") { include("values*/strings.xml") })
         .withPropertyName("stringResources")
         .withPathSensitivity(PathSensitivity.RELATIVE)
-    // ReleaseStringsTest and SubscriptionCardWordingTest also read the direct flavour's strings.xml in every
+    // ReleaseStringsTest, SubscriptionCardWordingTest, TranslationRegisterTest and PluralFormsTest also read the
+    // direct flavour's strings.xml in every
     // language, which the play test task compiles no class from at all.
     inputs.files(fileTree("src/direct/res") { include("values*/strings.xml") })
         .withPropertyName("directStringResources")

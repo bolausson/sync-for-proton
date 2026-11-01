@@ -14,6 +14,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import me.proton.sync.Plurals
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
@@ -247,17 +248,25 @@ class BackupDataExporter(
          * Both callers now go through here, so the two paths cannot drift again.
          */
         fun summaryFor(context: Context, result: Result): String = when (result) {
-            is Result.Success ->
-                if (result.incomplete) context.getString(
-                    me.proton.sync.R.string.backup_result_incomplete,
-                    result.calendars, result.events, result.contacts
-                ) else context.getString(
-                    me.proton.sync.R.string.backup_result_success,
-                    result.calendars, result.events, result.contacts
-                )
+            is Result.Success -> successText(context, result)
             Result.SkippedEmptyGuard -> context.getString(me.proton.sync.R.string.backup_result_skipped)
             Result.NoFolder -> context.getString(me.proton.sync.R.string.backup_result_folder_lost)
             is Result.Failure -> context.getString(me.proton.sync.R.string.backup_result_failed, result.reason)
+        }
+
+        /**
+         * "Backed up 2 calendars, 340 events and 1 contact.", each count in the plural its number takes in the app's
+         * language. Until 2.0.4 one string held all three numbers, which a plural cannot (it picks its form from one
+         * number), so it read "calendar(s), event(s) and contact(s)" in every language.
+         */
+        fun successText(context: Context, result: Result.Success): String {
+            val calendars = Plurals.text(context, me.proton.sync.R.plurals.backup_count_calendars, result.calendars, result.calendars)
+            val events = Plurals.text(context, me.proton.sync.R.plurals.backup_count_events, result.events, result.events)
+            val contacts = Plurals.text(context, me.proton.sync.R.plurals.backup_count_contacts, result.contacts, result.contacts)
+            return context.getString(
+                if (result.incomplete) me.proton.sync.R.string.backup_result_partial else me.proton.sync.R.string.backup_result_done,
+                calendars, events, contacts,
+            )
         }
 
         /** Stamp an outcome, so the screen describes the run that actually happened last. */

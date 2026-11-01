@@ -85,6 +85,14 @@ object BillingUi {
     @Suppress("UNUSED_PARAMETER")
     fun activeStatusText(context: Context): String? = null
 
+    /** Play only: Paddle never suspends; its paused and unpaid subscriptions have their own lines. */
+    @Suppress("UNUSED_PARAMETER")
+    fun suspendedStatusText(context: Context): String? = null
+
+    /** Play only. Paddle has no in-app message; the card's past-due and unpaid branches say it. */
+    @Suppress("UNUSED_PARAMETER", "RedundantSuspendModifier")
+    suspend fun showPaymentMessages(activity: SyncSettingsActivity, sm: SubscriptionManager) = Unit
+
     /**
      * Fetch the links behind a progress dialog and hand them to [onLinks], or say why there are none:
      * nothing to manage, the subscription service unavailable, or no connection. One fetch at a time: a
@@ -191,7 +199,7 @@ object BillingUi {
      * the card offers Paddle's portal instead. The debug verbs plan-picker and license-enter open it too.
      *
      * The dialog stays open until an id is taken. Text that is not an id is answered under the field without
-     * asking anyone ([parseSubscriptionEntry]). An id is checked with the licence proxy before it is stored
+     * asking anyone ([parseSubscriptionField]). An id is checked with the licence proxy before it is stored
      * ([SubscriptionManager.activate]): a spinner while it runs, then the dialog closes with a toast, or the
      * reason shows under the field with the text kept for a correction. A refused or unanswered entry never
      * touches the id this phone has.
@@ -222,11 +230,13 @@ object BillingUi {
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine()
-            // One character more than the parser reads, so a longer paste is answered as too long instead of being
-            // cut silently. Set after setSingleLine(): on Android 13 and later that adds a cut at 5,000 characters
-            // of its own unless the field has a length filter, and this replaces it (other filters stay).
+            // Two characters more than the parser reads, so a longer paste is answered as too long
+            // (parseSubscriptionField) instead of being cut silently: where its cut would split a surrogate pair (an
+            // emoji), the filter keeps one character less, and the field still holds more than the parser reads. Set
+            // after setSingleLine(): on Android 13 and later that adds a cut at 5,000 characters of its own unless the
+            // field has a length filter, and this replaces it (other filters stay).
             filters = filters.filterNot { it is InputFilter.LengthFilter }.toTypedArray() +
-                InputFilter.LengthFilter(MAX_ENTRY_CHARS + 1)
+                InputFilter.LengthFilter(MAX_ENTRY_CHARS + 2)
             setText(prefilledId.orEmpty())
             // Focus selects the pre-filled id, so a paste replaces it instead of landing next to it.
             setSelectAllOnFocus(true)
@@ -274,7 +284,8 @@ object BillingUi {
         fun submit() {
             val raw = input.text?.toString().orEmpty()
             // The stored id the field starts with: a transaction id pasted beside it is looked up, not the old id.
-            val entry = parseSubscriptionEntry(raw, prefilled = prefilledId)
+            // A full field is too long, however short its text cleans to.
+            val entry = parseSubscriptionField(raw, prefilled = prefilledId)
             // The kind and the length only: the text may be an email address or a real id.
             SyncLog.i(
                 TAG,

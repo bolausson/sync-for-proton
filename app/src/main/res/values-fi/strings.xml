@@ -65,7 +65,10 @@
     <string name="btn_sync_all_accounts">Synkronoi kaikki tilit</string>
     <string name="btn_sync_now">Synkronoi</string>
     <string name="label_sync_all_long_press_hint">Paina pitkään pakotettuun täyteen uudelleensynkronointiin</string>
-    <string name="dialog_title_full_resync_all">Täysi uudelleensynkronointi (%1$d tiliä)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Täysi uudelleensynkronointi (%1$d tili)</item>
+        <item quantity="other">Täysi uudelleensynkronointi (%1$d tiliä)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Valitse synkronointisuunta kaikille tileille:\n\nEtä → Paikallinen: Poista paikalliset tiedot ja lataa uudelleen Protonista.\n\nPaikallinen → Etä: Lataa kaikki paikalliset tiedot Protoniin (korvaa etätiedot).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Synkronointi aloitettu %d tilille</item>
@@ -135,7 +138,14 @@
     <string name="btn_open_settings">Avaa asetukset</string>
     <string name="btn_later">Myöhemmin</string>
     <string name="label_custom_suffix">, mukautettu</string>
-    <string name="label_days_format">%d päivää</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d päivä</item>
+        <item quantity="other">%d päivää</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minuutti</item>
+        <item quantity="other">%d minuuttia</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
 
     <string name="notification_channel_sync_failures">Synkronointivirheet</string>
@@ -201,6 +211,7 @@
     <string name="label_subscription_expired">Tilaus vanhentunut: uusi jatkaaksesi synkronointia.</string>
     <string name="label_subscription_paused">Tilaus keskeytetty: synkronointi on pois päältä, kunnes tilausta jatketaan.</string>
     <string name="label_subscription_unpaid">Maksu epäonnistui: päivitä maksutapa ottaaksesi synkronoinnin taas käyttöön.</string>
+    <string name="label_subscription_suspended_play">Synkronointi on pois päältä: tilaus on pidossa tai keskeytetty Google Playssa, jossa voit korjata maksun tai jatkaa tilausta.</string>
     <string name="notification_payment_failed_title">Tilauksen maksu epäonnistui</string>
     <string name="btn_update_payment_method">Päivitä maksutapa</string>
     <string name="label_subscription_grace">Maksuongelma: päivitä maksutapa jatkaaksesi synkronointia.</string>
@@ -285,8 +296,8 @@
     <string name="info_send_cancellations_body">Lähetä sähköpostia osallistujille, kun poistat heille kutsutun tapahtuman, jotta myös heidän kalentereistaan se poistuu. Oletuksena pois päältä.</string>
     <string name="info_invite_subject_title_body">Kun lähetät kutsusähköposteja, laita tapahtuman otsikko sähköpostin aiheriville, jotta vastaanottajat tunnistavat sen yhdellä silmäyksellä. Oletuksena pois päältä yksityisyyden vuoksi: sähköpostin aiheita ei ole salattu tavallisessa postinkuljetuksessa, joten otsikko olisi näkyvissä reitin varrella oleville sähköpostipalvelimille.</string>
     <string name="info_background_sync_body">Android saattaa keskeyttää taustasynkronoinnin akun säästämiseksi, mikä voi viivästyttää tai pysäyttää automaattisen synkronoinnin. Tämän sovelluksen jättäminen pois akun optimoinnista pitää ajastetut synkronoinnit käynnissä luotettavasti. Käytä painiketta avataksesi sovelluksen järjestelmän akkuasetukset.</string>
-    <string name="info_verbose_logging_body">Tallentaa lisädiagnostiikkatietoja (todennustila, avainten avaus, synkronoinnin sisäiset toiminnot) lokiin, hyödyllinen ongelmaa raportoitaessa. Se voi sisältää tilien sähköpostiosoitteita ja kalenterien nimiä, joten jaa lokeja vain kehittäjän kanssa. Jätä pois päältä normaalissa käytössä.</string>
-    <string name="info_file_logging_body">Kirjoittaa sovelluksen lokin aikaleimattuun tekstitiedostoon (sync-for-proton-log-….txt) valitsemaasi kansioon. Muuten sovellus säilyttää lokin vain muistissa, joten ota tämä käyttöön, kun haluat tallentaa vaikeasti toistettavan ongelman. Uusi tiedosto luodaan aina sovelluksen käynnistyessä; se voi sisältää tilien sähköpostiosoitteita ja kalenterien nimiä, joten jaa se vain kehittäjälle. Jätä pois päältä normaalikäytössä.</string>
+    <string name="info_verbose_logging_body">Tallentaa lisädiagnostiikkatietoja (todennustila, avainten avaus, synkronoinnin sisäiset toiminnot) lokiin, hyödyllinen ongelmaa raportoitaessa. Sovellus korvaa lokin sähköpostiosoitteet lyhyillä koodeilla, mutta loki voi sisältää tilien ja kalenterien nimiä, joten jaa lokeja vain kehittäjän kanssa. Jätä pois päältä normaalissa käytössä.</string>
+    <string name="info_file_logging_body">Kirjoittaa sovelluksen lokin aikaleimattuun tekstitiedostoon (sync-for-proton-log-….txt) valitsemaasi kansioon. Muuten sovellus säilyttää lokin vain muistissa, joten ota tämä käyttöön, kun haluat tallentaa vaikeasti toistettavan ongelman. Uusi tiedosto luodaan aina sovelluksen käynnistyessä. Sovellus korvaa tiedoston sähköpostiosoitteet lyhyillä koodeilla, mutta tiedosto voi sisältää tilien ja kalenterien nimiä, joten jaa se vain kehittäjälle. Jätä pois päältä normaalikäytössä.</string>
     <string name="info_timezone_updates_text">Tapahtumien ajat riippuvat aikavyöhykkeiden säännöistä, ja maat muuttavat näitä sääntöjä aika ajoin. Android säilyttää ne puhelimen aikavyöhyketiedoissa, jotka tulevat järjestelmäpäivitysten mukana. Puhelin, joka ei enää saa niitä, esimerkiksi vanhemmalla Android-versiolla tai ilman Google Play -järjestelmäpäivityksiä, pitää vanhat säännöt, ja tapahtumat paikoissa, joiden säännöt ovat sen jälkeen muuttuneet, voivat näkyä väärään aikaan.\n\nAikavyöhyketiedot tässä puhelimessa: versio %1$s\n\nKun tämä ei ole käytössä (oletus), sovellus käyttää puhelimen omia aikavyöhyketietoja eikä lähetä mitään www.tzurl.org-palveluun.\n\nKun tämä on käytössä, sovellus lataa jokaisen tapahtumiesi käyttämän aikavyöhykkeen ajantasaiset säännöt www.tzurl.org-palvelusta, joka on kolmannen osapuolen palvelu, enintään kerran aikavyöhykettä kohden aina sovelluksen käynnistyttyä, ja käyttää niitä vain, jos ne ovat puhelimen tietoja uudempia. www.tzurl.org näkee tällöin IP-osoitteesi ja näiden aikavyöhykkeiden nimet, esimerkiksi Europe/Berlin. Muuta tietoa tapahtumistasi tai tileistäsi ei lähetetä. Jos www.tzurl.org ei ole tavoitettavissa, käytetään puhelimen tietoja. Toistuvat tapahtumat lasketaan edelleen puhelimen tiedoilla.\n\nMuutoksen jälkeen puhelimessa jo olevat tapahtumat tarkistetaan ja korjataan seuraavassa synkronoinnissa.</string>
     <string name="tz_data_version_unknown">tuntematon</string>
     <string name="tz_outdated_title">Aikavyöhyketiedot ovat vanhentuneet</string>
@@ -347,7 +358,10 @@
     <string name="notification_channel_alerts">Synkronointihälytykset</string>
     <string name="notification_channel_alerts_description">Tärkeät turvahälytykset, jotka vaativat päätöksesi</string>
     <string name="notification_bulk_delete_title">Suuri kalenterimuutos havaittu</string>
-    <string name="notification_bulk_delete_body">%1$d kalenteritapahtumaa katosi tästä puhelimesta (%2$s). Tietojesi suojaamiseksi niitä EI poistettu Protonista. Säilytetäänkö ne puhelimessasi vai poistetaanko ne myös Protonista?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d kalenteritapahtuma katosi tästä puhelimesta (%2$s). Tietojesi suojaamiseksi sitä EI poistettu Protonista. Säilytetäänkö se puhelimessasi vai poistetaanko se myös Protonista?</item>
+        <item quantity="other">%1$d kalenteritapahtumaa katosi tästä puhelimesta (%2$s). Tietojesi suojaamiseksi niitä EI poistettu Protonista. Säilytetäänkö ne puhelimessasi vai poistetaanko ne myös Protonista?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Säilytä Protonissa</string>
     <string name="notification_bulk_delete_delete">Poista Protonista</string>
 
@@ -394,7 +408,20 @@
     <string name="backup_decrypt_done">Purettu kansioon \"%1$s\" varmuuskopiokansiossasi.</string>
     <string name="backup_decrypt_failed">Tämän tiedoston salausta ei voitu purkaa.</string>
     <string name="backup_restore_hint">Palauttaminen: tuo .ics-tiedosto Proton Calendariin (Asetukset → Tuo) ja .vcf-tiedosto Proton Contactsiin. Salatut varmuuskopiot voi myös avata tietokoneella komennolla: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Varmuuskopioitu %1$d kalenteria, %2$d tapahtumaa ja %3$d yhteystietoa.</string>
+    <string name="backup_result_done">Varmuuskopioitu %1$s, %2$s ja %3$s.</string>
+    <string name="backup_result_partial">Varmuuskopioitu %1$s, %2$s ja %3$s, mutta joitakin kohteita ei voitu lukea (lukitut avaimet tai verkkovirhe), joten varmuuskopio voi olla puutteellinen. Tarkista synkronointilokit ja yritä sitten uudelleen.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalenteri</item>
+        <item quantity="other">%d kalenteria</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d tapahtuma</item>
+        <item quantity="other">%d tapahtumaa</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d yhteystieto</item>
+        <item quantity="other">%d yhteystietoa</item>
+    </plurals>
     <string name="backup_result_skipped">Ohitettu: lähde ei palauttanut tietoja, joten viimeisin toimiva varmuuskopio säilytettiin.</string>
     <string name="backup_result_failed">Varmuuskopiointi epäonnistui: %1$s</string>
     <string name="backup_result_folder_lost">Varmuuskopiokansio ei ole enää käytettävissä.</string>
@@ -416,11 +443,16 @@
     <string name="backup_reminder_optout_body">Haluatko varmasti olla määrittämättä varmuuskopioita? Et säilytä omia kopioita kalentereistasi ja yhteystiedoistasi, emmekä muistuta sinua tästä enää!</string>
     <string name="backup_reminder_optout_confirm">Kyllä, lopeta muistuttaminen</string>
     <string name="backup_reminder_optout_cancel">Ei, muistuta minua jatkossakin</string>
-    <string name="backup_result_incomplete">Varmuuskopioitu %1$d kalenteria, %2$d tapahtumaa ja %3$d yhteystietoa, mutta joitakin kohteita ei voitu lukea (lukitut avaimet tai verkkovirhe), joten varmuuskopio voi olla puutteellinen. Tarkista synkronointilokit ja yritä sitten uudelleen.</string>
     <string name="backup_notif_incomplete_title">Varmuuskopio voi olla puutteellinen</string>
     <string name="remote_deletion_title">Kohteita poistettu Protonista</string>
-    <string name="remote_deletion_body_contacts">%1$d yhteystietoa ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi niitä EI vielä poistettu tästä puhelimesta. Poistetaanko ne myös täältä vai säilytetäänkö puhelimessa?</string>
-    <string name="remote_deletion_body_calendar">%1$d kalenteritapahtumaa ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi niitä EI vielä poistettu tästä puhelimesta. Poistetaanko ne myös täältä vai säilytetäänkö puhelimessa?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d yhteystieto ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi sitä EI vielä poistettu tästä puhelimesta. Poistetaanko se myös täältä vai säilytetäänkö puhelimessa?</item>
+        <item quantity="other">%1$d yhteystietoa ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi niitä EI vielä poistettu tästä puhelimesta. Poistetaanko ne myös täältä vai säilytetäänkö puhelimessa?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d kalenteritapahtuma ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi sitä EI vielä poistettu tästä puhelimesta. Poistetaanko se myös täältä vai säilytetäänkö puhelimessa?</item>
+        <item quantity="other">%1$d kalenteritapahtumaa ei ole enää Protonissa (%2$s). Tietojesi suojaamiseksi niitä EI vielä poistettu tästä puhelimesta. Poistetaanko ne myös täältä vai säilytetäänkö puhelimessa?</item>
+    </plurals>
     <string name="remote_deletion_delete">Poista puhelimesta</string>
     <string name="remote_deletion_keep">Säilytä puhelimessa</string>
     <!-- Redesigned settings UI: sections, hero, quick tiles, sign-in & first-run -->
@@ -488,7 +520,10 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Kaikki</string>
-    <string name="label_log_count">%1$d / %2$d riviä</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d / %2$d rivi</item>
+        <item quantity="other">%1$d / %2$d riviä</item>
+    </plurals>
     <string name="label_share_sends_full_log">Jakaminen lähettää aina koko vianetsintälokin</string>
     <string name="btn_clear_view">Tyhjennä näkymä</string>
     <string name="btn_copy_debug_log">Kopioi vianetsintäloki</string>
@@ -517,7 +552,10 @@
     <string name="contact_filters_delete">Poista</string>
     <string name="contact_filters_saved">Säännöt tallennettu. Ne astuvat voimaan seuraavassa synkronoinnissa.</string>
     <string name="contact_filter_removal_title">Yhteystietosäännöt poistaisivat yhteystietoja</string>
-    <string name="contact_filter_removal_body">Yhteystietosääntösi eivät enää osu %1$d yhteystietoon tässä puhelimessa (%2$s). Ne ovat yhä Proton-tililläsi eikä niitä poisteta sieltä. Poistetaanko ne tästä puhelimesta vai säilytetäänkö?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Yhteystietosääntösi eivät enää osu %1$d yhteystietoon tässä puhelimessa (%2$s). Se on yhä Proton-tililläsi eikä sitä poisteta sieltä. Poistetaanko se tästä puhelimesta vai säilytetäänkö?</item>
+        <item quantity="other">Yhteystietosääntösi eivät enää osu %1$d yhteystietoon tässä puhelimessa (%2$s). Ne ovat yhä Proton-tililläsi eikä niitä poisteta sieltä. Poistetaanko ne tästä puhelimesta vai säilytetäänkö?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Säilytä puhelimessa</string>
     <string name="contact_filter_tpl_auto_created">Protonin automaattisesti luomat yhteystiedot</string>
     <string name="contact_filter_tpl_auto_created_desc">Jättää pois yhteystiedot, joissa on vain näyttönimi ja sähköpostiosoite, ilman etu- tai sukunimeä. Juuri sellaisen yhteystiedon Proton luo vaihdetusta sähköpostista.</string>
@@ -546,20 +584,35 @@
     <string name="contact_filter_needs_name">Anna säännölle nimi, jotta tunnistat sen luettelossa.</string>
     <string name="contact_filter_delete_confirm">Poistetaanko tämä sääntö?</string>
     <string name="contact_filter_preview_running">Tarkistetaan yhteystietojasi…</string>
-    <string name="contact_filter_preview_result">Tässä puhelimessa tarkistetusta %1$d yhteystiedosta nämä säännöt säilyttäisivät %2$d ja poistaisivat %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Tässä puhelimessa tarkistetusta %1$d yhteystiedosta nämä säännöt säilyttäisivät %2$d ja poistaisivat %3$d.</item>
+        <item quantity="other">Tässä puhelimessa tarkistetusta %1$d yhteystiedosta nämä säännöt säilyttäisivät %2$d ja poistaisivat %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Nämä säännöt eivät poistaisi yhtään yhteystietoa.</string>
-    <string name="contact_filter_preview_undecided">%1$d ei voi tarkistaa puhelimessa, koska tämä sääntö katsoo tietoja, jotka ovat vain Protonilla. Seuraava synkronointi ratkaisee ne ja kysyy silti ennen kuin mitään poistetaan.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d ei voi tarkistaa puhelimessa, koska tämä sääntö katsoo tietoja, jotka ovat vain Protonilla. Seuraava synkronointi ratkaisee sen ja kysyy silti ennen kuin mitään poistetaan.</item>
+        <item quantity="other">%1$d ei voi tarkistaa puhelimessa, koska tämä sääntö katsoo tietoja, jotka ovat vain Protonilla. Seuraava synkronointi ratkaisee ne ja kysyy silti ennen kuin mitään poistetaan.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Tässä puhelimessa ei ole vielä tämän tilin yhteystietoja.</string>
     <string name="contact_filter_preview_title">Testin tulos</string>
     <string name="contact_filter_preview_failed">Yhteystietoja ei voitu tarkistaa: %1$s</string>
     <string name="contact_filter_preview_reading">Luetaan Proton-yhteystietojasi…</string>
     <string name="contact_filter_preview_progress">Tarkistetaan yhteystietoa %1$d / %2$d…</string>
-    <string name="contact_filter_preview_server_result">Tämän Proton-tilin %1$d yhteystiedosta nämä säännöt synkronoisivat %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Tämän Proton-tilin %1$d yhteystiedosta nämä säännöt synkronoisivat %2$d.</item>
+        <item quantity="other">Tämän Proton-tilin %1$d yhteystiedosta nämä säännöt synkronoisivat %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Poistetaan tästä puhelimesta (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Ei kopioida tähän puhelimeen (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…ja %1$d muuta.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…ja %1$d muu.</item>
+        <item quantity="other">…ja %1$d muuta.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Näytä kaikki</string>
-    <string name="contact_filter_preview_unreadable">%1$d ei voitu lukea, ja ne jätettäisiin rauhaan.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d ei voitu lukea, ja se jätettäisiin rauhaan.</item>
+        <item quantity="other">%1$d ei voitu lukea, ja ne jätettäisiin rauhaan.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Protoniin ei saatu yhteyttä, joten tämä testi saattoi käyttää vain sitä, mitä puhelimessa jo on.</string>
     <string name="contact_filter_preview_nothing_removed">Mitään ei poistettaisi tästä puhelimesta.</string>
     <string name="contact_filter_condition_values_hint">Yksi arvo riviä kohden</string>
@@ -641,10 +694,19 @@
     <string name="label_name_repair">Tarkista keksityt nimet</string>
     <string name="name_repair_scanning">Tarkistetaan Proton-yhteystietoja…</string>
     <string name="name_repair_none">Yhdelläkään Protonin yhteystiedolla ei ole Androidin keksimää nimeä.</string>
-    <string name="name_repair_found">%1$d Protonin yhteystiedolla on etu- ja sukunimi, jonka Android keksi pilkkomalla sähköpostiosoitteen. Tämän sovelluksen aiempi versio lähetti nämä nimet Protoniin.\n\nPoistetaanko ne? Yhteystiedoissa ei muutu muuta, ja näyttönimi säilyy ennallaan.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d Protonin yhteystiedolla on etu- ja sukunimi, jonka Android keksi pilkkomalla sen sähköpostiosoitteen. Tämän sovelluksen aiempi versio lähetti nämä nimet Protoniin.\n\nPoistetaanko ne? Yhteystiedossa ei muutu muuta, ja näyttönimi säilyy ennallaan.</item>
+        <item quantity="other">%1$d Protonin yhteystiedolla on etu- ja sukunimi, jonka Android keksi pilkkomalla sähköpostiosoitteen. Tämän sovelluksen aiempi versio lähetti nämä nimet Protoniin.\n\nPoistetaanko ne? Yhteystiedoissa ei muutu muuta, ja näyttönimi säilyy ennallaan.</item>
+    </plurals>
     <string name="name_repair_action">Poista keksityt nimet</string>
-    <string name="name_repair_done">%1$d yhteystietoa korjattu.</string>
-    <string name="name_repair_partial">%1$d yhteystietoa korjattu, %2$d jätettiin ennalleen.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d yhteystieto korjattu.</item>
+        <item quantity="other">%1$d yhteystietoa korjattu.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d yhteystieto korjattu, %2$d jätettiin ennalleen.</item>
+        <item quantity="other">%1$d yhteystietoa korjattu, %2$d jätettiin ennalleen.</item>
+    </plurals>
     <string name="name_repair_failed">Yhteystietojen tarkistus epäonnistui: %1$s</string>
     <string name="filter_op_num_eq">on</string>
     <string name="filter_field_other_content">Muut tiedot</string>
@@ -655,10 +717,16 @@
     <!-- Offer to clear already-synced data when a sync type is switched off. -->
     <string name="remove_synced_calendar_title">Poistetaanko nämä kalenterit tästä puhelimesta?</string>
     <string name="remove_synced_calendar_body">Kalenterin synkronointi on nyt pois käytöstä, joten mitään ei enää ladata. Tässä puhelimessa jo olevat kalenterit säilyvät, kunnes poistat ne. Poistaminen poistaa ne vain tästä puhelimesta; Protonissa olevia kalentereitasi ei kosketa. Voit poistaa ne myöhemmin myös Androidin tiliasetuksista, ja jos otat kalenterin synkronoinnin uudelleen käyttöön, ne luodaan uudelleen.</string>
-    <string name="remove_synced_calendar_done">Poistettiin %1$d tapahtumaa tästä puhelimesta</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Poistettiin %1$d tapahtuma tästä puhelimesta</item>
+        <item quantity="other">Poistettiin %1$d tapahtumaa tästä puhelimesta</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Poistetaanko nämä yhteystiedot tästä puhelimesta?</string>
     <string name="remove_synced_contacts_body">Yhteystietojen synkronointi on nyt pois käytöstä, joten mitään ei enää ladata. Tässä puhelimessa jo olevat yhteystiedot säilyvät, kunnes poistat ne. Poistaminen poistaa ne vain tästä puhelimesta; Protonissa olevia yhteystietojasi ei kosketa. Voit poistaa ne myöhemmin myös Androidin tiliasetuksista, ja jos otat yhteystietojen synkronoinnin uudelleen käyttöön, ne lisätään uudelleen.</string>
-    <string name="remove_synced_contacts_done">Poistettiin %1$d yhteystietoa tästä puhelimesta</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Poistettiin %1$d yhteystieto tästä puhelimesta</item>
+        <item quantity="other">Poistettiin %1$d yhteystietoa tästä puhelimesta</item>
+    </plurals>
     <string name="remove_synced_keep">Säilytä</string>
     <string name="remove_synced_remove">Poista</string>
 
@@ -676,4 +744,5 @@
     <string name="sfp_hero_subtitle_sync_off">Synkronointi pysyy pois päältä, kunnes tilaus on aktiivinen. Katso yllä oleva kohta Tilaus.</string>
 
     <string name="toast_resync_skipped">Ei mitään synkronoitavaa: kohteen %1$s synkronointi on pois käytöstä</string>
+    <string name="plural_rules_language">fi</string>
 </resources>

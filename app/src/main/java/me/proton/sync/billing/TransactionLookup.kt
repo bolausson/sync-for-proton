@@ -10,9 +10,10 @@ import org.json.JSONObject
  * looks up, read-only, which subscription of this product the transaction paid for:
  *  - [Resolved]: that subscription's id, which is then checked as if it had been entered.
  *  - [Refused]: no such subscription, or one of another product.
- *  - [NotReady]: a transaction of this product that names no subscription. Right after a payment that is
- *    Paddle still creating it, worth another try in a minute; a checkout never paid (abandoned, declined,
- *    canceled) stays so for good. The proxy does not tell the two apart, so the dialog says both.
+ *  - [NotReady]: a transaction of this product that names no subscription yet. Right after a payment that is
+ *    Paddle still creating it, worth another try in a minute. Since the proxy's revision 2026-10-27.1 a canceled
+ *    checkout, or one left unpaid for over an hour, is [Refused] instead (subscription_not_found); one opened in
+ *    the last hour and not paid is still this, so the dialog keeps its "otherwise" for both.
  *  - [Unknown]: nothing was decided. A fault on the proxy's or Paddle's side, no connection, or an answer that
  *    is not the proxy's.
  * None of them stores anything: only the check of a [Resolved] id can.
@@ -35,8 +36,9 @@ private val SUB_ID = Regex("sub_[0-7][0-9a-hjkmnp-tv-z]{25}")
  * Classify one /txn-to-sub response. [httpCode] is the HTTP status, [body] the response text.
  *
  * The proxy (contract 3) answers 200 `{ok:true, subscription_id, status}`; 200 `{ok:false, error}` with
- * `subscription_not_found` (a transaction Paddle does not know), `subscription_wrong_product` or `not_ready`
- * (one of this product with no subscription, whatever its status); 400 `invalid_request` for text that is not
+ * `subscription_not_found` (a transaction Paddle does not know, or since revision 2026-10-27.1 a canceled or
+ * long-unpaid checkout), `subscription_wrong_product` or `not_ready` (one of this product with no subscription
+ * yet); 400 `invalid_request` for text that is not
  * shaped like a transaction id; and a 5xx for a fault. Only that subscription_id is ever sent on, so one that is not exactly
  * the shape a typed id must have is not trusted: a missing or broken one is [TransactionLookup.Unknown], like a
  * 5xx, a body that is not JSON, or a refusal the proxy does not send.

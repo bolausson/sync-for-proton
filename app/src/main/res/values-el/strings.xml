@@ -65,7 +65,10 @@
     <string name="btn_sync_all_accounts">Συγχρονισμός όλων των λογαριασμών</string>
     <string name="btn_sync_now">Συγχρονισμός</string>
     <string name="label_sync_all_long_press_hint">Παρατεταμένο πάτημα για αναγκαστικό πλήρη επανασυγχρονισμό</string>
-    <string name="dialog_title_full_resync_all">Πλήρης επανασυγχρονισμός (%1$d λογαριασμοί)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Πλήρης επανασυγχρονισμός (%1$d λογαριασμός)</item>
+        <item quantity="other">Πλήρης επανασυγχρονισμός (%1$d λογαριασμοί)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Επιλέξτε κατεύθυνση συγχρονισμού για όλους τους λογαριασμούς:\n\nΑπομακρυσμένο → Τοπικό: Διαγραφή τοπικών δεδομένων και εκ νέου λήψη από το Proton.\n\nΤοπικό → Απομακρυσμένο: Μεταφόρτωση όλων των τοπικών δεδομένων στο Proton (αντικαθιστά τα απομακρυσμένα).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Ο συγχρονισμός ξεκίνησε για %d λογαριασμό</item>
@@ -135,7 +138,14 @@
     <string name="btn_open_settings">Άνοιγμα ρυθμίσεων</string>
     <string name="btn_later">Αργότερα</string>
     <string name="label_custom_suffix">, προσαρμοσμένο</string>
-    <string name="label_days_format">%d ημέρες</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d ημέρα</item>
+        <item quantity="other">%d ημέρες</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d λεπτό</item>
+        <item quantity="other">%d λεπτά</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
 
     <string name="notification_channel_sync_failures">Αποτυχίες συγχρονισμού</string>
@@ -201,6 +211,7 @@
     <string name="label_subscription_expired">Η συνδρομή έληξε: ανανεώστε για να συνεχιστεί ο συγχρονισμός.</string>
     <string name="label_subscription_paused">Η συνδρομή τέθηκε σε παύση: ο συγχρονισμός είναι απενεργοποιημένος μέχρι να συνεχιστεί η συνδρομή.</string>
     <string name="label_subscription_unpaid">Η πληρωμή απέτυχε: ενημερώστε τη μέθοδο πληρωμής για να ενεργοποιηθεί ξανά ο συγχρονισμός.</string>
+    <string name="label_subscription_suspended_play">Ο συγχρονισμός είναι απενεργοποιημένος: η συνδρομή είναι σε αναμονή ή σε παύση στο Google Play, όπου μπορείτε να διορθώσετε την πληρωμή ή να συνεχίσετε τη συνδρομή.</string>
     <string name="notification_payment_failed_title">Η πληρωμή της συνδρομής απέτυχε</string>
     <string name="btn_update_payment_method">Ενημέρωση τρόπου πληρωμής</string>
     <string name="label_subscription_grace">Πρόβλημα πληρωμής: ενημερώστε τη μέθοδο πληρωμής για να συνεχιστεί ο συγχρονισμός.</string>
@@ -285,8 +296,8 @@
     <string name="info_send_cancellations_body">Στείλτε email στους συμμετέχοντες όταν διαγράφετε ένα συμβάν στο οποίο είναι προσκεκλημένοι, ώστε να το αφαιρέσουν και τα δικά τους ημερολόγια. Απενεργοποιημένο από προεπιλογή.</string>
     <string name="info_invite_subject_title_body">Κατά την αποστολή email πρόσκλησης, βάλτε τον τίτλο του συμβάντος στη γραμμή θέματος του email, ώστε οι παραλήπτες να τον αναγνωρίζουν με μια ματιά. Απενεργοποιημένο από προεπιλογή για λόγους απορρήτου: τα θέματα των email δεν είναι κρυπτογραφημένα κατά την τυπική μεταφορά αλληλογραφίας, οπότε ο τίτλος θα ήταν ορατός στους διακομιστές αλληλογραφίας κατά μήκος της διαδρομής.</string>
     <string name="info_background_sync_body">Το Android μπορεί να διακόψει τον συγχρονισμό στο παρασκήνιο για εξοικονόμηση μπαταρίας, κάτι που μπορεί να καθυστερήσει ή να σταματήσει τον αυτόματο συγχρονισμό. Η εξαίρεση αυτής της εφαρμογής από τη βελτιστοποίηση μπαταρίας διατηρεί τους προγραμματισμένους συγχρονισμούς να εκτελούνται αξιόπιστα. Χρησιμοποιήστε το κουμπί για να ανοίξετε τις ρυθμίσεις μπαταρίας του συστήματος για την εφαρμογή.</string>
-    <string name="info_verbose_logging_body">Καταγράφει πρόσθετες λεπτομέρειες διάγνωσης (κατάσταση ελέγχου ταυτότητας, ξεκλείδωμα κλειδιών, εσωτερικές λειτουργίες συγχρονισμού) στο αρχείο καταγραφής, χρήσιμο κατά την αναφορά ενός προβλήματος. Μπορεί να περιλαμβάνει διευθύνσεις email λογαριασμών και ονόματα ημερολογίων, οπότε μοιραστείτε τα αρχεία καταγραφής μόνο με τον προγραμματιστή. Αφήστε το απενεργοποιημένο για κανονική χρήση.</string>
-    <string name="info_file_logging_body">Γράφει το αρχείο καταγραφής της εφαρμογής σε αρχείο κειμένου με χρονοσήμανση (sync-for-proton-log-….txt) σε φάκελο της επιλογής σας. Διαφορετικά η εφαρμογή κρατά την καταγραφή μόνο στη μνήμη, γι\' αυτό ενεργοποιήστε το για να καταγράψετε ένα πρόβλημα που δύσκολα αναπαράγεται. Δημιουργείται νέο αρχείο σε κάθε εκκίνηση της εφαρμογής, ενδέχεται να περιέχει διευθύνσεις email λογαριασμών και ονόματα ημερολογίων, γι\' αυτό μοιραστείτε το μόνο με τον προγραμματιστή. Αφήστε το απενεργοποιημένο για κανονική χρήση.</string>
+    <string name="info_verbose_logging_body">Καταγράφει πρόσθετες λεπτομέρειες διάγνωσης (κατάσταση ελέγχου ταυτότητας, ξεκλείδωμα κλειδιών, εσωτερικές λειτουργίες συγχρονισμού) στο αρχείο καταγραφής, χρήσιμο κατά την αναφορά ενός προβλήματος. Η εφαρμογή αντικαθιστά σε αυτό τις διευθύνσεις email με σύντομους κωδικούς, αλλά το αρχείο καταγραφής μπορεί να περιλαμβάνει ονόματα λογαριασμών και ημερολογίων, οπότε μοιραστείτε τα αρχεία καταγραφής μόνο με τον προγραμματιστή. Αφήστε το απενεργοποιημένο για κανονική χρήση.</string>
+    <string name="info_file_logging_body">Γράφει το αρχείο καταγραφής της εφαρμογής σε αρχείο κειμένου με χρονοσήμανση (sync-for-proton-log-….txt) σε φάκελο της επιλογής σας. Διαφορετικά η εφαρμογή κρατά την καταγραφή μόνο στη μνήμη, γι\' αυτό ενεργοποιήστε το για να καταγράψετε ένα πρόβλημα που δύσκολα αναπαράγεται. Δημιουργείται νέο αρχείο σε κάθε εκκίνηση της εφαρμογής. Η εφαρμογή αντικαθιστά σε αυτό τις διευθύνσεις email με σύντομους κωδικούς, αλλά το αρχείο μπορεί να περιέχει ονόματα λογαριασμών και ημερολογίων, γι\' αυτό μοιραστείτε το μόνο με τον προγραμματιστή. Αφήστε το απενεργοποιημένο για κανονική χρήση.</string>
     <string name="info_timezone_updates_text">Οι ώρες των συμβάντων εξαρτώνται από τους κανόνες των ζωνών ώρας, τους οποίους οι χώρες αλλάζουν κατά καιρούς. Το Android τους διατηρεί στα δεδομένα ζωνών ώρας του τηλεφώνου, τα οποία έρχονται με τις ενημερώσεις συστήματος. Ένα τηλέφωνο που δεν τις λαμβάνει πλέον, για παράδειγμα με παλαιότερη έκδοση Android ή χωρίς ενημερώσεις συστήματος Google Play, κρατά τους παλιούς κανόνες, και συμβάντα σε μέρη των οποίων οι κανόνες έχουν αλλάξει από τότε μπορεί να εμφανίζονται σε λάθος ώρα.\n\nΔεδομένα ζωνών ώρας σε αυτό το τηλέφωνο: έκδοση %1$s\n\nΌταν είναι ανενεργό (προεπιλογή), η εφαρμογή χρησιμοποιεί τα δεδομένα ζωνών ώρας του ίδιου του τηλεφώνου και δεν στέλνει τίποτα στο www.tzurl.org.\n\nΌταν είναι ενεργό, η εφαρμογή κατεβάζει από το www.tzurl.org, μια υπηρεσία τρίτων, τους τρέχοντες κανόνες για κάθε ζώνη ώρας που χρησιμοποιούν τα συμβάντα σας, το πολύ μία φορά ανά ζώνη ώρας σε κάθε εκκίνηση της εφαρμογής, και τους χρησιμοποιεί μόνο αν είναι νεότεροι από αυτούς του τηλεφώνου. Το www.tzurl.org βλέπει τότε τη διεύθυνση IP σας και τα ονόματα αυτών των ζωνών ώρας, για παράδειγμα Europe/Berlin. Τίποτε άλλο για τα συμβάντα ή τους λογαριασμούς σας δεν αποστέλλεται. Αν το www.tzurl.org δεν είναι προσβάσιμο, χρησιμοποιούνται τα δεδομένα του τηλεφώνου. Τα επαναλαμβανόμενα συμβάντα εξακολουθούν να υπολογίζονται με τα δεδομένα του τηλεφώνου.\n\nΜετά από μια αλλαγή, τα συμβάντα που υπάρχουν ήδη στο τηλέφωνο ελέγχονται και διορθώνονται στον επόμενο συγχρονισμό.</string>
     <string name="tz_data_version_unknown">άγνωστη</string>
     <string name="tz_outdated_title">Τα δεδομένα ζωνών ώρας είναι παλιά</string>
@@ -348,7 +359,10 @@
     <string name="notification_channel_alerts">Ειδοποιήσεις συγχρονισμού</string>
     <string name="notification_channel_alerts_description">Σημαντικές ειδοποιήσεις ασφαλείας που απαιτούν την απόφασή σας</string>
     <string name="notification_bulk_delete_title">Εντοπίστηκε μεγάλη αλλαγή ημερολογίου</string>
-    <string name="notification_bulk_delete_body">%1$d συμβάντα ημερολογίου εξαφανίστηκαν από αυτό το τηλέφωνο (%2$s). Για την προστασία των δεδομένων σας, ΔΕΝ διαγράφηκαν από το Proton. Να διατηρηθούν στο τηλέφωνό σας ή να διαγραφούν και από το Proton;</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d συμβάν ημερολογίου εξαφανίστηκε από αυτό το τηλέφωνο (%2$s). Για την προστασία των δεδομένων σας, ΔΕΝ διαγράφηκε από το Proton. Να διατηρηθεί στο τηλέφωνό σας ή να διαγραφεί και από το Proton;</item>
+        <item quantity="other">%1$d συμβάντα ημερολογίου εξαφανίστηκαν από αυτό το τηλέφωνο (%2$s). Για την προστασία των δεδομένων σας, ΔΕΝ διαγράφηκαν από το Proton. Να διατηρηθούν στο τηλέφωνό σας ή να διαγραφούν και από το Proton;</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Διατήρηση στο Proton</string>
     <string name="notification_bulk_delete_delete">Διαγραφή στο Proton</string>
 
@@ -395,7 +409,20 @@
     <string name="backup_decrypt_done">Αποκρυπτογραφήθηκε στο \"%1$s\" στον φάκελο αντιγράφων ασφαλείας σας.</string>
     <string name="backup_decrypt_failed">Δεν ήταν δυνατή η αποκρυπτογράφηση αυτού του αρχείου.</string>
     <string name="backup_restore_hint">Για επαναφορά: εισαγάγετε ένα αρχείο .ics στο Proton Calendar (Ρυθμίσεις → Εισαγωγή) και ένα αρχείο .vcf στο Proton Contacts. Τα κρυπτογραφημένα αντίγραφα ασφαλείας μπορούν επίσης να ανοιχτούν σε υπολογιστή με: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Δημιουργήθηκε αντίγραφο ασφαλείας %1$d ημερολογίου/-ων, %2$d συμβάντος/-ων και %3$d επαφής/-ών.</string>
+    <string name="backup_result_done">Δημιουργήθηκε αντίγραφο ασφαλείας για %1$s, %2$s και %3$s.</string>
+    <string name="backup_result_partial">Δημιουργήθηκε αντίγραφο ασφαλείας για %1$s, %2$s και %3$s, αλλά δεν ήταν δυνατή η ανάγνωση ορισμένων στοιχείων (κλειδωμένα κλειδιά ή σφάλμα δικτύου), οπότε το αντίγραφο ασφαλείας ενδέχεται να είναι ελλιπές. Ελέγξτε τα αρχεία καταγραφής συγχρονισμού και δοκιμάστε ξανά.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d ημερολόγιο</item>
+        <item quantity="other">%d ημερολόγια</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d συμβάν</item>
+        <item quantity="other">%d συμβάντα</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d επαφή</item>
+        <item quantity="other">%d επαφές</item>
+    </plurals>
     <string name="backup_result_skipped">Παραλείφθηκε: η πηγή δεν επέστρεψε δεδομένα, οπότε διατηρήθηκε το τελευταίο έγκυρο αντίγραφο ασφαλείας.</string>
     <string name="backup_result_failed">Το αντίγραφο ασφαλείας απέτυχε: %1$s</string>
     <string name="backup_result_folder_lost">Ο φάκελος αντιγράφων ασφαλείας δεν είναι πλέον προσβάσιμος.</string>
@@ -417,11 +444,16 @@
     <string name="backup_reminder_optout_body">Είστε σίγουροι ότι δεν θέλετε να ρυθμίσετε αντίγραφα ασφαλείας; Δεν θα κρατάτε τα δικά σας αντίγραφα ασφαλείας των ημερολογίων και των επαφών σας, και δεν θα σας το υπενθυμίσουμε ξανά!</string>
     <string name="backup_reminder_optout_confirm">Ναι, σταματήστε τις υπενθυμίσεις</string>
     <string name="backup_reminder_optout_cancel">Όχι, συνεχίστε τις υπενθυμίσεις</string>
-    <string name="backup_result_incomplete">Δημιουργήθηκε αντίγραφο ασφαλείας %1$d ημερολογίου/-ων, %2$d συμβάντος/-ων και %3$d επαφής/-ών, αλλά δεν ήταν δυνατή η ανάγνωση ορισμένων στοιχείων (κλειδωμένα κλειδιά ή σφάλμα δικτύου), οπότε το αντίγραφο ασφαλείας ενδέχεται να είναι ελλιπές. Ελέγξτε τα αρχεία καταγραφής συγχρονισμού και δοκιμάστε ξανά.</string>
     <string name="backup_notif_incomplete_title">Το αντίγραφο ασφαλείας ενδέχεται να είναι ελλιπές</string>
     <string name="remote_deletion_title">Στοιχεία αφαιρέθηκαν από το Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d επαφές δεν υπάρχουν πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκαν ακόμη από αυτό το τηλέφωνο. Να διαγραφούν και εδώ ή να παραμείνουν στο τηλέφωνο;</string>
-    <string name="remote_deletion_body_calendar">%1$d συμβάντα ημερολογίου δεν υπάρχουν πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκαν ακόμη από αυτό το τηλέφωνο. Να διαγραφούν και εδώ ή να παραμείνουν στο τηλέφωνο;</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d επαφή δεν υπάρχει πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκε ακόμη από αυτό το τηλέφωνο. Να διαγραφεί και εδώ ή να παραμείνει στο τηλέφωνο;</item>
+        <item quantity="other">%1$d επαφές δεν υπάρχουν πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκαν ακόμη από αυτό το τηλέφωνο. Να διαγραφούν και εδώ ή να παραμείνουν στο τηλέφωνο;</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d συμβάν ημερολογίου δεν υπάρχει πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκε ακόμη από αυτό το τηλέφωνο. Να διαγραφεί και εδώ ή να παραμείνει στο τηλέφωνο;</item>
+        <item quantity="other">%1$d συμβάντα ημερολογίου δεν υπάρχουν πλέον στο Proton (%2$s). Για την προστασία των δεδομένων σας ΔΕΝ διαγράφηκαν ακόμη από αυτό το τηλέφωνο. Να διαγραφούν και εδώ ή να παραμείνουν στο τηλέφωνο;</item>
+    </plurals>
     <string name="remote_deletion_delete">Διαγραφή από το τηλέφωνο</string>
     <string name="remote_deletion_keep">Διατήρηση στο τηλέφωνο</string>
 
@@ -490,7 +522,10 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Όλα</string>
-    <string name="label_log_count">%1$d από %2$d γραμμές</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d από %2$d γραμμή</item>
+        <item quantity="other">%1$d από %2$d γραμμές</item>
+    </plurals>
     <string name="label_share_sends_full_log">Η κοινή χρήση στέλνει πάντα το πλήρες αρχείο καταγραφής εντοπισμού σφαλμάτων</string>
     <string name="btn_clear_view">Εκκαθάριση προβολής</string>
     <string name="btn_copy_debug_log">Αντιγραφή αρχείου εντοπισμού σφαλμάτων</string>
@@ -519,7 +554,10 @@
     <string name="contact_filters_delete">Διαγραφή</string>
     <string name="contact_filters_saved">Οι κανόνες αποθηκεύτηκαν. Θα ισχύσουν στον επόμενο συγχρονισμό.</string>
     <string name="contact_filter_removal_title">Οι κανόνες επαφών θα αφαιρούσαν επαφές</string>
-    <string name="contact_filter_removal_body">Οι κανόνες επαφών σας δεν ταιριάζουν πλέον σε %1$d επαφές αυτού του τηλεφώνου (%2$s). Παραμένουν στον λογαριασμό σας Proton και δεν θα διαγραφούν εκεί. Να αφαιρεθούν από αυτό το τηλέφωνο ή να διατηρηθούν;</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Οι κανόνες επαφών σας δεν ταιριάζουν πλέον σε %1$d επαφή αυτού του τηλεφώνου (%2$s). Παραμένει στον λογαριασμό σας Proton και δεν θα διαγραφεί εκεί. Να αφαιρεθεί από αυτό το τηλέφωνο ή να διατηρηθεί;</item>
+        <item quantity="other">Οι κανόνες επαφών σας δεν ταιριάζουν πλέον σε %1$d επαφές αυτού του τηλεφώνου (%2$s). Παραμένουν στον λογαριασμό σας Proton και δεν θα διαγραφούν εκεί. Να αφαιρεθούν από αυτό το τηλέφωνο ή να διατηρηθούν;</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Διατήρηση στο τηλέφωνο</string>
     <string name="contact_filter_tpl_auto_created">Επαφές που δημιούργησε αυτόματα το Proton</string>
     <string name="contact_filter_tpl_auto_created_desc">Εξαιρεί τις επαφές που έχουν μόνο εμφανιζόμενο όνομα και διεύθυνση email, χωρίς όνομα ή επώνυμο. Έτσι ακριβώς μοιάζει μια επαφή που φτιάχνει το Proton από ένα email.</string>
@@ -548,20 +586,35 @@
     <string name="contact_filter_needs_name">Δώστε στον κανόνα ένα όνομα για να τον αναγνωρίζετε στη λίστα.</string>
     <string name="contact_filter_delete_confirm">Διαγραφή αυτού του κανόνα;</string>
     <string name="contact_filter_preview_running">Έλεγχος των επαφών σας…</string>
-    <string name="contact_filter_preview_result">Από τις %1$d επαφές που ελέγχθηκαν σε αυτό το τηλέφωνο, αυτοί οι κανόνες θα κρατούσαν %2$d και θα αφαιρούσαν %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Από την %1$d επαφή που ελέγχθηκε σε αυτό το τηλέφωνο, αυτοί οι κανόνες θα κρατούσαν %2$d και θα αφαιρούσαν %3$d.</item>
+        <item quantity="other">Από τις %1$d επαφές που ελέγχθηκαν σε αυτό το τηλέφωνο, αυτοί οι κανόνες θα κρατούσαν %2$d και θα αφαιρούσαν %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Αυτοί οι κανόνες δεν θα αφαιρούσαν καμία επαφή.</string>
-    <string name="contact_filter_preview_undecided">%1$d δεν μπορούν να ελεγχθούν στο τηλέφωνο, επειδή αυτός ο κανόνας εξετάζει στοιχεία που έχει μόνο το Proton. Θα τα κρίνει ο επόμενος συγχρονισμός, ο οποίος θα ρωτήσει και πάλι πριν αφαιρέσει οτιδήποτε.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d δεν μπορεί να ελεγχθεί στο τηλέφωνο, επειδή αυτός ο κανόνας εξετάζει στοιχεία που έχει μόνο το Proton. Θα το κρίνει ο επόμενος συγχρονισμός, ο οποίος θα ρωτήσει και πάλι πριν αφαιρέσει οτιδήποτε.</item>
+        <item quantity="other">%1$d δεν μπορούν να ελεγχθούν στο τηλέφωνο, επειδή αυτός ο κανόνας εξετάζει στοιχεία που έχει μόνο το Proton. Θα τα κρίνει ο επόμενος συγχρονισμός, ο οποίος θα ρωτήσει και πάλι πριν αφαιρέσει οτιδήποτε.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Δεν υπάρχουν ακόμη επαφές αυτού του λογαριασμού σε αυτό το τηλέφωνο.</string>
     <string name="contact_filter_preview_title">Αποτέλεσμα δοκιμής</string>
     <string name="contact_filter_preview_failed">Δεν ήταν δυνατός ο έλεγχος των επαφών σας: %1$s</string>
     <string name="contact_filter_preview_reading">Ανάγνωση των επαφών σας στο Proton…</string>
     <string name="contact_filter_preview_progress">Έλεγχος επαφής %1$d από %2$d…</string>
-    <string name="contact_filter_preview_server_result">Από %1$d επαφές σε αυτόν τον λογαριασμό Proton, αυτοί οι κανόνες θα συγχρόνιζαν %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Από %1$d επαφή σε αυτόν τον λογαριασμό Proton, αυτοί οι κανόνες θα συγχρόνιζαν %2$d.</item>
+        <item quantity="other">Από %1$d επαφές σε αυτόν τον λογαριασμό Proton, αυτοί οι κανόνες θα συγχρόνιζαν %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Αφαιρούνται από αυτό το τηλέφωνο (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Δεν αντιγράφονται σε αυτό το τηλέφωνο (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…και %1$d ακόμη.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…και %1$d ακόμη.</item>
+        <item quantity="other">…και %1$d ακόμη.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Εμφάνιση όλων</string>
-    <string name="contact_filter_preview_unreadable">%1$d δεν ήταν δυνατό να διαβαστούν και θα μείνουν ως έχουν.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d δεν ήταν δυνατό να διαβαστεί και θα μείνει ως έχει.</item>
+        <item quantity="other">%1$d δεν ήταν δυνατό να διαβαστούν και θα μείνουν ως έχουν.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Δεν ήταν δυνατή η σύνδεση με το Proton, οπότε αυτή η δοκιμή χρησιμοποίησε μόνο ό,τι υπάρχει ήδη στο τηλέφωνο.</string>
     <string name="contact_filter_preview_nothing_removed">Δεν θα αφαιρεθεί τίποτα από αυτό το τηλέφωνο.</string>
     <string name="contact_filter_condition_values_hint">Μία τιμή ανά γραμμή</string>
@@ -643,10 +696,19 @@
     <string name="label_name_repair">Έλεγχος για επινοημένα ονόματα</string>
     <string name="name_repair_scanning">Γίνεται έλεγχος των επαφών σας στο Proton…</string>
     <string name="name_repair_none">Καμία επαφή στο Proton δεν έχει όνομα που επινόησε το Android.</string>
-    <string name="name_repair_found">%1$d επαφές στο Proton έχουν όνομα και επώνυμο που έφτιαξε το Android χωρίζοντας τη διεύθυνση email τους. Μια παλαιότερη έκδοση αυτής της εφαρμογής έστειλε αυτά τα ονόματα στο Proton.\n\nΝα αφαιρεθούν; Τίποτα άλλο δεν αλλάζει στις επαφές, και το εμφανιζόμενο όνομά τους παραμένει ως έχει.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d επαφή στο Proton έχει όνομα και επώνυμο που έφτιαξε το Android χωρίζοντας τη διεύθυνση email της. Μια παλαιότερη έκδοση αυτής της εφαρμογής έστειλε αυτά τα ονόματα στο Proton.\n\nΝα αφαιρεθούν; Τίποτα άλλο δεν αλλάζει στην επαφή, και το εμφανιζόμενο όνομά της παραμένει ως έχει.</item>
+        <item quantity="other">%1$d επαφές στο Proton έχουν όνομα και επώνυμο που έφτιαξε το Android χωρίζοντας τη διεύθυνση email τους. Μια παλαιότερη έκδοση αυτής της εφαρμογής έστειλε αυτά τα ονόματα στο Proton.\n\nΝα αφαιρεθούν; Τίποτα άλλο δεν αλλάζει στις επαφές, και το εμφανιζόμενο όνομά τους παραμένει ως έχει.</item>
+    </plurals>
     <string name="name_repair_action">Αφαίρεση των επινοημένων ονομάτων</string>
-    <string name="name_repair_done">%1$d επαφές επιδιορθώθηκαν.</string>
-    <string name="name_repair_partial">%1$d επαφές επιδιορθώθηκαν, %2$d έμειναν ως έχουν.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d επαφή επιδιορθώθηκε.</item>
+        <item quantity="other">%1$d επαφές επιδιορθώθηκαν.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d επαφή επιδιορθώθηκε, %2$d χωρίς αλλαγή.</item>
+        <item quantity="other">%1$d επαφές επιδιορθώθηκαν, %2$d χωρίς αλλαγή.</item>
+    </plurals>
     <string name="name_repair_failed">Δεν ήταν δυνατός ο έλεγχος των επαφών σας: %1$s</string>
     <string name="filter_op_num_eq">είναι</string>
     <string name="filter_field_other_content">Άλλες πληροφορίες</string>
@@ -657,10 +719,16 @@
     <!-- Offer to clear already-synced data when a sync type is switched off. -->
     <string name="remove_synced_calendar_title">Να αφαιρεθούν αυτά τα ημερολόγια από αυτό το τηλέφωνο;</string>
     <string name="remove_synced_calendar_body">Ο συγχρονισμός ημερολογίου είναι πλέον απενεργοποιημένος, οπότε δεν θα ληφθεί τίποτα άλλο. Τα ημερολόγια που βρίσκονται ήδη σε αυτό το τηλέφωνο παραμένουν μέχρι να τα αφαιρέσετε. Η αφαίρεσή τους τα διαγράφει μόνο από αυτό το τηλέφωνο· τα ημερολόγιά σας στο Proton δεν επηρεάζονται. Μπορείτε επίσης να τα αφαιρέσετε αργότερα από τις ρυθμίσεις λογαριασμών του Android, και αν ενεργοποιήσετε ξανά τον συγχρονισμό ημερολογίου θα δημιουργηθούν εκ νέου.</string>
-    <string name="remove_synced_calendar_done">Αφαιρέθηκαν %1$d συμβάντα από αυτό το τηλέφωνο</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Αφαιρέθηκε %1$d συμβάν από αυτό το τηλέφωνο</item>
+        <item quantity="other">Αφαιρέθηκαν %1$d συμβάντα από αυτό το τηλέφωνο</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Να αφαιρεθούν αυτές οι επαφές από αυτό το τηλέφωνο;</string>
     <string name="remove_synced_contacts_body">Ο συγχρονισμός επαφών είναι πλέον απενεργοποιημένος, οπότε δεν θα ληφθεί τίποτα άλλο. Οι επαφές που βρίσκονται ήδη σε αυτό το τηλέφωνο παραμένουν μέχρι να τις αφαιρέσετε. Η αφαίρεσή τους τις διαγράφει μόνο από αυτό το τηλέφωνο· οι επαφές σας στο Proton δεν επηρεάζονται. Μπορείτε επίσης να τις αφαιρέσετε αργότερα από τις ρυθμίσεις λογαριασμών του Android, και αν ενεργοποιήσετε ξανά τον συγχρονισμό επαφών θα προστεθούν ξανά.</string>
-    <string name="remove_synced_contacts_done">Αφαιρέθηκαν %1$d επαφές από αυτό το τηλέφωνο</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Αφαιρέθηκε %1$d επαφή από αυτό το τηλέφωνο</item>
+        <item quantity="other">Αφαιρέθηκαν %1$d επαφές από αυτό το τηλέφωνο</item>
+    </plurals>
     <string name="remove_synced_keep">Διατήρηση</string>
     <string name="remove_synced_remove">Αφαίρεση</string>
 
@@ -678,4 +746,5 @@
     <string name="sfp_hero_subtitle_sync_off">Ο συγχρονισμός παραμένει απενεργοποιημένος μέχρι να υπάρξει ενεργή συνδρομή. Δείτε την ενότητα Συνδρομή παραπάνω.</string>
 
     <string name="toast_resync_skipped">Δεν υπάρχει τίποτα για συγχρονισμό: ο συγχρονισμός για %1$s είναι ανενεργός</string>
+    <string name="plural_rules_language">el</string>
 </resources>

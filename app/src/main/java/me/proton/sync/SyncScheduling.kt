@@ -49,6 +49,8 @@ object SyncScheduling {
      *    verdict, so NONE.
      *  - play, cached NoSubscription/Expired: DISARM; onPurchasesUpdated gives ARM_AND_CATCH_UP, and the
      *    refreshState after it emits an equal value, so nothing.
+     *  - play, Expired with suspended (Google Play's account hold or a pause): DISARM like any Expired; the
+     *    refresh that finds the purchase unsuspended again gives ARM_AND_CATCH_UP.
      *  - play, first start or after a data clear: billing answering Active gives ARM_AND_CATCH_UP, which syncs
      *    nothing when there is no account yet.
      *  - a StateFlow conflates: with a cached inactive state, an already active first value still catches up,

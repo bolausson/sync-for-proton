@@ -62,7 +62,12 @@
     <string name="btn_sync_all_accounts">Synchronizovať všetky účty</string>
     <string name="btn_sync_now">Synchronizovať</string>
     <string name="label_sync_all_long_press_hint">Dlhým stlačením vynútite úplnú opätovnú synchronizáciu</string>
-    <string name="dialog_title_full_resync_all">Úplná opätovná synchronizácia (%1$d účtov)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Úplná opätovná synchronizácia (%1$d účet)</item>
+        <item quantity="few">Úplná opätovná synchronizácia (%1$d účty)</item>
+        <item quantity="many">Úplná opätovná synchronizácia (%1$d účtu)</item>
+        <item quantity="other">Úplná opätovná synchronizácia (%1$d účtov)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Vyberte smer synchronizácie pre všetky účty:\n\nVzdialený → Lokálny: Vymazať lokálne údaje a znovu stiahnuť z Proton.\n\nLokálny → Vzdialený: Nahrať všetky lokálne údaje do Proton (prepíše vzdialené).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="one">Synchronizácia spustená pre %d účet</item>
@@ -128,11 +133,22 @@
     <string name="label_calendar_lower">kalendár</string>
     <string name="label_all_data">všetky údaje</string>
     <string name="dialog_title_battery">Povoliť neobmedzené používanie batérie</string>
-    <string name="dialog_message_battery">Pre spoľahlivú synchronizáciu na pozadí nastavte používanie batérie na „Neobmedzené" na ďalšej obrazovke.\n\nPrejdite na Batéria → Neobmedzené.</string>
+    <string name="dialog_message_battery">Pre spoľahlivú synchronizáciu na pozadí nastavte používanie batérie na „Neobmedzené“ na ďalšej obrazovke.\n\nPrejdite na Batéria → Neobmedzené.</string>
     <string name="btn_open_settings">Otvoriť nastavenia</string>
     <string name="btn_later">Neskôr</string>
     <string name="label_custom_suffix">, vlastné</string>
-    <string name="label_days_format">%d dní</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d deň</item>
+        <item quantity="few">%d dni</item>
+        <item quantity="many">%d dňa</item>
+        <item quantity="other">%d dní</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minúta</item>
+        <item quantity="few">%d minúty</item>
+        <item quantity="many">%d minúty</item>
+        <item quantity="other">%d minút</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Zlyhania synchronizácie</string>
     <string name="notification_channel_sync_description">Upozornenia pri zlyhaní synchronizácie kalendára alebo kontaktov</string>
@@ -196,6 +212,7 @@
     <string name="label_subscription_expired">Predplatné vypršalo: obnovte ho na pokračovanie synchronizácie.</string>
     <string name="label_subscription_paused">Predplatné je pozastavené: synchronizácia je vypnutá, kým nebude obnovené.</string>
     <string name="label_subscription_unpaid">Platba zlyhala: aktualizujte spôsob platby, aby sa synchronizácia znova zapla.</string>
+    <string name="label_subscription_suspended_play">Synchronizácia je vypnutá: predplatné je v Google Play pozastavené kvôli neúspešnej platbe alebo na vašu žiadosť. Tam môžete platbu opraviť alebo predplatné obnoviť.</string>
     <string name="notification_payment_failed_title">Platba za predplatné zlyhala</string>
     <string name="btn_update_payment_method">Aktualizovať platobnú metódu</string>
     <string name="label_subscription_grace">Problém s platbou: aktualizujte spôsob platby, aby synchronizácia pokračovala.</string>
@@ -276,8 +293,8 @@
     <string name="info_send_cancellations_body">Odošlite účastníkom e-mail, keď vymažete udalosť, na ktorú sú pozvaní, aby ju ich kalendáre tiež odstránili. Predvolene vypnuté.</string>
     <string name="info_invite_subject_title_body">Pri odosielaní pozývacích e-mailov uveďte názov udalosti do predmetu e-mailu, aby ho príjemcovia na prvý pohľad rozpoznali. Predvolene vypnuté z dôvodu súkromia: predmety e-mailov nie sú v štandardnom poštovom prenose šifrované, takže názov by bol viditeľný pre poštové servery na trase.</string>
     <string name="info_background_sync_body">Android môže pozastaviť synchronizáciu na pozadí kvôli šetreniu batérie, čo môže oneskoriť alebo zastaviť automatickú synchronizáciu. Vylúčenie tejto aplikácie z optimalizácie batérie udržiava naplánované synchronizácie spoľahlivo spustené. Tlačidlom otvorte systémové nastavenia batérie pre aplikáciu.</string>
-    <string name="info_verbose_logging_body">Zachytáva ďalšie diagnostické podrobnosti (stav overenia, odomknutie kľúčov, vnútorné procesy synchronizácie) do záznamu, užitočné pri hlásení problému. Môže obsahovať e-mailové adresy účtov a názvy kalendárov, preto záznamy zdieľajte iba s vývojárom. Pre bežné používanie ponechajte vypnuté.</string>
-    <string name="info_file_logging_body">Zapisuje denník aplikácie do textového súboru s časovou pečiatkou (sync-for-proton-log-….txt) v priečinku, ktorý si zvolíte. Inak aplikácia uchováva denník iba v pamäti, preto to zapnite, ak chcete zachytiť ťažko reprodukovateľný problém. Pri každom spustení aplikácie sa vytvorí nový súbor; môže obsahovať e-mailové adresy účtov a názvy kalendárov, preto ho zdieľajte iba s vývojárom. Na bežné používanie nechajte vypnuté.</string>
+    <string name="info_verbose_logging_body">Zachytáva ďalšie diagnostické podrobnosti (stav overenia, odomknutie kľúčov, vnútorné procesy synchronizácie) do záznamu, užitočné pri hlásení problému. Aplikácia v ňom nahrádza e-mailové adresy krátkymi kódmi, záznam však môže obsahovať názvy účtov a kalendárov, preto záznamy zdieľajte iba s vývojárom. Pre bežné používanie ponechajte vypnuté.</string>
+    <string name="info_file_logging_body">Zapisuje denník aplikácie do textového súboru s časovou pečiatkou (sync-for-proton-log-….txt) v priečinku, ktorý si zvolíte. Inak aplikácia uchováva denník iba v pamäti, preto to zapnite, ak chcete zachytiť ťažko reprodukovateľný problém. Pri každom spustení aplikácie sa vytvorí nový súbor. Aplikácia v ňom nahrádza e-mailové adresy krátkymi kódmi, súbor však môže obsahovať názvy účtov a kalendárov, preto ho zdieľajte iba s vývojárom. Na bežné používanie nechajte vypnuté.</string>
     <string name="info_timezone_updates_text">Časy udalostí závisia od pravidiel časových pásiem a štáty tieto pravidlá z času na čas menia. Android ich uchováva v údajoch o časových pásmach telefónu, ktoré prichádzajú so systémovými aktualizáciami. Telefón, ktorý ich už nedostáva, napríklad so staršou verziou Androidu alebo bez systémových aktualizácií Google Play, si ponechá staré pravidlá a udalosti na miestach, kde sa pravidlá odvtedy zmenili, sa môžu zobraziť v nesprávnom čase.\n\nÚdaje o časových pásmach v tomto telefóne: verzia %1$s\n\nKeď je vypnuté (predvolené), aplikácia používa vlastné údaje o časových pásmach telefónu a na www.tzurl.org nič neodosiela.\n\nKeď je zapnuté, aplikácia sťahuje z www.tzurl.org, služby tretej strany, aktuálne pravidlá každého časového pásma, ktoré používajú vaše udalosti, najviac raz pre každé časové pásmo pri každom spustení aplikácie, a používa ich len vtedy, keď sú novšie ako údaje telefónu. www.tzurl.org pritom vidí vašu IP adresu a názvy týchto časových pásiem, napríklad Europe/Berlin. Nič ďalšie o vašich udalostiach ani účtoch sa neodosiela. Keď www.tzurl.org nie je dostupný, použijú sa údaje telefónu. Opakované udalosti sa naďalej počítajú z údajov telefónu.\n\nPo zmene sa udalosti, ktoré už sú v telefóne, pri ďalšej synchronizácii skontrolujú a opravia.</string>
     <string name="tz_data_version_unknown">neznáma</string>
     <string name="tz_outdated_title">Údaje o časových pásmach sú zastarané</string>
@@ -339,7 +356,12 @@
     <string name="notification_channel_alerts">Upozornenia synchronizácie</string>
     <string name="notification_channel_alerts_description">Dôležité bezpečnostné upozornenia, ktoré si vyžadujú vaše rozhodnutie</string>
     <string name="notification_bulk_delete_title">Zistená rozsiahla zmena kalendára</string>
-    <string name="notification_bulk_delete_body">Z tohto telefónu zmizlo %1$d udalostí kalendára (%2$s). Na ochranu vašich údajov NEBOLI odstránené z Proton. Chcete ich ponechať v telefóne, alebo ich odstrániť aj z Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">Z tohto telefónu zmizla %1$d udalosť kalendára (%2$s). Na ochranu vašich údajov NEBOLA odstránená z Protonu. Chcete ju ponechať v telefóne, alebo ju odstrániť aj z Protonu?</item>
+        <item quantity="few">Z tohto telefónu zmizli %1$d udalosti kalendára (%2$s). Na ochranu vašich údajov NEBOLI odstránené z Protonu. Chcete ich ponechať v telefóne, alebo ich odstrániť aj z Protonu?</item>
+        <item quantity="many">Z tohto telefónu zmizlo %1$d udalosti kalendára (%2$s). Na ochranu vašich údajov NEBOLI odstránené z Protonu. Chcete ich ponechať v telefóne, alebo ich odstrániť aj z Protonu?</item>
+        <item quantity="other">Z tohto telefónu zmizlo %1$d udalostí kalendára (%2$s). Na ochranu vašich údajov NEBOLI odstránené z Protonu. Chcete ich ponechať v telefóne, alebo ich odstrániť aj z Protonu?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Ponechať na Proton</string>
     <string name="notification_bulk_delete_delete">Odstrániť na Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -385,7 +407,26 @@
     <string name="backup_decrypt_done">Dešifrované do priečinka \"%1$s\" vo vašom priečinku záloh.</string>
     <string name="backup_decrypt_failed">Tento súbor sa nepodarilo dešifrovať.</string>
     <string name="backup_restore_hint">Obnovenie: importujte .ics do Proton Calendar (Nastavenia → Import) a .vcf do Proton Contacts. Šifrované zálohy možno otvoriť aj v počítači pomocou: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Zálohované: %1$d kalendárov, %2$d udalostí a %3$d kontaktov.</string>
+    <string name="backup_result_done">Zálohované: %1$s, %2$s a %3$s.</string>
+    <string name="backup_result_partial">Zálohované: %1$s, %2$s a %3$s, ale niektoré položky sa nepodarilo načítať (uzamknuté kľúče alebo chyba siete), takže záloha môže byť neúplná. Skontrolujte záznamy synchronizácie a skúste to znova.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d kalendár</item>
+        <item quantity="few">%d kalendáre</item>
+        <item quantity="many">%d kalendára</item>
+        <item quantity="other">%d kalendárov</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d udalosť</item>
+        <item quantity="few">%d udalosti</item>
+        <item quantity="many">%d udalosti</item>
+        <item quantity="other">%d udalostí</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d kontakt</item>
+        <item quantity="few">%d kontakty</item>
+        <item quantity="many">%d kontaktu</item>
+        <item quantity="other">%d kontaktov</item>
+    </plurals>
     <string name="backup_result_skipped">Preskočené: zdroj nevrátil žiadne údaje, takže sa zachovala posledná platná záloha.</string>
     <string name="backup_result_failed">Zálohovanie zlyhalo: %1$s</string>
     <string name="backup_result_folder_lost">Priečinok záloh už nie je prístupný.</string>
@@ -407,11 +448,20 @@
     <string name="backup_reminder_optout_body">Ste si istí, že si nechcete nastaviť zálohy? Nebudete mať vlastné zálohy svojich kalendárov a kontaktov a my vám to už nepripomenieme!</string>
     <string name="backup_reminder_optout_confirm">Áno, prestaňte ma upozorňovať</string>
     <string name="backup_reminder_optout_cancel">Nie, pripomínajte mi to ďalej</string>
-    <string name="backup_result_incomplete">Zálohovaných %1$d kalendárov, %2$d udalostí a %3$d kontaktov, ale niektoré položky sa nepodarilo načítať (uzamknuté kľúče alebo chyba siete), takže záloha môže byť neúplná. Skontrolujte záznamy synchronizácie a skúste to znova.</string>
     <string name="backup_notif_incomplete_title">Záloha môže byť neúplná</string>
     <string name="remote_deletion_title">Položky odstránené z Protonu</string>
-    <string name="remote_deletion_body_contacts">%1$d kontaktov už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu alebo ponechať v telefóne?</string>
-    <string name="remote_deletion_body_calendar">%1$d udalostí kalendára už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu alebo ponechať v telefóne?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d kontakt už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOL z tohto telefónu odstránený. Odstrániť ho aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="few">%1$d kontakty už nie sú v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="many">%1$d kontaktu už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="other">%1$d kontaktov už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d udalosť kalendára už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLA z tohto telefónu odstránená. Odstrániť ju aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="few">%1$d udalosti kalendára už nie sú v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="many">%1$d udalosti kalendára už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+        <item quantity="other">%1$d udalostí kalendára už nie je v Protone (%2$s). Na ochranu vašich údajov zatiaľ NEBOLI z tohto telefónu odstránené. Odstrániť ich aj tu, alebo ponechať v telefóne?</item>
+    </plurals>
     <string name="remote_deletion_delete">Odstrániť z telefónu</string>
     <string name="remote_deletion_keep">Ponechať v telefóne</string>
     <!-- Redesigned settings UI: sections, status hero, quick-tool tiles, sign-in, first-run/empty -->
@@ -479,7 +529,12 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Všetko</string>
-    <string name="label_log_count">%1$d z %2$d riadkov</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d z %2$d riadku</item>
+        <item quantity="few">%1$d z %2$d riadkov</item>
+        <item quantity="many">%1$d z %2$d riadku</item>
+        <item quantity="other">%1$d z %2$d riadkov</item>
+    </plurals>
     <string name="label_share_sends_full_log">Zdieľanie vždy odošle úplný ladiaci denník</string>
     <string name="btn_clear_view">Vymazať zobrazenie</string>
     <string name="btn_copy_debug_log">Kopírovať ladiaci denník</string>
@@ -508,7 +563,12 @@
     <string name="contact_filters_delete">Odstrániť</string>
     <string name="contact_filters_saved">Pravidlá uložené. Prejavia sa pri ďalšej synchronizácii.</string>
     <string name="contact_filter_removal_title">Pravidlá kontaktov by odstránili kontakty</string>
-    <string name="contact_filter_removal_body">Vaše pravidlá kontaktov už nevyhovujú %1$d kontaktom v tomto telefóne (%2$s). Zostávajú vo vašom účte Proton a tam odstránené nebudú. Odstrániť ich z tohto telefónu, alebo ponechať?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Vaše pravidlá kontaktov už nevyhovujú %1$d kontaktu v tomto telefóne (%2$s). Zostáva vo vašom účte Proton a tam odstránený nebude. Odstrániť ho z tohto telefónu, alebo ponechať?</item>
+        <item quantity="few">Vaše pravidlá kontaktov už nevyhovujú %1$d kontaktom v tomto telefóne (%2$s). Zostávajú vo vašom účte Proton a tam odstránené nebudú. Odstrániť ich z tohto telefónu, alebo ponechať?</item>
+        <item quantity="many">Vaše pravidlá kontaktov už nevyhovujú %1$d kontaktu v tomto telefóne (%2$s). Zostávajú vo vašom účte Proton a tam odstránené nebudú. Odstrániť ich z tohto telefónu, alebo ponechať?</item>
+        <item quantity="other">Vaše pravidlá kontaktov už nevyhovujú %1$d kontaktom v tomto telefóne (%2$s). Zostávajú vo vašom účte Proton a tam odstránené nebudú. Odstrániť ich z tohto telefónu, alebo ponechať?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Ponechať v telefóne</string>
     <string name="contact_filter_tpl_auto_created">Kontakty, ktoré Proton vytvoril automaticky</string>
     <string name="contact_filter_tpl_auto_created_desc">Vylúči kontakty, ktoré majú len zobrazované meno a e-mailovú adresu, bez krstného mena a priezviska. Presne tak vyzerá kontakt, ktorý Proton vytvorí z vymeneného e-mailu.</string>
@@ -537,20 +597,45 @@
     <string name="contact_filter_needs_name">Pomenujte pravidlo, aby ste ho v zozname spoznali.</string>
     <string name="contact_filter_delete_confirm">Odstrániť toto pravidlo?</string>
     <string name="contact_filter_preview_running">Kontrolujem vaše kontakty…</string>
-    <string name="contact_filter_preview_result">Z %1$d kontaktov overených v tomto telefóne by tieto pravidlá %2$d ponechali a %3$d odstránili.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Z %1$d kontaktu overeného v tomto telefóne by tieto pravidlá %2$d ponechali a %3$d odstránili.</item>
+        <item quantity="few">Z %1$d kontaktov overených v tomto telefóne by tieto pravidlá %2$d ponechali a %3$d odstránili.</item>
+        <item quantity="many">Z %1$d kontaktu overeného v tomto telefóne by tieto pravidlá %2$d ponechali a %3$d odstránili.</item>
+        <item quantity="other">Z %1$d kontaktov overených v tomto telefóne by tieto pravidlá %2$d ponechali a %3$d odstránili.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Tieto pravidlá by neodstránili žiadne kontakty.</string>
-    <string name="contact_filter_preview_undecided">%1$d sa v telefóne nedá overiť, pretože toto pravidlo sleduje údaje, ktoré má len Proton. Rozhodne o nich najbližšia synchronizácia a pred odobratím čohokoľvek sa aj tak spýta.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d sa v telefóne nedá overiť, pretože toto pravidlo sleduje údaje, ktoré má len Proton. Rozhodne o ňom najbližšia synchronizácia a pred odobratím čohokoľvek sa aj tak spýta.</item>
+        <item quantity="few">%1$d sa v telefóne nedá overiť, pretože toto pravidlo sleduje údaje, ktoré má len Proton. Rozhodne o nich najbližšia synchronizácia a pred odobratím čohokoľvek sa aj tak spýta.</item>
+        <item quantity="many">%1$d sa v telefóne nedá overiť, pretože toto pravidlo sleduje údaje, ktoré má len Proton. Rozhodne o nich najbližšia synchronizácia a pred odobratím čohokoľvek sa aj tak spýta.</item>
+        <item quantity="other">%1$d sa v telefóne nedá overiť, pretože toto pravidlo sleduje údaje, ktoré má len Proton. Rozhodne o nich najbližšia synchronizácia a pred odobratím čohokoľvek sa aj tak spýta.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">V tomto telefóne zatiaľ pre tento účet nie sú žiadne kontakty.</string>
     <string name="contact_filter_preview_title">Výsledok testu</string>
     <string name="contact_filter_preview_failed">Kontakty sa nepodarilo overiť: %1$s</string>
     <string name="contact_filter_preview_reading">Načítavam vaše kontakty z Protonu…</string>
     <string name="contact_filter_preview_progress">Kontrolujem kontakt %1$d z %2$d…</string>
-    <string name="contact_filter_preview_server_result">Z %1$d kontaktov v tomto účte Proton by tieto pravidlá synchronizovali %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Z %1$d kontaktu v tomto účte Proton by tieto pravidlá synchronizovali %2$d.</item>
+        <item quantity="few">Z %1$d kontaktov v tomto účte Proton by tieto pravidlá synchronizovali %2$d.</item>
+        <item quantity="many">Z %1$d kontaktu v tomto účte Proton by tieto pravidlá synchronizovali %2$d.</item>
+        <item quantity="other">Z %1$d kontaktov v tomto účte Proton by tieto pravidlá synchronizovali %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Odstránené z tohto telefónu (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Neskopírované do tohto telefónu (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…a ďalších %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…a ďalší %1$d.</item>
+        <item quantity="few">…a ďalšie %1$d.</item>
+        <item quantity="many">…a ďalších %1$d.</item>
+        <item quantity="other">…a ďalších %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Zobraziť všetko</string>
-    <string name="contact_filter_preview_unreadable">%1$d sa nepodarilo prečítať a zostali by nedotknuté.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d sa nepodarilo prečítať a zostal by nedotknutý.</item>
+        <item quantity="few">%1$d sa nepodarilo prečítať a zostali by nedotknuté.</item>
+        <item quantity="many">%1$d sa nepodarilo prečítať a zostali by nedotknuté.</item>
+        <item quantity="other">%1$d sa nepodarilo prečítať a zostali by nedotknuté.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton nebol dostupný, takže tento test mohol použiť len to, čo už je v telefóne.</string>
     <string name="contact_filter_preview_nothing_removed">Z tohto telefónu by sa nič neodstránilo.</string>
     <string name="contact_filter_condition_values_hint">Jedna hodnota na riadok</string>
@@ -632,10 +717,25 @@
     <string name="label_name_repair">Skontrolovať vymyslené mená</string>
     <string name="name_repair_scanning">Kontrolujú sa vaše kontakty v službe Proton…</string>
     <string name="name_repair_none">Žiadny kontakt v službe Proton nemá meno, ktoré by vymyslel Android.</string>
-    <string name="name_repair_found">Počet kontaktov v službe Proton, ktoré majú meno a priezvisko vytvorené Androidom rozdelením ich e-mailovej adresy: %1$d. Staršia verzia tejto aplikácie tieto mená odoslala do služby Proton.\n\nOdstrániť ich? Nič iné sa na kontaktoch nemení a ich zobrazované meno zostane rovnaké.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d kontakt v službe Proton má meno a priezvisko, ktoré Android vymyslel rozdelením jeho e-mailovej adresy. Staršia verzia tejto aplikácie ich odoslala do služby Proton.\n\nOdstrániť ich? Nič iné sa na kontakte nemení a jeho zobrazované meno zostane rovnaké.</item>
+        <item quantity="few">%1$d kontakty v službe Proton majú meno a priezvisko, ktoré Android vymyslel rozdelením ich e-mailovej adresy. Staršia verzia tejto aplikácie tieto mená odoslala do služby Proton.\n\nOdstrániť ich? Nič iné sa na kontaktoch nemení a ich zobrazované meno zostane rovnaké.</item>
+        <item quantity="many">%1$d kontaktu v službe Proton má meno a priezvisko, ktoré Android vymyslel rozdelením ich e-mailovej adresy. Staršia verzia tejto aplikácie tieto mená odoslala do služby Proton.\n\nOdstrániť ich? Nič iné sa na kontaktoch nemení a ich zobrazované meno zostane rovnaké.</item>
+        <item quantity="other">%1$d kontaktov v službe Proton má meno a priezvisko, ktoré Android vymyslel rozdelením ich e-mailovej adresy. Staršia verzia tejto aplikácie tieto mená odoslala do služby Proton.\n\nOdstrániť ich? Nič iné sa na kontaktoch nemení a ich zobrazované meno zostane rovnaké.</item>
+    </plurals>
     <string name="name_repair_action">Odstrániť vymyslené mená</string>
-    <string name="name_repair_done">Opravených kontaktov: %1$d.</string>
-    <string name="name_repair_partial">Opravených kontaktov: %1$d, ponechaných bez zmeny: %2$d.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">Opravil sa %1$d kontakt.</item>
+        <item quantity="few">Opravili sa %1$d kontakty.</item>
+        <item quantity="many">Opravilo sa %1$d kontaktu.</item>
+        <item quantity="other">Opravilo sa %1$d kontaktov.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">Opravil sa %1$d kontakt, ponechaných bez zmeny: %2$d.</item>
+        <item quantity="few">Opravili sa %1$d kontakty, ponechaných bez zmeny: %2$d.</item>
+        <item quantity="many">Opravilo sa %1$d kontaktu, ponechaných bez zmeny: %2$d.</item>
+        <item quantity="other">Opravilo sa %1$d kontaktov, ponechaných bez zmeny: %2$d.</item>
+    </plurals>
     <string name="name_repair_failed">Vaše kontakty sa nepodarilo skontrolovať: %1$s</string>
     <string name="filter_op_num_eq">je</string>
     <string name="filter_field_other_content">Iné informácie</string>
@@ -646,10 +746,20 @@
     <!-- Offering to clean up what was already synced, and the first-run choice. -->
     <string name="remove_synced_calendar_title">Odstrániť tieto kalendáre z tohto telefónu?</string>
     <string name="remove_synced_calendar_body">Synchronizácia kalendára je teraz vypnutá, takže sa už nič ďalšie nestiahne. Kalendáre, ktoré sú už v tomto telefóne, zostanú, kým ich neodstránite. Odstránenie ich zmaže len z tohto telefónu; vašich kalendárov v Protone sa to nedotkne. Odstrániť ich môžete aj neskôr v nastaveniach účtov systému Android, a ak synchronizáciu kalendára znova zapnete, vytvoria sa nanovo.</string>
-    <string name="remove_synced_calendar_done">Odstránených udalostí z tohto telefónu: %1$d</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">Z tohto telefónu sa odstránila %1$d udalosť</item>
+        <item quantity="few">Z tohto telefónu sa odstránili %1$d udalosti</item>
+        <item quantity="many">Z tohto telefónu sa odstránilo %1$d udalosti</item>
+        <item quantity="other">Z tohto telefónu sa odstránilo %1$d udalostí</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Odstrániť tieto kontakty z tohto telefónu?</string>
     <string name="remove_synced_contacts_body">Synchronizácia kontaktov je teraz vypnutá, takže sa už nič ďalšie nestiahne. Kontakty, ktoré sú už v tomto telefóne, zostanú, kým ich neodstránite. Odstránenie ich zmaže len z tohto telefónu; vašich kontaktov v Protone sa to nedotkne. Odstrániť ich môžete aj neskôr v nastaveniach účtov systému Android, a ak synchronizáciu kontaktov znova zapnete, pridajú sa nanovo.</string>
-    <string name="remove_synced_contacts_done">Odstránených kontaktov z tohto telefónu: %1$d</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">Z tohto telefónu sa odstránil %1$d kontakt</item>
+        <item quantity="few">Z tohto telefónu sa odstránili %1$d kontakty</item>
+        <item quantity="many">Z tohto telefónu sa odstránilo %1$d kontaktu</item>
+        <item quantity="other">Z tohto telefónu sa odstránilo %1$d kontaktov</item>
+    </plurals>
     <string name="remove_synced_keep">Ponechať ich</string>
     <string name="remove_synced_remove">Odstrániť</string>
     <string name="setup_choose_title">Čo má tento účet synchronizovať?</string>
@@ -665,4 +775,5 @@
     <string name="sfp_hero_subtitle_sync_off">Synchronizácia zostane vypnutá, kým nebude aktívne predplatné. Podrobnosti nájdete v časti Predplatné vyššie.</string>
 
     <string name="toast_resync_skipped">Niet čo synchronizovať: synchronizácia pre %1$s je vypnutá</string>
+    <string name="plural_rules_language">sk</string>
 </resources>

@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
+import me.proton.sync.LogRedaction
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
@@ -828,7 +829,7 @@ class CalendarSyncAdapter(
                 "${CalendarContract.Events._ID} ASC LIMIT 1"
             )?.use { c ->
                 if (c.moveToFirst()) {
-                    SyncLog.d(TAG, "Diag[$site] '$calDisplayName' event[${c.getLong(0)}]: ORGANIZER='${c.getString(1)}', GUESTS_CAN_MODIFY=${c.getInt(2)}, GUESTS_CAN_INVITE_OTHERS=${c.getInt(3)}, HAS_ATTENDEE_DATA=${c.getInt(4)}")
+                    SyncLog.d(TAG, "Diag[$site] '$calDisplayName' event[${c.getLong(0)}]: ORGANIZER=${LogRedaction.addressOrShape(c.getString(1))}, GUESTS_CAN_MODIFY=${c.getInt(2)}, GUESTS_CAN_INVITE_OTHERS=${c.getInt(3)}, HAS_ATTENDEE_DATA=${c.getInt(4)}")
                 } else {
                     SyncLog.d(TAG, "Diag[$site] '$calDisplayName': no events on this calendar yet")
                 }
@@ -5578,7 +5579,7 @@ class CalendarSyncAdapter(
                     // attendees still get their invites; the user can re-add themselves
                     // properly if needed.
                     if (!email.contains('@')) {
-                        SyncLog.w(TAG, "Skipping non-email attendee on event $androidEventId: '$email' (likely legacy OWNER_ACCOUNT alias)")
+                        SyncLog.w(TAG, "Skipping non-email attendee on event $androidEventId (${email.length} characters, no '@'; likely legacy OWNER_ACCOUNT alias)")
                         continue
                     }
                     attendees.add(AttendeeInfo(
@@ -5872,11 +5873,13 @@ class CalendarSyncAdapter(
 
         val organizerStr = if (!needsOrganizer) {
             SyncLog.i(TAG, "Event $androidEventId organizer: omitted (personal event - " +
-                "no attendees, no stored email; RFC 5545 §3.6.1) [stored='$organizer']")
+                "no attendees, no stored email; RFC 5545 §3.6.1) [stored=${LogRedaction.addressOrShape(organizer)}]")
             ""
         } else {
-            SyncLog.i(TAG, "Event $androidEventId organizer: stored='$organizer' " +
-                "→ uploading='$effectiveOrganizer' " +
+            // Through addressOrShape: a stored organizer can be a bare name (synthesized-name-only above), which the
+            // log's address mask cannot see.
+            SyncLog.i(TAG, "Event $androidEventId organizer: stored=${LogRedaction.addressOrShape(organizer)} " +
+                "→ uploading=${LogRedaction.addressOrShape(effectiveOrganizer)} " +
                 "(source=$organizerSource, calendarOwner='$calendarMemberEmail', " +
                 "accountName='${account.name}', userOwned=$isUserOwned, " +
                 "knownAddrs=${userAddressEmails.size}, attendees=$attendeeCount)")
@@ -6223,7 +6226,7 @@ class CalendarSyncAdapter(
         null
     }
 
-    /** One line naming each guest's answer and where it came from. Addresses only, never the title. */
+    /** One line naming each guest's answer and where it came from: addresses (each a code in the log, LogRedaction), never the title. */
     private fun logGuestPlan(phase: String, androidEventId: Long, plan: GuestStatusPlan, server: ServerAttendees?, breaking: Boolean) {
         val answers = plan.guests.indices.filter { !plan.guests[it].own }.joinToString(", ") { i ->
             val email = plan.guests[i].email
@@ -7274,7 +7277,7 @@ class CalendarSyncAdapter(
         while (c.moveToNext()) {
             val email = c.getString(0)?.lowercase()?.trim() ?: continue
             val status = c.getInt(1)
-            allAttendeeEmails.add("$email(status=$status)")
+            allAttendeeEmails.add("${LogRedaction.addressOrShape(email)}(status=$status)")
             if (email in allMyEmails) {
                 // Keep the most DECISIVE answer for an address, not whichever row the
                 // cursor happened to return last. An event we were invited to reliably
@@ -8060,40 +8063,40 @@ class CalendarSyncAdapter(
         // structural fields and UID are what we just signed; we are organizer.
         val (createDtStartLine, createDtEndLine, createRrule) = ICalUtils.structuralLines(timeBlock, rrule)
         val baseline = rowBaseline(provider, androidEventId)
-            return CalendarEventSyncEntity(
-                accountName = account.name,
-                protonCalendarId = protonCalendarId,
-                protonEventId = newEventId,
-                androidEventId = androidEventId,
-                // The server's clock, falling back to this phone's only when the response did not say.
-                lastModified = serverLastEditTime ?: (System.currentTimeMillis() / 1000),
-                // Persist the SEQUENCE we actually uploaded so the next update
-                // can apply the smart-increment rule from a correct baseline.
-                // Without this, exception events created against an edited parent
-                // would re-compare against 0 on their first edit and break the
-                // ≥-parent invariant the second time around.
-                sequence = createSequence,
-                // Cache the PKESK we actually sent (finalSharedKeyPacketB64), not
-                // the calendar-key-only one we computed first. With Proton attendees
-                // we rewrap to a fresh session key in encryptWithCalendarKeyAndRecipients;
-                // caching the original PKESK leaks SK1 into the update path while the
-                // server stores SK2 → updated SEIPDs can't be decrypted.
-                cachedSharedKeyPacket = finalSharedKeyPacketB64,
-                cachedDtStartLine = createDtStartLine,
-                cachedDtEndLine = createDtEndLine,
-                cachedRrule = createRrule,
-                cachedUid = uid2445,
-                cachedIsOrganizer = 1,
-                // Mark locally-created overrides consistently with the download path.
-                // recurrenceIdStr (built above) is "" for non-overrides -> store null.
-                cachedRecurrenceId = recurrenceIdStr.takeIf { it.isNotEmpty() },
-                // Baseline for "did a shared field change" (collisions, and whether guests
-                // are emailed): without it the first edit after a create always looked
-                // like one, and emailed every guest for a reminder change.
-                sharedFingerprint = baseline.first,
-                // The times the lines above are the text for (UploadTimes).
-                cachedTimes = baseline.second
-            )
+        return CalendarEventSyncEntity(
+            accountName = account.name,
+            protonCalendarId = protonCalendarId,
+            protonEventId = newEventId,
+            androidEventId = androidEventId,
+            // The server's clock, falling back to this phone's only when the response did not say.
+            lastModified = serverLastEditTime ?: (System.currentTimeMillis() / 1000),
+            // Persist the SEQUENCE we actually uploaded so the next update
+            // can apply the smart-increment rule from a correct baseline.
+            // Without this, exception events created against an edited parent
+            // would re-compare against 0 on their first edit and break the
+            // ≥-parent invariant the second time around.
+            sequence = createSequence,
+            // Cache the PKESK we actually sent (finalSharedKeyPacketB64), not
+            // the calendar-key-only one we computed first. With Proton attendees
+            // we rewrap to a fresh session key in encryptWithCalendarKeyAndRecipients;
+            // caching the original PKESK leaks SK1 into the update path while the
+            // server stores SK2 → updated SEIPDs can't be decrypted.
+            cachedSharedKeyPacket = finalSharedKeyPacketB64,
+            cachedDtStartLine = createDtStartLine,
+            cachedDtEndLine = createDtEndLine,
+            cachedRrule = createRrule,
+            cachedUid = uid2445,
+            cachedIsOrganizer = 1,
+            // Mark locally-created overrides consistently with the download path.
+            // recurrenceIdStr (built above) is "" for non-overrides -> store null.
+            cachedRecurrenceId = recurrenceIdStr.takeIf { it.isNotEmpty() },
+            // Baseline for "did a shared field change" (collisions, and whether guests
+            // are emailed): without it the first edit after a create always looked
+            // like one, and emailed every guest for a reminder change.
+            sharedFingerprint = baseline.first,
+            // The times the lines above are the text for (UploadTimes).
+            cachedTimes = baseline.second
+        )
     }
 
     /**

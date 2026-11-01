@@ -62,7 +62,11 @@
     <string name="btn_sync_all_accounts">Sinhronizēt visus kontus</string>
     <string name="btn_sync_now">Sinhronizēt</string>
     <string name="label_sync_all_long_press_hint">Ilgi nospiediet, lai veiktu piespiedu pilnu atkārtotu sinhronizāciju</string>
-    <string name="dialog_title_full_resync_all">Pilna atkārtota sinhronizācija (%1$d konti)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="zero">Pilna atkārtota sinhronizācija (%1$d konti)</item>
+        <item quantity="one">Pilna atkārtota sinhronizācija (%1$d konts)</item>
+        <item quantity="other">Pilna atkārtota sinhronizācija (%1$d konti)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Izvēlieties sinhronizācijas virzienu visiem kontiem:\n\nAttālais → Lokālais: Dzēst lokālos datus un atkārtoti lejupielādēt no Proton.\n\nLokālais → Attālais: Augšupielādēt visus lokālos datus uz Proton (pārraksta attālos).</string>
     <plurals name="toast_sync_all_started">
         <item quantity="zero">Sinhronizācija sākta %d kontiem</item>
@@ -97,7 +101,7 @@
     <string name="label_sync_mode_all">Visi notikumi</string>
     <string name="label_sync_mode_custom">Pielāgots diapazons</string>
     <string name="dialog_title_display_name">Parādāmais vārds</string>
-    <string name="dialog_message_display_name">Izvēlieties jaunu parādāmo vārdu šim kontam. To izmanto sadaļā Iestatījumi → Pārvaldīt kontus un kā kontaktu apakšvirsrakstu „Konts".</string>
+    <string name="dialog_message_display_name">Izvēlieties jaunu parādāmo vārdu šim kontam. To izmanto sadaļā Iestatījumi → Pārvaldīt kontus un kā kontaktu apakšvirsrakstu „Konts“.</string>
     <string name="dialog_hint_display_name">Parādāmais vārds</string>
     <string name="toast_display_name_blank">Parādāmais vārds nedrīkst būt tukšs.</string>
     <string name="toast_display_name_taken">Konts ar nosaukumu \"%s\" jau pastāv.</string>
@@ -143,7 +147,16 @@
     <string name="btn_open_settings">Atvērt iestatījumus</string>
     <string name="btn_later">Vēlāk</string>
     <string name="label_custom_suffix">, pielāgots</string>
-    <string name="label_days_format">%d dienas</string>
+    <plurals name="label_days_format">
+        <item quantity="zero">%d dienas</item>
+        <item quantity="one">%d diena</item>
+        <item quantity="other">%d dienas</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="zero">%d minūtes</item>
+        <item quantity="one">%d minūte</item>
+        <item quantity="other">%d minūtes</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Sinhronizācijas kļūmes</string>
     <string name="notification_channel_sync_description">Paziņojumi, kad kalendāra vai kontaktu sinhronizācija neizdodas</string>
@@ -205,6 +218,7 @@
     <string name="label_subscription_expired">Abonementa termiņš beidzies: atjauniniet, lai atsāktu sinhronizāciju.</string>
     <string name="label_subscription_paused">Abonements apturēts: sinhronizācija ir izslēgta, līdz tas tiks atsākts.</string>
     <string name="label_subscription_unpaid">Maksājums neizdevās: atjauniniet maksājuma veidu, lai atkal ieslēgtu sinhronizāciju.</string>
+    <string name="label_subscription_suspended_play">Sinhronizācija ir izslēgta: abonements ir aizturēts vai apturēts pakalpojumā Google Play, kur varat novērst maksājuma problēmu vai atsākt abonementu.</string>
     <string name="notification_payment_failed_title">Abonementa maksājums neizdevās</string>
     <string name="btn_update_payment_method">Atjaunināt maksājuma metodi</string>
     <string name="label_subscription_grace">Maksājuma problēma: atjauniniet maksājuma veidu, lai turpinātu sinhronizāciju.</string>
@@ -273,8 +287,8 @@
     <string name="info_send_cancellations_body">Nosūtiet dalībniekiem e-pastu, kad dzēšat notikumu, uz kuru viņi ir uzaicināti, lai arī viņu kalendāri to noņemtu. Pēc noklusējuma izslēgts.</string>
     <string name="info_invite_subject_title_body">Sūtot ielūgumu e-pastus, ievietojiet notikuma nosaukumu e-pasta tēmas rindā, lai saņēmēji to uzreiz atpazītu. Pēc noklusējuma izslēgts privātuma dēļ: e-pasta tēmas nav šifrētas standarta pasta pārsūtīšanā, tāpēc nosaukums būtu redzams pasta serveriem maršrutā.</string>
     <string name="info_background_sync_body">Android var apturēt fona sinhronizāciju, lai taupītu akumulatoru, kas var aizkavēt vai apturēt automātisko sinhronizāciju. Šīs lietotnes izslēgšana no akumulatora optimizācijas nodrošina, ka plānotās sinhronizācijas darbojas uzticami. Izmantojiet pogu, lai atvērtu lietotnes sistēmas akumulatora iestatījumus.</string>
-    <string name="info_verbose_logging_body">Tver papildu diagnostikas informāciju (autentifikācijas stāvoklis, atslēgu atbloķēšana, sinhronizācijas iekšējie procesi) žurnālā, noder, ziņojot par problēmu. Tas var ietvert kontu e-pasta adreses un kalendāru nosaukumus, tāpēc žurnālus kopīgojiet tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
-    <string name="info_file_logging_body">Ieraksta lietotnes žurnālu teksta failā ar laika zīmogu (sync-for-proton-log-….txt) jūsu izvēlētā mapē. Citādi lietotne žurnālu glabā tikai atmiņā, tāpēc ieslēdziet to, lai fiksētu grūti atkārtojamu problēmu. Katrā lietotnes palaišanas reizē tiek izveidots jauns fails; tas var saturēt kontu e-pasta adreses un kalendāru nosaukumus, tāpēc kopīgojiet to tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
+    <string name="info_verbose_logging_body">Tver papildu diagnostikas informāciju (autentifikācijas stāvoklis, atslēgu atbloķēšana, sinhronizācijas iekšējie procesi) žurnālā, noder, ziņojot par problēmu. Lietotne e-pasta adreses tajā aizstāj ar īsiem kodiem, taču tas var ietvert kontu un kalendāru nosaukumus, tāpēc žurnālus kopīgojiet tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
+    <string name="info_file_logging_body">Ieraksta lietotnes žurnālu teksta failā ar laika zīmogu (sync-for-proton-log-….txt) jūsu izvēlētā mapē. Citādi lietotne žurnālu glabā tikai atmiņā, tāpēc ieslēdziet to, lai fiksētu grūti atkārtojamu problēmu. Katrā lietotnes palaišanas reizē tiek izveidots jauns fails. Lietotne e-pasta adreses tajā aizstāj ar īsiem kodiem, taču tas var saturēt kontu un kalendāru nosaukumus, tāpēc kopīgojiet to tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
     <string name="info_timezone_updates_text">Notikumu laiki ir atkarīgi no laika joslu noteikumiem, un valstis šos noteikumus laiku pa laikam maina. Android tos glabā tālruņa laika joslu datos, kas tiek saņemti ar sistēmas atjauninājumiem. Tālrunis, kas tos vairs nesaņem, piemēram, ar vecāku Android versiju vai bez Google Play sistēmas atjauninājumiem, saglabā vecos noteikumus, un notikumi vietās, kur noteikumi kopš tā laika ir mainījušies, var tikt parādīti nepareizā laikā.\n\nLaika joslu dati šajā tālrunī: versija %1$s\n\nKad izslēgts (noklusējums), lietotne izmanto paša tālruņa laika joslu datus un uz www.tzurl.org neko nesūta.\n\nKad ieslēgts, lietotne lejupielādē katras jūsu notikumos izmantotās laika joslas aktuālos noteikumus no www.tzurl.org, trešās puses pakalpojuma, ne vairāk kā vienu reizi katrai laika joslai pēc katras lietotnes palaišanas, un izmanto tos tikai tad, ja tie ir jaunāki par tālruņa datiem. www.tzurl.org tad redz jūsu IP adresi un šo laika joslu nosaukumus, piemēram, Europe/Berlin. Nekas cits par jūsu notikumiem vai kontiem netiek nosūtīts. Ja www.tzurl.org nav sasniedzams, tiek izmantoti tālruņa dati. Periodiskie notikumi joprojām tiek aprēķināti ar tālruņa datiem.\n\nPēc izmaiņām tālrunī jau esošie notikumi nākamajā sinhronizācijā tiek pārbaudīti un izlaboti.</string>
     <string name="tz_data_version_unknown">nezināma</string>
     <string name="tz_outdated_title">Laika joslu dati ir novecojuši</string>
@@ -312,7 +326,7 @@
     <string name="backup_btn_unlock">Atbloķēt</string>
     <string name="backup_preflight_settings_only">Šis dublējums satur tikai iestatījumus.</string>
     <plurals name="backup_preflight_accounts">
-        <item quantity="zero">Šis dublējums satur %d kontu un iestatījumus.</item>
+        <item quantity="zero">Šis dublējums satur %d kontus un iestatījumus.</item>
         <item quantity="one">Šis dublējums satur %d kontu un iestatījumus.</item>
         <item quantity="other">Šis dublējums satur %d kontus un iestatījumus.</item>
     </plurals>
@@ -335,7 +349,11 @@
     <string name="notification_channel_alerts">Sinhronizācijas brīdinājumi</string>
     <string name="notification_channel_alerts_description">Svarīgi drošības brīdinājumi, kuriem nepieciešams jūsu lēmums</string>
     <string name="notification_bulk_delete_title">Konstatēta liela kalendāra izmaiņa</string>
-    <string name="notification_bulk_delete_body">%1$d kalendāra notikumi pazuda no šī tālruņa (%2$s). Lai aizsargātu jūsu datus, tie NETIKA dzēsti no Proton. Saglabāt tos tālrunī vai dzēst arī no Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="zero">%1$d kalendāra notikumi pazuda no šī tālruņa (%2$s). Lai aizsargātu jūsu datus, tie NETIKA dzēsti no Proton. Saglabāt tos tālrunī vai dzēst arī no Proton?</item>
+        <item quantity="one">%1$d kalendāra notikums pazuda no šī tālruņa (%2$s). Lai aizsargātu jūsu datus, tas NETIKA dzēsts no Proton. Saglabāt to tālrunī vai dzēst arī no Proton?</item>
+        <item quantity="other">%1$d kalendāra notikumi pazuda no šī tālruņa (%2$s). Lai aizsargātu jūsu datus, tie NETIKA dzēsti no Proton. Saglabāt tos tālrunī vai dzēst arī no Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Saglabāt Proton</string>
     <string name="notification_bulk_delete_delete">Dzēst Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -381,7 +399,23 @@
     <string name="backup_decrypt_done">Atšifrēts mapē \"%1$s\" jūsu dublējumu mapē.</string>
     <string name="backup_decrypt_failed">Šo failu nevarēja atšifrēt.</string>
     <string name="backup_restore_hint">Lai atjaunotu: importējiet .ics failu Proton kalendārā (Iestatījumi → Importēt) un .vcf failu Proton kontaktos. Šifrētus dublējumus var atvērt arī datorā ar: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">Dublēti %1$d kalendāri, %2$d notikumi un %3$d kontakti.</string>
+    <string name="backup_result_done">Dublējums izveidots: %1$s, %2$s un %3$s.</string>
+    <string name="backup_result_partial">Dublējums izveidots: %1$s, %2$s un %3$s, taču dažus vienumus nevarēja nolasīt (bloķētas atslēgas vai tīkla kļūda), tāpēc dublējums var būt nepilnīgs. Pārbaudiet sinhronizācijas žurnālus un pēc tam mēģiniet vēlreiz.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="zero">%d kalendāri</item>
+        <item quantity="one">%d kalendārs</item>
+        <item quantity="other">%d kalendāri</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="zero">%d notikumi</item>
+        <item quantity="one">%d notikums</item>
+        <item quantity="other">%d notikumi</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="zero">%d kontakti</item>
+        <item quantity="one">%d kontakts</item>
+        <item quantity="other">%d kontakti</item>
+    </plurals>
     <string name="backup_result_skipped">Izlaists: avots neatgrieza datus, tāpēc tika paturēts pēdējais labais dublējums.</string>
     <string name="backup_result_failed">Dublēšana neizdevās: %1$s</string>
     <string name="backup_result_folder_lost">Dublējumu mape vairs nav pieejama.</string>
@@ -403,11 +437,18 @@
     <string name="backup_reminder_optout_body">Vai tiešām nevēlaties iestatīt dublējumus? Jūs neglabāsiet savas kalendāru un kontaktu kopijas, un mēs jums par to vairs neatgādināsim!</string>
     <string name="backup_reminder_optout_confirm">Jā, pārtraukt atgādināt</string>
     <string name="backup_reminder_optout_cancel">Nē, turpināt atgādināt</string>
-    <string name="backup_result_incomplete">Dublēti %1$d kalendāri, %2$d notikumi un %3$d kontakti, taču dažus vienumus nevarēja nolasīt (bloķētas atslēgas vai tīkla kļūda), tāpēc dublējums var būt nepilnīgs. Pārbaudiet sinhronizācijas žurnālus un pēc tam mēģiniet vēlreiz.</string>
     <string name="backup_notif_incomplete_title">Dublējums var būt nepilnīgs</string>
     <string name="remote_deletion_title">Vienumi noņemti no Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d kontaktu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</string>
-    <string name="remote_deletion_body_calendar">%1$d kalendāra notikumu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="zero">%1$d kontaktu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</item>
+        <item quantity="one">%1$d kontakta vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tas VĒL nav izdzēsts no šī tālruņa. Vai dzēst to arī šeit vai paturēt tālrunī?</item>
+        <item quantity="other">%1$d kontaktu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="zero">%1$d kalendāra notikumu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</item>
+        <item quantity="one">%1$d kalendāra notikuma vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tas VĒL nav izdzēsts no šī tālruņa. Vai dzēst to arī šeit vai paturēt tālrunī?</item>
+        <item quantity="other">%1$d kalendāra notikumu vairs nav pakalpojumā Proton (%2$s). Lai aizsargātu jūsu datus, tie VĒL nav izdzēsti no šī tālruņa. Vai dzēst tos arī šeit vai paturēt tālrunī?</item>
+    </plurals>
     <string name="remote_deletion_delete">Dzēst no tālruņa</string>
     <string name="remote_deletion_keep">Paturēt tālrunī</string>
     <!-- Redesigned settings UI: sections, hero, tiles, sign-in, empty state -->
@@ -475,7 +516,11 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Visi</string>
-    <string name="label_log_count">%1$d no %2$d rindām</string>
+    <plurals name="label_log_count">
+        <item quantity="zero">%1$d no %2$d rindām</item>
+        <item quantity="one">%1$d no %2$d rindas</item>
+        <item quantity="other">%1$d no %2$d rindām</item>
+    </plurals>
     <string name="label_share_sends_full_log">Kopīgošana vienmēr nosūta pilnu atkļūdošanas žurnālu</string>
     <string name="btn_clear_view">Notīrīt skatu</string>
     <string name="btn_copy_debug_log">Kopēt atkļūdošanas žurnālu</string>
@@ -504,7 +549,11 @@
     <string name="contact_filters_delete">Dzēst</string>
     <string name="contact_filters_saved">Noteikumi saglabāti. Tie stāsies spēkā nākamajā sinhronizācijā.</string>
     <string name="contact_filter_removal_title">Kontaktpersonu noteikumi noņemtu kontaktpersonas</string>
-    <string name="contact_filter_removal_body">Jūsu kontaktpersonu noteikumi vairs neatbilst %1$d kontaktpersonām šajā tālrunī (%2$s). Tās joprojām ir jūsu Proton kontā un tur netiks dzēstas. Noņemt tās no šī tālruņa vai paturēt?</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="zero">Jūsu kontaktpersonu noteikumi vairs neatbilst %1$d kontaktpersonām šajā tālrunī (%2$s). Tās joprojām ir jūsu Proton kontā un tur netiks dzēstas. Noņemt tās no šī tālruņa vai paturēt?</item>
+        <item quantity="one">Jūsu kontaktpersonu noteikumi vairs neatbilst %1$d kontaktpersonai šajā tālrunī (%2$s). Tā joprojām ir jūsu Proton kontā un tur netiks dzēsta. Noņemt to no šī tālruņa vai paturēt?</item>
+        <item quantity="other">Jūsu kontaktpersonu noteikumi vairs neatbilst %1$d kontaktpersonām šajā tālrunī (%2$s). Tās joprojām ir jūsu Proton kontā un tur netiks dzēstas. Noņemt tās no šī tālruņa vai paturēt?</item>
+    </plurals>
     <string name="contact_filter_removal_keep">Paturēt tālrunī</string>
     <string name="contact_filter_tpl_auto_created">Kontaktpersonas, ko Proton izveidoja automātiski</string>
     <string name="contact_filter_tpl_auto_created_desc">Izslēdz kontaktpersonas, kurām ir tikai attēlojamais vārds un e-pasta adrese, bez vārda vai uzvārda. Tieši tāda ir kontaktpersona, ko Proton izveido no e-pasta.</string>
@@ -533,20 +582,40 @@
     <string name="contact_filter_needs_name">Piešķiriet noteikumam nosaukumu, lai to atpazītu sarakstā.</string>
     <string name="contact_filter_delete_confirm">Dzēst šo noteikumu?</string>
     <string name="contact_filter_preview_running">Pārbauda jūsu kontaktpersonas…</string>
-    <string name="contact_filter_preview_result">No %1$d kontaktpersonām, kas pārbaudītas šajā tālrunī, šie noteikumi paturētu %2$d un noņemtu %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="zero">No %1$d kontaktpersonām, kas pārbaudītas šajā tālrunī, šie noteikumi paturētu %2$d un noņemtu %3$d.</item>
+        <item quantity="one">No %1$d kontaktpersonas, kas pārbaudīta šajā tālrunī, šie noteikumi paturētu %2$d un noņemtu %3$d.</item>
+        <item quantity="other">No %1$d kontaktpersonām, kas pārbaudītas šajā tālrunī, šie noteikumi paturētu %2$d un noņemtu %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Šie noteikumi nenoņemtu nevienu kontaktpersonu.</string>
-    <string name="contact_filter_preview_undecided">%1$d nevar pārbaudīt tālrunī, jo šis noteikums aplūko ziņas, kas ir tikai Proton. Par tām izlems nākamā sinhronizācija, un pirms kaut kā noņemšanas tāpat tiks jautāts.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="zero">%1$d nevar pārbaudīt tālrunī, jo šis noteikums aplūko ziņas, kas ir tikai Proton. Par tām izlems nākamā sinhronizācija, un pirms kaut kā noņemšanas tāpat tiks jautāts.</item>
+        <item quantity="one">%1$d nevar pārbaudīt tālrunī, jo šis noteikums aplūko ziņas, kas ir tikai Proton. Par to izlems nākamā sinhronizācija, un pirms kaut kā noņemšanas tāpat tiks jautāts.</item>
+        <item quantity="other">%1$d nevar pārbaudīt tālrunī, jo šis noteikums aplūko ziņas, kas ir tikai Proton. Par tām izlems nākamā sinhronizācija, un pirms kaut kā noņemšanas tāpat tiks jautāts.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Šajā tālrunī vēl nav šī konta kontaktpersonu.</string>
     <string name="contact_filter_preview_title">Pārbaudes rezultāts</string>
     <string name="contact_filter_preview_failed">Neizdevās pārbaudīt jūsu kontaktpersonas: %1$s</string>
     <string name="contact_filter_preview_reading">Nolasu jūsu Proton kontaktpersonas…</string>
     <string name="contact_filter_preview_progress">Pārbaudu kontaktpersonu %1$d no %2$d…</string>
-    <string name="contact_filter_preview_server_result">No %1$d kontaktpersonām šajā Proton kontā šie noteikumi sinhronizētu %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="zero">No %1$d kontaktpersonām šajā Proton kontā šie noteikumi sinhronizētu %2$d.</item>
+        <item quantity="one">No %1$d kontaktpersonas šajā Proton kontā šie noteikumi sinhronizētu %2$d.</item>
+        <item quantity="other">No %1$d kontaktpersonām šajā Proton kontā šie noteikumi sinhronizētu %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Noņemtas no šī tālruņa (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Nav kopētas uz šo tālruni (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…un vēl %1$d.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="zero">…un vēl %1$d.</item>
+        <item quantity="one">…un vēl %1$d.</item>
+        <item quantity="other">…un vēl %1$d.</item>
+    </plurals>
     <string name="contact_filter_preview_show_all">Rādīt visus</string>
-    <string name="contact_filter_preview_unreadable">%1$d neizdevās nolasīt, un tās paliktu neskartas.</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="zero">%1$d neizdevās nolasīt, un tās paliktu neskartas.</item>
+        <item quantity="one">%1$d neizdevās nolasīt, un tā paliktu neskarta.</item>
+        <item quantity="other">%1$d neizdevās nolasīt, un tās paliktu neskartas.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Neizdevās sasniegt Proton, tāpēc šī pārbaude varēja izmantot tikai to, kas jau ir tālrunī.</string>
     <string name="contact_filter_preview_nothing_removed">No šī tālruņa nekas netiktu noņemts.</string>
     <string name="contact_filter_condition_values_hint">Viena vērtība katrā rindā</string>
@@ -628,10 +697,22 @@
     <string name="label_name_repair">Pārbaudīt izdomātos vārdus</string>
     <string name="name_repair_scanning">Notiek Proton kontaktu pārbaude…</string>
     <string name="name_repair_none">Nevienam Proton kontaktam nav Android izdomāta vārda.</string>
-    <string name="name_repair_found">%1$d kontaktiem Proton ir vārds un uzvārds, ko Android izveidoja, sadalot to e-pasta adresi. Kāda šīs lietotnes agrāka versija šos vārdus nosūtīja uz Proton.\n\nVai tos noņemt? Nekas cits kontaktos nemainās, un to attēlojamais vārds paliek tāds pats.</string>
+    <plurals name="name_repair_found">
+        <item quantity="zero">%1$d kontaktiem Proton ir vārds un uzvārds, ko Android izveidoja, sadalot to e-pasta adresi. Kāda šīs lietotnes agrāka versija šos vārdus nosūtīja uz Proton.\n\nVai tos noņemt? Nekas cits kontaktos nemainās, un to attēlojamais vārds paliek tāds pats.</item>
+        <item quantity="one">%1$d kontaktam Proton ir vārds un uzvārds, ko Android izveidoja, sadalot tā e-pasta adresi. Kāda šīs lietotnes agrāka versija šo vārdu nosūtīja uz Proton.\n\nVai to noņemt? Nekas cits kontaktā nemainās, un tā attēlojamais vārds paliek tāds pats.</item>
+        <item quantity="other">%1$d kontaktiem Proton ir vārds un uzvārds, ko Android izveidoja, sadalot to e-pasta adresi. Kāda šīs lietotnes agrāka versija šos vārdus nosūtīja uz Proton.\n\nVai tos noņemt? Nekas cits kontaktos nemainās, un to attēlojamais vārds paliek tāds pats.</item>
+    </plurals>
     <string name="name_repair_action">Noņemt izdomātos vārdus</string>
-    <string name="name_repair_done">Saloboti %1$d kontakti.</string>
-    <string name="name_repair_partial">Saloboti %1$d kontakti, %2$d atstāti neskarti.</string>
+    <plurals name="name_repair_done">
+        <item quantity="zero">Salaboti %1$d kontakti.</item>
+        <item quantity="one">Salabots %1$d kontakts.</item>
+        <item quantity="other">Salaboti %1$d kontakti.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="zero">Salaboti %1$d kontakti, bez izmaiņām: %2$d.</item>
+        <item quantity="one">Salabots %1$d kontakts, bez izmaiņām: %2$d.</item>
+        <item quantity="other">Salaboti %1$d kontakti, bez izmaiņām: %2$d.</item>
+    </plurals>
     <string name="name_repair_failed">Neizdevās pārbaudīt kontaktus: %1$s</string>
     <string name="filter_op_num_eq">ir</string>
     <string name="filter_field_other_content">Cita informācija</string>
@@ -640,10 +721,18 @@
     <string name="contact_filters_empty_none">Neviena šī Proton konta kontaktpersona nenonāk jūsu tālrunī, jo iestatījums zemāk nosaka nesinhronizēt neko, ko nav aptvēris kāds noteikums. Pievienojiet noteikumu, lai dažas no tām tomēr sinhronizētos.</string>
     <string name="remove_synced_calendar_title">Vai noņemt šos kalendārus no šī tālruņa?</string>
     <string name="remove_synced_calendar_body">Kalendāra sinhronizācija tagad ir izslēgta, tāpēc nekas vairs netiks lejupielādēts. Kalendāri, kas jau ir šajā tālrunī, paliek, līdz tos noņemat. Noņemšana izdzēš tos tikai no šī tālruņa; jūsu kalendāri pakalpojumā Proton netiek skarti. Tos varat noņemt arī vēlāk Android kontu iestatījumos, un, ja atkal ieslēgsiet kalendāra sinhronizāciju, tie tiks izveidoti no jauna.</string>
-    <string name="remove_synced_calendar_done">No šī tālruņa noņemti notikumi: %1$d</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="zero">No šī tālruņa noņemti %1$d notikumi</item>
+        <item quantity="one">No šī tālruņa noņemts %1$d notikums</item>
+        <item quantity="other">No šī tālruņa noņemti %1$d notikumi</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Vai noņemt šos kontaktus no šī tālruņa?</string>
     <string name="remove_synced_contacts_body">Kontaktu sinhronizācija tagad ir izslēgta, tāpēc nekas vairs netiks lejupielādēts. Kontakti, kas jau ir šajā tālrunī, paliek, līdz tos noņemat. Noņemšana izdzēš tos tikai no šī tālruņa; jūsu kontakti pakalpojumā Proton netiek skarti. Tos varat noņemt arī vēlāk Android kontu iestatījumos, un, ja atkal ieslēgsiet kontaktu sinhronizāciju, tie tiks pievienoti no jauna.</string>
-    <string name="remove_synced_contacts_done">No šī tālruņa noņemti kontakti: %1$d</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="zero">No šī tālruņa noņemti %1$d kontakti</item>
+        <item quantity="one">No šī tālruņa noņemts %1$d kontakts</item>
+        <item quantity="other">No šī tālruņa noņemti %1$d kontakti</item>
+    </plurals>
     <string name="remove_synced_keep">Paturēt</string>
     <string name="remove_synced_remove">Noņemt</string>
     <string name="setup_choose_title">Ko šim kontam sinhronizēt?</string>
@@ -659,4 +748,5 @@
     <string name="sfp_hero_subtitle_sync_off">Sinhronizācija paliek izslēgta, līdz abonements būs aktīvs. Skatiet sadaļu Abonements augstāk.</string>
 
     <string name="toast_resync_skipped">Nav ko sinhronizēt: sinhronizācija ir izslēgta (%1$s)</string>
+    <string name="plural_rules_language">lv</string>
 </resources>

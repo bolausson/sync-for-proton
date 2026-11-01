@@ -28,8 +28,9 @@ import androidx.documentfile.provider.DocumentFile
  *   depending on SAF append mode (`"wa"`), which several providers (e.g. Samsung) don't
  *   support — so the file always reflects the current buffer on any provider.
  * - All write paths swallow exceptions: logging must never crash or block the app.
- * - Every line is redacted ([LogRedaction]) before it is buffered, as the debug log is: the
- *   file is the copy most likely to be forwarded, and until 2.0.2 it kept tokens the export
+ * - Every line is redacted ([LogRedaction]) before it is buffered. SyncLog already redacted it
+ *   (since 2.0.4), so this pass changes nothing; it stays so the file never depends on its caller,
+ *   since it is the copy most likely to be forwarded, and until 2.0.2 it kept tokens the export
  *   removed. Once per line on the way in, not in the flush, which rewrites the whole buffer.
  *
  * Each sink instance writes its own **timestamped** file

@@ -11,12 +11,14 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Lifecycle
 import com.android.billingclient.api.ProductDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import me.proton.sync.R
 import me.proton.sync.SyncLog
 import me.proton.sync.settings.SyncSettingsActivity
@@ -72,6 +74,30 @@ object BillingUi {
      * card's Manage subscription opens Google Play's page, which shows the real date.
      */
     fun activeStatusText(context: Context): String? = context.getString(R.string.label_subscription_active_play)
+
+    /**
+     * The status line of a subscription Google Play has suspended ([SubscriptionState.Expired.suspended]): on hold
+     * after a declined renewal payment, or paused, which the phone cannot tell apart. The card's one button is
+     * Manage subscription, Google's page, where either is undone.
+     */
+    fun suspendedStatusText(context: Context): String? = context.getString(R.string.label_subscription_suspended_play)
+
+    /** How long a return to the settings screen waits for Billing before it skips Google's payment message. */
+    private const val PAYMENT_MESSAGES_WAIT_MS = 10_000L
+
+    /**
+     * Google Play's message about a declined subscription payment (SubscriptionManager.showPaymentMessages), asked on
+     * every return to the settings screen: Google asks apps to call it on every open, and decides itself whether a
+     * message is due. A cold start connects Billing only now, so this waits for the connection, at most
+     * [PAYMENT_MESSAGES_WAIT_MS]; onPause cancels the wait. Google places the message by the content view's window
+     * token, which the first onResume runs before the window has, so post runs it once the view is attached.
+     */
+    suspend fun showPaymentMessages(activity: SyncSettingsActivity, sm: SubscriptionManager) {
+        withTimeoutOrNull(PAYMENT_MESSAGES_WAIT_MS) { while (!sm.isBillingReady()) delay(250) } ?: return
+        activity.findViewById<View>(android.R.id.content).post {
+            if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) sm.showPaymentMessages(activity)
+        }
+    }
 
     /**
      * Status line and button of the subscription card when there is no subscription. The 7-day trial
@@ -256,10 +282,13 @@ object BillingUi {
         }
     }
 
-    /** Debug builds: the licence fixtures are Paddle answers, which this version never gets. */
+    /**
+     * Debug builds: `suspended` reads the purchases as Google returns a held or paused subscription, until `refresh`
+     * (see SubscriptionManager.debugApplyFixture). The other fixtures are Paddle answers, which this version never gets.
+     */
     @Suppress("UNUSED_PARAMETER")
     fun debugLicenseFixture(activity: SyncSettingsActivity, sm: SubscriptionManager, status: String) {
-        SyncLog.i(DEBUG_TAG, "license_fixture: not applicable in the play flavor (Google Play Billing)")
+        sm.debugApplyFixture(status)
     }
 
     /** Debug builds: subscription ids are Paddle's, which this version never takes. */

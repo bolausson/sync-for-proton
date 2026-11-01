@@ -347,11 +347,7 @@ class BackupSettingsActivity : AppCompatActivity() {
 
     private fun showBackupResultDialog(result: BackupDataExporter.Result) {
         val msg = when (result) {
-            is BackupDataExporter.Result.Success ->
-                if (result.incomplete)
-                    getString(R.string.backup_result_incomplete, result.calendars, result.events, result.contacts)
-                else
-                    getString(R.string.backup_result_success, result.calendars, result.events, result.contacts)
+            is BackupDataExporter.Result.Success -> BackupDataExporter.successText(this, result)
             BackupDataExporter.Result.SkippedEmptyGuard -> getString(R.string.backup_notif_skipped_body)
             BackupDataExporter.Result.NoFolder -> getString(R.string.backup_folder_none)
             is BackupDataExporter.Result.Failure -> getString(R.string.backup_result_failed, result.reason)

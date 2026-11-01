@@ -1,6 +1,7 @@
 package me.proton.sync.billing
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import me.proton.sync.SyncPreferences
 
@@ -21,8 +22,11 @@ import me.proton.sync.SyncPreferences
  * can't drift on the gate logic.
  */
 object SubscriptionGate {
-    fun isSyncAllowedCached(context: Context): Boolean {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    fun isSyncAllowedCached(context: Context): Boolean =
+        isSyncAllowed(PreferenceManager.getDefaultSharedPreferences(context))
+
+    /** The same gate on [prefs] directly, so a unit test can check what a stored state lets through. */
+    fun isSyncAllowed(prefs: SharedPreferences): Boolean {
         val name = prefs.getString(SyncPreferences.KEY_SUBSCRIPTION_STATE, null) ?: return false
         return name == "Trial" || name == "Active"
     }

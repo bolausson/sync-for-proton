@@ -134,6 +134,7 @@ class BackupSettingsTypeMapTest {
         SyncPreferences.KEY_LICENSE_FIRST_FAILED,
         SyncPreferences.KEY_SUBSCRIPTION_PAYMENT_FAILED,
         SyncPreferences.KEY_SUBSCRIPTION_PAUSED,
+        SyncPreferences.KEY_SUBSCRIPTION_SUSPENDED,
         SyncPreferences.KEY_SUBSCRIPTION_SCHEDULED_CHANGE,
         SyncPreferences.KEY_SUBSCRIPTION_SCHEDULED_CHANGE_AT,
         SyncPreferences.KEY_LICENSE_CONFIRMED,

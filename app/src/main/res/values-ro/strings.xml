@@ -50,9 +50,9 @@
     <string name="label_include_external_calendars">Includere calendare externe</string>
     <string name="label_poll_attendee_status">Verificare stare participan\u021bi</string>
     <string name="label_send_email_invites">Trimitere invita\u021bii prin e-mail</string>
-    <string name="label_send_email_updates">Trimite actualizări prin e-mail</string>
-    <string name="label_send_email_cancellations">Trimite anulări prin e-mail</string>
-    <string name="label_invite_subject_include_title">Include titlul evenimentului în subiectul invitației</string>
+    <string name="label_send_email_updates">Trimitere actualizări prin e-mail</string>
+    <string name="label_send_email_cancellations">Trimitere anulări prin e-mail</string>
+    <string name="label_invite_subject_include_title">Includere titlu eveniment în subiectul invitației</string>
     <string name="btn_sync_calendar">Sincronizare calendar</string>
     <string name="btn_sync_all_now">Sincronizare total\u0103 acum</string>
     <string name="label_long_press_hint">Ap\u0103sa\u021bi lung pe orice buton de sincronizare pentru re-sincronizare complet\u0103 for\u021bat\u0103</string>
@@ -60,29 +60,33 @@
     <string name="btn_remove">Eliminare</string>
     <string name="btn_add_another_account">Ad\u0103ugare alt cont Proton</string>
     <string name="btn_sync_all_accounts">Sincronizare toate conturile</string>
-    <string name="btn_sync_now">Sincronizează</string>
+    <string name="btn_sync_now">Sincronizare acum</string>
     <string name="label_sync_all_long_press_hint">Ap\u0103sare lung\u0103 pentru re-sincronizare complet\u0103 for\u021bat\u0103</string>
-    <string name="dialog_title_full_resync_all">Re-sincronizare complet\u0103 (%1$d conturi)</string>
+    <plurals name="dialog_title_full_resync_all">
+        <item quantity="one">Re-sincronizare completă (%1$d cont)</item>
+        <item quantity="few">Re-sincronizare completă (%1$d conturi)</item>
+        <item quantity="other">Re-sincronizare completă (%1$d de conturi)</item>
+    </plurals>
     <string name="dialog_message_full_resync_all">Alege\u021bi direc\u021bia de sincronizare pentru toate conturile:\n\nServer \u2192 Local: \u0218terge\u021bi datele locale \u0219i desc\u0103rca\u021bi din nou de pe Proton.\n\nLocal \u2192 Server: \u00cenc\u0103rca\u021bi toate datele locale pe Proton (suprascrie serverul).</string>
     <plurals name="toast_sync_all_started">
-        <item quantity="one">Sincronizare \u00eenceput\u0103 pentru %d cont</item>
-        <item quantity="few">Sincronizare \u00eenceput\u0103 pentru %d conturi</item>
-        <item quantity="other">Sincronizare \u00eenceput\u0103 pentru %d de conturi</item>
+        <item quantity="one">Sincronizare începută pentru %d cont</item>
+        <item quantity="few">Sincronizare începută pentru %d conturi</item>
+        <item quantity="other">Sincronizare începută pentru %d de conturi</item>
     </plurals>
     <string name="label_background_sync_title">Sincronizarea \u00een fundal nu func\u021bioneaz\u0103?</string>
     <string name="btn_open_battery_settings">Deschidere set\u0103ri baterie</string>
     <string name="btn_view_sync_logs">Vizualizare jurnale de sincronizare</string>
     <string name="label_verbose_logging_title">Jurnalizare detaliată</string>
-    <string name="label_file_logging_title">Salvează jurnalele într-un fișier</string>
-    <string name="label_timezone_updates_title">Actualizează fusurile orare online</string>
-    <string name="sfp_timezone_updates_summary">Când este activată, regulile actuale ale fusurilor orare vin de pe www.tzurl.org, care vede adresa ta IP și fusurile orare ale evenimentelor tale. Când este dezactivată, se folosesc datele de fus orar ale telefonului.</string>
+    <string name="label_file_logging_title">Salvare jurnale într-un fișier</string>
+    <string name="label_timezone_updates_title">Actualizare fusuri orare online</string>
+    <string name="sfp_timezone_updates_summary">Când este activată, regulile actuale ale fusurilor orare vin de pe www.tzurl.org, care vede adresa dumneavoastră IP și fusurile orare ale evenimentelor dumneavoastră. Când este dezactivată, se folosesc datele de fus orar ale telefonului.</string>
     <string name="sfp_timezone_data_outdated">Datele de fus orar ale acestui telefon sunt învechite (versiunea %1$s).</string>
-    <string name="btn_choose_log_folder">Schimbă dosarul</string>
+    <string name="btn_choose_log_folder">Schimbați dosarul</string>
     <string name="label_log_folder_path">Se salvează în: %1$s</string>
-    <string name="btn_send_report">Trimite raport către dezvoltator</string>
+    <string name="btn_send_report">Trimiteți raport către dezvoltator</string>
     <string name="send_report_subject">Raport Sync for Proton: v%1$s</string>
     <string name="send_report_body_template">Versiune aplicație: %1$s\nJurnalizare detaliată: %2$s\nDispozitiv: %3$s %4$s (Android %5$s)\n\nCe făceați când s-a întâmplat asta? (descrieți pe scurt)\n\n\nJurnalele sunt atașate.</string>
-    <string name="send_report_chooser_title">Trimite raport</string>
+    <string name="send_report_chooser_title">Trimitere raport</string>
     <string name="toast_send_report_failed">Nu s-a putut deschide aplicația de e-mail: %s</string>
     <string name="title_sync_logs">Jurnale</string>
     <string name="btn_auto_scroll">Derulare automat\u0103</string>
@@ -122,7 +126,7 @@
     <string name="toast_uploading">Se \u00eencarc\u0103 %s local pe Proton\u2026</string>
     <string name="toast_resync_failed">Re-sincronizare e\u0219uat\u0103: %s</string>
     <string name="toast_preparing_resync">Se preg\u0103te\u0219te re-sincronizarea, poate dura c\u00e2teva secunde\u2026</string>
-    <string name="toast_resync_in_flight">Re-sincronizare deja \u00een curs, te rug\u0103m s\u0103 a\u0219tep\u021bi</string>
+    <string name="toast_resync_in_flight">Re-sincronizare deja în curs, vă rugăm să așteptați</string>
     <string name="label_contacts_lower">contacte</string>
     <string name="label_calendar_lower">calendar</string>
     <string name="label_all_data">toate datele</string>
@@ -131,7 +135,16 @@
     <string name="btn_open_settings">Deschidere set\u0103ri</string>
     <string name="btn_later">Mai t\u00e2rziu</string>
     <string name="label_custom_suffix">, Personalizat</string>
-    <string name="label_days_format">%d zile</string>
+    <plurals name="label_days_format">
+        <item quantity="one">%d zi</item>
+        <item quantity="few">%d zile</item>
+        <item quantity="other">%d de zile</item>
+    </plurals>
+    <plurals name="label_minutes_format">
+        <item quantity="one">%d minut</item>
+        <item quantity="few">%d minute</item>
+        <item quantity="other">%d de minute</item>
+    </plurals>
     <string name="label_joiner">" &amp; "</string>
     <string name="notification_channel_sync_failures">Erori de sincronizare</string>
     <string name="notification_channel_sync_description">Notific\u0103ri c\u00e2nd sincronizarea calendarului sau contactelor e\u0219ueaz\u0103</string>
@@ -181,7 +194,7 @@
     <string name="label_language_auto">Automat (implicit sistem)</string>
 
     <string name="label_subscription">Abonament</string>
-    <string name="label_subscription_none">Sincronizarea este oprită. Gratuit timp de 7 zile, apoi începe facturarea dacă nu anulezi.</string>
+    <string name="label_subscription_none">Sincronizarea este oprită. Gratuit timp de 7 zile, apoi începe facturarea dacă nu anulați.</string>
     <plurals name="label_subscription_trial_days">
         <item quantity="one">Probă gratuită: a mai rămas %1$d zi</item>
         <item quantity="few">Probă gratuită: au mai rămas %1$d zile</item>
@@ -191,30 +204,31 @@
     <string name="label_subscription_active_play">Activ, gestionat de Google Play</string>
     <string name="label_subscription_ends">Se încheie la %1$s</string>
     <string name="label_subscription_pauses">Se suspendă la %1$s</string>
-    <string name="label_subscription_expired">Abonament expirat: re\u00eennoie\u0219te pentru a relua sincronizarea.</string>
+    <string name="label_subscription_expired">Abonament expirat: reînnoiți pentru a relua sincronizarea.</string>
     <string name="label_subscription_paused">Abonament suspendat: sincronizarea este oprită până la reluarea lui.</string>
-    <string name="label_subscription_unpaid">Plata nu a reușit: actualizează metoda de plată pentru a reactiva sincronizarea.</string>
+    <string name="label_subscription_unpaid">Plata nu a reușit: actualizați metoda de plată pentru a reactiva sincronizarea.</string>
+    <string name="label_subscription_suspended_play">Sincronizarea este oprită: abonamentul este suspendat temporar sau întrerupt în Google Play, unde puteți corecta plata sau îl puteți relua.</string>
     <string name="notification_payment_failed_title">Plata abonamentului nu a reușit</string>
-    <string name="btn_update_payment_method">Actualizează metoda de plată</string>
-    <string name="label_subscription_grace">Problem\u0103 de plat\u0103: actualizeaz\u0103 metoda de plat\u0103 pentru a continua sincronizarea.</string>
-    <string name="btn_start_trial">\u00cencepe proba gratuit\u0103 de 7 zile</string>
-    <string name="btn_upgrade">Actualizeaz\u0103</string>
-    <string name="btn_renew">Re\u00eennoie\u0219te</string>
-    <string name="btn_manage_subscription">Gestioneaz\u0103 abonamentul</string>
-    <string name="dialog_title_choose_plan">Alege planul t\u0103u: perioad\u0103 de prob\u0103 gratuit\u0103 de 7 zile inclus\u0103</string>
+    <string name="btn_update_payment_method">Actualizați metoda de plată</string>
+    <string name="label_subscription_grace">Problemă de plată: actualizați metoda de plată pentru a continua sincronizarea.</string>
+    <string name="btn_start_trial">Începeți proba gratuită de 7 zile</string>
+    <string name="btn_upgrade">Actualizați</string>
+    <string name="btn_renew">Reînnoiți</string>
+    <string name="btn_manage_subscription">Gestionați abonamentul</string>
+    <string name="dialog_title_choose_plan">Alegeți-vă planul: perioadă de probă gratuită de 7 zile inclusă</string>
     <string name="plan_monthly_title">Lunar: %1$s</string>
     <string name="plan_monthly_subtitle">Gratuit timp de 7 zile, apoi %1$s/lun\u0103</string>
     <string name="plan_annual_title">Anual: %1$s</string>
     <string name="plan_annual_subtitle">Gratuit timp de 7 zile, apoi %1$s/an</string>
-    <string name="plan_picker_disclosure">Po\u021bi anula oric\u00e2nd din Google Play → Abonamente. F\u0103r\u0103 costuri \u00eenainte de ziua 7.</string>
-    <string name="dialog_title_choose_plan_plain">Alege planul t\u0103u</string>
+    <string name="plan_picker_disclosure">Puteți anula oricând din Google Play → Abonamente. Fără costuri înainte de ziua 7.</string>
+    <string name="dialog_title_choose_plan_plain">Alegeți-vă planul</string>
     <string name="plan_monthly_price">%1$s/lun\u0103</string>
     <string name="plan_annual_price">%1$s/an</string>
-    <string name="plan_picker_disclosure_plain">Po\u021bi anula oric\u00e2nd din Google Play → Abonamente.</string>
+    <string name="plan_picker_disclosure_plain">Puteți anula oricând din Google Play → Abonamente.</string>
     <string name="label_subscription_required">Sincronizarea este oprită: este necesar un abonament.</string>
-    <string name="btn_choose_plan">Alege un plan</string>
+    <string name="btn_choose_plan">Alegeți un plan</string>
     <string name="error_billing_unavailable">Facturarea Google Play nu este disponibil\u0103</string>
-    <string name="error_purchase_failed">Achizi\u021bia a e\u0219uat: te rug\u0103m s\u0103 \u00eencerci din nou</string>
+    <string name="error_purchase_failed">Achiziția a eșuat: vă rugăm să încercați din nou</string>
     <string name="sync_disabled_no_subscription">Sincronizare \u00eentrerupt\u0103: abonament necesar</string>
 
     <string-array name="calendar_past_entries">
@@ -250,44 +264,44 @@
     <string name="toast_display_name_failed">Nu s-a putut actualiza numele afișat. Încercați din nou.</string>
     <string name="dialog_title_display_name_recovery">Restaurați numele afișat?</string>
     <string name="dialog_message_display_name_recovery">Numele afișat personalizat pentru acest cont ar fi putut fi suprascris la o actualizare anterioară. Îl setați acum?</string>
-    <string name="btn_set_display_name">Setează nume</string>
-    <string name="btn_skip">Omite</string>
+    <string name="btn_set_display_name">Setați numele</string>
+    <string name="btn_skip">Omiteți</string>
     <string name="dialog_title_sync_failed">Sincronizare eșuată</string>
     <string name="dialog_label_sync_last_failure">Ultima eroare: %s</string>
     <string name="dialog_label_sync_reason">Motiv: %s</string>
     <string name="btn_info_dismiss">Am înțeles</string>
     <string name="label_info">Mai multe informații</string>
     <string name="info_language_body">Setează limba folosită pentru ecranele proprii ale acestei aplicații. \"Auto\" urmează limba sistemului telefonului. Aceasta schimbă doar interfața aplicației, nu traduce evenimentele de calendar sau contactele sincronizate.</string>
-    <string name="info_display_name_body">Numele afișat pentru acest cont în Setări Android → Conturi și în selectoarele aplicațiilor de calendar/contacte. Este doar o etichetă locală; modificarea lui nu afectează contul tău Proton.\n\nNotă: Samsung Calendar și Samsung Contacts ignoră numele de cont personalizate și afișează întotdeauna propria lor etichetă (de ex. \"Proton\"). Este posibil ca numele ales de tine să nu apară acolo, aceasta este o limitare Samsung pe care nu o putem schimba. Alte aplicații (Google Calendar/Contacts) îl afișează normal.</string>
-    <string name="info_event_loop_body">Cât de des verifică aplicația Proton în fundal pentru modificări la distanță ale contactelor și calendarului. Intervalele mai scurte afișează modificările mai rapid, dar consumă mai multă baterie și date. Aceasta este separată de sincronizarea manuală, pe care o poți declanșa oricând cu butoanele de sincronizare.</string>
-    <string name="info_notify_in_progress_body">Afișează o notificare silențioasă, continuă, în timpul rulării unei sincronizări, cu progres în timp real (scanare, descărcare, decriptare). Stă în partea de jos a panoului de notificări și nu emite niciodată vreun sunet. Dezactiveaz-o dacă preferi ca sincronizarea să ruleze invizibil.</string>
-    <string name="info_sync_contacts_body">Când este activată, contactele tale Proton se sincronizează bidirecțional cu contactele Android: modificările de pe oricare parte sunt îmbinate.\n\nNotă: Samsung Contacts afișează contactele sub o singură etichetă de cont \"Proton contacts\" și ascunde subtitlul cu e-mailul pentru conturile terțe ca al nostru, o limitare Samsung codificată pe care nu o putem schimba. Google Contacts și majoritatea celorlalte aplicații le afișează normal.</string>
-    <string name="info_fallback_full_sync_body">Cât de des efectuează aplicația o reverificare completă în loc de o sincronizare incrementală rapidă. O sincronizare completă prinde orice ar putea rata o trecere incrementală (de ex. modificări făcute offline) cu prețul unui timp și a unor date mai mari. Lasă la valoarea implicită dacă nu suspectezi că anumite elemente nu se sincronizează.</string>
-    <string name="info_notify_on_failure_body">Afișează o notificare dacă o sincronizare eșuează (de ex. eroare de rețea sau sesiune expirată). Atinge-o pentru un motiv în limbaj simplu și un link către jurnale. Dezactiveaz-o dacă nu vrei să fii alertat despre eșecuri trecătoare.</string>
-    <string name="info_sync_calendar_body">Când este activat, calendarele tale Proton se sincronizează în calendarul Android, astfel încât evenimentele apar în Google Calendar, Samsung Calendar și orice altă aplicație de calendar. Bidirecțional: modificările făcute pe telefon se încarcă înapoi în Proton pentru calendarele pe care le deții.</string>
-    <string name="info_include_external_calendars_body">Proton poate găzdui calendare abonate (de ex. un flux ICS extern) și calendare de sărbători. Acestea sunt doar pentru citire pe partea Proton. Când este dezactivat, aplicația le omite și sincronizează doar propriile tale calendare editabile. Activează dacă vrei ca și acele calendare doar pentru citire să fie oglindite pe telefonul tău.</string>
-    <string name="info_sync_mode_body">\"Toate evenimentele\" sincronizează întregul istoric al calendarului tău și toate evenimentele viitoare, cel mai bine dacă vrei totul pe telefonul tău (prima sincronizare a unui calendar mare poate dura câteva minute). \"Interval personalizat\" sincronizează doar o fereastră de zile din jurul zilei de azi, păstrând calendarele mari rapide și ușoare. Evenimentele din afara ferestrei nu sunt descărcate.</string>
-    <string name="info_sync_range_window_body">Câte zile înainte și după ziua de azi să sincronizeze când este selectat \"Interval personalizat\". Ferestrele mai mari afișează mai mult din calendarul tău, dar durează mai mult să se sincronizeze. Nu are efect în modul \"Toate evenimentele\".</string>
-    <string name="info_poll_attendee_body">Când este activată, aplicația reverifică periodic evenimentele care au participanți pentru a detecta răspunsurile de acceptare/refuz/provizoriu. Fluxul de modificări al Proton nu raportează schimbările RSVP, așa că aceasta necesită apeluri API suplimentare, merită activată doar dacă te bazezi pe vizualizarea răspunsurilor participanților pe telefonul tău.</string>
-    <string name="info_send_invites_body">Când adaugi participanți la un eveniment pe telefonul tău, trimite-le o invitație prin e-mail. Dezactivată implicit: activează doar dacă vrei ca aplicația să trimită e-mailuri participanților în numele tău.</string>
-    <string name="info_send_updates_body">Trimite e-mail participanților când modifici detaliile (ora, locația etc.) unui eveniment la care sunt invitați. Dezactivată implicit.</string>
-    <string name="info_send_cancellations_body">Trimite e-mail participanților când ștergi un eveniment la care sunt invitați, astfel încât și calendarele lor să îl elimine. Dezactivată implicit.</string>
-    <string name="info_invite_subject_title_body">Când trimiți e-mailuri de invitație, pune titlul evenimentului în linia de subiect a e-mailului, astfel încât destinatarii să-l recunoască dintr-o privire. Dezactivată implicit pentru confidențialitate: subiectele e-mailurilor nu sunt criptate în transportul standard de poștă, așa că titlul ar fi vizibil pentru serverele de e-mail de pe traseu.</string>
-    <string name="info_background_sync_body">Android poate suspenda sincronizarea în fundal pentru a economisi bateria, ceea ce poate întârzia sau opri sincronizarea automată. Excluderea acestei aplicații din optimizarea bateriei menține sincronizările programate să ruleze fiabil. Folosește butonul pentru a deschide setările de baterie ale sistemului pentru aplicație.</string>
-    <string name="info_verbose_logging_body">Captează detalii suplimentare de diagnosticare (stare autentificare, deblocare chei, mecanismele interne ale sincronizării) în jurnal, util când raportezi o problemă. Poate include adrese de e-mail ale conturilor și nume de calendare, așa că partajează jurnalele doar cu dezvoltatorul. Lasă dezactivată pentru utilizare normală.</string>
-    <string name="info_file_logging_body">Scrie jurnalul aplicației într-un fișier text cu marcaj de timp (sync-for-proton-log-….txt) într-un dosar ales de dumneavoastră. Altfel aplicația păstrează jurnalul doar în memorie, așa că activați această opțiune pentru a surprinde o problemă greu de reprodus. La fiecare pornire a aplicației se creează un fișier nou; poate conține adrese de e-mail ale conturilor și nume de calendare, așa că partajați-l doar cu dezvoltatorul. Lăsați dezactivat pentru utilizare normală.</string>
-    <string name="info_timezone_updates_text">Orele evenimentelor depind de regulile fusurilor orare, iar țările schimbă aceste reguli din când în când. Android le păstrează în datele de fus orar ale telefonului, care vin cu actualizările de sistem. Un telefon care nu le mai primește, de exemplu cu o versiune mai veche de Android sau fără actualizări de sistem Google Play, păstrează regulile vechi, iar evenimentele din locuri ale căror reguli s-au schimbat de atunci pot apărea la o oră greșită.\n\nDatele de fus orar de pe acest telefon: versiunea %1$s\n\nCând este dezactivată (implicit), aplicația folosește datele de fus orar ale telefonului și nu trimite nimic către www.tzurl.org.\n\nCând este activată, aplicația descarcă de pe www.tzurl.org, un serviciu terț, regulile actuale pentru fiecare fus orar folosit de evenimentele tale, cel mult o dată pentru fiecare fus orar la fiecare pornire a aplicației, și le folosește doar dacă sunt mai noi decât cele ale telefonului. www.tzurl.org vede atunci adresa ta IP și numele acestor fusuri orare, de exemplu Europe/Berlin. Nimic altceva despre evenimentele sau conturile tale nu este trimis. Dacă www.tzurl.org nu poate fi accesat, se folosesc datele telefonului. Evenimentele recurente sunt calculate în continuare cu datele telefonului.\n\nDupă o modificare, evenimentele aflate deja pe telefon sunt verificate și corectate la următoarea sincronizare.</string>
+    <string name="info_display_name_body">Numele afișat pentru acest cont în Setări Android → Conturi și în selectoarele aplicațiilor de calendar/contacte. Este doar o etichetă locală; modificarea lui nu afectează contul dumneavoastră Proton.\n\nNotă: Samsung Calendar și Samsung Contacts ignoră numele de cont personalizate și afișează întotdeauna propria lor etichetă (de ex. \"Proton\"). Este posibil ca numele ales de dumneavoastră să nu apară acolo, aceasta este o limitare Samsung pe care nu o putem schimba. Alte aplicații (Google Calendar/Contacts) îl afișează normal.</string>
+    <string name="info_event_loop_body">Cât de des verifică aplicația Proton în fundal pentru modificări la distanță ale contactelor și calendarului. Intervalele mai scurte afișează modificările mai rapid, dar consumă mai multă baterie și date. Aceasta este separată de sincronizarea manuală, pe care o puteți declanșa oricând cu butoanele de sincronizare.</string>
+    <string name="info_notify_in_progress_body">Afișează o notificare silențioasă, continuă, în timpul rulării unei sincronizări, cu progres în timp real (scanare, descărcare, decriptare). Stă în partea de jos a panoului de notificări și nu emite niciodată vreun sunet. Dezactivați-o dacă preferați ca sincronizarea să ruleze invizibil.</string>
+    <string name="info_sync_contacts_body">Când este activată, contactele dumneavoastră Proton se sincronizează bidirecțional cu contactele Android: modificările de pe oricare parte sunt îmbinate.\n\nNotă: Samsung Contacts afișează contactele sub o singură etichetă de cont \"Proton contacts\" și ascunde subtitlul cu e-mailul pentru conturile terțe ca al nostru, o limitare Samsung codificată pe care nu o putem schimba. Google Contacts și majoritatea celorlalte aplicații le afișează normal.</string>
+    <string name="info_fallback_full_sync_body">Cât de des efectuează aplicația o reverificare completă în loc de o sincronizare incrementală rapidă. O sincronizare completă prinde orice ar putea rata o trecere incrementală (de ex. modificări făcute offline) cu prețul unui timp și a unor date mai mari. Lăsați la valoarea implicită dacă nu suspectați că anumite elemente nu se sincronizează.</string>
+    <string name="info_notify_on_failure_body">Afișează o notificare dacă o sincronizare eșuează (de ex. eroare de rețea sau sesiune expirată). Atingeți-o pentru un motiv în limbaj simplu și un link către jurnale. Dezactivați-o dacă nu doriți să fiți alertat despre eșecuri trecătoare.</string>
+    <string name="info_sync_calendar_body">Când este activat, calendarele dumneavoastră Proton se sincronizează în calendarul Android, astfel încât evenimentele apar în Google Calendar, Samsung Calendar și orice altă aplicație de calendar. Bidirecțional: modificările făcute pe telefon se încarcă înapoi în Proton pentru calendarele pe care le dețineți.</string>
+    <string name="info_include_external_calendars_body">Proton poate găzdui calendare abonate (de ex. un flux ICS extern) și calendare de sărbători. Acestea sunt doar pentru citire pe partea Proton. Când este dezactivat, aplicația le omite și sincronizează doar propriile dumneavoastră calendare editabile. Activați dacă doriți ca și acele calendare doar pentru citire să fie oglindite pe telefonul dumneavoastră.</string>
+    <string name="info_sync_mode_body">\"Toate evenimentele\" sincronizează întregul istoric al calendarului dumneavoastră și toate evenimentele viitoare, cel mai bine dacă doriți totul pe telefon (prima sincronizare a unui calendar mare poate dura câteva minute). \"Interval personalizat\" sincronizează doar o fereastră de zile din jurul zilei de azi, păstrând calendarele mari rapide și ușoare. Evenimentele din afara ferestrei nu sunt descărcate.</string>
+    <string name="info_sync_range_window_body">Câte zile înainte și după ziua de azi să sincronizeze când este selectat \"Interval personalizat\". Ferestrele mai mari afișează mai mult din calendarul dumneavoastră, dar durează mai mult să se sincronizeze. Nu are efect în modul \"Toate evenimentele\".</string>
+    <string name="info_poll_attendee_body">Când este activată, aplicația reverifică periodic evenimentele care au participanți pentru a detecta răspunsurile de acceptare/refuz/provizoriu. Fluxul de modificări al Proton nu raportează schimbările RSVP, așa că aceasta necesită apeluri API suplimentare, merită activată doar dacă vă bazați pe vizualizarea răspunsurilor participanților pe telefonul dumneavoastră.</string>
+    <string name="info_send_invites_body">Când adăugați participanți la un eveniment pe telefonul dumneavoastră, le trimite o invitație prin e-mail. Dezactivată implicit: activați doar dacă doriți ca aplicația să trimită e-mailuri participanților în numele dumneavoastră.</string>
+    <string name="info_send_updates_body">Trimite e-mail participanților când modificați detaliile (ora, locația etc.) unui eveniment la care sunt invitați. Dezactivată implicit.</string>
+    <string name="info_send_cancellations_body">Trimite e-mail participanților când ștergeți un eveniment la care sunt invitați, astfel încât și calendarele lor să îl elimine. Dezactivată implicit.</string>
+    <string name="info_invite_subject_title_body">Când trimiteți e-mailuri de invitație, aplicația pune titlul evenimentului în linia de subiect a e-mailului, astfel încât destinatarii să-l recunoască dintr-o privire. Dezactivată implicit pentru confidențialitate: subiectele e-mailurilor nu sunt criptate în transportul standard de poștă, așa că titlul ar fi vizibil pentru serverele de e-mail de pe traseu.</string>
+    <string name="info_background_sync_body">Android poate suspenda sincronizarea în fundal pentru a economisi bateria, ceea ce poate întârzia sau opri sincronizarea automată. Excluderea acestei aplicații din optimizarea bateriei menține sincronizările programate să ruleze fiabil. Folosiți butonul pentru a deschide setările de baterie ale sistemului pentru aplicație.</string>
+    <string name="info_verbose_logging_body">Captează detalii suplimentare de diagnosticare (stare autentificare, deblocare chei, mecanismele interne ale sincronizării) în jurnal, util când raportați o problemă. Aplicația înlocuiește adresele de e-mail din jurnal cu coduri scurte, dar acesta poate include nume de conturi și de calendare, așa că partajați jurnalele doar cu dezvoltatorul. Lăsați dezactivată pentru utilizare normală.</string>
+    <string name="info_file_logging_body">Scrie jurnalul aplicației într-un fișier text cu marcaj de timp (sync-for-proton-log-….txt) într-un dosar ales de dumneavoastră. Altfel aplicația păstrează jurnalul doar în memorie, așa că activați această opțiune pentru a surprinde o problemă greu de reprodus. La fiecare pornire a aplicației se creează un fișier nou. Aplicația înlocuiește adresele de e-mail din fișier cu coduri scurte, dar acesta poate conține nume de conturi și de calendare, așa că partajați-l doar cu dezvoltatorul. Lăsați dezactivat pentru utilizare normală.</string>
+    <string name="info_timezone_updates_text">Orele evenimentelor depind de regulile fusurilor orare, iar țările schimbă aceste reguli din când în când. Android le păstrează în datele de fus orar ale telefonului, care vin cu actualizările de sistem. Un telefon care nu le mai primește, de exemplu cu o versiune mai veche de Android sau fără actualizări de sistem Google Play, păstrează regulile vechi, iar evenimentele din locuri ale căror reguli s-au schimbat de atunci pot apărea la o oră greșită.\n\nDatele de fus orar de pe acest telefon: versiunea %1$s\n\nCând este dezactivată (implicit), aplicația folosește datele de fus orar ale telefonului și nu trimite nimic către www.tzurl.org.\n\nCând este activată, aplicația descarcă de pe www.tzurl.org, un serviciu terț, regulile actuale pentru fiecare fus orar folosit de evenimentele dumneavoastră, cel mult o dată pentru fiecare fus orar la fiecare pornire a aplicației, și le folosește doar dacă sunt mai noi decât cele ale telefonului. www.tzurl.org vede atunci adresa dumneavoastră IP și numele acestor fusuri orare, de exemplu Europe/Berlin. Nimic altceva despre evenimentele sau conturile dumneavoastră nu este trimis. Dacă www.tzurl.org nu poate fi accesat, se folosesc datele telefonului. Evenimentele recurente sunt calculate în continuare cu datele telefonului.\n\nDupă o modificare, evenimentele aflate deja pe telefon sunt verificate și corectate la următoarea sincronizare.</string>
     <string name="tz_data_version_unknown">necunoscută</string>
     <string name="tz_outdated_title">Datele de fus orar sunt învechite</string>
     <string name="tz_outdated_body">Datele de fus orar de pe acest telefon au versiunea %1$s și se pare că nu mai sunt actualizate. Evenimentele din locuri care și-au schimbat de atunci regulile de oră pot apărea la o oră greșită.\n\nActivați „%2$s“ pentru a folosi în schimb regulile actuale de pe www.tzurl.org. Aplicația trimite atunci cereri către https://www.tzurl.org, care vede adresa dumneavoastră IP și numele fusurilor orare ale evenimentelor dumneavoastră, de exemplu Europe/Berlin. Nimic altceva despre evenimentele sau conturile dumneavoastră nu este trimis. Evenimentele recurente sunt calculate în continuare cu datele telefonului.\n\nPuteți schimba acest lucru oricând pe acest ecran.</string>
     <string name="tz_outdated_turn_on">Activați</string>
     <string name="tz_outdated_keep_off">Lăsați dezactivat</string>
-    <string name="info_btn_sync_contacts_body">Rulează acum o sincronizare a contactelor pentru acest cont, în loc să aștepte următoarea verificare programată. Apasă lung pentru o re-sincronizare completă în care poți alege direcția (Server → Local sau Local → Server).</string>
-    <string name="info_btn_sync_calendar_body">Rulează acum o sincronizare a calendarului pentru acest cont, în loc să aștepte următoarea verificare programată. Apasă lung pentru o re-sincronizare completă în care poți alege direcția (Server → Local sau Local → Server).</string>
-    <string name="info_btn_sync_now_body">Sincronizează acum atât contactele, cât și calendarul pentru acest cont. Apasă lung pentru a deschide dialogul de re-sincronizare completă forțată, unde poți alege să suprascrii telefonul de pe Proton (Server → Local) sau Proton de pe telefon (Local → Server).</string>
-    <string name="info_btn_reauth_body">Te conectează din nou la acest cont Proton: folosește-l dacă sincronizarea se oprește cu o eroare de sesiune expirată sau de autentificare. Datele tale sincronizate rămân la locul lor; aceasta doar reîmprospătează autentificarea.</string>
-    <string name="info_btn_remove_body">Elimină acest cont Proton din aplicație și șterge contactele și calendarele sincronizate de pe acest dispozitiv. Datele tale de pe Proton nu sunt atinse. Poți adăuga contul din nou oricând.</string>
-    <string name="info_btn_sync_all_accounts_body">Sincronizează acum contactele și calendarul pentru fiecare cont Proton de pe acest dispozitiv. Apasă lung pentru a deschide dialogul de re-sincronizare completă forțată pentru toate conturile deodată.</string>
+    <string name="info_btn_sync_contacts_body">Rulează acum o sincronizare a contactelor pentru acest cont, în loc să aștepte următoarea verificare programată. Apăsați lung pentru o re-sincronizare completă în care puteți alege direcția (Server → Local sau Local → Server).</string>
+    <string name="info_btn_sync_calendar_body">Rulează acum o sincronizare a calendarului pentru acest cont, în loc să aștepte următoarea verificare programată. Apăsați lung pentru o re-sincronizare completă în care puteți alege direcția (Server → Local sau Local → Server).</string>
+    <string name="info_btn_sync_now_body">Sincronizează acum atât contactele, cât și calendarul pentru acest cont. Apăsați lung pentru a deschide dialogul de re-sincronizare completă forțată, unde puteți alege să suprascrieți telefonul de pe Proton (Server → Local) sau Proton de pe telefon (Local → Server).</string>
+    <string name="info_btn_reauth_body">Vă conectează din nou la acest cont Proton: folosiți-l dacă sincronizarea se oprește cu o eroare de sesiune expirată sau de autentificare. Datele dumneavoastră sincronizate rămân la locul lor; aceasta doar reîmprospătează autentificarea.</string>
+    <string name="info_btn_remove_body">Elimină acest cont Proton din aplicație și șterge contactele și calendarele sincronizate de pe acest dispozitiv. Datele dumneavoastră de pe Proton nu sunt atinse. Puteți adăuga contul din nou oricând.</string>
+    <string name="info_btn_sync_all_accounts_body">Sincronizează acum contactele și calendarul pentru fiecare cont Proton de pe acest dispozitiv. Apăsați lung pentru a deschide dialogul de re-sincronizare completă forțată pentru toate conturile deodată.</string>
     <!-- Backup & restore (.sppbackup export/import) -->
     <string name="backup_section_title">Backup &amp; restaurare</string>
     <string name="info_backup_body">Exportați-vă setările într-un fișier pe care îl puteți importa pe alt telefon sau după ce treceți de la versiunea Google Play la versiunea directă. Backupurile care conțin doar setări pot fi păstrate oriunde în siguranță. Un backup complet poate include și conturile și datele dumneavoastră de conectare, ca să nu fiți nevoit să vă conectați din nou, este protejat cu o parolă aleasă de dumneavoastră.</string>
@@ -295,7 +309,7 @@
     <string name="backup_btn_import_settings">Importați setările…</string>
     <string name="backup_export_title">Exportare backup</string>
     <string name="backup_btn_export">Exportați</string>
-    <string name="backup_include_accounts">Include conturile &amp; datele de conectare</string>
+    <string name="backup_include_accounts">Includere conturi &amp; date de conectare</string>
     <string name="backup_explainer_settings_only">Doar setările și preferințele dumneavoastră. Pot fi păstrate oriunde în siguranță.</string>
     <string name="backup_explainer_full">⚠️ Include datele dumneavoastră de conectare Proton. Oricine are acest fișier și parola lui poate accesa contactele &amp; calendarul dumneavoastră Proton. Alegeți o parolă puternică și păstrați fișierul în siguranță.</string>
     <string name="backup_explainer_subscription">Include și ID-ul abonamentului dumneavoastră, astfel încât sincronizarea rămâne activată după restaurare.</string>
@@ -336,7 +350,11 @@
     <string name="notification_channel_alerts">Alerte de sincronizare</string>
     <string name="notification_channel_alerts_description">Alerte importante de siguranță care necesită decizia dumneavoastră</string>
     <string name="notification_bulk_delete_title">S-a detectat o modificare amplă a calendarului</string>
-    <string name="notification_bulk_delete_body">%1$d evenimente de calendar au dispărut de pe acest telefon (%2$s). Pentru a vă proteja datele, acestea NU au fost șterse din Proton. Le păstrați pe telefon sau le ștergeți și din Proton?</string>
+    <plurals name="notification_bulk_delete_body">
+        <item quantity="one">%1$d eveniment de calendar a dispărut de pe acest telefon (%2$s). Pentru a vă proteja datele, acesta NU a fost șters din Proton. Îl păstrați pe telefon sau îl ștergeți și din Proton?</item>
+        <item quantity="few">%1$d evenimente de calendar au dispărut de pe acest telefon (%2$s). Pentru a vă proteja datele, acestea NU au fost șterse din Proton. Le păstrați pe telefon sau le ștergeți și din Proton?</item>
+        <item quantity="other">%1$d de evenimente de calendar au dispărut de pe acest telefon (%2$s). Pentru a vă proteja datele, acestea NU au fost șterse din Proton. Le păstrați pe telefon sau le ștergeți și din Proton?</item>
+    </plurals>
     <string name="notification_bulk_delete_keep">Păstrați în Proton</string>
     <string name="notification_bulk_delete_delete">Ștergeți din Proton</string>
     <!-- Local data backup (calendars + contacts) -->
@@ -382,7 +400,23 @@
     <string name="backup_decrypt_done">Decriptat în \"%1$s\" în dosarul dumneavoastră pentru copii de rezervă.</string>
     <string name="backup_decrypt_failed">Acest fișier nu a putut fi decriptat.</string>
     <string name="backup_restore_hint">Pentru a restaura: importați un .ics în Proton Calendar (Setări → Import) și un .vcf în Proton Contacts. Copiile de rezervă criptate pot fi deschise și pe un calculator cu: gpg --decrypt file.gpg</string>
-    <string name="backup_result_success">S-au salvat %1$d calendar(e), %2$d eveniment(e) și %3$d contact(e).</string>
+    <string name="backup_result_done">S-au salvat %1$s, %2$s și %3$s.</string>
+    <string name="backup_result_partial">S-au salvat %1$s, %2$s și %3$s, însă unele elemente nu au putut fi citite (chei blocate sau o eroare de rețea), așa că este posibil ca copia de rezervă să fie incompletă. Verificați jurnalele de sincronizare, apoi încercați din nou.</string>
+    <plurals name="backup_count_calendars">
+        <item quantity="one">%d calendar</item>
+        <item quantity="few">%d calendare</item>
+        <item quantity="other">%d de calendare</item>
+    </plurals>
+    <plurals name="backup_count_events">
+        <item quantity="one">%d eveniment</item>
+        <item quantity="few">%d evenimente</item>
+        <item quantity="other">%d de evenimente</item>
+    </plurals>
+    <plurals name="backup_count_contacts">
+        <item quantity="one">%d contact</item>
+        <item quantity="few">%d contacte</item>
+        <item quantity="other">%d de contacte</item>
+    </plurals>
     <string name="backup_result_skipped">Omis: sursa nu a returnat date, așa că ultima copie de rezervă validă a fost păstrată.</string>
     <string name="backup_result_failed">Copia de rezervă a eșuat: %1$s</string>
     <string name="backup_result_folder_lost">Dosarul pentru copii de rezervă nu mai este accesibil.</string>
@@ -404,13 +438,20 @@
     <string name="backup_reminder_optout_body">Sigur nu doriți să configurați copii de rezervă? Nu veți păstra propriile copii de rezervă ale calendarelor și contactelor dumneavoastră, iar noi nu vă vom mai aminti despre acest lucru!</string>
     <string name="backup_reminder_optout_confirm">Da, nu îmi mai aminti</string>
     <string name="backup_reminder_optout_cancel">Nu, amintește-mi în continuare</string>
-    <string name="backup_result_incomplete">S-au salvat %1$d calendar(e), %2$d eveniment(e) și %3$d contact(e), însă unele elemente nu au putut fi citite (chei blocate sau o eroare de rețea), așa că este posibil ca copia de rezervă să fie incompletă. Verificați jurnalele de sincronizare, apoi încercați din nou.</string>
     <string name="backup_notif_incomplete_title">Este posibil ca copia de rezervă să fie incompletă</string>
     <string name="remote_deletion_title">Elemente eliminate din Proton</string>
-    <string name="remote_deletion_body_contacts">%1$d contacte nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</string>
-    <string name="remote_deletion_body_calendar">%1$d evenimente din calendar nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</string>
-    <string name="remote_deletion_delete">Șterge de pe telefon</string>
-    <string name="remote_deletion_keep">Păstrează pe telefon</string>
+    <plurals name="remote_deletion_body_contacts">
+        <item quantity="one">%1$d contact nu mai este în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu a fost șters de pe acest telefon. Îl ștergeți și aici sau îl păstrați pe telefon?</item>
+        <item quantity="few">%1$d contacte nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</item>
+        <item quantity="other">%1$d de contacte nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</item>
+    </plurals>
+    <plurals name="remote_deletion_body_calendar">
+        <item quantity="one">%1$d eveniment din calendar nu mai este în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu a fost șters de pe acest telefon. Îl ștergeți și aici sau îl păstrați pe telefon?</item>
+        <item quantity="few">%1$d evenimente din calendar nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</item>
+        <item quantity="other">%1$d de evenimente din calendar nu mai sunt în Proton (%2$s). Pentru a vă proteja datele, ÎNCĂ nu au fost șterse de pe acest telefon. Le ștergeți și aici sau le păstrați pe telefon?</item>
+    </plurals>
+    <string name="remote_deletion_delete">Ștergeți de pe telefon</string>
+    <string name="remote_deletion_keep">Păstrați pe telefon</string>
     <string name="sfp_group_account">Cont</string>
     <string name="sfp_group_contacts">Contacte</string>
     <string name="sfp_group_calendar">Calendar</string>
@@ -447,8 +488,8 @@
     <string name="link_third_party_licences">Licențe pentru software terț</string>
     <string name="btn_navigate_back">Înapoi</string>
     <!-- First-run "Import accounts & settings" restore (login screen) -->
-    <string name="btn_import_accounts">Importă conturi și setări</string>
-    <string name="sfp_login_import_hint">Treci de la altă instalare sau alt dispozitiv? Restaurează dintr-un fișier de rezervă.</string>
+    <string name="btn_import_accounts">Importare conturi și setări</string>
+    <string name="sfp_login_import_hint">Treceți de la altă instalare sau alt dispozitiv? Restaurați dintr-un fișier de rezervă.</string>
     <string name="notification_events_rejected_title">Unele evenimente nu s-au sincronizat</string>
     <string name="notification_events_rejected_summary">Aceste evenimente din %1$s au fost respinse de Proton și omise:</string>
     <string name="notification_contacts_rejected_title">Unele contacte nu s-au sincronizat</string>
@@ -466,8 +507,8 @@
     <string name="notification_conflict_title">Eveniment modificat în două locuri</string>
     <string name="notification_conflict_body">„%1$s“ a fost modificat pe acest telefon și în Proton Calendar. Ce versiune doriți să păstrați?</string>
     <string name="notification_conflict_body_shared">„%1$s“ a fost modificat pe acest telefon și de %2$s în Proton Calendar. Păstrarea versiunii dvs. o va înlocui pe a lui.</string>
-    <string name="notification_conflict_keep_remote">Păstrează Proton</string>
-    <string name="notification_conflict_keep_local">Păstrează a mea</string>
+    <string name="notification_conflict_keep_remote">Păstrați Proton</string>
+    <string name="notification_conflict_keep_local">Păstrați a mea</string>
     <string name="notification_conflict_untitled_event">(fără titlu)</string>
     <string name="notification_contact_conflict_title">Contact modificat în două locuri</string>
     <string name="notification_contact_conflict_body">Contactul „%1$s“ a fost modificat pe acest telefon și în Proton. Ce versiune doriți să păstrați? Dacă omiteți, ambele rămân neschimbate până la următoarea sincronizare manuală.</string>
@@ -475,15 +516,19 @@
     <!-- Log viewer: sync/all lens, and the debug log every button shares. -->
     <string name="label_log_filter_sync">Sync</string>
     <string name="label_log_filter_all">Toate</string>
-    <string name="label_log_count">%1$d din %2$d linii</string>
+    <plurals name="label_log_count">
+        <item quantity="one">%1$d din %2$d linie</item>
+        <item quantity="few">%1$d din %2$d linii</item>
+        <item quantity="other">%1$d din %2$d de linii</item>
+    </plurals>
     <string name="label_share_sends_full_log">Partajarea trimite întotdeauna jurnalul de depanare complet</string>
-    <string name="btn_clear_view">Golește vizualizarea</string>
-    <string name="btn_copy_debug_log">Copiază jurnalul de depanare</string>
-    <string name="btn_save_debug_log">Salvează jurnalul de depanare</string>
-    <string name="btn_share_debug_log">Partajează jurnalul de depanare</string>
-    <string name="toast_log_too_large_to_copy">Jurnalul este prea mare pentru a fi copiat. Folosiți Partajează sau Salvează.</string>
+    <string name="btn_clear_view">Golire vizualizare</string>
+    <string name="btn_copy_debug_log">Copiere jurnal de depanare</string>
+    <string name="btn_save_debug_log">Salvare jurnal de depanare</string>
+    <string name="btn_share_debug_log">Partajare jurnal de depanare</string>
+    <string name="toast_log_too_large_to_copy">Jurnalul este prea mare pentru a fi copiat. Folosiți Partajare sau Salvare.</string>
     <string name="label_log_filter_title">Sync sau Toate</string>
-    <string name="info_log_filter_body">Stabilește ce linii apar pe acest ecran. Sync arată ce a făcut sincronizarea, plus toate avertismentele și erorile. Toate adaugă detaliile tehnice: chei, autentificare, rețea și funcționarea internă a calendarului.\n\nAceasta schimbă doar ce vedeți. Aplicația înregistrează oricum totul, iar Copiază, Salvează și Partajează trimit întotdeauna jurnalul de depanare complet.</string>
+    <string name="info_log_filter_body">Stabilește ce linii apar pe acest ecran. Sync arată ce a făcut sincronizarea, plus toate avertismentele și erorile. Toate adaugă detaliile tehnice: chei, autentificare, rețea și funcționarea internă a calendarului.\n\nAceasta schimbă doar ce vedeți. Aplicația înregistrează oricum totul, iar Copiere, Salvare și Partajare trimit întotdeauna jurnalul de depanare complet.</string>
     <string name="label_contact_filters">Ce contacte se sincronizează</string>
     <string name="title_contact_filters">Filtre de contacte</string>
     <string name="info_contact_filters_body">Proton creează un contact pentru fiecare persoană cu care schimbați e-mailuri, așa că telefonul se umple cu intrări pe care nu le-ați adăugat niciodată. Regulile decid ce contacte ajung pe acest telefon. Sunt verificate în ordine și decide prima care se potrivește, deci ordinea contează. Ce nu prinde nicio regulă este tratat de setarea de la sfârșitul listei. Contactele nu sunt niciodată șterse din contul dvs. Proton: o regulă doar împiedică copierea lor aici, iar înainte de a elimina ceva de pe telefon veți fi întrebat de fiecare dată.</string>
@@ -492,27 +537,31 @@
     <string name="contact_filters_empty_title">Încă nicio regulă</string>
     <string name="contact_filters_empty_body">Fiecare contact din acest cont Proton se sincronizează pe telefonul dvs. Adăugați o regulă pentru a schimba acest lucru.</string>
     <string name="contact_filters_add">Adăugare regulă</string>
-    <string name="contact_filters_templates">Folosește un șablon</string>
+    <string name="contact_filters_templates">Folosire șablon</string>
     <string name="contact_filters_fallthrough">Tot restul</string>
-    <string name="contact_filters_action_sync">Sincronizează</string>
-    <string name="contact_filters_action_exclude">Nu sincroniza</string>
+    <string name="contact_filters_action_sync">Sincronizare</string>
+    <string name="contact_filters_action_exclude">Fără sincronizare</string>
     <string name="contact_filters_direction_download">De la Proton</string>
     <string name="contact_filters_direction_upload">Către Proton</string>
     <string name="contact_filters_direction_both">În ambele sensuri</string>
-    <string name="contact_filters_move_up">Mută mai sus</string>
-    <string name="contact_filters_move_down">Mută mai jos</string>
-    <string name="contact_filters_delete">Șterge</string>
+    <string name="contact_filters_move_up">Mutare mai sus</string>
+    <string name="contact_filters_move_down">Mutare mai jos</string>
+    <string name="contact_filters_delete">Ștergere</string>
     <string name="contact_filters_saved">Reguli salvate. Vor intra în vigoare la următoarea sincronizare.</string>
     <string name="contact_filter_removal_title">Regulile de contacte ar elimina contacte</string>
-    <string name="contact_filter_removal_body">Regulile dvs. de contacte nu se mai potrivesc pentru %1$d contacte de pe acest telefon (%2$s). Ele rămân în contul dvs. Proton și nu vor fi șterse acolo. Le eliminați de pe acest telefon sau le păstrați?</string>
-    <string name="contact_filter_removal_keep">Păstrează pe telefon</string>
+    <plurals name="contact_filter_removal_body">
+        <item quantity="one">Regulile dvs. de contacte nu se mai potrivesc pentru %1$d contact de pe acest telefon (%2$s). Acesta rămâne în contul dvs. Proton și nu va fi șters acolo. Îl eliminați de pe acest telefon sau îl păstrați?</item>
+        <item quantity="few">Regulile dvs. de contacte nu se mai potrivesc pentru %1$d contacte de pe acest telefon (%2$s). Ele rămân în contul dvs. Proton și nu vor fi șterse acolo. Le eliminați de pe acest telefon sau le păstrați?</item>
+        <item quantity="other">Regulile dvs. de contacte nu se mai potrivesc pentru %1$d de contacte de pe acest telefon (%2$s). Ele rămân în contul dvs. Proton și nu vor fi șterse acolo. Le eliminați de pe acest telefon sau le păstrați?</item>
+    </plurals>
+    <string name="contact_filter_removal_keep">Păstrați pe telefon</string>
     <string name="contact_filter_tpl_auto_created">Contacte create automat de Proton</string>
     <string name="contact_filter_tpl_auto_created_desc">Exclude contactele care au doar un nume afișat și o adresă de e-mail, fără prenume sau nume de familie. Exact așa arată un contact pe care Proton îl creează dintr-un e-mail.</string>
     <string name="contact_filter_tpl_only_email">Contacte doar cu adresă de e-mail</string>
     <string name="contact_filter_tpl_only_email_desc">Exclude contactele care nu au nimic în afară de o adresă de e-mail, nici măcar un nume.</string>
     <string name="contact_filter_tpl_name_and_email">Contacte doar cu nume și e-mail</string>
     <string name="contact_filter_tpl_name_and_email_desc">Exclude contactele fără număr de telefon, adresă sau alte detalii. Acest lucru afectează și contactele introduse de dvs., așa că verificați previzualizarea.</string>
-    <string name="contact_filter_tpl_in_any_group">Sincronizează doar contactele care sunt într-un grup</string>
+    <string name="contact_filter_tpl_in_any_group">Sincronizare doar pentru contactele care sunt într-un grup</string>
     <string name="contact_filter_tpl_in_any_group_desc">Sincronizează contactele care aparțin cel puțin unui grup Proton și setează tot restul să nu se sincronizeze.</string>
     <string name="contact_filter_edit_name">Numele regulii</string>
     <string name="contact_filter_edit_action">Această regulă</string>
@@ -521,32 +570,52 @@
     <string name="contact_filter_match_all">Toate condițiile</string>
     <string name="contact_filter_match_any">Orice condiție</string>
     <string name="contact_filter_add_condition">Adăugare condiție</string>
-    <string name="contact_filter_preview">Testează regulile</string>
-    <string name="contact_filter_save">Salvează</string>
+    <string name="contact_filter_preview">Testare reguli</string>
+    <string name="contact_filter_save">Salvare</string>
     <string name="contact_filter_edit_title_new">Regulă nouă</string>
     <string name="contact_filter_edit_title">Editare regulă</string>
     <string name="contact_filter_condition_field">Câmp</string>
     <string name="contact_filter_condition_op">Test</string>
     <string name="contact_filter_condition_value">Valoare</string>
-    <string name="contact_filter_condition_remove">Elimină condiția</string>
+    <string name="contact_filter_condition_remove">Eliminare condiție</string>
     <string name="contact_filter_needs_condition">Adăugați cel puțin o condiție, altfel această regulă nu se va potrivi niciodată cu nimic.</string>
     <string name="contact_filter_needs_name">Dați regulii un nume ca să o recunoașteți în listă.</string>
     <string name="contact_filter_delete_confirm">Ștergeți această regulă?</string>
     <string name="contact_filter_preview_running">Se verifică contactele dvs.…</string>
-    <string name="contact_filter_preview_result">Din cele %1$d contacte verificate pe acest telefon, aceste reguli ar păstra %2$d și ar elimina %3$d.</string>
+    <plurals name="contact_filter_preview_result">
+        <item quantity="one">Din %1$d contact verificat pe acest telefon, aceste reguli ar păstra %2$d și ar elimina %3$d.</item>
+        <item quantity="few">Din cele %1$d contacte verificate pe acest telefon, aceste reguli ar păstra %2$d și ar elimina %3$d.</item>
+        <item quantity="other">Din cele %1$d de contacte verificate pe acest telefon, aceste reguli ar păstra %2$d și ar elimina %3$d.</item>
+    </plurals>
     <string name="contact_filter_preview_none">Aceste reguli nu ar elimina niciun contact.</string>
-    <string name="contact_filter_preview_undecided">%1$d nu pot fi verificate pe telefon, pentru că această regulă se uită la detalii pe care le are doar Proton. Următoarea sincronizare le decide și tot întreabă înainte să elimine ceva.</string>
+    <plurals name="contact_filter_preview_undecided">
+        <item quantity="one">%1$d nu poate fi verificat pe telefon, pentru că această regulă se uită la detalii pe care le are doar Proton. Următoarea sincronizare decide în privința lui și tot întreabă înainte să elimine ceva.</item>
+        <item quantity="few">%1$d nu pot fi verificate pe telefon, pentru că această regulă se uită la detalii pe care le are doar Proton. Următoarea sincronizare decide în privința lor și tot întreabă înainte să elimine ceva.</item>
+        <item quantity="other">%1$d nu pot fi verificate pe telefon, pentru că această regulă se uită la detalii pe care le are doar Proton. Următoarea sincronizare decide în privința lor și tot întreabă înainte să elimine ceva.</item>
+    </plurals>
     <string name="contact_filter_preview_empty">Încă nu există contacte pe acest telefon pentru acest cont.</string>
     <string name="contact_filter_preview_title">Rezultatul testului</string>
     <string name="contact_filter_preview_failed">Nu s-au putut verifica contactele: %1$s</string>
-    <string name="contact_filter_preview_reading">Se citesc contactele tale din Proton…</string>
+    <string name="contact_filter_preview_reading">Se citesc contactele dvs. din Proton…</string>
     <string name="contact_filter_preview_progress">Se verifică contactul %1$d din %2$d…</string>
-    <string name="contact_filter_preview_server_result">Din %1$d contacte din acest cont Proton, aceste reguli ar sincroniza %2$d.</string>
+    <plurals name="contact_filter_preview_server_result">
+        <item quantity="one">Din %1$d contact din acest cont Proton, aceste reguli ar sincroniza %2$d.</item>
+        <item quantity="few">Din %1$d contacte din acest cont Proton, aceste reguli ar sincroniza %2$d.</item>
+        <item quantity="other">Din %1$d de contacte din acest cont Proton, aceste reguli ar sincroniza %2$d.</item>
+    </plurals>
     <string name="contact_filter_preview_removed_heading">Eliminate de pe acest telefon (%1$d):</string>
     <string name="contact_filter_preview_skipped_heading">Necopiate pe acest telefon (%1$d):</string>
-    <string name="contact_filter_preview_and_more">…și încă %1$d.</string>
-    <string name="contact_filter_preview_show_all">Afișează tot</string>
-    <string name="contact_filter_preview_unreadable">%1$d nu au putut fi citite și ar rămâne neatinse.</string>
+    <plurals name="contact_filter_preview_and_more">
+        <item quantity="one">…și încă %1$d.</item>
+        <item quantity="few">…și încă %1$d.</item>
+        <item quantity="other">…și încă %1$d.</item>
+    </plurals>
+    <string name="contact_filter_preview_show_all">Afișare completă</string>
+    <plurals name="contact_filter_preview_unreadable">
+        <item quantity="one">%1$d nu a putut fi citit și ar rămâne neatins.</item>
+        <item quantity="few">%1$d nu au putut fi citite și ar rămâne neatinse.</item>
+        <item quantity="other">%1$d nu au putut fi citite și ar rămâne neatinse.</item>
+    </plurals>
     <string name="contact_filter_preview_offline">Proton nu a putut fi contactat, așa că acest test a putut folosi doar ce se află deja pe telefon.</string>
     <string name="contact_filter_preview_nothing_removed">Nu ar fi eliminat nimic de pe acest telefon.</string>
     <string name="contact_filter_condition_values_hint">O valoare pe linie</string>
@@ -628,10 +697,22 @@
     <string name="label_name_repair">Căutați numele inventate</string>
     <string name="name_repair_scanning">Se verifică contactele Proton…</string>
     <string name="name_repair_none">Niciun contact de pe Proton nu are un nume inventat de Android.</string>
-    <string name="name_repair_found">%1$d contacte de pe Proton au un prenume și un nume de familie create de Android prin împărțirea adresei de e-mail. O versiune mai veche a acestei aplicații a trimis acele nume către Proton.\n\nLe eliminați? Nimic altceva nu se schimbă la aceste contacte, iar numele lor afișat rămâne la fel.</string>
+    <plurals name="name_repair_found">
+        <item quantity="one">%1$d contact de pe Proton are un prenume și un nume de familie create de Android prin împărțirea adresei sale de e-mail. O versiune mai veche a acestei aplicații a trimis acel nume către Proton.\n\nÎl eliminați? Nimic altceva nu se schimbă la acest contact, iar numele său afișat rămâne la fel.</item>
+        <item quantity="few">%1$d contacte de pe Proton au un prenume și un nume de familie create de Android prin împărțirea adresei de e-mail. O versiune mai veche a acestei aplicații a trimis acele nume către Proton.\n\nLe eliminați? Nimic altceva nu se schimbă la aceste contacte, iar numele lor afișat rămâne la fel.</item>
+        <item quantity="other">%1$d de contacte de pe Proton au un prenume și un nume de familie create de Android prin împărțirea adresei de e-mail. O versiune mai veche a acestei aplicații a trimis acele nume către Proton.\n\nLe eliminați? Nimic altceva nu se schimbă la aceste contacte, iar numele lor afișat rămâne la fel.</item>
+    </plurals>
     <string name="name_repair_action">Eliminați numele inventate</string>
-    <string name="name_repair_done">%1$d contacte reparate.</string>
-    <string name="name_repair_partial">%1$d contacte reparate, %2$d lăsate neatinse.</string>
+    <plurals name="name_repair_done">
+        <item quantity="one">%1$d contact reparat.</item>
+        <item quantity="few">%1$d contacte reparate.</item>
+        <item quantity="other">%1$d de contacte reparate.</item>
+    </plurals>
+    <plurals name="name_repair_partial">
+        <item quantity="one">%1$d contact reparat, %2$d fără modificări.</item>
+        <item quantity="few">%1$d contacte reparate, %2$d fără modificări.</item>
+        <item quantity="other">%1$d de contacte reparate, %2$d fără modificări.</item>
+    </plurals>
     <string name="name_repair_failed">Contactele nu au putut fi verificate: %1$s</string>
     <string name="filter_op_num_eq">este</string>
     <string name="filter_field_other_content">Alte informații</string>
@@ -642,15 +723,23 @@
     <!-- Offering to clean up what was already synced, and the first-run choice. -->
     <string name="remove_synced_calendar_title">Eliminați aceste calendare de pe acest telefon?</string>
     <string name="remove_synced_calendar_body">Sincronizarea calendarului este acum dezactivată, deci nu se va mai descărca nimic. Calendarele aflate deja pe acest telefon rămân până când le eliminați. Eliminarea le șterge doar de pe acest telefon; calendarele dvs. din Proton nu sunt atinse. Le puteți elimina și mai târziu, din setările de conturi Android, iar dacă reactivați sincronizarea calendarului vor fi create din nou.</string>
-    <string name="remove_synced_calendar_done">%1$d evenimente eliminate de pe acest telefon</string>
+    <plurals name="remove_synced_calendar_done">
+        <item quantity="one">%1$d eveniment eliminat de pe acest telefon</item>
+        <item quantity="few">%1$d evenimente eliminate de pe acest telefon</item>
+        <item quantity="other">%1$d de evenimente eliminate de pe acest telefon</item>
+    </plurals>
     <string name="remove_synced_contacts_title">Eliminați aceste contacte de pe acest telefon?</string>
     <string name="remove_synced_contacts_body">Sincronizarea contactelor este acum dezactivată, deci nu se va mai descărca nimic. Contactele aflate deja pe acest telefon rămân până când le eliminați. Eliminarea le șterge doar de pe acest telefon; contactele dvs. din Proton nu sunt atinse. Le puteți elimina și mai târziu, din setările de conturi Android, iar dacă reactivați sincronizarea contactelor vor fi adăugate din nou.</string>
-    <string name="remove_synced_contacts_done">%1$d contacte eliminate de pe acest telefon</string>
-    <string name="remove_synced_keep">Păstrează-le</string>
-    <string name="remove_synced_remove">Elimină</string>
+    <plurals name="remove_synced_contacts_done">
+        <item quantity="one">%1$d contact eliminat de pe acest telefon</item>
+        <item quantity="few">%1$d contacte eliminate de pe acest telefon</item>
+        <item quantity="other">%1$d de contacte eliminate de pe acest telefon</item>
+    </plurals>
+    <string name="remove_synced_keep">Păstrați-le</string>
+    <string name="remove_synced_remove">Eliminați</string>
     <string name="setup_choose_title">Ce ar trebui să sincronizeze acest cont?</string>
     <string name="setup_choose_body">Ambele sunt dezactivate la început, deci nu se copiază nimic pe acest telefon până când nu decideți dvs. Puteți schimba acest lucru oricând.</string>
-    <string name="setup_choose_save">Începe sincronizarea</string>
+    <string name="setup_choose_save">Începeți sincronizarea</string>
     <string name="setup_choose_none">Nu acum</string>
     <string name="setup_choose_saved_inactive">Salvat. Sincronizarea începe după ce un abonament devine activ.</string>
     <string name="sfp_hero_nothing_enabled">Încă nu se sincronizează nimic</string>
@@ -662,4 +751,5 @@
     <string name="sfp_hero_subtitle_sync_off">Sincronizarea rămâne oprită până când există un abonament activ. Consultați secțiunea Abonament de mai sus.</string>
 
     <string name="toast_resync_skipped">Nimic de sincronizat: sincronizarea pentru %1$s este dezactivată</string>
+    <string name="plural_rules_language">ro</string>
 </resources>

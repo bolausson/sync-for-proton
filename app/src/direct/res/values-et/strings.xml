@@ -24,7 +24,7 @@
     <string name="spp_manage_dialog_title">Halda tellimust</string>
     <string name="spp_manage_action_update_payment">Uuenda makseviisi</string>
     <string name="spp_manage_action_cancel">Tühista tellimus</string>
-    <string name="spp_manage_error">Haldamise lehte ei õnnestunud laadida. Proovi uuesti.</string>
+    <string name="spp_manage_error">Haldamise lehte ei õnnestunud laadida. Proovige uuesti.</string>
     <string name="spp_manage_note">Paddle küsib e-posti aadressi, mida tellimisel kasutasite, ja saadab teile e-kirjaga sisselogimislingi.</string>
     <string name="spp_manage_loading">Ühenduse loomine Paddle\'iga…</string>
     <string name="spp_manage_unavailable">Tellimusteenus pole saadaval. Palun proovige hiljem uuesti.</string>

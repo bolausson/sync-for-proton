@@ -167,6 +167,16 @@ class SubscriptionActivationTest {
     }
 
     @Test
+    fun `the dialog answers a cut paste as too long, never as the text left in the field`() {
+        val ui = source("direct/java/me/proton/sync/billing/BillingUi.kt")
+        // Cleaned, a cut paste can be back under the limit: only parseSubscriptionField answers it as too long.
+        assertTrue(ui.contains("val entry = parseSubscriptionField(raw, prefilled = prefilledId)"))
+        assertFalse(ui.contains("parseSubscriptionEntry("))
+        // More than the parser reads even where the filter keeps one character less (a cut inside a surrogate pair).
+        assertTrue(ui.contains("InputFilter.LengthFilter(MAX_ENTRY_CHARS + 2)"))
+    }
+
+    @Test
     fun `a transaction id is looked up under the licence lock, never against a debug fixture, and logged without an id`() {
         val ui = source("direct/java/me/proton/sync/billing/BillingUi.kt")
         // Both kinds the dialog sends go to the same activate, behind the same spinner.

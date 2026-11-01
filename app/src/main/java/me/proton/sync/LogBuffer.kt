@@ -106,4 +106,45 @@ object LogBuffer {
     /** Canonical rendering, identical in the viewer, the file log and every export. */
     fun format(record: LogRecord): String =
         "${lineFormat.get()!!.format(Date(record.timeMs))} ${record.level}/${record.tag}: ${record.message}"
+
+    /**
+     * Characters logcat keeps in one entry. An entry holds 4,068 bytes with the tag (LOGGER_ENTRY_MAX_PAYLOAD), and
+     * Android's own split in Log.printlns stays about this far below it.
+     */
+    const val LOGCAT_PIECE_CHARS = 4000
+
+    /**
+     * [text] in pieces logcat keeps whole, each at most [max] characters. SyncLog writes its redacted line with
+     * Log.println since 2.0.4, where Log.e(tag, msg, tr) used to cut a long trace at its line ends. This cuts at
+     * line ends the same way, and cuts a single longer line where it reaches [max]. Counted in chars as Android
+     * does, so text far from ASCII can still lose its end in logcat, never in the ring or the file.
+     */
+    fun logcatPieces(text: String, max: Int = LOGCAT_PIECE_CHARS): List<String> {
+        if (text.length <= max) return listOf(text)
+        val pieces = ArrayList<String>()
+        val piece = StringBuilder()
+        var open = false
+        for (line in text.split('\n')) {
+            var rest = line
+            while (rest.length > max) {
+                if (open) {
+                    pieces += piece.toString()
+                    piece.setLength(0)
+                    open = false
+                }
+                pieces += rest.substring(0, max)
+                rest = rest.substring(max)
+            }
+            if (open && piece.length + 1 + rest.length > max) {
+                pieces += piece.toString()
+                piece.setLength(0)
+                open = false
+            }
+            if (open) piece.append('\n')
+            piece.append(rest)
+            open = true
+        }
+        if (open) pieces += piece.toString()
+        return pieces
+    }
 }

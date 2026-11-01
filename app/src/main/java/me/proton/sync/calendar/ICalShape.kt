@@ -7,8 +7,8 @@ import net.fortuna.ical4j.data.ParserException
  *
  * An event that failed to parse used to log the first 800 characters of the DECRYPTED iCal, and one
  * without a VEVENT the first 400: titles, descriptions, locations and attendee lists. That broke the
- * promise the app makes about its logs (email addresses and calendar names, never the contents of
- * events), and shared debug logs are exactly where it would have surfaced.
+ * promise the app makes about its logs (calendar names, and since 2.0.4 email addresses only as codes; never
+ * the contents of events), and shared debug logs are exactly where it would have surfaced.
  *
  * The parser's own message is not safe either. ical4j wraps whatever its inner parser threw, so the
  * message and the cause quote the token it read, the date it could not parse or the URI it rejected.
