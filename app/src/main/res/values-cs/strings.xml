@@ -297,7 +297,32 @@
     <string name="info_notify_on_failure_body">Zobrazí oznámení, pokud synchronizace selže (např. chyba sítě nebo vypršelá relace). Klepnutím na něj zobrazíte srozumitelné vysvětlení a odkaz na záznamy. Vypněte je, pokud nechcete být upozorňováni na přechodná selhání.</string>
     <string name="info_sync_calendar_body">Když je zapnuto, vaše kalendáře Proton se synchronizují do kalendáře Androidu, takže se události objeví v Google Calendar, Samsung Calendar a jakékoli jiné aplikaci kalendáře. Obousměrně: úpravy provedené v telefonu se nahrají zpět do Protonu u kalendářů, které vlastníte.</string>
     <string name="info_include_external_calendars_body">Proton může obsahovat odebírané kalendáře (např. externí kanál ICS) a kalendáře svátků. Ty jsou na straně Protonu pouze ke čtení. Když je vypnuto, aplikace je přeskočí a synchronizuje pouze vaše vlastní upravitelné kalendáře. Zapněte, pokud chcete, aby se tyto kalendáře pouze ke čtení také zrcadlily do vašeho telefonu.</string>
-    <string name="info_sync_mode_body">\"Všechny události\" synchronizuje celou historii vašeho kalendáře a všechny budoucí události, nejlepší, pokud chcete mít vše v telefonu (první synchronizace velkého kalendáře může trvat několik minut). \"Vlastní rozsah\" synchronizuje pouze okno dnů kolem dneška, díky čemuž jsou velké kalendáře rychlé a lehké. Události mimo okno se nestahují.</string>
+    <string name="info_sync_mode_body">\"Všechny události\" synchronizuje celou historii vašeho kalendáře a všechny budoucí události, nejlepší, pokud chcete mít vše v telefonu (první synchronizace velkého kalendáře může trvat několik minut). \"Vlastní rozsah\" udržuje velké kalendáře rychlé tím, že synchronizuje pouze okno dnů kolem dneška: jejich události mimo okno se nestahují a ty, které už v tomto telefonu jsou, zůstávají, pokud pro jejich kalendář není zapnuta možnost \"Odebrat starší události z tohoto telefonu\". Malé kalendáře se vždy synchronizují celé.</string>
+    <string name="label_trim_old_events">Odebrat starší události z tohoto telefonu</string>
+    <string name="info_trim_old_events_body">U vybraných kalendářů se z tohoto telefonu odebírají události, které skončily více než den před začátkem vašeho rozsahu, a to nyní i při dalších synchronizacích. Ve vašem účtu Proton zůstávají a nic se tam nemaže. Zálohy vašich vlastních kalendářů se vytvářejí z Protonu, takže je stále obsahují; odebírané kalendáře a kalendáře svátků se nezálohují. Opakující se událost zůstává se všemi svými dřívějšími termíny, dokud zasahuje do rozsahu nebo nemá datum ukončení, protože telefon uchovává opakující se událost jako jeden záznam. Zůstávají také události se změnami, které ještě nebyly odeslány do Protonu, a události vytvořené nebo naposledy změněné za posledních 7 dní podle verze v tomto telefonu, ne podle toho, kdy ji tento telefon stáhl. Vybrat lze jen kalendáře, které jsou příliš velké na to, aby se synchronizovaly celé, a události po konci rozsahu se nikdy neodebírají. Chcete-li odebrané události získat zpět, zvolte delší rozsah nebo \"Všechny události\".</string>
+    <string name="trim_dialog_title">Odebrat starší události z tohoto telefonu</string>
+    <string name="trim_dialog_intro">Vyberte kalendáře, které chcete pročistit. Události, které skončily před %1$s, se z tohoto telefonu odeberou při příští synchronizaci a pozdější, jakmile budou stejně staré. Ve vašem účtu Proton zůstanou. Opakující se událost, která pokračuje i po tomto datu, zůstane se všemi svými termíny.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Až %1$d událost k odebrání</item>
+        <item quantity="few">Až %1$d události k odebrání</item>
+        <item quantity="many">Až %1$d události k odebrání</item>
+        <item quantity="other">Až %1$d událostí k odebrání</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Momentálně není co odebrat</string>
+    <string name="trim_calendar_whole">Zatím se synchronizuje celý, takže se nic neodebírá</string>
+    <string name="trim_not_synced_yet">Kalendáře tohoto účtu ještě nejsou synchronizovány, takže je nelze zobrazit v seznamu. Zkuste to znovu po příští synchronizaci.</string>
+    <string name="trim_offer_keep">Ponechat</string>
+    <string name="trim_small_calendars_note">Malé kalendáře se synchronizují celé a uchovávají všechny události, proto zde nejsou uvedeny.</string>
+    <string name="trim_no_large_calendars">Žádný z kalendářů tohoto účtu není dostatečně velký. Malé kalendáře se synchronizují celé a uchovávají všechny události.</string>
+    <string name="trim_external_off_note">Dokud je možnost \"Zahrnout externí kalendáře\" vypnuta, kalendáře svátků a odebírané kalendáře se nesynchronizují, proto zde nejsou uvedeny a nic se z nich neodebírá.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Zapnuto pro %1$d kalendář</item>
+        <item quantity="few">Zapnuto pro %1$d kalendáře</item>
+        <item quantity="many">Zapnuto pro %1$d kalendáře</item>
+        <item quantity="other">Zapnuto pro %1$d kalendářů</item>
+    </plurals>
+    <string name="trim_dialog_save">Uložit</string>
+    <string name="trim_read_failed">Kalendáře v tomto telefonu se nepodařilo načíst, takže se nic nezměnilo.</string>
     <string name="info_sync_range_window_body">Kolik dnů před a po dnešku synchronizovat, když je vybráno \"Vlastní rozsah\". Větší okna zobrazují více z vašeho kalendáře, ale synchronizace trvá déle. V režimu \"Všechny události\" nemá žádný účinek.</string>
     <string name="info_poll_attendee_body">Když je zapnuto, aplikace pravidelně znovu kontroluje události, které mají účastníky, aby zjistila odpovědi přijmout/odmítnout/předběžně. Kanál změn Protonu nehlásí změny RSVP, takže to vyžaduje další volání API, vyplatí se zapnout pouze tehdy, pokud spoléháte na zobrazení odpovědí účastníků v telefonu.</string>
     <string name="info_send_invites_body">Když do události v telefonu přidáte účastníky, poslat jim e-mailem pozvánku. Ve výchozím nastavení vypnuto: zapněte pouze tehdy, pokud chcete, aby aplikace posílala e-maily účastníkům vaším jménem.</string>

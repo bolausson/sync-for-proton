@@ -42,6 +42,7 @@ import me.proton.sync.SyncUtils
 import me.proton.sync.SyncWorker
 import me.proton.sync.EventLoopWorker
 import me.proton.sync.R
+import me.proton.sync.calendar.ChurnFixture
 import me.proton.sync.calendar.IcalTimeZoneUpdates
 import me.proton.sync.calendar.TimeZoneDebugCommands
 import me.proton.sync.calendar.TimeZoneRuleSource
@@ -73,6 +74,9 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     @Inject lateinit var sessionManager: AccountSessionManager
     @Inject lateinit var syncDatabase: me.proton.sync.db.SyncDatabase
+
+    /** "Remove older events from this phone", per calendar: the row's dialog and the offer when the range narrows. */
+    private val rangeTrimDialog by lazy { RangeTrimDialog(this, syncDatabase) }
     @Inject lateinit var subscriptionManager: SubscriptionManager
     @Inject lateinit var photoSizeCalibrator: me.proton.sync.contacts.PhotoSizeCalibrator
     @Inject lateinit var keyManager: me.proton.sync.crypto.KeyManager
@@ -215,6 +219,13 @@ class SyncSettingsActivity : AppCompatActivity() {
         resumeTzNotice = savedInstanceState?.getBoolean(KEY_TZ_NOTICE_SHOWING, false) == true
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Every control on this screen is drawn from the stored settings (the account cards again on every resume), so
+        // Android's own saved view state is never wanted here, and it did harm. Restored after a rotation, a language
+        // or dark mode change or process death, it set each switch to its saved position, and the switch's listener
+        // stored that as a choice: the account cards share view ids, so the last card's switches went to every account,
+        // and a position saved before a change made elsewhere (the log viewer, Android's own sync switches for the
+        // account) undid that change. The scroll position is the scroll view's own and still comes back.
+        binding.settingsContainer.isSaveFromParentEnabled = false
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
@@ -660,6 +671,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         bindInfo(c.infoSyncModeCustom, R.string.calendar_timeframe_title, R.string.info_sync_mode_body)
         bindInfo(c.infoPastEvents, R.string.calendar_timeframe_title, R.string.info_sync_range_window_body)
         bindInfo(c.infoFutureEvents, R.string.calendar_timeframe_title, R.string.info_sync_range_window_body)
+        bindInfo(c.infoTrimOldEvents, R.string.label_trim_old_events, R.string.info_trim_old_events_body)
         bindInfo(c.infoCalendarFallback, R.string.dialog_title_calendar_fallback, R.string.info_fallback_full_sync_body)
         bindInfo(c.infoPollAttendee, R.string.label_poll_attendee_status, R.string.info_poll_attendee_body)
         bindInfo(c.infoNotifyCalendar, R.string.label_notify_on_failure, R.string.info_notify_on_failure_body)
@@ -680,6 +692,23 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     /** The wait for Billing before Google Play's payment message; see onResume. */
     private var paymentMessages: Job? = null
+
+    /**
+     * Keeps each card's "Remove older events from this phone" row true while the screen is open: the choices, the
+     * "Include external calendars" switch and the calendar types each sync notes can change under it (a sync forgetting a
+     * choice, "Remove synced data" finishing after the screen was re-created). The calendar mappings it also counts are
+     * caught when the account's calendar sync ends (refreshSyncIndicators). A field: SharedPreferences holds its
+     * listeners only weakly. Called on the main thread.
+     */
+    private val trimRowListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == null) return@OnSharedPreferenceChangeListener
+        for (handle in accountCardHandles.toList()) {
+            val name = handle.parentAccount.name
+            if (key == SyncPreferences.calendarTrimPastKey(name) || key == SyncPreferences.includeExternalCalendarsKey(name) ||
+                (key.endsWith("_external") && key.startsWith(SyncPreferences.lastSyncRangeKey(name, "")))
+            ) refreshTrimValue(handle.parentAccount)
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -708,6 +737,8 @@ class SyncSettingsActivity : AppCompatActivity() {
             BillingUi.showPaymentMessages(this@SyncSettingsActivity, subscriptionManager)
         }
         updateSubscriptionBanner()
+        // Before the cards are built, so no change between a card's read and the registration goes unseen.
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(trimRowListener)
         buildAccountCards()
         maybeOfferDisplayNameRecovery()
         // The log viewer offers the same verbose toggle, so this screen has to re-read it on
@@ -731,6 +762,7 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(trimRowListener)
         licenceRecheck?.cancel()
         licenceRecheck = null
         paymentMessages?.cancel()
@@ -775,13 +807,18 @@ class SyncSettingsActivity : AppCompatActivity() {
         val anyResyncInFlight = fullResyncInFlightAccounts.isNotEmpty()
 
         for (handle in accountCardHandles) {
+            var calendarActive = false
             val active = try {
-                ContentResolver.isSyncActive(handle.abAccount, SyncConstants.AUTHORITY_CONTACTS) ||
-                    ContentResolver.isSyncActive(handle.parentAccount, SyncConstants.AUTHORITY_CALENDAR)
+                calendarActive = ContentResolver.isSyncActive(handle.parentAccount, SyncConstants.AUTHORITY_CALENDAR)
+                calendarActive || ContentResolver.isSyncActive(handle.abAccount, SyncConstants.AUTHORITY_CONTACTS)
             } catch (e: SecurityException) {
                 SyncLog.w("SyncSettings", "isSyncActive denied: ${e.message}")
                 false
             }
+            // A calendar sync changes what the "Remove older events" row counts, the calendar mappings above all, which
+            // no preference reports (trimRowListener sees the rest): its end redraws the row.
+            if (calendarActive) calendarSyncSeen.add(handle.parentAccount.name)
+            else if (calendarSyncSeen.remove(handle.parentAccount.name)) refreshTrimValue(handle.parentAccount)
             if (active) anyActive = true
             // Once a sync becomes active, it's no longer "queued" — drop the marker.
             if (active) userRequestedAccounts.remove(handle.parentAccount.name)
@@ -922,14 +959,21 @@ class SyncSettingsActivity : AppCompatActivity() {
      *   debug_command = sync | remove_account | resync_remote | resync_local | backup_export | backup_import |
      *                   backup_restore_subscription   (see handleDebugBackupCommand) |
      *                   billing_offers | plan_picker | billing_start | billing_sheet (plan = monthly | yearly) |
-     *                   billing_manage | billing_update_payment | licences | debug_log (file) |
+     *                   billing_manage | billing_update_payment | licences | logs | backup_settings | debug_log (file) |
      *                   log_redaction_probe | email_code (address) |
      *                   backup_reminder (part = export) | srp_modulus (username) | signin_probe (username) |
      *                   license_fixture (status) | license_enter (text or text_file, offline) |
      *                   tz_updates (state = on | off) | tz_info |
      *                   tz_probe (tzid, local) | tz_warning (mode, version) | schedule_info |
      *                   interval (seconds = a picker value | manual) |
-     *                   retime_check | retime_run | retime_fixture (event_id, minutes, mode)
+     *                   range (mode = all | custom, past, future) | external (state = on | off) | sweep_reset |
+     *                   card_switch (switch = contacts | calendar | poll_attendees | external | notify_progress |
+     *                   notify_contacts | notify_calendar | invites | updates | cancellations | invite_title,
+     *                   state = on | off) |
+     *                   trim (mode = check | on | off | interrupt, calendar = a name part | all) |
+     *                   trim_dialog (offer, press = positive | negative) |
+     *                   retime_check | retime_run | retime_fixture (event_id, minutes, mode) |
+     *                   churn_fixture (calendar)
      *   account       = the account name as shown on its card
      *   section       = contacts | calendar | all   (default all)
      *
@@ -985,6 +1029,17 @@ class SyncSettingsActivity : AppCompatActivity() {
             "licences" -> {
                 SyncLog.i(tag, "licences: opening the licences screen")
                 openLicences()
+                return
+            }
+            // The Logs and Backups tiles, through the buttons they press.
+            "logs" -> {
+                SyncLog.i(tag, "logs: opening the log viewer")
+                binding.btnViewLogs.performClick()
+                return
+            }
+            "backup_settings" -> {
+                SyncLog.i(tag, "backup_settings: opening the data backup settings")
+                binding.btnDataBackups.performClick()
                 return
             }
             // The log viewer's Save button, into files/debug/ instead of a picked document.
@@ -1269,6 +1324,124 @@ class SyncSettingsActivity : AppCompatActivity() {
                     SyncLog.i(tag, "interval: '${account.name}' set to $v")
                 }
             }
+            // The calendar range, as the All / Custom radios and the Past / Future pickers store it, with the same
+            // dirty flag, so the event loop's next run syncs the calendar. Any positive day counts, as the custom
+            // dialog allows. It never opens the "Remove older events" offer the radios and pickers open when the
+            // range narrows; trim_dialog with offer shows that.
+            "range" -> {
+                val mode = intent.getStringExtra("mode")
+                val past = intent.getStringExtra("past")?.toLongOrNull()
+                val future = intent.getStringExtra("future")?.toLongOrNull()
+                intent.removeExtra("mode")
+                intent.removeExtra("past")
+                intent.removeExtra("future")
+                val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+                val stored = when {
+                    mode == "all" -> {
+                        editor.putString(SyncPreferences.calendarSyncModeKey(account.name), SyncPreferences.SYNC_MODE_ALL)
+                        true
+                    }
+                    mode == "custom" && past != null && future != null && past > 0 && future > 0 -> {
+                        editor.putString(SyncPreferences.calendarSyncModeKey(account.name), SyncPreferences.SYNC_MODE_CUSTOM)
+                            .putString(SyncPreferences.calendarPastDaysKey(account.name), "$past")
+                            .putString(SyncPreferences.calendarFutureDaysKey(account.name), "$future")
+                        true
+                    }
+                    else -> false
+                }
+                if (stored) {
+                    editor.putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+                    buildAccountCards()
+                    SyncLog.i(tag, "range: '${account.name}' set to $mode" + if (mode == "custom") " $past $future" else "")
+                } else {
+                    SyncLog.w(tag, "range ignored: give all, or custom with two positive day counts")
+                }
+            }
+            // The "Include external calendars" switch, through the switch's own handler.
+            "external" -> {
+                val state = intent.getStringExtra("state")
+                intent.removeExtra("state")
+                if (state != "on" && state != "off") {
+                    SyncLog.w(tag, "external ignored: state must be on or off, not '$state'")
+                } else {
+                    setIncludeExternalCalendars(account, state == "on")
+                    buildAccountCards()
+                    SyncLog.i(tag, "external: 'Include external calendars' $state for '${account.name}'")
+                }
+            }
+            // A switch on the account's card, through its own listener as a tap runs it (on = checked), on cards drawn
+            // from the stored settings first. Contacts or calendar off opens the "Remove synced data" offer, as the
+            // switch does.
+            "card_switch" -> {
+                val which = intent.getStringExtra("switch")
+                val state = intent.getStringExtra("state")
+                intent.removeExtra("switch")
+                intent.removeExtra("state")
+                buildAccountCards()
+                val switches = accountCardHandles.firstOrNull { it.parentAccount == account }?.binding?.let {
+                    mapOf(
+                        "contacts" to it.switchContacts, "calendar" to it.switchCalendar,
+                        "poll_attendees" to it.switchPollAttendeeStatus, "external" to it.switchExcludeExternal,
+                        "notify_progress" to it.switchNotifyInProgress, "notify_contacts" to it.switchNotifyContacts,
+                        "notify_calendar" to it.switchNotifyCalendar, "invites" to it.switchSendInvites,
+                        "updates" to it.switchSendUpdates, "cancellations" to it.switchSendCancellations,
+                        "invite_title" to it.switchInviteSubjectIncludeTitle,
+                    )
+                }.orEmpty()
+                val view = switches[which]
+                if (view == null || (state != "on" && state != "off")) {
+                    SyncLog.w(tag, "card_switch ignored: switch must be one of ${switches.keys.joinToString()}, state on or off")
+                } else {
+                    val already = view.isChecked == (state == "on")
+                    view.isChecked = state == "on"
+                    SyncLog.i(tag, "card_switch: '$which' $state for '${account.name}'" + if (already) " (it already was)" else "")
+                }
+            }
+            // Test fixture: forget the custom range's daily sweep marks, so each calendar's next sync sweeps again.
+            "sweep_reset" -> {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+                val prefix = SyncPreferences.lastSyncRangeKey(account.name, "")
+                val marks = prefs.all.keys.filter { it.startsWith(prefix) && it.endsWith("_swept_day") }
+                prefs.edit().apply { marks.forEach { remove(it) } }.apply()
+                SyncLog.i(tag, "sweep_reset: ${marks.size} daily sweep mark(s) of '${account.name}' removed")
+            }
+            // "Remove older events from this phone": check logs what it would take from each calendar (read-only);
+            // on and off set it for the large calendars whose name contains the extra, or all, as the dialog's Save
+            // does (on asks for the calendar sync that removes them).
+            "trim" -> {
+                val mode = intent.getStringExtra("mode")
+                val namePart = intent.getStringExtra("calendar").orEmpty().ifBlank { "all" }
+                intent.removeExtra("mode")
+                intent.removeExtra("calendar")
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        RangeTrimDebug.run(applicationContext, account, syncDatabase, mode, namePart, tag) {
+                            requestManualSync(account, abAccount, "calendar")
+                        }
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "trim failed: ${e.message}")
+                    }
+                }
+            }
+            // The same dialog the row opens (offer = as when the range was narrowed), to look at without a tap, and
+            // press = positive or negative answers it through that button's own handler. The dialog logs what it
+            // showed, or why nothing; an answer refreshes the cards as the row's own does.
+            "trim_dialog" -> {
+                val offer = intent.getBooleanExtra("offer", false)
+                val press = when (intent.getStringExtra("press")) {
+                    "positive" -> android.content.DialogInterface.BUTTON_POSITIVE
+                    "negative" -> android.content.DialogInterface.BUTTON_NEGATIVE
+                    else -> null
+                }
+                intent.removeExtra("offer")
+                intent.removeExtra("press")
+                SyncLog.i(tag, "trim_dialog: requested for '${account.name}'" + (if (offer) " as the offer" else "") +
+                    if (press != null) ", pressing ${if (press == android.content.DialogInterface.BUTTON_POSITIVE) "positive" else "negative"}" else "")
+                rangeTrimDialog.show(account, offer = offer, press = press) { newlyOn ->
+                    buildAccountCards()
+                    if (newlyOn.isNotEmpty()) requestManualSync(account, abAccount, "calendar")
+                }
+            }
             // The re-time pass: "check" plans without writing, "run" makes the next sync run it.
             "retime_check" -> {
                 val dao = syncDatabase.calendarEventSyncDao()
@@ -1293,6 +1466,25 @@ class SyncSettingsActivity : AppCompatActivity() {
                         TimeZoneDebugCommands.retimeFixture(applicationContext, account, dao, eventId, minutes, mode)
                     } catch (e: Exception) {
                         SyncLog.w(tag, "retime_fixture failed: ${e.message}")
+                    }
+                }
+            }
+            // Test fixture: a read-only external calendar made to look re-imported under new ids (see ChurnFixture).
+            "churn_fixture" -> {
+                val namePart = intent.getStringExtra("calendar").orEmpty()
+                intent.removeExtra("calendar")
+                if (namePart.isBlank()) {
+                    SyncLog.w(tag, "churn_fixture ignored: no calendar name given")
+                } else {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            ChurnFixture.run(
+                                applicationContext, account, syncDatabase.calendarSyncDao(),
+                                syncDatabase.calendarEventSyncDao(), namePart
+                            )
+                        } catch (e: Exception) {
+                            SyncLog.w(tag, "churn_fixture failed: ${e.message}")
+                        }
                     }
                 }
             }
@@ -1656,13 +1848,6 @@ class SyncSettingsActivity : AppCompatActivity() {
                 if (!checked) offerToRemoveSyncedData(account, abAccount, calendar = true)
             }
 
-            val includeKey = SyncPreferences.includeExternalCalendarsKey(account.name)
-            cardBinding.switchExcludeExternal.isChecked = prefs.getBoolean(includeKey, false)
-            cardBinding.switchExcludeExternal.setOnCheckedChangeListener { _, checked ->
-                prefs.edit().putBoolean(includeKey, checked)
-                    .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
-            }
-
             val pollAttendeeKey = SyncPreferences.pollAttendeeStatusKey(account.name)
             cardBinding.switchPollAttendeeStatus.isChecked = prefs.getBoolean(pollAttendeeKey, false)
             cardBinding.switchPollAttendeeStatus.setOnCheckedChangeListener { _, checked ->
@@ -1703,6 +1888,24 @@ class SyncSettingsActivity : AppCompatActivity() {
                 editor.apply()
             }
 
+            // --- Remove older events from this phone, per calendar, under Custom range (RangeTrimDialog). Offered with
+            // its counts when the range is narrowed: Custom chosen, or Past events shortened. ---
+            // Through the live card: a rebuild on resume, with the dialog open across it, replaces this one.
+            fun showTrimValue() = refreshTrimValue(account)
+            val afterTrimChoice: (Set<me.proton.sync.calendar.RangeTrimRunner.Choice>) -> Unit = { newlyOn ->
+                showTrimValue()
+                if (newlyOn.isNotEmpty()) requestManualSync(account, abAccount, "calendar")
+            }
+            showTrimValue()
+            cardBinding.rowTrimOldEvents.setOnClickListener { rangeTrimDialog.show(account, offer = false, onSaved = afterTrimChoice) }
+
+            cardBinding.switchExcludeExternal.isChecked =
+                prefs.getBoolean(SyncPreferences.includeExternalCalendarsKey(account.name), false)
+            cardBinding.switchExcludeExternal.setOnCheckedChangeListener { _, checked ->
+                setIncludeExternalCalendars(account, checked)
+                // A holiday or subscribed calendar counts for "Remove older events" only while it syncs.
+                showTrimValue()
+            }
             val pastEntries = resources.getStringArray(R.array.calendar_past_entries)
             val pastValues = resources.getStringArray(R.array.calendar_past_values)
             bindDropdownPref(
@@ -1717,6 +1920,12 @@ class SyncSettingsActivity : AppCompatActivity() {
                 formatLabel = { v -> formatDaysLabel(v, pastEntries, pastValues) },
                 onChanged = {
                     prefs.edit().putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+                },
+                // Shortened against the value the picker opened with, the stored one, never one this card read at build;
+                // both read as the sync and the removal read them (not a whole number: the default; below 1: 1).
+                onChangedFrom = { before, chosen ->
+                    fun days(v: String) = (v.toLongOrNull() ?: SyncPreferences.DEFAULT_PAST_DAYS).coerceAtLeast(1)
+                    if (days(chosen) < days(before)) rangeTrimDialog.show(account, offer = true, onSaved = afterTrimChoice)
                 }
             )
 
@@ -1753,11 +1962,14 @@ class SyncSettingsActivity : AppCompatActivity() {
                 applySyncMode(SyncPreferences.SYNC_MODE_ALL)
             }
             cardBinding.rowSyncModeCustom.setOnClickListener {
+                val wasAll = (prefs.getString(syncModeKey, SyncPreferences.DEFAULT_SYNC_MODE) ?: SyncPreferences.DEFAULT_SYNC_MODE) ==
+                    SyncPreferences.SYNC_MODE_ALL
                 prefs.edit()
                     .putString(syncModeKey, SyncPreferences.SYNC_MODE_CUSTOM)
                     .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true)
                     .apply()
                 applySyncMode(SyncPreferences.SYNC_MODE_CUSTOM)
+                if (wasAll) rangeTrimDialog.show(account, offer = true, onSaved = afterTrimChoice)
             }
 
             // --- Per-account sync settings ---
@@ -2190,9 +2402,12 @@ class SyncSettingsActivity : AppCompatActivity() {
                     if (calIds.isEmpty()) 0 else cr.query(
                         android.provider.CalendarContract.Events.CONTENT_URI,
                         arrayOf(android.provider.CalendarContract.Events._ID),
+                        // What calendar apps show: not the cancelled rows that hide a series' excluded dates.
                         "${android.provider.CalendarContract.Events.CALENDAR_ID} IN " +
                             "(${calIds.joinToString(",") { "?" }}) AND " +
-                            "${android.provider.CalendarContract.Events.DELETED} = 0",
+                            "${android.provider.CalendarContract.Events.DELETED} = 0 AND " +
+                            "(${android.provider.CalendarContract.Events.STATUS} IS NULL OR " +
+                            "${android.provider.CalendarContract.Events.STATUS} != ${android.provider.CalendarContract.Events.STATUS_CANCELED})",
                         calIds.toTypedArray(),
                         null
                     )?.use { it.count } ?: 0
@@ -2574,6 +2789,34 @@ class SyncSettingsActivity : AppCompatActivity() {
             .show()
     }
 
+    /** The "Include external calendars" switch: stored with the dirty flag, so the event loop's next run syncs the calendar. */
+    private fun setIncludeExternalCalendars(account: Account, include: Boolean) {
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+            .putBoolean(SyncPreferences.includeExternalCalendarsKey(account.name), include)
+            .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+    }
+
+    /**
+     * The "Remove older events from this phone" row of [account]'s card as it is on screen now (a rebuild on resume
+     * replaces the cards), from the stored choices.
+     */
+    private fun refreshTrimValue(account: Account) {
+        // A newer redraw cancels the one still reading, so the latest read is the one written. Main thread only.
+        trimValueJobs.remove(account.name)?.cancel()
+        trimValueJobs[account.name] = lifecycleScope.launch {
+            val n = rangeTrimDialog.enabledCount(account)
+            val card = accountCardHandles.firstOrNull { it.parentAccount == account }?.binding ?: return@launch
+            card.valueTrimOldEvents.text =
+                if (n == 0) getString(R.string.label_off) else Plurals.text(this@SyncSettingsActivity, R.plurals.trim_value_on, n, n)
+        }
+    }
+
+    /** The redraw of each account's "Remove older events" row still running ([refreshTrimValue]). */
+    private val trimValueJobs = HashMap<String, Job>()
+
+    /** Accounts whose calendar sync this screen saw running, so its end redraws their "Remove older events" row. */
+    private val calendarSyncSeen = HashSet<String>()
+
     // --- Sync interval helpers ---
 
     /**
@@ -2794,6 +3037,8 @@ class SyncSettingsActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG,
                         ).show()
                         refreshSyncIndicators()
+                        // The removal cleared "Remove older events" too (SyncedDataRemover.removeCalendars).
+                        if (calendar) refreshTrimValue(account)
                     }
                 }
             }
@@ -3144,14 +3389,18 @@ class SyncSettingsActivity : AppCompatActivity() {
         defaultValue: String,
         prefs: android.content.SharedPreferences,
         formatLabel: (String) -> String,
-        onChanged: (newValue: String) -> Unit = {}
+        onChanged: (newValue: String) -> Unit = {},
+        /** With the value the picker opened with too: a card rebuilt while it was open holds an older one of its own. */
+        onChangedFrom: (oldValue: String, newValue: String) -> Unit = { _, _ -> }
     ) {
         labelView.text = formatLabel(SyncPreferences.getStringOrDefault(prefs, prefKey, defaultValue))
         clickableRow.setOnClickListener {
             val live = SyncPreferences.getStringOrDefault(prefs, prefKey, defaultValue)
             showListDialog(dialogTitle, entries, values, prefKey, prefs, live) { label ->
                 labelView.text = label
-                onChanged(SyncPreferences.getStringOrDefault(prefs, prefKey, defaultValue))
+                val chosen = SyncPreferences.getStringOrDefault(prefs, prefKey, defaultValue)
+                onChanged(chosen)
+                onChangedFrom(live, chosen)
             }
         }
     }

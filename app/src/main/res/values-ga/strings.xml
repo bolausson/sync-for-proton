@@ -289,7 +289,34 @@
     <string name="info_notify_on_failure_body">Taispeánann sé fógra má theipeann ar shioncronú (m.sh. earráid líonra nó seisiún éagtha). Tapáil é le haghaidh cúis i ngnáththeanga agus nasc chuig na logaí. Múch é mura dteastaíonn uait fógra a fháil faoi theipeanna sealadacha.</string>
     <string name="info_sync_calendar_body">Nuair atá sé ar siúl, sioncronaítear do fhéilirí Proton isteach i bhféilire Android, mar sin taispeántar imeachtaí in Google Calendar, Samsung Calendar agus aon aip fhéilire eile. Déthreoch: uaslódáiltear na heagarthóireachtaí a dhéanann tú ar an nguthán ar ais chuig Proton do na féilirí ar leatsa iad.</string>
     <string name="info_include_external_calendars_body">Is féidir le Proton féilirí síntiúis a choinneáil (m.sh. fotha ICS seachtrach) agus féilirí saoire. Tá siad seo inléite amháin ar thaobh Proton. Nuair atá sé múchta, scipeálann an aip iad agus ní shioncronaíonn sé ach do chuid féilirí ineagarthóireachta féin. Cuir ar siúl é más mian leat go ndéanfaí scáthánú ar na féilirí inléite amháin sin chuig do ghuthán freisin.</string>
-    <string name="info_sync_mode_body">Sioncronaíonn „Gach imeacht\" stair iomlán do fhéilire agus gach imeacht amach anseo, is fearr é más mian leat gach rud a bheith ar do ghuthán (d\'fhéadfadh an chéad sioncronú ar fhéilire mór roinnt nóiméad a thógáil). Ní shioncronaíonn „Raon saincheaptha\" ach fuinneog laethanta timpeall an lae inniu, rud a choinníonn féilirí móra tapa agus éadrom. Ní íoslódáiltear imeachtaí lasmuigh den fhuinneog.</string>
+    <string name="info_sync_mode_body">Sioncronaíonn „Gach imeacht“ stair iomlán d\'fhéilire agus gach imeacht amach anseo, is fearr é más mian leat gach rud a bheith ar do ghuthán (d\'fhéadfadh an chéad sioncronú ar fhéilire mór roinnt nóiméad a thógáil). Coinníonn „Raon saincheaptha“ féilirí móra tapa trí gan ach fuinneog laethanta timpeall an lae inniu a shioncronú: ní íoslódáiltear a n-imeachtaí lasmuigh den fhuinneog, agus fanann imeachtaí atá ar an nguthán seo cheana mura bhfuil „Bain imeachtaí níos sine den ghuthán seo“ ar siúl dá bhféilire. Sioncronaítear féilirí beaga ina n-iomláine i gcónaí.</string>
+    <string name="label_trim_old_events">Bain imeachtaí níos sine den ghuthán seo</string>
+    <string name="info_trim_old_events_body">I gcás na bhféilirí a roghnaíonn tú, baintear den ghuthán seo na himeachtaí a chríochnaigh níos mó ná lá roimh thús do raoin, anois agus ag gach sioncronú ina dhiaidh sin. Fanann siad i do chuntas Proton agus ní scriostar aon rud ansin. Déantar cúltacaí de do chuid féilirí féin ó Proton, mar sin tá siad iontu fós; ní dhéantar cúltaca d\'fhéilirí síntiúis ná d\'fhéilirí saoire. Fanann imeacht athfhillteach, lena dhátaí níos luaithe go léir, má leanann sé ar aghaidh isteach i do raon nó mura bhfuil dáta deiridh aige, toisc go gcoinníonn an guthán imeacht athfhillteach mar iontráil amháin. Fanann imeachtaí freisin má tá athruithe orthu nár seoladh chuig Proton fós, nó má cruthaíodh iad nó má rinneadh an t-athrú is déanaí orthu le 7 lá anuas, de réir an leagain díobh atá ar an nguthán seo, seachas de réir an ama a d\'íoslódáil an guthán seo é. Ní féidir ach féilirí atá rómhór le sioncronú ina n-iomláine a roghnú, agus ní bhaintear riamh imeachtaí a thagann i ndiaidh do raoin. Chun imeachtaí a baineadh a fháil ar ais, roghnaigh raon níos faide nó „Gach imeacht“.</string>
+    <string name="trim_dialog_title">Bain imeachtaí níos sine den ghuthán seo</string>
+    <string name="trim_dialog_intro">Roghnaigh na féilirí ar mian leat slacht a chur orthu. Baintear na himeachtaí a chríochnaigh roimh %1$s den ghuthán seo ag an gcéad sioncronú eile, agus imeachtaí níos déanaí nuair a bheidh siad chomh sean céanna. Fanann siad i do chuntas Proton. Fanann imeacht athfhillteach a leanann ar aghaidh i ndiaidh an dáta sin, lena dhátaí go léir.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Suas le %1$d imeacht le baint</item>
+        <item quantity="two">Suas le %1$d imeacht le baint</item>
+        <item quantity="few">Suas le %1$d imeacht le baint</item>
+        <item quantity="many">Suas le %1$d n-imeacht le baint</item>
+        <item quantity="other">Suas le %1$d imeacht le baint</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Níl aon rud le baint faoi láthair</string>
+    <string name="trim_calendar_whole">Sioncronaítear é ina iomláine faoi láthair, mar sin ní bhaintear aon rud</string>
+    <string name="trim_not_synced_yet">Níl féilirí an chuntais seo sioncronaithe fós, mar sin ní féidir iad a thaispeáint. Bain triail eile as tar éis an chéad sioncronaithe eile.</string>
+    <string name="trim_offer_keep">Coinnigh iad</string>
+    <string name="trim_small_calendars_note">Sioncronaítear féilirí beaga ina n-iomláine agus coinníonn siad gach imeacht, mar sin níl siad ar an liosta.</string>
+    <string name="trim_no_large_calendars">Níl aon cheann d\'fhéilirí an chuntais seo mór go leor. Sioncronaítear féilirí beaga ina n-iomláine agus coinníonn siad gach imeacht.</string>
+    <string name="trim_external_off_note">Ní shioncronaítear féilirí saoire ná féilirí síntiúis fad atá „Cuir féilirí seachtracha san áireamh“ múchta, mar sin níl siad ar an liosta agus ní bhaintear aon rud díobh.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Ar siúl do %1$d féilire</item>
+        <item quantity="two">Ar siúl do %1$d fhéilire</item>
+        <item quantity="few">Ar siúl do %1$d fhéilire</item>
+        <item quantity="many">Ar siúl do %1$d bhféilire</item>
+        <item quantity="other">Ar siúl do %1$d féilire</item>
+    </plurals>
+    <string name="trim_dialog_save">Sábháil</string>
+    <string name="trim_read_failed">Níorbh fhéidir na féilirí ar an nguthán seo a léamh, mar sin níor athraíodh aon rud.</string>
     <string name="info_sync_range_window_body">Cé mhéad lá roimh an lá inniu agus ina dhiaidh atá le sioncronú nuair atá „Raon saincheaptha\" roghnaithe. Taispeánann fuinneoga níos mó níos mó de do fhéilire ach tógann siad níos faide le sioncronú. Níl aon éifeacht aige sa mhód „Gach imeacht\".</string>
     <string name="info_poll_attendee_body">Nuair atá sé ar siúl, déanann an aip athsheiceáil go tréimhsiúil ar imeachtaí a bhfuil freastalaithe acu chun freagraí glac/diúltaigh/sealadach a aimsiú. Ní thuairiscíonn fotha athruithe Proton athruithe RSVP, mar sin teastaíonn glaonna API breise dó seo, ní fiú é a chumasú ach amháin má bhraitheann tú ar fhreagraí na bhfreastalaithe a fheiceáil ar do ghuthán.</string>
     <string name="info_send_invites_body">Nuair a chuireann tú freastalaithe le himeacht ar do ghuthán, seol cuireadh chucu trí ríomhphost. Múchta de réir réamhshocraithe: cuir ar siúl é ach amháin más mian leat go seolfadh an aip ríomhphoist chuig rannpháirtithe thar do cheann.</string>

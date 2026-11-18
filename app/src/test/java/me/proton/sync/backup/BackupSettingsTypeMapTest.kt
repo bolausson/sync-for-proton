@@ -156,6 +156,9 @@ class BackupSettingsTypeMapTest {
         SyncPreferences.lastSyncErrorMsgKey("calendar", account),
         SyncPreferences.lastSyncRangeKey(account, "cal1"),
         SyncPreferences.timeZoneRetimeKey(account),
+        // An import writes every account's settings, also of accounts already here: removal must never arrive that way.
+        SyncPreferences.calendarTrimPastKey(account),
+        SyncPreferences.calendarTrimJournalKey(account),
         SyncPreferences.eventLoopIdKey(account),
         SyncPreferences.calendarSettingsDirtyKey(account),
         SyncPreferences.contactFilterKeptLocalKey(account),

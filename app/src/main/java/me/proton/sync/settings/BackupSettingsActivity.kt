@@ -72,21 +72,92 @@ class BackupSettingsActivity : AppCompatActivity() {
         }
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        binding.switchBackupEnabled.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENABLED, false)
-        binding.etIntervalDays.setText(prefs.getString(SyncPreferences.KEY_BACKUP_INTERVAL_DAYS, SyncPreferences.DEFAULT_BACKUP_INTERVAL_DAYS))
-        binding.etRetention.setText(prefs.getString(SyncPreferences.KEY_BACKUP_RETENTION, SyncPreferences.DEFAULT_BACKUP_RETENTION))
-        binding.checkCalendars.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CALENDARS, true)
-        binding.checkContacts.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CONTACTS, true)
-        binding.switchEncrypt.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED, false)
-
+        // Every control here is drawn from the stored settings, on create and on every resume, never from Android's
+        // saved view state. Restored after a rotation, a language change or process death, a position saved before the
+        // setting changed elsewhere (an import, another copy of this screen) fired its listener and stored the old value
+        // again, and a restored number was written back when the screen was left.
+        binding.backupContent.isSaveFromParentEnabled = false
+        drawFromPrefs(fresh = true)
+        savedInstanceState?.let { restoreNumberEdits(it) }
         wireListeners()
         refreshUi()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        drawFromPrefs(fresh = false)
+        refreshUi()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // The two number fields only, each with what it was drawn with, so restoreNumberEdits can tell an edit in
+        // progress from an old number.
+        outState.putString(KEY_INTERVAL_TEXT, binding.etIntervalDays.text?.toString())
+        outState.putString(KEY_INTERVAL_DRAWN, intervalField.drawn)
+        outState.putString(KEY_RETENTION_TEXT, binding.etRetention.text?.toString())
+        outState.putString(KEY_RETENTION_DRAWN, retentionField.drawn)
+    }
+
+    /** True while [drawFromPrefs] sets the controls, so their listeners store nothing. */
+    private var drawing = false
+
+    /**
+     * True while the encryption switch's own "Set password" dialog is open: the switch shows on there and nothing is
+     * stored until Save, so a redraw must not turn it off under the dialog.
+     */
+    private var encryptionAwaitingPassword = false
+
+    private val intervalField = BackupNumberField(1..365, 7)
+    private val retentionField = BackupNumberField(1..999, 14)
+
+    private fun storedInterval() =
+        prefs.getString(SyncPreferences.KEY_BACKUP_INTERVAL_DAYS, null) ?: SyncPreferences.DEFAULT_BACKUP_INTERVAL_DAYS
+
+    private fun storedRetention() =
+        prefs.getString(SyncPreferences.KEY_BACKUP_RETENTION, null) ?: SyncPreferences.DEFAULT_BACKUP_RETENTION
+
+    /** Every control from the stored settings; [fresh] on create, otherwise a number field being edited keeps its edit. */
+    private fun drawFromPrefs(fresh: Boolean) {
+        drawing = true
+        try {
+            binding.switchBackupEnabled.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENABLED, false)
+            binding.checkCalendars.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CALENDARS, true)
+            binding.checkContacts.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CONTACTS, true)
+            if (!encryptionAwaitingPassword) {
+                binding.switchEncrypt.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED, false)
+            }
+            showText(binding.etIntervalDays, intervalField.redraw(storedInterval(), binding.etIntervalDays.text?.toString(), fresh))
+            showText(binding.etRetention, retentionField.redraw(storedRetention(), binding.etRetention.text?.toString(), fresh))
+        } finally {
+            drawing = false
+        }
+    }
+
+    /** After a re-creation: a number field's edit in progress comes back while its setting is still what it was. */
+    private fun restoreNumberEdits(saved: Bundle) {
+        showText(
+            binding.etIntervalDays,
+            intervalField.restore(saved.getString(KEY_INTERVAL_TEXT), saved.getString(KEY_INTERVAL_DRAWN), storedInterval())
+        )
+        showText(
+            binding.etRetention,
+            retentionField.restore(saved.getString(KEY_RETENTION_TEXT), saved.getString(KEY_RETENTION_DRAWN), storedRetention())
+        )
+    }
+
+    /** [value] into [field] with the cursor after it, or nothing for null. */
+    private fun showText(field: android.widget.EditText, value: String?) {
+        if (value == null) return
+        field.setText(value)
+        field.setSelection(value.length)
     }
 
     private fun wireListeners() {
         binding.btnChooseFolder.setOnClickListener { pickFolderLauncher.launch(null) }
 
         binding.switchBackupEnabled.setOnCheckedChangeListener { _, checked ->
+            if (drawing) return@setOnCheckedChangeListener
             if (checked && !SafBackupStorage.hasValidPermission(this)) {
                 binding.switchBackupEnabled.isChecked = false
                 promptChooseFolderFirst(); return@setOnCheckedChangeListener
@@ -101,20 +172,37 @@ class BackupSettingsActivity : AppCompatActivity() {
         }
 
         binding.checkCalendars.setOnCheckedChangeListener { _, c ->
+            if (drawing) return@setOnCheckedChangeListener
             prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CALENDARS, c).apply()
         }
         binding.checkContacts.setOnCheckedChangeListener { _, c ->
+            if (drawing) return@setOnCheckedChangeListener
             prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CONTACTS, c).apply()
         }
 
         binding.switchEncrypt.setOnCheckedChangeListener { _, checked ->
+            if (drawing) return@setOnCheckedChangeListener
             if (checked && !hasPassphrase()) {
+                encryptionAwaitingPassword = true
                 promptSetPassphrase(
                     onSet = {
+                        encryptionAwaitingPassword = false
                         prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED, true).apply()
                         refreshUi()
                     },
-                    onCancel = { binding.switchEncrypt.isChecked = false }
+                    onCancel = {
+                        // Nothing was stored when the dialog opened, so nothing is stored now: the switch shows the stored
+                        // choice again, which another copy of this screen may have changed meanwhile.
+                        encryptionAwaitingPassword = false
+                        drawing = true
+                        try {
+                            binding.switchEncrypt.isChecked =
+                                prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED, false)
+                        } finally {
+                            drawing = false
+                        }
+                        refreshUi()
+                    }
                 )
             } else {
                 prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED, checked).apply()
@@ -136,12 +224,18 @@ class BackupSettingsActivity : AppCompatActivity() {
     }
 
     private fun saveIntervalAndRetention() {
-        val days = binding.etIntervalDays.text?.toString()?.toIntOrNull()?.coerceIn(1, 365) ?: 7
-        val keep = binding.etRetention.text?.toString()?.toIntOrNull()?.coerceIn(1, 999) ?: 14
-        prefs.edit()
-            .putString(SyncPreferences.KEY_BACKUP_INTERVAL_DAYS, days.toString())
-            .putString(SyncPreferences.KEY_BACKUP_RETENTION, keep.toString())
-            .apply()
+        // Only a field the user changed: one still showing what it was drawn with leaves the stored value alone, so a
+        // value an import or another copy of this screen stored meanwhile is not overwritten with the old one.
+        val days = intervalField.toStore(binding.etIntervalDays.text?.toString())
+        val keep = retentionField.toStore(binding.etRetention.text?.toString())
+        if (days != null || keep != null) {
+            prefs.edit().apply {
+                if (days != null) putString(SyncPreferences.KEY_BACKUP_INTERVAL_DAYS, days)
+                if (keep != null) putString(SyncPreferences.KEY_BACKUP_RETENTION, keep)
+            }.apply()
+        }
+        // reschedule() reads the stored settings itself and keeps the schedule's timing (UPDATE), so this stays on every
+        // pause: it also applies an interval an import stored.
         if (prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENABLED, false)) BackupScheduleWorker.reschedule(this)
     }
 
@@ -450,5 +544,61 @@ class BackupSettingsActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "BackupSettings"
         private const val MIN_PASSPHRASE_LENGTH = 8
+        private const val KEY_INTERVAL_TEXT = "backup_settings_interval_text"
+        private const val KEY_INTERVAL_DRAWN = "backup_settings_interval_drawn"
+        private const val KEY_RETENTION_TEXT = "backup_settings_retention_text"
+        private const val KEY_RETENTION_DRAWN = "backup_settings_retention_drawn"
+    }
+}
+
+/**
+ * One of the backup screen's two number fields (interval days, retention count): the stored value it was last drawn
+ * with or stored as, [drawn], and the text it showed then, which decide what the field shows and what leaving the screen
+ * stores.
+ *
+ * Leaving the screen stores a field only when the user typed in it since it was last drawn or stored. Coming back, the
+ * field stays as it is (an emptied field stays empty, so the next digits are not added to a refilled number) unless the
+ * setting was changed elsewhere meanwhile (an import, another copy of the screen): then it shows the new value. Android's
+ * own saved view state is not used: it once restored an old number over a newer setting, and the old number was then
+ * stored again.
+ */
+internal class BackupNumberField(private val range: IntRange, private val fallback: Int) {
+    var drawn: String? = null
+        private set
+
+    /** The field's text when it was last drawn or stored: typed since, it differs. */
+    private var seen: String? = null
+
+    /**
+     * The text to put in the field for the [stored] value, or null to leave its [text] alone. [fresh] is a new view (on
+     * create); otherwise the field changes only when the setting moved since it was drawn or stored.
+     */
+    fun redraw(stored: String, text: String?, fresh: Boolean): String? {
+        if (!fresh && stored == drawn) return null
+        drawn = stored
+        seen = stored
+        return if (text == stored) null else stored
+    }
+
+    /**
+     * After a re-creation: the field's text saved with the screen, [savedText] (with [savedDrawn] stored then), comes back
+     * only while the setting is still [savedDrawn]. Changed since, the [stored] value the field was just drawn with stands.
+     */
+    fun restore(savedText: String?, savedDrawn: String?, stored: String): String? {
+        if (savedText == null || savedDrawn == null || savedDrawn != stored) return null
+        drawn = savedDrawn
+        seen = savedText
+        return if (savedText == stored) null else savedText
+    }
+
+    /**
+     * What to store when the screen is left showing [text], or null when nothing was typed since the field was drawn or
+     * stored: then the stored setting stays as it is, whatever changed it meanwhile. A typed text is stored as a whole
+     * number in [range], [fallback] when it holds none.
+     */
+    fun toStore(text: String?): String? {
+        if (text == seen) return null
+        seen = text
+        return (text?.toIntOrNull()?.coerceIn(range) ?: fallback).toString().also { drawn = it }
     }
 }

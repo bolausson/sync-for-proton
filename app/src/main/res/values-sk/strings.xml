@@ -285,7 +285,32 @@
     <string name="info_notify_on_failure_body">Zobrazí upozornenie, ak synchronizácia zlyhá (napr. chyba siete alebo vypršaná relácia). Ťuknutím naň získate dôvod v zrozumiteľnom jazyku a odkaz na záznamy. Vypnite ho, ak nechcete byť upozorňovaní na dočasné zlyhania.</string>
     <string name="info_sync_calendar_body">Keď je zapnuté, vaše kalendáre Proton sa synchronizujú do kalendára Androidu, takže udalosti sa zobrazujú v Google Calendar, Samsung Calendar a akejkoľvek inej kalendárovej aplikácii. Obojsmerne: úpravy, ktoré vykonáte v telefóne, sa nahrajú späť do Proton pre kalendáre, ktoré vlastníte.</string>
     <string name="info_include_external_calendars_body">Proton môže obsahovať odoberané kalendáre (napr. externý ICS kanál) a sviatkové kalendáre. Tie sú na strane Proton iba na čítanie. Keď je vypnuté, aplikácia ich preskočí a synchronizuje iba vaše vlastné upraviteľné kalendáre. Zapnite, ak chcete, aby sa tieto kalendáre iba na čítanie zrkadlili aj do vášho telefónu.</string>
-    <string name="info_sync_mode_body">„Všetky udalosti\" synchronizuje celú históriu vášho kalendára a všetky budúce udalosti, najlepšie, ak chcete mať všetko v telefóne (prvá synchronizácia veľkého kalendára môže trvať niekoľko minút). „Vlastný rozsah\" synchronizuje iba okno dní okolo dnešného dňa, vďaka čomu veľké kalendáre zostávajú rýchle a ľahké. Udalosti mimo okna sa nesťahujú.</string>
+    <string name="info_sync_mode_body">„Všetky udalosti“ synchronizuje celú históriu vášho kalendára a všetky budúce udalosti, najlepšie, ak chcete mať všetko v telefóne (prvá synchronizácia veľkého kalendára môže trvať niekoľko minút). „Vlastný rozsah“ udržiava veľké kalendáre rýchle tým, že synchronizuje iba okno dní okolo dnešného dňa: ich udalosti mimo okna sa nesťahujú a tie, ktoré sú už v tomto telefóne, ostávajú, pokiaľ pre ich kalendár nie je zapnutá možnosť „Odstrániť staršie udalosti z tohto telefónu“. Malé kalendáre sa vždy synchronizujú celé.</string>
+    <string name="label_trim_old_events">Odstrániť staršie udalosti z tohto telefónu</string>
+    <string name="info_trim_old_events_body">Vo vybraných kalendároch sa z tohto telefónu odstraňujú udalosti, ktoré sa skončili viac ako deň pred začiatkom vášho rozsahu, a to teraz aj pri ďalších synchronizáciách. Vo vašom účte Proton zostávajú a nič sa tam nemaže. Zálohy vašich vlastných kalendárov sa vytvárajú z Protonu, takže ich stále obsahujú; odoberané a sviatkové kalendáre sa nezálohujú. Opakujúca sa udalosť zostáva so všetkými svojimi skoršími termínmi, kým zasahuje do rozsahu alebo nemá dátum ukončenia, pretože telefón uchováva opakujúcu sa udalosť ako jeden záznam. Zostávajú aj udalosti so zmenami, ktoré ešte neboli odoslané do Protonu, a udalosti vytvorené alebo naposledy zmenené za posledných 7 dní podľa verzie v tomto telefóne, nie podľa toho, kedy ju tento telefón stiahol. Vybrať možno iba kalendáre, ktoré sú príliš veľké na to, aby sa synchronizovali celé, a udalosti po skončení rozsahu sa nikdy neodstraňujú. Ak chcete odstránené udalosti získať späť, zvoľte dlhší rozsah alebo „Všetky udalosti“.</string>
+    <string name="trim_dialog_title">Odstrániť staršie udalosti z tohto telefónu</string>
+    <string name="trim_dialog_intro">Vyberte kalendáre, ktoré chcete prečistiť. Udalosti, ktoré sa skončili pred %1$s, sa z tohto telefónu odstránia pri najbližšej synchronizácii a neskoršie, keď budú rovnako staré. Vo vašom účte Proton zostanú. Opakujúca sa udalosť, ktorá pokračuje aj po tomto dátume, zostane so všetkými svojimi termínmi.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Až %1$d udalosť na odstránenie</item>
+        <item quantity="few">Až %1$d udalosti na odstránenie</item>
+        <item quantity="many">Až %1$d udalosti na odstránenie</item>
+        <item quantity="other">Až %1$d udalostí na odstránenie</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Momentálne nie je čo odstrániť</string>
+    <string name="trim_calendar_whole">Zatiaľ sa synchronizuje celý, takže sa nič neodstraňuje</string>
+    <string name="trim_not_synced_yet">Kalendáre tohto účtu ešte nie sú synchronizované, takže ich nemožno zobraziť v zozname. Skúste to znova po najbližšej synchronizácii.</string>
+    <string name="trim_offer_keep">Ponechať ich</string>
+    <string name="trim_small_calendars_note">Malé kalendáre sa synchronizujú celé a uchovávajú všetky udalosti, preto tu nie sú uvedené.</string>
+    <string name="trim_no_large_calendars">Žiadny z kalendárov tohto účtu nie je dostatočne veľký. Malé kalendáre sa synchronizujú celé a uchovávajú všetky udalosti.</string>
+    <string name="trim_external_off_note">Kým je možnosť „Zahrnúť externé kalendáre“ vypnutá, sviatkové a odoberané kalendáre sa nesynchronizujú, preto tu nie sú uvedené a nič sa z nich neodstraňuje.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Zapnuté pre %1$d kalendár</item>
+        <item quantity="few">Zapnuté pre %1$d kalendáre</item>
+        <item quantity="many">Zapnuté pre %1$d kalendára</item>
+        <item quantity="other">Zapnuté pre %1$d kalendárov</item>
+    </plurals>
+    <string name="trim_dialog_save">Uložiť</string>
+    <string name="trim_read_failed">Kalendáre v tomto telefóne sa nepodarilo načítať, takže sa nič nezmenilo.</string>
     <string name="info_sync_range_window_body">Koľko dní pred a po dnešnom dni synchronizovať, keď je vybraný „Vlastný rozsah\". Väčšie okná zobrazujú viac z vášho kalendára, ale synchronizácia trvá dlhšie. V režime „Všetky udalosti\" nemá žiadny účinok.</string>
     <string name="info_poll_attendee_body">Keď je zapnuté, aplikácia pravidelne opätovne kontroluje udalosti, ktoré majú účastníkov, aby zistila odpovede prijať/odmietnuť/predbežne. Kanál zmien Proton nehlási zmeny RSVP, takže toto vyžaduje ďalšie API volania, oplatí sa zapnúť iba vtedy, ak sa spoliehate na zobrazenie odpovedí účastníkov v telefóne.</string>
     <string name="info_send_invites_body">Keď v telefóne pridáte k udalosti účastníkov, odošlite im e-mailom pozvánku. Predvolene vypnuté: zapnite iba vtedy, ak chcete, aby aplikácia posielala e-maily účastníkom vo vašom mene.</string>

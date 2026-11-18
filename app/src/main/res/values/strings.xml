@@ -38,7 +38,7 @@
     <string name="error_login_proton_refused">Proton could not complete the sign-in. Please try again in a moment.</string>
     <!-- %1$s is the name of the error type, for example IllegalStateException; keep it untranslated -->
     <string name="error_login_unexpected">Sign-in failed because of an unexpected error (%1$s). Please try again.</string>
-    <string name="version_label" translatable="false">v2.0.4</string>
+    <string name="version_label" translatable="false">v2.1.0</string>
 
     <!-- Legal footer (settings, just above the brand/version line) -->
     <string name="link_privacy_policy">Privacy Policy</string>
@@ -378,7 +378,28 @@
     <string name="info_notify_on_failure_body">Shows a notification if a sync fails (e.g. network error or expired session). Tap it for a plain-language reason and a link to the logs. Turn it off if you don\'t want to be alerted about transient failures.</string>
     <string name="info_sync_calendar_body">When on, your Proton calendars sync into Android\'s calendar, so events appear in Google Calendar, Samsung Calendar and any other calendar app. Two-way: edits you make on the phone upload back to Proton for calendars you own.</string>
     <string name="info_include_external_calendars_body">Proton can hold subscribed calendars (e.g. an external ICS feed) and holiday calendars. These are read-only on Proton\'s side. When off, the app skips them and syncs only your own editable calendars. Turn on if you also want those read-only calendars mirrored to your phone.</string>
-    <string name="info_sync_mode_body">\"All events\" syncs your entire calendar history and all future events, best if you want everything on your phone (the first sync of a large calendar can take several minutes). \"Custom range\" syncs only a window of days around today, keeping large calendars fast and light. Events outside the window aren\'t downloaded.</string>
+    <string name="info_sync_mode_body">\"All events\" syncs your entire calendar history and all future events, best if you want everything on your phone (the first sync of a large calendar can take several minutes). \"Custom range\" keeps large calendars fast by syncing only a window of days around today: their events outside the window aren\'t downloaded, and events already on this phone stay unless \"Remove older events from this phone\" is on for their calendar. Small calendars always sync whole.</string>
+    <string name="label_trim_old_events">Remove older events from this phone</string>
+    <string name="info_trim_old_events_body">For the calendars you choose, events that ended more than a day before your range starts are removed from this phone, now and at later syncs. They stay in your Proton account and nothing is deleted there. Backups of your own calendars are made from Proton, so they still have them; subscribed and holiday calendars are not backed up. A repeating event stays, with all its earlier dates, while it continues into your range or has no end date, because the phone keeps a repeating event as one entry. Events with changes not yet sent to Proton also stay, and so do events created or last changed in the last 7 days, going by the version on this phone, not by when this phone downloaded it. Only calendars too large to sync whole can be chosen, and events after your range are never removed. To get removed events back, choose a longer range or \"All events\".</string>
+    <string name="trim_dialog_title">Remove older events from this phone</string>
+    <string name="trim_dialog_intro">Choose the calendars to tidy up. Events that ended before %1$s are removed from this phone at the next sync, and later ones once they are as old. They stay in your Proton account. A repeating event that continues after that date stays, with all its dates.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Up to %1$d event to remove</item>
+        <item quantity="other">Up to %1$d events to remove</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Nothing to remove now</string>
+    <string name="trim_calendar_whole">Syncs whole for now, so nothing is removed</string>
+    <string name="trim_not_synced_yet">This account\'s calendars are not synced yet, so they cannot be listed. Try again after the next sync.</string>
+    <string name="trim_offer_keep">Keep them</string>
+    <string name="trim_small_calendars_note">Small calendars sync whole and keep every event, so they are not listed.</string>
+    <string name="trim_no_large_calendars">None of this account\'s calendars is large enough. Small calendars sync whole and keep every event.</string>
+    <string name="trim_external_off_note">Holiday and subscribed calendars are not synced while \"Include external calendars\" is off, so they are not listed and nothing is removed from them.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">On for %1$d calendar</item>
+        <item quantity="other">On for %1$d calendars</item>
+    </plurals>
+    <string name="trim_dialog_save">Save</string>
+    <string name="trim_read_failed">The calendars on this phone could not be read, so nothing was changed.</string>
     <string name="info_sync_range_window_body">How many days before and after today to sync when \"Custom range\" is selected. Larger windows show more of your calendar but take longer to sync. Has no effect in \"All events\" mode.</string>
     <string name="info_poll_attendee_body">When on, the app periodically re-checks events that have attendees to detect accept/decline/tentative responses. Proton\'s change feed doesn\'t report RSVP changes, so this needs extra API calls, only worth enabling if you rely on seeing attendees\' responses on your phone.</string>
     <string name="info_send_invites_body">When you add attendees to an event on your phone, email them an invitation. Off by default: turn on only if you want the app to email participants on your behalf.</string>

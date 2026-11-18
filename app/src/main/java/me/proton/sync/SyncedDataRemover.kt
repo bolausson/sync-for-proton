@@ -132,6 +132,13 @@ object SyncedDataRemover {
         db.calendarEventSyncDao().deleteAllByAccount(account.name)
         db.calendarSyncDao().deleteAllByAccount(account.name)
         clearRangePrefs(context, account.name)
+        // "Remove older events" starts over too, off for every calendar: most of the calendars it was on for are gone (the
+        // provider gives their ids to the next ones created), and one kept for rows only this phone has is linked again
+        // by the next sync like a new one. The rows and mappings the journal of an unfinished removal names are gone.
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
+            .remove(SyncPreferences.calendarTrimPastKey(account.name))
+            .remove(SyncPreferences.calendarTrimJournalKey(account.name))
+            .apply()
         // The rows those holds asked about are gone, so the question is void.
         me.proton.sync.RemoteDeletionGuard.forgetHolds(
             context, me.proton.sync.RemoteDeletionGuard.TYPE_CALENDAR, account.name

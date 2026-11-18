@@ -733,6 +733,37 @@
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>
+
+                    <!-- Remove older events from this phone, per calendar (RangeTrimDialog) -->
+                    <LinearLayout
+                        android:id="@+id/row_trim_old_events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/sfp_row_pad_h"
+                        android:paddingVertical="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_trim_old_events"
+                            android:textColor="@color/sfp_text"
+                            android:textSize="@dimen/sfp_text_row_title" />
+
+                        <ImageView android:id="@+id/info_trim_old_events" style="@style/InfoIcon" />
+
+                        <TextView
+                            android:id="@+id/value_trim_old_events"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_value" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp"

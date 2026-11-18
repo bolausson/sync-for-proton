@@ -121,12 +121,70 @@ object SyncPreferences {
         "last_sync_range_${accountName}_$calId"
 
     /**
+     * The local date (yyyy-MM-dd) of a custom-range calendar's last complete sweep, for the daily sweep that brings
+     * events entering the range onto the phone. Built on [lastSyncRangeKey] on purpose: every clean-up of the range
+     * keys removes them by that prefix (a forced Remote to Local resync, removing synced data, an import), and so
+     * removes this one too.
+     */
+    fun lastSweepDayKey(accountName: String, calId: String) =
+        lastSyncRangeKey(accountName, calId) + "_swept_day"
+
+    /**
+     * Set once an external calendar's server-to-local deletion pass has run complete in 2.1.0 or later: its first one is
+     * cautious (calendar.planServerDeletions), because 2.0.4 moved re-keyed events without a mark. On [lastSyncRangeKey]
+     * like [lastSweepDayKey], so the same clean-ups remove it; a calendar without it is cautious once more, which only asks.
+     */
+    fun replacementTrustedKey(accountName: String, calId: String) =
+        lastSyncRangeKey(accountName, calId) + "_trusted"
+
+    /**
+     * The calendar's event count on Proton at its last sync, which decides whether it syncs whole (calendar.
+     * RangeTrimDryRun reads it: once older events are removed, the phone holds fewer than Proton). On
+     * [lastSyncRangeKey] like the two above.
+     */
+    fun serverTotalKey(accountName: String, calId: String) =
+        lastSyncRangeKey(accountName, calId) + "_total"
+
+    /**
+     * Whether the calendar's last complete custom-range run fetched it whole (the flat path), so the phone holds every
+     * event it has: the daily sweep leaves such a calendar alone while nothing changes on Proton. A run that took the
+     * window, because the calendar is large or because its event count failed, writes false. On [lastSyncRangeKey]
+     * like the ones above.
+     */
+    fun fetchedWholeKey(accountName: String, calId: String) =
+        lastSyncRangeKey(accountName, calId) + "_whole"
+
+    /**
+     * Whether the calendar is a holiday or subscribed one (a Proton type other than 0), noted by every sync, also one
+     * that skips it while "Include external calendars" is off: "Remove older events" leaves such a calendar out then,
+     * as no sync removes anything from it (calendar.RangeTrimRunner.skippedBySync). On [lastSyncRangeKey] like the ones
+     * above.
+     */
+    fun calendarExternalKey(accountName: String, calId: String) =
+        lastSyncRangeKey(accountName, calId) + "_external"
+
+    /**
      * Which time-zone rules this account's stored event times were last checked against
      * (TimeZoneRuleSource.retimeIdentity), plus "#n" after n failed attempts or "#u<n>@<process>" while the
      * check is incomplete (calendar.RetimeState). Ends with the account name, so a rename carries it. Not
      * exported: it describes this phone's data, not a choice.
      */
     fun timeZoneRetimeKey(accountName: String) = "tz_retime_$accountName"
+
+    /**
+     * The calendars of this account that "Remove older events from this phone" is on for: RangeTrimRunner.Choice texts,
+     * "<Android calendar id>|<Proton calendar id>", and an entry in any other form is ignored. Both ids, because the
+     * provider reuses the id of a deleted calendar, so a new calendar never inherits removal: one re-created on Proton
+     * under the same name keeps its Android calendar with a new Proton id and starts with removal off, and a choice goes
+     * with its calendar when the app drops that calendar (calendar.RangeTrimRunner.forgetCalendar), and every one with
+     * "Remove synced data". Not exported (BackupSettings): an import
+     * writes settings for every account in the backup, also ones already on this phone, and would turn removal on
+     * without the dialog's count.
+     */
+    fun calendarTrimPastKey(accountName: String) = "calendar_trim_past_$accountName"
+
+    /** The journal of a removal batch in flight (calendar.RangeTrimPass), so an interrupted one is finished. */
+    fun calendarTrimJournalKey(accountName: String) = "calendar_trim_inflight_$accountName"
 
     /** Default number of past days to sync for calendar events. */
     const val DEFAULT_PAST_DAYS = 180L
@@ -511,7 +569,7 @@ object SyncPreferences {
     val ACCOUNT_SCOPED_PREFIXES: List<String> = listOf(
         "event_loop_interval_", "event_loop_id_",
         "calendar_sync_mode_", "calendar_past_days_", "calendar_future_days_",
-        "calendar_settings_dirty_", "calendar_pending_cancels_",
+        "calendar_settings_dirty_", "calendar_pending_cancels_", "calendar_trim_past_", "calendar_trim_inflight_",
         "contact_filter_rules_", "contact_filter_dirty_", "contact_filter_kept_local_",
         "contact_create_strikes_", "contact_create_refused_", "contact_create_reasons_",
         "contact_download_too_large_",

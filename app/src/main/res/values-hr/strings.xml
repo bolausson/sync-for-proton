@@ -279,7 +279,30 @@
     <string name="info_notify_on_failure_body">Prikazuje obavijest ako sinkronizacija ne uspije (npr. mrežna pogreška ili istekla sesija). Dodirnite je za razlog na razumljivom jeziku i poveznicu na zapise. Isključite je ako ne želite biti obaviješteni o prolaznim pogreškama.</string>
     <string name="info_sync_calendar_body">Kada je uključeno, vaši Proton kalendari sinkroniziraju se u Android kalendar, pa se događaji pojavljuju u Google Calendar, Samsung Calendar i bilo kojoj drugoj aplikaciji za kalendar. Dvosmjerno: izmjene koje napravite na telefonu prenose se natrag u Proton za kalendare koji su vaši.</string>
     <string name="info_include_external_calendars_body">Proton može sadržavati pretplaćene kalendare (npr. vanjski ICS feed) i kalendare praznika. Oni su samo za čitanje na Protonovoj strani. Kada je isključeno, aplikacija ih preskače i sinkronizira samo vaše vlastite kalendare koji se mogu uređivati. Uključite ako želite da se i ti kalendari samo za čitanje preslikaju na vaš telefon.</string>
-    <string name="info_sync_mode_body">„Svi događaji\" sinkronizira cijelu povijest vašeg kalendara i sve buduće događaje, najbolje ako želite sve na svom telefonu (prva sinkronizacija velikog kalendara može potrajati nekoliko minuta). „Prilagođeni raspon\" sinkronizira samo prozor dana oko danas, čime veliki kalendari ostaju brzi i lagani. Događaji izvan prozora se ne preuzimaju.</string>
+    <string name="info_sync_mode_body">„Svi događaji“ sinkronizira cijelu povijest vašeg kalendara i sve buduće događaje, najbolje ako želite sve na svom telefonu (prva sinkronizacija velikog kalendara može potrajati nekoliko minuta). „Prilagođeni raspon“ održava velike kalendare brzima tako što sinkronizira samo prozor dana oko danas: njihovi događaji izvan prozora se ne preuzimaju, a oni koji su već na ovom telefonu ostaju, osim ako je za njihov kalendar uključena opcija „Ukloni starije događaje s ovog telefona“. Mali kalendari uvijek se sinkroniziraju u cijelosti.</string>
+    <string name="label_trim_old_events">Ukloni starije događaje s ovog telefona</string>
+    <string name="info_trim_old_events_body">U odabranim kalendarima događaji koji su završili više od jednog dana prije početka vašeg raspona uklanjaju se s ovog telefona, sada i pri kasnijim sinkronizacijama. Ostaju na vašem Proton računu i ondje se ništa ne briše. Sigurnosne kopije vaših vlastitih kalendara izrađuju se iz Protona, pa ih i dalje sadrže; za pretplaćene kalendare i kalendare praznika ne izrađuju se sigurnosne kopije. Ponavljajući događaj ostaje sa svim svojim ranijim datumima dok god seže u raspon ili nema datum završetka, jer telefon čuva ponavljajući događaj kao jedan unos. Ostaju i događaji s promjenama koje još nisu poslane u Proton te događaji stvoreni ili zadnji put promijenjeni u posljednjih 7 dana prema verziji na ovom telefonu, a ne prema tome kada ju je ovaj telefon preuzeo. Mogu se odabrati samo kalendari koji su preveliki da bi se sinkronizirali u cijelosti, a događaji nakon kraja raspona nikad se ne uklanjaju. Da biste vratili uklonjene događaje, odaberite dulji raspon ili „Svi događaji“.</string>
+    <string name="trim_dialog_title">Ukloni starije događaje s ovog telefona</string>
+    <string name="trim_dialog_intro">Odaberite kalendare koje želite pročistiti. Događaji koji su završili prije %1$s uklonit će se s ovog telefona pri sljedećoj sinkronizaciji, a kasniji kad postanu jednako stari. Ostaju na vašem Proton računu. Ponavljajući događaj koji se nastavlja nakon tog datuma ostaje sa svim svojim datumima.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Do %1$d događaja za uklanjanje</item>
+        <item quantity="few">Do %1$d događaja za uklanjanje</item>
+        <item quantity="other">Do %1$d događaja za uklanjanje</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Trenutačno nema ničega za uklanjanje</string>
+    <string name="trim_calendar_whole">Zasad se sinkronizira u cijelosti, pa se ništa ne uklanja</string>
+    <string name="trim_not_synced_yet">Kalendari ovog računa još nisu sinkronizirani, pa ih nije moguće navesti. Pokušajte ponovno nakon sljedeće sinkronizacije.</string>
+    <string name="trim_offer_keep">Zadrži ih</string>
+    <string name="trim_small_calendars_note">Mali kalendari sinkroniziraju se u cijelosti i zadržavaju sve događaje, pa nisu navedeni.</string>
+    <string name="trim_no_large_calendars">Nijedan kalendar ovog računa nije dovoljno velik. Mali kalendari sinkroniziraju se u cijelosti i zadržavaju sve događaje.</string>
+    <string name="trim_external_off_note">Dok je opcija „Uključi vanjske kalendare“ isključena, kalendari praznika i pretplaćeni kalendari se ne sinkroniziraju, pa nisu navedeni i iz njih se ništa ne uklanja.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Uključeno za %1$d kalendar</item>
+        <item quantity="few">Uključeno za %1$d kalendara</item>
+        <item quantity="other">Uključeno za %1$d kalendara</item>
+    </plurals>
+    <string name="trim_dialog_save">Spremi</string>
+    <string name="trim_read_failed">Kalendare na ovom telefonu nije bilo moguće pročitati, pa ništa nije promijenjeno.</string>
     <string name="info_sync_range_window_body">Koliko dana prije i poslije danas sinkronizirati kada je odabrano „Prilagođeni raspon\". Veći prozori prikazuju više vašeg kalendara, ali se dulje sinkroniziraju. Nema učinka u načinu „Svi događaji\".</string>
     <string name="info_poll_attendee_body">Kada je uključeno, aplikacija povremeno ponovno provjerava događaje koji imaju sudionike kako bi otkrila odgovore prihvati/odbij/uvjetno. Protonov feed promjena ne prijavljuje promjene RSVP-a, pa ovo zahtijeva dodatne API pozive, vrijedi ga omogućiti samo ako se oslanjate na prikaz odgovora sudionika na svom telefonu.</string>
     <string name="info_send_invites_body">Kada na svom telefonu dodate sudionike događaju, pošaljite im pozivnicu e-poštom. Isključeno prema zadanim postavkama: uključite samo ako želite da aplikacija šalje e-poštu sudionicima u vaše ime.</string>

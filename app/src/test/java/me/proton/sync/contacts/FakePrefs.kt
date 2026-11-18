@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 /** In-memory SharedPreferences: enough for strings and string sets. */
 internal class FakePrefs : SharedPreferences {
     val values = HashMap<String, Any?>()
+    /** Edits written with commit(), the synchronous write, rather than apply(). */
+    var commits = 0
     override fun getAll(): MutableMap<String, *> = values
     override fun getString(key: String, defValue: String?) = values[key] as? String ?: defValue
     @Suppress("UNCHECKED_CAST")
@@ -28,7 +30,7 @@ internal class FakePrefs : SharedPreferences {
         override fun putBoolean(key: String, value: Boolean) = apply { pending[key] = value }
         override fun remove(key: String) = apply { removed.add(key) }
         override fun clear() = apply { removed.addAll(values.keys) }
-        override fun commit(): Boolean { apply(); return true }
+        override fun commit(): Boolean { apply(); commits++; return true }
         override fun apply() {
             removed.forEach { values.remove(it) }
             values.putAll(pending)

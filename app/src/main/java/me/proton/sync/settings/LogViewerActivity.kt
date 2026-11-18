@@ -106,17 +106,36 @@ class LogViewerActivity : AppCompatActivity() {
      * change retroactively, so reproduce the problem again after turning it on.
      */
     private fun setupVerboseLoggingToggle() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        binding.switchVerboseLogging.isChecked = prefs.getBoolean(
+        // Drawn from the stored setting, here and on every resume, never from Android's saved view state. Restored after
+        // a rotation, a language change or process death, a position saved before the setting changed elsewhere (the
+        // settings screen, an import, another copy of this screen) fired the listener and stored the old value again.
+        binding.switchVerboseLogging.isSaveFromParentEnabled = false
+        refreshVerboseLoggingUi()
+    }
+
+    /** A field, so [refreshVerboseLoggingUi] can detach it and not store or log a flip nobody made. */
+    private val verboseLoggingCheckedListener = android.widget.CompoundButton.OnCheckedChangeListener { _, checked ->
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .edit().putBoolean(SyncPreferences.KEY_VERBOSE_LOGGING, checked).apply()
+        SyncLog.setVerboseEnabled(checked)
+        // Logged at INFO so it is always visible, marking exactly where the level changed.
+        SyncLog.i(TAG, "Verbose logging ${if (checked) "enabled" else "disabled"} from log viewer")
+    }
+
+    /** The stored choice into the switch, listener detached: the settings screen and an import change it too. */
+    private fun refreshVerboseLoggingUi() {
+        val sw = binding.switchVerboseLogging
+        sw.setOnCheckedChangeListener(null)
+        sw.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
             SyncPreferences.KEY_VERBOSE_LOGGING,
             SyncPreferences.DEFAULT_VERBOSE_LOGGING
         )
-        binding.switchVerboseLogging.setOnCheckedChangeListener { _, checked ->
-            prefs.edit().putBoolean(SyncPreferences.KEY_VERBOSE_LOGGING, checked).apply()
-            SyncLog.setVerboseEnabled(checked)
-            // Logged at INFO so it is always visible, marking exactly where the level changed.
-            SyncLog.i(TAG, "Verbose logging ${if (checked) "enabled" else "disabled"} from log viewer")
-        }
+        sw.setOnCheckedChangeListener(verboseLoggingCheckedListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshVerboseLoggingUi()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

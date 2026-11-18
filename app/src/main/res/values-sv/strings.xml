@@ -289,7 +289,28 @@
     <string name="info_notify_on_failure_body">Visar en avisering om en synkronisering misslyckas (t.ex. nätverksfel eller utgången session). Tryck på den för en orsak i klartext och en länk till loggarna. Stäng av den om du inte vill bli aviserad om tillfälliga fel.</string>
     <string name="info_sync_calendar_body">När den är på synkroniseras dina Proton-kalendrar in i Androids kalender, så att händelser visas i Google Calendar, Samsung Calendar och alla andra kalenderappar. Dubbelriktat: ändringar du gör på telefonen laddas upp tillbaka till Proton för kalendrar du äger.</string>
     <string name="info_include_external_calendars_body">Proton kan innehålla prenumererade kalendrar (t.ex. en extern ICS-feed) och helgdagskalendrar. Dessa är skrivskyddade på Protons sida. När den är av hoppar appen över dem och synkroniserar bara dina egna redigerbara kalendrar. Slå på om du även vill att dessa skrivskyddade kalendrar speglas till din telefon.</string>
-    <string name="info_sync_mode_body">\"Alla händelser\" synkroniserar hela din kalenderhistorik och alla framtida händelser, bäst om du vill ha allt på din telefon (den första synkroniseringen av en stor kalender kan ta flera minuter). \"Anpassat intervall\" synkroniserar bara ett fönster av dagar runt idag, vilket håller stora kalendrar snabba och lätta. Händelser utanför fönstret laddas inte ner.</string>
+    <string name="info_sync_mode_body">\"Alla händelser\" synkroniserar hela din kalenderhistorik och alla framtida händelser, bäst om du vill ha allt på din telefon (den första synkroniseringen av en stor kalender kan ta flera minuter). \"Anpassat intervall\" håller stora kalendrar snabba genom att bara synkronisera ett fönster av dagar runt idag: deras händelser utanför fönstret laddas inte ner, och händelser som redan finns på telefonen ligger kvar om inte \"Ta bort äldre händelser från telefonen\" är på för deras kalender. Små kalendrar synkroniseras alltid i sin helhet.</string>
+    <string name="label_trim_old_events">Ta bort äldre händelser från telefonen</string>
+    <string name="info_trim_old_events_body">I de kalendrar du väljer tas händelser bort från telefonen om de slutade mer än en dag innan ditt intervall börjar, både nu och vid senare synkroniseringar. De finns kvar i ditt Proton-konto och inget raderas där. Säkerhetskopior av dina egna kalendrar skapas från Proton, så de innehåller dem fortfarande; prenumererade kalendrar och helgdagskalendrar säkerhetskopieras inte. En återkommande händelse ligger kvar med alla sina tidigare datum så länge den fortsätter in i ditt intervall eller saknar slutdatum, eftersom telefonen sparar en återkommande händelse som en enda post. Händelser med ändringar som ännu inte har skickats till Proton ligger också kvar, och det gör även händelser som har skapats eller senast ändrats de senaste 7 dagarna, bedömt utifrån versionen på telefonen och inte utifrån när telefonen laddade ner den. Bara kalendrar som är för stora för att synkroniseras i sin helhet kan väljas, och händelser efter ditt intervall tas aldrig bort. Välj ett längre intervall eller \"Alla händelser\" för att få tillbaka borttagna händelser.</string>
+    <string name="trim_dialog_title">Ta bort äldre händelser från telefonen</string>
+    <string name="trim_dialog_intro">Välj vilka kalendrar som ska rensas. Händelser som slutade före %1$s tas bort från telefonen vid nästa synkronisering, och senare händelser när de blir lika gamla. De finns kvar i ditt Proton-konto. En återkommande händelse som fortsätter efter det datumet ligger kvar med alla sina datum.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Upp till %1$d händelse att ta bort</item>
+        <item quantity="other">Upp till %1$d händelser att ta bort</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Inget att ta bort just nu</string>
+    <string name="trim_calendar_whole">Synkroniseras tills vidare i sin helhet, så inget tas bort</string>
+    <string name="trim_not_synced_yet">Kalendrarna i det här kontot har inte synkroniserats ännu, så de kan inte visas. Försök igen efter nästa synkronisering.</string>
+    <string name="trim_offer_keep">Behåll dem</string>
+    <string name="trim_small_calendars_note">Små kalendrar synkroniseras i sin helhet och behåller alla händelser, så de visas inte här.</string>
+    <string name="trim_no_large_calendars">Ingen av kalendrarna i det här kontot är tillräckligt stor. Små kalendrar synkroniseras i sin helhet och behåller alla händelser.</string>
+    <string name="trim_external_off_note">Helgdagskalendrar och prenumererade kalendrar synkroniseras inte medan \"Inkludera externa kalendrar\" är av, så de visas inte här och inget tas bort från dem.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">På för %1$d kalender</item>
+        <item quantity="other">På för %1$d kalendrar</item>
+    </plurals>
+    <string name="trim_dialog_save">Spara</string>
+    <string name="trim_read_failed">Kalendrarna på telefonen kunde inte läsas, så inget ändrades.</string>
     <string name="info_sync_range_window_body">Hur många dagar före och efter idag som ska synkroniseras när \"Anpassat intervall\" är valt. Större fönster visar mer av din kalender men tar längre tid att synkronisera. Har ingen effekt i läget \"Alla händelser\".</string>
     <string name="info_poll_attendee_body">När den är på kontrollerar appen regelbundet händelser som har deltagare igen för att upptäcka svar med acceptera/avböj/preliminärt. Protons ändringsflöde rapporterar inte RSVP-ändringar, så detta kräver extra API-anrop, bara värt att aktivera om du förlitar dig på att se deltagarnas svar på din telefon.</string>
     <string name="info_send_invites_body">När du lägger till deltagare i en händelse på din telefon, mejla dem en inbjudan. Av som standard: slå bara på om du vill att appen mejlar deltagare å dina vägnar.</string>

@@ -76,6 +76,18 @@ interface CalendarEventSyncDao {
     @Query("SELECT * FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id = :androidId")
     suspend fun getByAndroidId(accountName: String, androidId: Long): CalendarEventSyncEntity?
 
+    /** Every Proton id whose mapping names the local row [androidId] (normally one; never trust that it is). */
+    @Query("SELECT proton_event_id FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id = :androidId")
+    suspend fun protonIdsOfRow(accountName: String, androidId: Long): List<String>
+
+    /** Give one mapping another Proton id in one statement (the debug churn-fixture verb). */
+    @Query("UPDATE calendar_event_sync SET proton_event_id = :newId WHERE account_name = :accountName AND proton_event_id = :oldId")
+    suspend fun renameEvent(accountName: String, oldId: String, newId: String): Int
+
+    /** Delete these mappings in one statement, so a removal batch never leaves half of them (calendar.RangeTrimPass). */
+    @Query("DELETE FROM calendar_event_sync WHERE account_name = :accountName AND proton_event_id IN (:protonIds)")
+    suspend fun deleteByProtonIds(accountName: String, protonIds: List<String>): Int
+
     @Query("DELETE FROM calendar_event_sync WHERE account_name = :accountName AND proton_event_id = :protonId")
     suspend fun deleteByProtonId(accountName: String, protonId: String)
 

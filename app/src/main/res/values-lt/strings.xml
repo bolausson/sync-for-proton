@@ -284,7 +284,32 @@
     <string name="info_notify_on_failure_body">Rodo pranešimą, jei sinchronizavimas nepavyksta (pvz., tinklo klaida arba pasibaigusi sesija). Bakstelėkite jį, kad gautumėte priežastį paprasta kalba ir nuorodą į žurnalus. Išjunkite jį, jei nenorite gauti įspėjimų apie laikinas klaidas.</string>
     <string name="info_sync_calendar_body">Kai įjungta, jūsų Proton kalendoriai sinchronizuojami į Android kalendorių, todėl įvykiai rodomi Google Calendar, Samsung Calendar ir bet kurioje kitoje kalendoriaus programėlėje. Dviem kryptimis: telefone atlikti pakeitimai įkeliami atgal į Proton kalendoriams, kurie priklauso jums.</string>
     <string name="info_include_external_calendars_body">Proton gali talpinti prenumeruojamus kalendorius (pvz., išorinį ICS srautą) ir švenčių kalendorius. Proton pusėje jie skirti tik skaityti. Kai išjungta, programėlė juos praleidžia ir sinchronizuoja tik jūsų pačių redaguojamus kalendorius. Įjunkite, jei norite, kad šie tik skaitymui skirti kalendoriai taip pat būtų atspindėti jūsų telefone.</string>
-    <string name="info_sync_mode_body">„Visi įvykiai\" sinchronizuoja visą jūsų kalendoriaus istoriją ir visus būsimus įvykius, geriausia, jei norite turėti viską savo telefone (pirmasis didelio kalendoriaus sinchronizavimas gali užtrukti kelias minutes). „Pasirinktinis intervalas\" sinchronizuoja tik dienų langą aplink šiandien, todėl dideli kalendoriai išlieka greiti ir lengvi. Įvykiai už lango ribų neatsisiunčiami.</string>
+    <string name="info_sync_mode_body">„Visi įvykiai“ sinchronizuoja visą jūsų kalendoriaus istoriją ir visus būsimus įvykius, geriausia, jei norite turėti viską savo telefone (pirmasis didelio kalendoriaus sinchronizavimas gali užtrukti kelias minutes). „Pasirinktinis intervalas“ sinchronizuoja tik dienų langą aplink šiandien, kad dideli kalendoriai išliktų greiti: jų įvykiai už lango ribų neatsisiunčiami, o šiame telefone jau esantys įvykiai lieka, nebent jų kalendoriui įjungta parinktis „Pašalinti senesnius įvykius iš šio telefono“. Maži kalendoriai visada sinchronizuojami visa apimtimi.</string>
+    <string name="label_trim_old_events">Pašalinti senesnius įvykius iš šio telefono</string>
+    <string name="info_trim_old_events_body">Jūsų pasirinktų kalendorių įvykiai, pasibaigę daugiau nei dieną prieš jūsų intervalo pradžią, pašalinami iš šio telefono dabar ir vėlesnių sinchronizavimų metu. Jie lieka jūsų Proton paskyroje, o ten nieko neištrinama. Jūsų pačių kalendorių atsarginės kopijos daromos iš Proton, todėl jose šie įvykiai vis dar yra; prenumeruojamų kalendorių ir švenčių kalendorių atsarginės kopijos nedaromos. Pasikartojantis įvykis lieka su visomis savo ankstesnėmis datomis, kol jis tęsiasi jūsų intervale arba neturi pabaigos datos, nes telefonas pasikartojantį įvykį saugo kaip vieną įrašą. Taip pat paliekami įvykiai, kurių pakeitimai dar neišsiųsti į Proton, ir įvykiai, kurie buvo sukurti ar paskutinį kartą pakeisti per pastarąsias 7 dienas, sprendžiant pagal šiame telefone esančią versiją, o ne pagal tai, kada telefonas ją atsisiuntė. Pasirinkti galima tik kalendorius, kurie per dideli, kad būtų sinchronizuojami visa apimtimi, o įvykiai po jūsų intervalo pabaigos niekada nepašalinami. Norėdami susigrąžinti pašalintus įvykius, pasirinkite ilgesnį intervalą arba „Visi įvykiai“.</string>
+    <string name="trim_dialog_title">Pašalinti senesnius įvykius iš šio telefono</string>
+    <string name="trim_dialog_intro">Pasirinkite kalendorius, kuriuos norite sutvarkyti. Įvykiai, pasibaigę prieš %1$s, iš šio telefono pašalinami kito sinchronizavimo metu, o vėlesni, kai taps tokie pat seni. Jie lieka jūsų Proton paskyroje. Pasikartojantis įvykis, kuris tęsiasi po šios datos, lieka su visomis savo datomis.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Galima pašalinti iki %1$d įvykio</item>
+        <item quantity="few">Galima pašalinti iki %1$d įvykių</item>
+        <item quantity="many">Galima pašalinti iki %1$d įvykio</item>
+        <item quantity="other">Galima pašalinti iki %1$d įvykių</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Šiuo metu nėra ką pašalinti</string>
+    <string name="trim_calendar_whole">Kol kas sinchronizuojamas visa apimtimi, todėl nieko nepašalinama</string>
+    <string name="trim_not_synced_yet">Šios paskyros kalendoriai dar nesinchronizuoti, todėl jų negalima parodyti sąraše. Bandykite dar kartą po kito sinchronizavimo.</string>
+    <string name="trim_offer_keep">Palikti</string>
+    <string name="trim_small_calendars_note">Mažų kalendorių sinchronizuojami ir paliekami visi įvykiai, todėl šie kalendoriai sąraše nerodomi.</string>
+    <string name="trim_no_large_calendars">Nė vienas šios paskyros kalendorius nėra pakankamai didelis. Mažų kalendorių sinchronizuojami ir paliekami visi įvykiai.</string>
+    <string name="trim_external_off_note">Švenčių kalendoriai ir prenumeruojami kalendoriai nesinchronizuojami, kai išjungta parinktis „Įtraukti išorinius kalendorius“, todėl jie sąraše nerodomi ir iš jų nieko nepašalinama.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Įjungta %1$d kalendoriui</item>
+        <item quantity="few">Įjungta %1$d kalendoriams</item>
+        <item quantity="many">Įjungta %1$d kalendoriaus</item>
+        <item quantity="other">Įjungta %1$d kalendorių</item>
+    </plurals>
+    <string name="trim_dialog_save">Įrašyti</string>
+    <string name="trim_read_failed">Nepavyko nuskaityti šio telefono kalendorių, todėl nieko nepakeista.</string>
     <string name="info_sync_range_window_body">Kiek dienų prieš ir po šiandien sinchronizuoti, kai pasirinktas „Pasirinktinis intervalas\". Didesni langai rodo daugiau jūsų kalendoriaus, bet sinchronizuojasi ilgiau. Režime „Visi įvykiai\" neturi poveikio.</string>
     <string name="info_poll_attendee_body">Kai įjungta, programėlė periodiškai iš naujo tikrina įvykius, kurie turi dalyvių, kad aptiktų atsakymus priimti / atmesti / preliminariai. Proton pakeitimų srautas nepraneša apie RSVP pakeitimus, todėl tam reikia papildomų API užklausų, verta įjungti tik tuo atveju, jei pasitikite dalyvių atsakymų matymu savo telefone.</string>
     <string name="info_send_invites_body">Kai savo telefone pridedate dalyvių prie įvykio, išsiųskite jiems kvietimą el. paštu. Pagal numatytuosius nustatymus išjungta: įjunkite tik tuo atveju, jei norite, kad programėlė jūsų vardu siųstų el. laiškus dalyviams.</string>

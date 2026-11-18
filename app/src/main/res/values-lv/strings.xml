@@ -279,7 +279,30 @@
     <string name="info_notify_on_failure_body">Rāda paziņojumu, ja sinhronizācija neizdodas (piem., tīkla kļūda vai beigusies sesija). Pieskarieties tam, lai iegūtu iemeslu vienkāršā valodā un saiti uz žurnāliem. Izslēdziet to, ja nevēlaties saņemt brīdinājumus par īslaicīgām kļūmēm.</string>
     <string name="info_sync_calendar_body">Kad ieslēgts, jūsu Proton kalendāri sinhronizējas Android kalendārā, tāpēc notikumi parādās Google Calendar, Samsung Calendar un jebkurā citā kalendāra lietotnē. Divvirzienu: tālrunī veiktās izmaiņas tiek augšupielādētas atpakaļ Proton tiem kalendāriem, kas pieder jums.</string>
     <string name="info_include_external_calendars_body">Proton var saturēt abonētus kalendārus (piem., ārēju ICS plūsmu) un svētku kalendārus. Tie ir tikai lasāmi Proton pusē. Kad izslēgts, lietotne tos izlaiž un sinhronizē tikai jūsu pašu rediģējamos kalendārus. Ieslēdziet, ja vēlaties, lai arī šie tikai lasāmie kalendāri tiktu atspoguļoti jūsu tālrunī.</string>
-    <string name="info_sync_mode_body">„Visi notikumi\" sinhronizē visu jūsu kalendāra vēsturi un visus turpmākos notikumus, vislabāk, ja vēlaties visu savā tālrunī (liela kalendāra pirmā sinhronizācija var aizņemt vairākas minūtes). „Pielāgots diapazons\" sinhronizē tikai dienu logu ap šodienu, saglabājot lielus kalendārus ātrus un vieglus. Notikumi ārpus loga netiek lejupielādēti.</string>
+    <string name="info_sync_mode_body">„Visi notikumi“ sinhronizē visu jūsu kalendāra vēsturi un visus turpmākos notikumus, vislabāk, ja vēlaties visu savā tālrunī (liela kalendāra pirmā sinhronizācija var aizņemt vairākas minūtes). „Pielāgots diapazons“ saglabā lielus kalendārus ātrus, sinhronizējot tikai dienu logu ap šodienu: to notikumi ārpus loga netiek lejupielādēti, un šajā tālrunī jau esošie notikumi paliek, ja vien to kalendāram nav ieslēgts iestatījums „Noņemt vecākos notikumus no šī tālruņa“. Mazie kalendāri vienmēr tiek sinhronizēti pilnībā.</string>
+    <string name="label_trim_old_events">Noņemt vecākos notikumus no šī tālruņa</string>
+    <string name="info_trim_old_events_body">Jūsu izvēlēto kalendāru notikumi, kas beidzās vairāk nekā dienu pirms jūsu diapazona sākuma, tiek noņemti no šī tālruņa gan tagad, gan turpmākajās sinhronizācijās. Tie paliek jūsu Proton kontā, un tur nekas netiek dzēsts. Jūsu pašu kalendāru dublējumi tiek veidoti no Proton datiem, tāpēc šie notikumi tajos joprojām ir; abonētie kalendāri un svētku kalendāri netiek dublēti. Atkārtots notikums paliek ar visiem saviem iepriekšējiem datumiem, kamēr tas turpinās jūsu diapazonā vai tam nav beigu datuma, jo tālrunis glabā atkārtotu notikumu kā vienu ierakstu. Paliek arī notikumi ar izmaiņām, kas vēl nav nosūtītas uz Proton, un notikumi, kas ir izveidoti vai pēdējoreiz mainīti pēdējo 7 dienu laikā, spriežot pēc šajā tālrunī esošās versijas, nevis pēc tā, kad tālrunis to lejupielādēja. Var izvēlēties tikai kalendārus, kas ir pārāk lieli, lai tos sinhronizētu pilnībā, un notikumi pēc jūsu diapazona nekad netiek noņemti. Lai atgūtu noņemtos notikumus, izvēlieties garāku diapazonu vai „Visi notikumi“.</string>
+    <string name="trim_dialog_title">Noņemt vecākos notikumus no šī tālruņa</string>
+    <string name="trim_dialog_intro">Izvēlieties kalendārus, kurus vēlaties sakārtot. Notikumi, kas beidzās pirms %1$s, tiek noņemti no šī tālruņa nākamajā sinhronizācijā, bet vēlākie, kad tie kļūs tikpat veci. Tie paliek jūsu Proton kontā. Atkārtots notikums, kas turpinās pēc šī datuma, paliek ar visiem saviem datumiem.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="zero">Var noņemt līdz %1$d notikumiem</item>
+        <item quantity="one">Var noņemt līdz %1$d notikumam</item>
+        <item quantity="other">Var noņemt līdz %1$d notikumiem</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Pašlaik nav ko noņemt</string>
+    <string name="trim_calendar_whole">Pagaidām tiek sinhronizēts pilnībā, tāpēc nekas netiek noņemts</string>
+    <string name="trim_not_synced_yet">Šī konta kalendāri vēl nav sinhronizēti, tāpēc tos nevar parādīt sarakstā. Mēģiniet vēlreiz pēc nākamās sinhronizācijas.</string>
+    <string name="trim_offer_keep">Paturēt</string>
+    <string name="trim_small_calendars_note">Mazie kalendāri tiek sinhronizēti pilnībā un saglabā visus notikumus, tāpēc tie sarakstā netiek rādīti.</string>
+    <string name="trim_no_large_calendars">Neviens šī konta kalendārs nav pietiekami liels. Mazie kalendāri tiek sinhronizēti pilnībā un saglabā visus notikumus.</string>
+    <string name="trim_external_off_note">Svētku kalendāri un abonētie kalendāri netiek sinhronizēti, kamēr iestatījums „Iekļaut ārējos kalendārus“ ir izslēgts, tāpēc tie sarakstā netiek rādīti un no tiem nekas netiek noņemts.</string>
+    <plurals name="trim_value_on">
+        <item quantity="zero">Ieslēgts %1$d kalendāriem</item>
+        <item quantity="one">Ieslēgts %1$d kalendāram</item>
+        <item quantity="other">Ieslēgts %1$d kalendāriem</item>
+    </plurals>
+    <string name="trim_dialog_save">Saglabāt</string>
+    <string name="trim_read_failed">Neizdevās nolasīt šī tālruņa kalendārus, tāpēc nekas netika mainīts.</string>
     <string name="info_sync_range_window_body">Cik dienas pirms un pēc šodienas sinhronizēt, kad ir atlasīts „Pielāgots diapazons\". Lielāki logi rāda vairāk no jūsu kalendāra, bet sinhronizācija aizņem ilgāku laiku. Režīmā „Visi notikumi\" tam nav ietekmes.</string>
     <string name="info_poll_attendee_body">Kad ieslēgts, lietotne periodiski atkārtoti pārbauda notikumus, kuriem ir dalībnieki, lai atklātu atbildes pieņemt/noraidīt/provizoriski. Proton izmaiņu plūsma neziņo par RSVP izmaiņām, tāpēc tam nepieciešami papildu API izsaukumi, to vērts iespējot tikai tad, ja paļaujaties uz dalībnieku atbilžu redzēšanu savā tālrunī.</string>
     <string name="info_send_invites_body">Kad savā tālrunī pievienojat notikumam dalībniekus, nosūtiet viņiem ielūgumu pa e-pastu. Pēc noklusējuma izslēgts: ieslēdziet tikai tad, ja vēlaties, lai lietotne jūsu vārdā sūtītu e-pastus dalībniekiem.</string>

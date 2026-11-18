@@ -285,7 +285,32 @@
     <string name="info_notify_on_failure_body">Prikaže obvestilo, če sinhronizacija ne uspe (npr. napaka omrežja ali potekla seja). Tapnite ga za razlog v razumljivem jeziku in povezavo do dnevnikov. Izklopite ga, če ne želite biti obveščeni o začasnih napakah.</string>
     <string name="info_sync_calendar_body">Ko je vklopljeno, se vaši koledarji Proton sinhronizirajo v koledar Androida, tako da se dogodki prikažejo v Google Calendar, Samsung Calendar in kateri koli drugi koledarski aplikaciji. Dvosmerno: urejanja, ki jih opravite v telefonu, se naložijo nazaj v Proton za koledarje, ki so vaši.</string>
     <string name="info_include_external_calendars_body">Proton lahko vsebuje naročene koledarje (npr. zunanji vir ICS) in koledarje praznikov. Ti so na strani Proton samo za branje. Ko je izklopljeno, jih aplikacija preskoči in sinhronizira samo vaše lastne urejljive koledarje. Vklopite, če želite, da se tudi ti koledarji samo za branje zrcalijo v vaš telefon.</string>
-    <string name="info_sync_mode_body">„Vsi dogodki\" sinhronizira celotno zgodovino vašega koledarja in vse prihodnje dogodke, najboljše, če želite imeti vse v telefonu (prva sinhronizacija velikega koledarja lahko traja nekaj minut). „Prilagojen obseg\" sinhronizira samo okno dni okoli danes, s čimer veliki koledarji ostanejo hitri in lahki. Dogodki zunaj okna se ne prenesejo.</string>
+    <string name="info_sync_mode_body">„Vsi dogodki“ sinhronizira celotno zgodovino vašega koledarja in vse prihodnje dogodke, najboljše, če želite imeti vse v telefonu (prva sinhronizacija velikega koledarja lahko traja nekaj minut). „Prilagojen obseg“ poskrbi, da veliki koledarji ostanejo hitri, saj sinhronizira samo okno dni okoli danes: njihovi dogodki zunaj okna se ne prenesejo, tisti, ki so že v tem telefonu, pa ostanejo, razen če je za njihov koledar vklopljena možnost „Odstrani starejše dogodke s tega telefona“. Majhni koledarji se vedno sinhronizirajo v celoti.</string>
+    <string name="label_trim_old_events">Odstrani starejše dogodke s tega telefona</string>
+    <string name="info_trim_old_events_body">V izbranih koledarjih se dogodki, ki so se končali več kot dan pred začetkom vašega obsega, odstranijo s tega telefona, zdaj in pri poznejših sinhronizacijah. V vašem računu Proton ostanejo in tam se nič ne izbriše. Varnostne kopije vaših lastnih koledarjev se ustvarjajo iz Protona, zato jih še vedno vsebujejo; za naročene koledarje in koledarje praznikov pa se varnostne kopije ne ustvarjajo. Ponavljajoči se dogodek ostane z vsemi svojimi prejšnjimi datumi, dokler sega v obseg ali nima končnega datuma, ker telefon hrani ponavljajoči se dogodek kot en vnos. Ostanejo tudi dogodki s spremembami, ki še niso bile poslane v Proton, ter dogodki, ustvarjeni ali nazadnje spremenjeni v zadnjih 7 dneh, sodeč po različici v tem telefonu, ne pa po tem, kdaj jo je ta telefon prenesel. Izberete lahko samo koledarje, ki so preveliki, da bi se sinhronizirali v celoti, dogodki po koncu obsega pa se nikoli ne odstranijo. Če želite odstranjene dogodke dobiti nazaj, izberite daljši obseg ali „Vsi dogodki“.</string>
+    <string name="trim_dialog_title">Odstrani starejše dogodke s tega telefona</string>
+    <string name="trim_dialog_intro">Izberite koledarje, ki jih želite počistiti. Dogodki, ki so se končali pred %1$s, se s tega telefona odstranijo ob naslednji sinhronizaciji, poznejši pa, ko bodo enako stari. V vašem računu Proton ostanejo. Ponavljajoči se dogodek, ki se nadaljuje po tem datumu, ostane z vsemi svojimi datumi.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Največ %1$d dogodek za odstranitev</item>
+        <item quantity="two">Največ %1$d dogodka za odstranitev</item>
+        <item quantity="few">Največ %1$d dogodki za odstranitev</item>
+        <item quantity="other">Največ %1$d dogodkov za odstranitev</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Trenutno ni ničesar za odstranitev</string>
+    <string name="trim_calendar_whole">Za zdaj se sinhronizira v celoti, zato se nič ne odstrani</string>
+    <string name="trim_not_synced_yet">Koledarji tega računa še niso sinhronizirani, zato jih ni mogoče navesti. Poskusite znova po naslednji sinhronizaciji.</string>
+    <string name="trim_offer_keep">Obdrži jih</string>
+    <string name="trim_small_calendars_note">Majhni koledarji se sinhronizirajo v celoti in obdržijo vse dogodke, zato niso navedeni.</string>
+    <string name="trim_no_large_calendars">Noben od koledarjev tega računa ni dovolj velik. Majhni koledarji se sinhronizirajo v celoti in obdržijo vse dogodke.</string>
+    <string name="trim_external_off_note">Dokler je možnost „Vključi zunanje koledarje“ izklopljena, se koledarji praznikov in naročeni koledarji ne sinhronizirajo, zato niso navedeni in iz njih se nič ne odstrani.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Vklopljeno za %1$d koledar</item>
+        <item quantity="two">Vklopljeno za %1$d koledarja</item>
+        <item quantity="few">Vklopljeno za %1$d koledarje</item>
+        <item quantity="other">Vklopljeno za %1$d koledarjev</item>
+    </plurals>
+    <string name="trim_dialog_save">Shrani</string>
+    <string name="trim_read_failed">Koledarjev v tem telefonu ni bilo mogoče prebrati, zato ni bilo nič spremenjeno.</string>
     <string name="info_sync_range_window_body">Koliko dni pred in po danes sinhronizirati, ko je izbran „Prilagojen obseg\". Večja okna prikažejo več vašega koledarja, vendar se dlje sinhronizirajo. V načinu „Vsi dogodki\" nima učinka.</string>
     <string name="info_poll_attendee_body">Ko je vklopljeno, aplikacija občasno znova preveri dogodke, ki imajo udeležence, da zazna odgovore sprejmi/zavrni/pogojno. Protonov vir sprememb ne poroča o spremembah RSVP, zato to zahteva dodatne klice API, vredno omogočiti le, če se zanašate na ogled odgovorov udeležencev v telefonu.</string>
     <string name="info_send_invites_body">Ko v telefonu dodate udeležence na dogodek, jim po e-pošti pošljite vabilo. Privzeto izklopljeno: vklopite samo, če želite, da aplikacija pošilja e-pošto udeležencem v vašem imenu.</string>

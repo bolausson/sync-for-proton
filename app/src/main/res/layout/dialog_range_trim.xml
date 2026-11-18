@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remove older events from this phone": the calendars to tidy up, each with what it would lose.
+     Rows are item_range_trim_calendar, added in code (RangeTrimDialog.present). -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/trim_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.15"
+            android:textColor="@color/sfp_text_secondary"
+            android:textSize="@dimen/sfp_text_row_sub" />
+
+        <LinearLayout
+            android:id="@+id/trim_calendars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/trim_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:lineSpacingMultiplier="1.15"
+            android:textColor="@color/sfp_text_faint"
+            android:textSize="@dimen/sfp_text_row_sub"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

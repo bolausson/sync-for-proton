@@ -213,6 +213,10 @@ class CalendarSyncAdapter(
         val includeExternal = prefs.getBoolean(SyncPreferences.includeExternalCalendarsKey(account.name), false)
         zoneRules = TimeZoneRuleSource.snapshot(context)
 
+        // A removal of older events that was interrupted: finished first, whatever the setting is now, so that no step
+        // after it sees a mapping whose row the removal already took.
+        RangeTrimRunner.recover(context, provider, account, calendarEventSyncDao)
+
         applyBulkDeletionRestore(
             account = account,
             provider = provider
@@ -226,6 +230,9 @@ class CalendarSyncAdapter(
             account = account,
             provider = provider
         )
+
+        // And the re-keyed marks of events no longer on this phone.
+        sweepRekeyedMarks(account)
 
         // And the collision prompts, for the same reason and with the same evidence.
         sweepStaleConflictHolds(
@@ -283,6 +290,8 @@ class CalendarSyncAdapter(
         val serverBackedAndroidCalIds = mutableSetOf<Long>()
         for (calInfo in calendars) {
             serverCalIds.add(calInfo.id)
+            // For "Remove older events", which leaves out a calendar the skip below keeps from syncing.
+            RangeTrimRunner.noteCalendarType(prefs, account.name, calInfo.id, calInfo.type != 0)
 
             // The user turning external and holiday calendars off is a SETTING, not a failure, and it is
             // checked here rather than inside prepareCalendarJob so that a null from that function keeps the
@@ -322,6 +331,7 @@ class CalendarSyncAdapter(
         }
 
         // Sync all calendars in parallel
+        val trimSeeds = java.util.concurrent.ConcurrentHashMap<Long, RangeTrimRunner.Seed>()
         if (jobs.isNotEmpty()) {
             val startTime = System.currentTimeMillis()
             coroutineScope {
@@ -330,7 +340,7 @@ class CalendarSyncAdapter(
                         try {
                             syncCalendarEvents(account, provider, job.calInfo, job.androidCalId,
                                 job.calKeys, job.calPassphrases, syncResult, job.isExternal, job.displayName,
-                                triggerType)
+                                triggerType, trimSeeds)
                         } catch (e: Exception) {
                             SyncLog.e(TAG, "Failed to sync calendar '${job.displayName}': ${e.message}", e)
                             synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
@@ -349,6 +359,11 @@ class CalendarSyncAdapter(
             provider = provider,
             syncResult = syncResult
         )
+
+        // "Remove older events from this phone", for the calendars it is on for and whose run was complete: after
+        // every download and confirmed server deletion, before reconcile and the upload, so those see rows and
+        // mappings that agree. Writes nothing to Proton.
+        for (seed in trimSeeds.values) RangeTrimRunner.trim(context, provider, account, calendarEventSyncDao, seed)
 
         // Detect locally deleted events by reconciling sync mappings with CalendarContract.
         // Skip reconciliation if we had no pre-existing mappings (fresh sync after full re-sync)
@@ -505,6 +520,17 @@ class CalendarSyncAdapter(
                 it.protonCalendarId !in allServerCalIds
         }
         for (old in supersededMappings) {
+            // Marked first, and written through before the move, so a crash between the two can only leave a mark on
+            // an id that did not move, which keeps nothing from the question. The marks keep these events out of the
+            // external replacement and always bring them to the question: a feed subscribed under the old name may
+            // share their content, but they may be the user's own events. Every re-key is marked, a read-only
+            // predecessor's too (a feed removed and subscribed again): which calendar it was is not known for sure
+            // here, since the Android calendar's access level is the successor's once updateLocalCalendar ran, and
+            // asking once about a feed's old copies loses nothing.
+            RemoteDeletionGuard.markRekeyed(
+                context, account.name,
+                calendarEventSyncDao.getAllByCalendar(account.name, old.protonCalendarId).mapTo(HashSet()) { it.protonEventId }
+            )
             val moved = calendarEventSyncDao.reassignCalendar(account.name, old.protonCalendarId, calInfo.id)
             calendarSyncDao.deleteByProtonId(account.name, old.protonCalendarId)
             SyncLog.w(TAG, "Calendar '$displayName' was deleted+recreated on Proton " +
@@ -576,11 +602,18 @@ class CalendarSyncAdapter(
             // NEVER delete one a sync mapping points at (that would silently wipe its events, the exact
             // class of bug the deletion guard exists to prevent). Keep every mapped row plus one
             // unmapped, and delete only the unmapped extras.
+            // Nor one that still holds events: a calendar removed on Proton whose events the user chose to keep
+            // ("Keep on phone") stays behind unmapped, and so do phone-only rows after a resync wiped the mappings.
+            // Deleting the calendar takes every row in it along, and those were the only copies.
             val mappedAndroidCalIds = existingCalMappings.values.mapNotNull { it.androidCalendarId }.toSet()
             for ((name, ids) in existingLocalCalendars) {
                 if (ids.size > 1) {
                     val keeper = ids.firstOrNull { it in mappedAndroidCalIds } ?: ids.first()
-                    val toDelete = ids.filter { it != keeper && it !in mappedAndroidCalIds }
+                    val toDelete = ids.filter { it != keeper && it !in mappedAndroidCalIds }.filter { dupId ->
+                        val rows = calendarRowCount(provider, account, dupId)
+                        if (rows != 0) SyncLog.w(TAG, "Keeping calendar '$name' ($dupId), a duplicate by name: it still holds ${rows ?: "an unknown number of"} event(s)")
+                        rows == 0
+                    }
                     if (toDelete.isNotEmpty()) {
                         SyncLog.w(TAG, "Found ${ids.size} calendars named '$name'; removing ${toDelete.size} unmapped duplicate(s)")
                         for (dupId in toDelete) {
@@ -605,6 +638,28 @@ class CalendarSyncAdapter(
         }
 
         return existingLocalCalendars
+    }
+
+    /**
+     * The rows of unmapped Android calendar [androidCalId] that hold something, or null when it cannot be read. Not a
+     * deleted row, which an unmapped calendar can never send to Proton, and not one of the download's own cancelled-date
+     * placeholders (cancelled, no _SYNC_ID, clean).
+     */
+    private fun calendarRowCount(provider: ContentProviderClient, account: Account, androidCalId: Long): Int? = try {
+        val cancelled = CalendarContract.Events.STATUS_CANCELED
+        provider.query(
+            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+            arrayOf(CalendarContract.Events._ID),
+            "${CalendarContract.Events.CALENDAR_ID} = ? AND ${CalendarContract.Events.DELETED} = 0 AND (" +
+                "${CalendarContract.Events.STATUS} IS NULL OR ${CalendarContract.Events.STATUS} != $cancelled OR " +
+                "(${CalendarContract.Events._SYNC_ID} IS NOT NULL AND ${CalendarContract.Events._SYNC_ID} != '') OR " +
+                "${CalendarContract.Events.DIRTY} = 1)",
+            arrayOf(androidCalId.toString()),
+            null
+        )?.use { it.count }
+    } catch (e: Exception) {
+        SyncLog.w(TAG, "Could not count the events of calendar $androidCalId: ${e.message}")
+        null
     }
 
     /** Proton's calendars for this account, or null when the list could not be read and the sync must stop. */
@@ -679,20 +734,25 @@ class CalendarSyncAdapter(
         val gType = RemoteDeletionGuard.TYPE_CALENDAR
         if (RemoteDeletionGuard.isApproved(context, gType, account.name)) {
             var deleted = 0
-            for (protonId in RemoteDeletionGuard.pendingIds(context, gType, account.name)) {
-                val evId = calendarEventSyncDao.getByProtonId(account.name, protonId)?.androidEventId ?: continue
+            val confirmed = RemoteDeletionGuard.pendingIds(context, gType, account.name)
+            for (protonId in confirmed) {
+                val mapping = calendarEventSyncDao.getByProtonId(account.name, protonId) ?: continue
+                val evId = mapping.androidEventId ?: continue
+                val androidCalId = calendarSyncDao.getByProtonId(account.name, mapping.protonCalendarId)?.androidCalendarId
                 try {
-                    provider.delete(
-                        ContentUris.withAppendedId(
-                            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account), evId
-                        ),
-                        null, null
-                    )
+                    // As in deleteVanishedEvents: a row another mapping still names keeps living, only this mapping goes.
+                    if (calendarEventSyncDao.protonIdsOfRow(account.name, evId).any { it !in confirmed }) {
+                        calendarEventSyncDao.deleteByProtonId(account.name, protonId)
+                        SyncLog.w(TAG, "Kept row $evId of confirmed deletion $protonId: another mapping still names it")
+                        continue
+                    }
+                    if (deleteEventRow(provider, account, evId, androidCalId) > 0) deleted++
                     calendarEventSyncDao.deleteByProtonId(account.name, protonId)
-                    deleted++
                 } catch (e: Exception) {
                     SyncLog.e(TAG, "Failed to delete confirmed event $protonId", e)
+                    continue
                 }
+                if (androidCalId != null) purgeAfterDelete(provider, account, androidCalId, protonId)
             }
             if (deleted > 0) syncResult.stats.numDeletes += deleted
             SyncLog.i(TAG, "Applied $deleted confirmed server-side event deletion(s) for ${account.name}")
@@ -725,10 +785,17 @@ class CalendarSyncAdapter(
         for ((protonId, mapping) in existingCalMappings) {
             val androidCalId = mapping.androidCalendarId
             if (protonId in serverCalIds || androidCalId == null) continue
+            // "Remove older events" chosen for this calendar goes with its mapping, at each deleteByProtonId below, and
+            // not while its events are only held: a holiday calendar joined again or a shared one shared again comes
+            // back under the same Proton id, and must find its choice.
+            fun forgetTrimChoice() = RangeTrimRunner.forgetCalendar(
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(context), account.name, protonId
+            )
             if (androidCalId in liveAndroidCalIds) {
                 // Android calendar reused by a live Proton calendar — keep the calendar + its events;
                 // just drop the obsolete mapping (events were moved to the new id during setup).
                 calendarSyncDao.deleteByProtonId(account.name, protonId)
+                forgetTrimChoice()
                 SyncLog.w(TAG, "Not deleting Android calendar $androidCalId for removed Proton calendar $protonId - it is reused by a live calendar (delete+recreate same name)")
                 continue
             }
@@ -776,6 +843,7 @@ class CalendarSyncAdapter(
                 // Proton calendar mapping so we don't re-evaluate (and re-prompt for) a calendar that no
                 // longer exists on Proton on every future sync.
                 calendarSyncDao.deleteByProtonId(account.name, protonId)
+                forgetTrimChoice()
                 SyncLog.w(TAG, "Calendar $protonId removed on Proton but kept event(s) remain - keeping them locally, dropping the stale mapping")
             } else {
                 try {
@@ -787,6 +855,7 @@ class CalendarSyncAdapter(
                         null, null
                     )
                     calendarSyncDao.deleteByProtonId(account.name, protonId)
+                    forgetTrimChoice()
                     calendarEventSyncDao.deleteByCalendar(account.name, protonId)
                     SyncLog.i(TAG, "Removed calendar $protonId (androidId=$androidCalId) from phone")
                 } catch (e: Exception) {
@@ -871,7 +940,9 @@ class CalendarSyncAdapter(
         /** Event count at or below which the flat /events/ids path is cheaper than the dense sweep. */
         val sparseThreshold: Int,
         /** Number of dense-sweep windows the range spans; drives [sparseThreshold] and its log line. */
-        val rangeWindows: Long
+        val rangeWindows: Long,
+        /** The Past events days this run's window was computed from (a custom range). */
+        val pastDays: Long
     )
 
     /**
@@ -960,7 +1031,8 @@ class CalendarSyncAdapter(
             lastRange = lastRange,
             forceRefetch = forceRefetch,
             sparseThreshold = sparseThreshold,
-            rangeWindows = rangeWindows
+            rangeWindows = rangeWindows,
+            pastDays = pastDays
         )
     }
 
@@ -1004,7 +1076,9 @@ class CalendarSyncAdapter(
         syncResult: SyncResult,
         isExternalCalendar: Boolean = false,
         calDisplayName: String = "unknown",
-        triggerType: SyncTriggerType = SyncTriggerType.ScheduledSync
+        triggerType: SyncTriggerType = SyncTriggerType.ScheduledSync,
+        /** Where a complete windowed run leaves its input for "Remove older events from this phone" (RangeTrimRunner). */
+        trimSeeds: MutableMap<Long, RangeTrimRunner.Seed>? = null
     ) {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -1022,17 +1096,33 @@ class CalendarSyncAdapter(
         val forceRefetch = plan.forceRefetch
         val sparseThreshold = plan.sparseThreshold
         val storedModelEventId = calMapping?.lastModelEventId
+        // A custom range moves with the calendar day, but nothing on Proton changes when an event enters it, so the
+        // unchanged-skip below kept such an event off the phone until something else in this calendar changed or the
+        // user tapped Sync now: an appointment made months ahead could be missing when it was due. Once per local day
+        // the skip is not taken, and the run sweeps the window for what entered it (2.1.0). Marked done at the end of
+        // a complete run only. Not for a calendar its last complete run fetched whole (the flat path): the phone has
+        // every event of it already, and the sweep would only fetch each one again every day. One that run fetched by
+        // the window, its count having failed, is swept like a large one.
+        val sweepDayKey = SyncPreferences.lastSweepDayKey(account.name, calInfo.id)
+        val today = java.time.LocalDate.now().toString()
+        val syncsWhole = prefs.getBoolean(SyncPreferences.fetchedWholeKey(account.name, calInfo.id), false)
+        val dailySweepDue = syncMode != SyncPreferences.SYNC_MODE_ALL && !syncsWhole && prefs.getString(sweepDayKey, null) != today
         var currentModelEventId: String? = null
         try {
             val modelResp = apiClient.getCalendarModelEventLatest(account.name, calInfo.id)
             if (modelResp.isSuccessful) {
                 currentModelEventId = modelResp.body()?.get("CalendarModelEventID") as? String
-                val wouldSkip = currentModelEventId != null && currentModelEventId == storedModelEventId && !forceRefetch &&
-                    // While a server→local deletion is HELD for this account, never take the unchanged-skip
-                    // fast path: it would bypass prunePending/pruneKept below, so an already-approved hold
-                    // could delete events that have since reappeared on Proton. Transient — only while pending.
+                val unchanged = currentModelEventId != null && currentModelEventId == storedModelEventId && !forceRefetch
+                // While a server→local deletion is HELD for this account, never take the unchanged-skip
+                // fast path: it would bypass prunePending/pruneKept below, so an already-approved hold
+                // could delete events that have since reappeared on Proton. Transient — only while pending.
+                val quiet = unchanged &&
                     RemoteDeletionGuard.pendingCount(context, RemoteDeletionGuard.TYPE_CALENDAR, account.name) == 0
-                if (wouldSkip) {
+                val wouldSkip = quiet && !dailySweepDue
+                if (unchanged && dailySweepDue) {
+                    SyncLog.i(TAG, "Calendar '$calDisplayName' unchanged on Proton, but its custom range moved to $today: daily sweep for events that entered it")
+                }
+                if (quiet) {
                     // WORKAROUND: Proton's CalendarModelEventID does NOT change when an
                     // attendee's RSVP status changes (accept/decline/tentative). Neither the
                     // core event loop nor the modelevents endpoint reports attendee status
@@ -1040,15 +1130,18 @@ class CalendarSyncAdapter(
                     // it fetches full event details on demand rather than detecting RSVP changes.
                     // As a workaround, re-fetch events that have attendees to check for status changes.
                     // Disabled by default — may use extra API calls on large calendars with many attendees.
-                    // Runs on the bypass path too: the sweep below cannot see RSVP-only changes
-                    // (per-event LastEditTime is unchanged for them), so skipping this poll would
-                    // make a user "Sync now" detect strictly less than a scheduled sync.
+                    // Runs on the bypass path too, and on the day's first run, whose daily sweep takes the
+                    // skip's place: neither sweep can see RSVP-only changes (per-event LastEditTime is
+                    // unchanged for them), so skipping this poll would make a user "Sync now", or a phone
+                    // that syncs once a day, detect strictly less than a scheduled sync.
                     val pollAttendeeKey = SyncPreferences.pollAttendeeStatusKey(account.name)
                     val pollAttendees = PreferenceManager.getDefaultSharedPreferences(context)
                         .getBoolean(pollAttendeeKey, false)
                     if (pollAttendees) {
                         checkAttendeeStatusChanges(account, provider, calInfo, calDisplayName)
                     }
+                }
+                if (wouldSkip) {
                     if (triggerType == SyncTriggerType.UserSyncNow) {
                         // An explicit user tap on "Sync now" runs a real incremental sweep even when
                         // the cursor says unchanged — the non-destructive recovery for anything the
@@ -1084,8 +1177,11 @@ class CalendarSyncAdapter(
         // the WINDOW COUNT, not a fixed event count: ~70 in a bounded range (~8–16 windows) but
         // ~1300 in "All" mode (~276 windows). The old fixed-70 gate wrongly sent moderate calendars
         // down the slow windowed path (the 485 s fresh sync). See sparseThreshold below.
+        // Proton's clock, from this response's Date header: the removal of older events trusts the phone's only near it.
+        var serverDateMillis: Long? = null
         val totalEventCount: Int = try {
             val countResp = apiClient.getCalendarEventsCount(account.name, calInfo.id)
+            serverDateMillis = countResp.headers().getDate("Date")?.time
             if (countResp.isSuccessful) {
                 (countResp.body()?.get("Total") as? Number)?.toInt() ?: -1
             } else -1
@@ -1094,13 +1190,16 @@ class CalendarSyncAdapter(
             -1
         }
         SyncLog.i(TAG, "'$calDisplayName': server reports $totalEventCount events")
+        if (totalEventCount >= 0) prefs.edit().putInt(SyncPreferences.serverTotalKey(account.name, calInfo.id), totalEventCount).apply()
 
         // "All" mode ALWAYS takes the flat /events/ids + per-event GET path (regardless of count):
         // it's window-free and complete by construction, so serverEventIds becomes the authoritative
         // full id set (no dense under-fetch, no purge) and it avoids the ~1100 sequential window
         // calls of the retired dense sweep. The windowed dense path is kept only for custom (bounded)
         // mode, where its small window count makes it efficient.
-        val fetch = if (syncMode == SyncPreferences.SYNC_MODE_ALL || totalEventCount in 0..sparseThreshold) {
+        // Only the windowed dense fetch leaves events outside the range unfetched; the deletion pass is told its range.
+        val fetchedRange = if (syncMode == SyncPreferences.SYNC_MODE_ALL || totalEventCount in 0..sparseThreshold) null else syncStart..syncEnd
+        val fetch = if (fetchedRange == null) {
             fetchEventsFlat(account, calInfo, calDisplayName, totalEventCount, plan)
         } else {
             fetchEventsDense(account, calInfo, calDisplayName, plan, existingEventMappings)
@@ -1164,8 +1263,19 @@ class CalendarSyncAdapter(
 
         applyServerDeletions(
             account, provider, calDisplayName, syncResult,
-            serverEventIds, existingEventMappings, fetchHadFailures
+            serverEventIds, existingEventMappings, fetchHadFailures, androidCalId, calInfo.id, isExternalCalendar,
+            fetchedRange
         )
+        // A complete windowed run, its server deletions applied (a run with failures defers them): the input for
+        // "Remove older events from this phone", which runs once every calendar has synced. Not a run that took the
+        // window only because its count failed: a calendar small enough to sync whole loses nothing (the dialog says
+        // so), and its next whole run would bring the events straight back.
+        if (trimSeeds != null && fetchedRange != null && totalEventCount > sparseThreshold && !fetchHadFailures) {
+            RangeTrimRunner.seedOf(
+                prefs, account.name, androidCalId, calInfo.id, calDisplayName, fetch.windowIds, fetch.allTimeIds, serverDateMillis,
+                plan.pastDays
+            )?.let { trimSeeds[androidCalId] = it }
+        }
 
         persistModelEventId(
             prefs, account, calInfo, calDisplayName,
@@ -1174,6 +1284,12 @@ class CalendarSyncAdapter(
 
         // Save the current sync range so we can detect changes next time
         prefs.edit().putString(rangeKey, currentRange).apply()
+        // And the day of this complete sweep of a custom range (the daily sweep above); not after a partial fetch,
+        // so a failed run is swept again.
+        if (syncMode != SyncPreferences.SYNC_MODE_ALL && !fetchHadFailures) {
+            prefs.edit().putString(sweepDayKey, today)
+                .putBoolean(SyncPreferences.fetchedWholeKey(account.name, calInfo.id), fetchedRange == null).apply()
+        }
     }
 
     /**
@@ -1185,6 +1301,12 @@ class CalendarSyncAdapter(
      * risk deleting events it merely failed to retrieve. A normal small shrink deletes immediately;
      * a suspicious one is HELD for user confirmation (ids accumulate thread-safely across the
      * parallel calendars) and applied later by the post-parallel pass in performCalendarSync.
+     * An event of a read-only external calendar that Proton re-imported under a new id, and that is on the
+     * phone again under that id with its row's content to the letter, is not held unless that row holds
+     * something of the user's or was moved there from a deleted calendar: its old copy goes at once, and on a
+     * run that fetched only the sync range so do the calendar's old copies wholly outside it ([outsideRangeOf]),
+     * except in the calendar's first complete pass since 2.1.0, which asks about everything not replaced. The
+     * whole decision is the pure [planServerDeletions].
      */
     private suspend fun applyServerDeletions(
         account: Account,
@@ -1193,7 +1315,12 @@ class CalendarSyncAdapter(
         syncResult: SyncResult,
         serverEventIds: Set<String>,
         existingEventMappings: Map<String, CalendarEventSyncEntity>,
-        fetchHadFailures: Boolean
+        fetchHadFailures: Boolean,
+        androidCalId: Long,
+        protonCalendarId: String,
+        isExternalCalendar: Boolean,
+        /** The range this run fetched (epoch seconds) when it fetched only that range, else null. */
+        fetchedRange: LongRange?
     ) {
         // Delete events no longer on server — CONFIRM before a *suspicious* shrink (a transient
         // server response could otherwise wipe local events). A normal/small shrink deletes now;
@@ -1206,6 +1333,7 @@ class CalendarSyncAdapter(
         val evToDelete = existingEventMappings.filter { (protonId, m) ->
             protonId !in serverEventIds && m.androidEventId != null && protonId !in keptEvents
         }
+        var judgedPlan: DeletionPlan? = null
         if (evToDelete.isNotEmpty() && fetchHadFailures) {
             // This run's fetch was incomplete (under-fetch the /events/ids backfill couldn't fully
             // recover, or a failed id/body GET). serverEventIds may be missing events that DO exist
@@ -1213,63 +1341,281 @@ class CalendarSyncAdapter(
             // model-event-id is not saved (above), so the next sync re-reconciles against a clean fetch.
             SyncLog.w(TAG, "'$calDisplayName': NOT applying ${evToDelete.size} server-side deletion(s) - this run's fetch was incomplete; deferring to avoid purging un-fetched events")
         } else if (evToDelete.isNotEmpty()) {
-            when {
-                // Already confirmed: the skip-proof post-parallel pass deletes the confirmed (pending)
-                // set. Don't delete here — bounding deletion to what the user actually saw prevents a
-                // stale approval from over-deleting if THIS run's server response is transiently short.
-                RemoteDeletionGuard.isApproved(context, gType, account.name) -> {
-                    /* defer to the post-parallel apply in performCalendarSync */
-                }
-                // Suspicious shrink: hold for confirmation instead of deleting.
-                RemoteDeletionGuard.isSuspicious(evToDelete.size, serverEventIds.size, existingEventMappings.size) -> {
-                    RemoteDeletionGuard.addPending(context, gType, account.name, evToDelete.keys)
-                    val stillOnServer = existingEventMappings.keys.count { it in serverEventIds }
-                    SyncLog.w(
-                        TAG,
-                        "Held ${evToDelete.size} server-side event deletion(s) for '$calDisplayName' awaiting " +
-                            "confirmation (of ${existingEventMappings.size} mapped, $stillOnServer still on the " +
-                            "server; server now lists ${serverEventIds.size})"
-                    )
-                }
-                // Normal small shrink: delete immediately.
-                else -> {
-                    // Worded carefully. This used to read "Removing 4 events no longer on server
-                    // (existing=4, server=4)", which is self-contradictory to anybody who does not
-                    // know the two counts are of DISJOINT id sets, and reads like the app deleting
-                    // a calendar it just confirmed was intact. A user reading their own debug log
-                    // would report it as data loss. What actually matters is the overlap.
-                    val stillOnServer = existingEventMappings.keys.count { it in serverEventIds }
-                    val wholesaleReplacement = stillOnServer == 0 && serverEventIds.isNotEmpty()
-                    SyncLog.i(
-                        TAG,
-                        "Removing ${evToDelete.size} event(s) for '$calDisplayName' whose Proton id no longer exists " +
-                            "(of ${existingEventMappings.size} mapped, $stillOnServer still on the server; " +
-                            "server now lists ${serverEventIds.size})" +
-                            if (wholesaleReplacement) {
-                                " - not one mapped id survived, which is what deleting and re-importing " +
-                                    "a calendar on Proton looks like; the server's events download as new"
-                            } else {
-                                ""
-                            }
-                    )
-                    for ((protonId, mapping) in evToDelete) {
-                        val evId = mapping.androidEventId ?: continue
-                        try {
-                            provider.delete(
-                                ContentUris.withAppendedId(
-                                    SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account), evId
-                                ),
-                                null, null
-                            )
-                            calendarEventSyncDao.deleteByProtonId(account.name, protonId)
-                            synchronized(syncResult.stats) { syncResult.stats.numDeletes++ }
-                        } catch (e: Exception) {
-                            SyncLog.e(TAG, "Failed to delete event $protonId", e)
+            val trustedKey = SyncPreferences.replacementTrustedKey(account.name, protonCalendarId)
+            val cautious = isExternalCalendar &&
+                !androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean(trustedKey, false)
+            val plan = planDeletions(
+                account, provider, androidCalId, protonCalendarId, isExternalCalendar, serverEventIds,
+                existingEventMappings, evToDelete, fetchedRange, cautious
+            ).also { judgedPlan = it }
+            if (cautious && plan.hold.isNotEmpty()) {
+                SyncLog.i(TAG, "'$calDisplayName': first complete deletion pass since 2.1.0: what is not on the phone again is asked about")
+            }
+            // Worded carefully, with the overlap: the counts are of DISJOINT id sets. "Removing 4 events no longer on
+            // server (existing=4, server=4)" once read like the app deleting a calendar it had just confirmed was
+            // intact, and a user reading their own debug log would report it as data loss.
+            val stillOnServer = existingEventMappings.keys.count { it in serverEventIds }
+            val counts = "of ${existingEventMappings.size} mapped, $stillOnServer still on the server; " +
+                "server now lists ${serverEventIds.size}"
+            // A read-only external calendar re-imported under new ids: an old copy whose event is on this phone again
+            // under its new id (downloaded above) goes now, without the question, and so does any hold placed on it.
+            if (plan.replaced.isNotEmpty()) {
+                SyncLog.i(
+                    TAG,
+                    "Replacing ${plan.replaced.size} event(s) of read-only '$calDisplayName' that Proton re-imported " +
+                        "under new ids: each is on this phone again under its new id with the same content " +
+                        "($counts) - not asked"
+                )
+                deleteVanishedEvents(account, provider, syncResult, androidCalId, evToDelete.filterKeys { it in plan.replaced })
+                RemoteDeletionGuard.forgetPending(context, gType, account.name, plan.replaced)
+            }
+            // The same re-import outside the range this run fetched: those new copies were not fetched, so nothing
+            // matches the old ones, which lie wholly outside the range.
+            if (plan.outOfRange.isNotEmpty()) {
+                SyncLog.i(
+                    TAG,
+                    "Removing ${plan.outOfRange.size} event(s) of read-only '$calDisplayName' outside the sync range " +
+                        "whose Proton id is gone: Proton re-imported the calendar, and the new copies outside the range " +
+                        "are not fetched ($counts) - not asked"
+                )
+                deleteVanishedEvents(account, provider, syncResult, androidCalId, evToDelete.filterKeys { it in plan.outOfRange })
+            }
+            // A suspicious shrink, or events already held for the question: held until the user answers.
+            if (plan.hold.isNotEmpty()) {
+                RemoteDeletionGuard.addPending(context, gType, account.name, plan.hold)
+                SyncLog.w(
+                    TAG,
+                    "Held ${plan.hold.size} server-side event deletion(s) for '$calDisplayName' awaiting confirmation " +
+                        "($counts" + (if (plan.replaced.isEmpty()) "" else "; ${plan.replaced.size} replaced") + ")"
+                )
+            }
+            // A normal small shrink: deleted now.
+            if (plan.deleteNow.isNotEmpty()) {
+                val wholesaleReplacement = stillOnServer == 0 && serverEventIds.isNotEmpty() && plan.replaced.isEmpty()
+                SyncLog.i(
+                    TAG,
+                    "Removing ${plan.deleteNow.size} event(s) for '$calDisplayName' whose Proton id no longer exists " +
+                        "($counts)" +
+                        if (wholesaleReplacement) {
+                            " - not one mapped id survived, which is what deleting and re-importing " +
+                                "a calendar on Proton looks like; the server's events download as new"
+                        } else {
+                            ""
                         }
+                )
+                deleteVanishedEvents(account, provider, syncResult, androidCalId, evToDelete.filterKeys { it in plan.deleteNow })
+            }
+            // plan.deferred is not acted on here: the question was approved, and the skip-proof post-parallel pass
+            // deletes the held ones among them, exactly the set the user saw; the others are judged again next sync.
+            // Bounding deletion to what the user actually saw keeps a stale approval from over-deleting if THIS run's
+            // server response is transiently short.
+        }
+        // A pass that judged every vanished event of an external calendar ends its cautious first pass: whatever 2.0.4
+        // may have moved onto it unmarked is held for the question by now, or was the feed's own copy to the letter. A
+        // pass that put them off (an incomplete fetch, or an approved question) leaves the next one cautious.
+        if (endsCautiousPass(isExternalCalendar, evToDelete.isNotEmpty() && fetchHadFailures, judgedPlan)) {
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putBoolean(SyncPreferences.replacementTrustedKey(account.name, protonCalendarId), true).apply()
+        }
+    }
+
+    /**
+     * [planServerDeletions] with its inputs. For an external calendar the rows of the vanished events are read once as
+     * the phone holds them now ([readVanishedRows]): that decides which are on the phone again to the letter, which
+     * hold something of the user's ([guardedVanished]), and which lie outside the range this run fetched.
+     */
+    private suspend fun planDeletions(
+        account: Account,
+        provider: ContentProviderClient,
+        androidCalId: Long,
+        protonCalendarId: String,
+        isExternalCalendar: Boolean,
+        serverEventIds: Set<String>,
+        existingEventMappings: Map<String, CalendarEventSyncEntity>,
+        evToDelete: Map<String, CalendarEventSyncEntity>,
+        fetchedRange: LongRange?,
+        cautious: Boolean
+    ): DeletionPlan {
+        val gType = RemoteDeletionGuard.TYPE_CALENDAR
+        val rows = if (isExternalCalendar) readVanishedRows(provider, account, androidCalId, evToDelete) else emptyMap()
+        return planServerDeletions(
+            vanished = evToDelete.values.map { m ->
+                if (isExternalCalendar) m.identity().copy(fingerprint = rows?.get(m.protonEventId)?.fingerprint) else m.identity()
+            },
+            current = if (isExternalCalendar) currentOnPhone(account, protonCalendarId, serverEventIds) else emptyList(),
+            isExternal = isExternalCalendar,
+            rekeyed = RemoteDeletionGuard.rekeyedIds(context, account.name),
+            held = RemoteDeletionGuard.pendingIds(context, gType, account.name),
+            approved = RemoteDeletionGuard.isApproved(context, gType, account.name),
+            serverCount = serverEventIds.size,
+            mapped = existingEventMappings.values.map { it.identity() },
+            guarded = if (isExternalCalendar) guardedVanished(evToDelete.mapValues { it.value.sharedFingerprint }, rows) else emptySet(),
+            outsideRange = if (isExternalCalendar) outsideRangeOf(rows, fetchedRange) else emptySet(),
+            cautious = cautious
+        )
+    }
+
+    /**
+     * The rows of [events] in [androidCalId] as the phone holds them now, by Proton id, read as the sync adapter: their
+     * shared content, DIRTY, DTSTART and LAST_DATE. Null when the provider cannot be read, which guards them all.
+     */
+    private fun readVanishedRows(
+        provider: ContentProviderClient,
+        account: Account,
+        androidCalId: Long,
+        events: Map<String, CalendarEventSyncEntity>
+    ): Map<String, VanishedRow>? {
+        val protonIdByRow = HashMap<Long, String>()
+        for ((protonId, m) in events) m.androidEventId?.let { protonIdByRow[it] = protonId }
+        if (protonIdByRow.isEmpty()) return emptyMap()
+        val shared = EventConflictGuard.SHARED_COLUMNS
+        val n = shared.size
+        val out = HashMap<String, VanishedRow>()
+        try {
+            for (chunk in protonIdByRow.keys.chunked(400)) {
+                val cursor = provider.query(
+                    SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+                    shared + arrayOf(CalendarContract.Events._ID, CalendarContract.Events.DIRTY, CalendarContract.Events.LAST_DATE),
+                    "${CalendarContract.Events.CALENDAR_ID} = ? AND " +
+                        "${CalendarContract.Events._ID} IN (${chunk.joinToString(",") { "?" }})",
+                    arrayOf(androidCalId.toString()) + chunk.map { it.toString() },
+                    null
+                ) ?: return null
+                cursor.use { c ->
+                    while (c.moveToNext()) {
+                        val values = List(n) { i -> if (c.isNull(i)) null else c.getString(i) }
+                        val protonId = protonIdByRow[c.getLong(n)] ?: continue
+                        out[protonId] = VanishedRow(
+                            fingerprint = EventConflictGuard.fingerprintOf(values),
+                            dirty = !c.isNull(n + 1) && c.getInt(n + 1) != 0,
+                            dtStart = values[EventConflictGuard.COLUMN_DTSTART]?.toLongOrNull(),
+                            lastDate = if (c.isNull(n + 2)) null else c.getLong(n + 2)
+                        )
                     }
                 }
             }
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Could not read the events gone from Proton: ${e.message}")
+            return null
         }
+        return out
+    }
+
+    /** This calendar's events that Proton lists and that have a row on the phone, after this run's download. */
+    private suspend fun currentOnPhone(
+        account: Account,
+        protonCalendarId: String,
+        serverEventIds: Set<String>
+    ): List<EventIdentity> =
+        calendarEventSyncDao.getAllByCalendar(account.name, protonCalendarId)
+            .filter { it.androidEventId != null && it.protonEventId in serverEventIds }
+            .map { it.identity() }
+
+    private fun CalendarEventSyncEntity.identity() =
+        EventIdentity(protonEventId, cachedUid, cachedRecurrenceId, sharedFingerprint)
+
+    /**
+     * Remove [events], gone from Proton, from the phone and from the mapping table, as the sync adapter, each series
+     * with its EXDATE placeholders ([purgeExdatePlaceholders]).
+     *
+     * A row that another mapping still names keeps living: only the vanished mapping goes. Deleting it would leave that
+     * mapping without its row, which reconcileDeletedEvents sends to Proton as a deletion. Two mappings on one row should
+     * not exist; a debug fixture interleaving with a sync once produced exactly that, before it took the sync lock.
+     */
+    private suspend fun deleteVanishedEvents(
+        account: Account,
+        provider: ContentProviderClient,
+        syncResult: SyncResult,
+        androidCalId: Long,
+        events: Map<String, CalendarEventSyncEntity>
+    ) {
+        for ((protonId, mapping) in events) {
+            val evId = mapping.androidEventId ?: continue
+            try {
+                val otherClaims = calendarEventSyncDao.protonIdsOfRow(account.name, evId).filter { it !in events }
+                if (otherClaims.isNotEmpty()) {
+                    calendarEventSyncDao.deleteByProtonId(account.name, protonId)
+                    SyncLog.w(TAG, "Kept row $evId of vanished event $protonId: ${otherClaims.size} other mapping(s) still name it")
+                    continue
+                }
+                val removed = deleteEventRow(provider, account, evId, androidCalId)
+                calendarEventSyncDao.deleteByProtonId(account.name, protonId)
+                if (removed > 0) synchronized(syncResult.stats) { syncResult.stats.numDeletes++ }
+            } catch (e: Exception) {
+                SyncLog.e(TAG, "Failed to delete event $protonId", e)
+                continue
+            }
+            purgeAfterDelete(provider, account, androidCalId, protonId)
+        }
+    }
+
+    /**
+     * Hard-delete the row [evId] as the sync adapter, and only if it is in [androidCalId] (when known) and this account:
+     * through the Events directory with a selection, for which AOSP's provider also adds the account from the uri,
+     * never Events/<id>, which ignores it. A stale mapping (Calendar Storage's data cleared, row ids handed out again)
+     * then deletes nothing of another calendar or account. Returns the number of rows deleted.
+     */
+    private fun deleteEventRow(provider: ContentProviderClient, account: Account, evId: Long, androidCalId: Long?): Int =
+        provider.delete(
+            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+            if (androidCalId != null) {
+                "${CalendarContract.Events._ID} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+            } else {
+                "${CalendarContract.Events._ID} = ?"
+            },
+            if (androidCalId != null) arrayOf(evId.toString(), androidCalId.toString()) else arrayOf(evId.toString())
+        )
+
+    /** [purgeExdatePlaceholders] after a series' row went, failing on its own: the event itself is gone either way. */
+    private fun purgeAfterDelete(provider: ContentProviderClient, account: Account, androidCalId: Long, protonId: String) {
+        try {
+            purgeExdatePlaceholders(provider, account, androidCalId, protonId)
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Removed event $protonId, but not its cancelled-occurrence placeholders: ${e.message}")
+        }
+    }
+
+    /**
+     * Delete the cancelled EXDATE placeholder rows this app wrote for the series [masterProtonId] in [androidCalId].
+     * They never have a mapping, the provider's sync-adapter delete of a row that had a _SYNC_ID keeps its exceptions
+     * (AOSP), and the download clears only the placeholders of a master it writes, so every series that vanished from
+     * Proton left its cancelled rows behind, and a re-imported feed one more set at every refresh.
+     *
+     * ONLY the rows this app wrote, which are the ones with DIRTY = 0. A cancelled occurrence the USER deleted is the
+     * same shape of row and is the only record of that deletion until it is uploaded; this is a hard delete through
+     * the sync-adapter uri, so purging it destroyed the deletion outright and the occurrence came back on the phone.
+     *
+     * And only rows WITHOUT a _SYNC_ID: the placeholders never carry one, but a Proton single edit with
+     * STATUS:CANCELLED is written in exactly this shape (CalendarMapper: STATUS_CANCELED, ORIGINAL_SYNC_ID = the
+     * series, DIRTY = 0) and does, with a mapping of its own. Purging it left a mapping without a row, which
+     * reconcileDeletedEvents then sent to Proton as a deletion: the cancelled occurrence came back everywhere.
+     */
+    private fun purgeExdatePlaceholders(
+        provider: ContentProviderClient,
+        account: Account,
+        androidCalId: Long,
+        masterProtonId: String
+    ): Int = provider.delete(
+        SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+        "${CalendarContract.Events.CALENDAR_ID} = ? AND ${CalendarContract.Events.ORIGINAL_SYNC_ID} = ? AND " +
+            "${CalendarContract.Events.STATUS} = ? AND ${CalendarContract.Events.DIRTY} = 0 AND " +
+            "${CalendarContract.Events._SYNC_ID} IS NULL",
+        arrayOf(androidCalId.toString(), masterProtonId, CalendarContract.Events.STATUS_CANCELED.toString())
+    )
+
+    /**
+     * Drop the re-keyed marks whose mapping is gone (deleted after the question, or wiped), so the set only ever
+     * names events still on this phone (RemoteDeletionGuard.rekeyedIds). One preferences read when nothing is marked,
+     * which is the normal case.
+     */
+    private suspend fun sweepRekeyedMarks(account: Account) {
+        val marked = RemoteDeletionGuard.rekeyedIds(context, account.name)
+        if (marked.isEmpty()) return
+        val stillMapped = HashSet<String>()
+        for (chunk in marked.chunked(400)) {
+            calendarEventSyncDao.mappedRows(account.name, chunk).mapTo(stillMapped) { it.protonEventId }
+        }
+        RemoteDeletionGuard.keepOnlyRekeyed(context, account.name, stillMapped)
     }
 
     /**
@@ -2151,13 +2497,7 @@ class CalendarSyncAdapter(
                 // left a mapping without a row, which reconcileDeletedEvents then sent to Proton as a deletion:
                 // the cancelled occurrence came back everywhere. The re-time pass re-applies series Proton did
                 // not change, so this could fire with nobody having touched anything.
-                val purged = provider.delete(
-                    SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
-                    "${CalendarContract.Events.CALENDAR_ID} = ? AND ${CalendarContract.Events.ORIGINAL_SYNC_ID} = ? AND " +
-                        "${CalendarContract.Events.STATUS} = ? AND ${CalendarContract.Events.DIRTY} = 0 AND " +
-                        "${CalendarContract.Events._SYNC_ID} IS NULL",
-                    arrayOf(androidCalId.toString(), event.id, CalendarContract.Events.STATUS_CANCELED.toString())
-                )
+                val purged = purgeExdatePlaceholders(provider, account, androidCalId, event.id)
                 if (purged > 0) SyncLog.d(TAG, "Cleared $purged stale EXDATE exception row(s) for master ${event.id} before re-inserting")
                 val exOps = CalendarMapper.buildExdateExceptionOps(
                     vEvent, account, androidCalId, androidEventId, event.id, downloaded.times
@@ -2194,7 +2534,13 @@ class CalendarSyncAdapter(
          * so the next sync won't unchanged-skip and re-fetches the gap, and defers the deletion
          * pass rather than purging events this run may simply have missed.
          */
-        val hadFailures: Boolean
+        val hadFailures: Boolean,
+        /**
+         * The windowed fetch only (null on the flat path): the events this run's window returned, and Proton's
+         * all-time id list when it was fetched. "Remove older events from this phone" needs both (RangeTrimRunner).
+         */
+        val windowIds: Set<String>? = null,
+        val allTimeIds: Set<String>? = null
     )
 
     /**
@@ -2565,9 +2911,14 @@ class CalendarSyncAdapter(
         // whose serverEventIds is already the full id set). For custom (bounded-window) mode, source the
         // DELETION set from the all-time /events/ids — but NOT into changedEventIds: the body fetch
         // stays windowed (the user's date window is preserved), while out-of-window events that still
-        // exist server-side are KEPT rather than purged. Only when deletion is actually possible
-        // (existing mappings + an incremental sweep); skipped on fresh import (nothing to delete).
-        if (syncMode != SyncPreferences.SYNC_MODE_ALL && !skipMetadata && existingEventMappings.isNotEmpty()) {
+        // exist server-side are KEPT rather than purged. Whenever deletion is possible (existing
+        // mappings); skipped on a fresh import (nothing to delete). ALSO on a run that skips the
+        // metadata sweep because the range changed (and the upgrade and heal runs that force the same):
+        // until 2.1.0 those took the window itself as the record of what Proton still has, so narrowing
+        // the range made every mapped event outside the new window look deleted on Proton. A few of them
+        // were deleted from the phone at once, unsent edits included; more were held behind a false
+        // "no longer on Proton" prompt.
+        if (syncMode != SyncPreferences.SYNC_MODE_ALL && existingEventMappings.isNotEmpty()) {
             val ids = fetchAllEventIds(account, calInfo, calDisplayName)
             if (ids != null) {
                 authoritativeServerIds = ids
@@ -2650,7 +3001,11 @@ class CalendarSyncAdapter(
                 filteredEvents.map { it.id }.toMutableSet()
             }
 
-        return CalendarFetchResult(filteredEvents, serverEventIds, fetchHadFailures)
+        return CalendarFetchResult(
+            filteredEvents, serverEventIds, fetchHadFailures,
+            windowIds = filteredMetadata.mapTo(HashSet()) { it.id }.also { ids -> filteredEvents.mapTo(ids) { it.id } },
+            allTimeIds = authoritativeServerIds
+        )
     }
 
     /**
@@ -3589,6 +3944,12 @@ class CalendarSyncAdapter(
         // so the next run, which reads the addresses again, carries it out instead of asking again.
         if (keyManager.getAddressEmails(account.name).isEmpty()) {
             SyncLog.w(TAG, "No addresses with keys loaded for this account: local deletions wait for the next sync")
+            return
+        }
+        // An interrupted removal of older events (RangeTrimRunner) removes rows before their mappings: each mapping it
+        // left would go to Proton as a deletion here. Everything waits until the next sync's first step finishes it.
+        if (RangeTrimRunner.removalUnfinished(context, account.name)) {
+            SyncLog.w(TAG, "An interrupted removal of older events is not finished yet: local deletions wait for the next sync")
             return
         }
         val allCalMappings = calendarSyncDao.getAllByAccount(account.name)

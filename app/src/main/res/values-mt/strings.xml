@@ -289,7 +289,34 @@
     <string name="info_notify_on_failure_body">Turi notifika jekk sinkronizzazzjoni tfalli (eż. żball tan-netwerk jew sessjoni skaduta). Ikklikkjaha għal raġuni b\'lingwaġġ sempliċi u link għal-logs. Itfiha jekk ma tridx tiġi avżat dwar fallimenti temporanji.</string>
     <string name="info_sync_calendar_body">Meta mixgħula, il-kalendarji Proton tiegħek jissinkronizzaw mal-kalendarju ta\' Android, biex l-avvenimenti jidhru f\'Google Calendar, Samsung Calendar u kwalunkwe app oħra tal-kalendarju. F\'żewġ direzzjonijiet: l-editjar li tagħmel fuq it-telefon jittella\' lura fuq Proton għall-kalendarji li huma tiegħek.</string>
     <string name="info_include_external_calendars_body">Proton jista\' jżomm kalendarji abbonati (eż. feed ICS estern) u kalendarji tal-vaganzi. Dawn huma għall-qari biss fuq in-naħa ta\' Proton. Meta mitfija, l-app taqbiżhom u tissinkronizza biss il-kalendarji editabbli tiegħek stess. Ixegħel jekk trid li dawk il-kalendarji għall-qari biss jiġu mirrurjati wkoll fuq it-telefon tiegħek.</string>
-    <string name="info_sync_mode_body">„L-avvenimenti kollha\" jissinkronizza l-istorja kollha tal-kalendarju tiegħek u l-avvenimenti futuri kollha, l-aħjar jekk trid kollox fuq it-telefon tiegħek (l-ewwel sinkronizzazzjoni ta\' kalendarju kbir tista\' tieħu diversi minuti). „Firxa personalizzata\" tissinkronizza biss tieqa ta\' jiem madwar illum, u żżomm kalendarji kbar mgħaġġla u ħfief. L-avvenimenti barra t-tieqa ma jitniżżlux.</string>
+    <string name="info_sync_mode_body">„L-avvenimenti kollha“ jissinkronizza l-istorja kollha tal-kalendarju tiegħek u l-avvenimenti futuri kollha, l-aħjar jekk trid kollox fuq it-telefon tiegħek (l-ewwel sinkronizzazzjoni ta\' kalendarju kbir tista\' tieħu diversi minuti). „Firxa personalizzata“ żżomm kalendarji kbar mgħaġġla billi tissinkronizza biss tieqa ta\' jiem madwar illum: l-avvenimenti tagħhom barra t-tieqa ma jitniżżlux, u dawk li diġà jinsabu f\'dan it-telefon jibqgħu, ħlief jekk „Neħħi avvenimenti qodma minn dan it-telefon“ ikun mixgħul għall-kalendarju tagħhom. Il-kalendarji żgħar dejjem jissinkronizzaw sħaħ.</string>
+    <string name="label_trim_old_events">Neħħi avvenimenti qodma minn dan it-telefon</string>
+    <string name="info_trim_old_events_body">Għall-kalendarji li tagħżel, l-avvenimenti li spiċċaw aktar minn jum qabel ma tibda l-firxa tiegħek jitneħħew minn dan it-telefon, issa u fis-sinkronizzazzjonijiet ta\' wara. Jibqgħu fil-kont Proton tiegħek u hemmhekk ma jitħassar xejn. Il-kopji ta\' riżerva tal-kalendarji tiegħek stess isiru minn Proton, għalhekk xorta jinkludu dawn l-avvenimenti; ma jsirux kopji ta\' riżerva tal-kalendarji abbonati u ta\' dawk tal-vaganzi. Avveniment rikorrenti jibqa\', bid-dati preċedenti kollha tiegħu, dment li jkompli sal-firxa tiegħek jew m\'għandux data tat-tmiem, għax it-telefon iżomm avveniment rikorrenti bħala entrata waħda. L-avvenimenti li għandhom bidliet li għadhom ma ntbagħtux lil Proton jibqgħu wkoll, u l-istess jgħodd għal dawk li nħolqu jew inbidlu fl-aħħar 7 ijiem, skont il-verżjoni tagħhom fuq dan it-telefon u mhux skont meta dan it-telefon niżżilha. Jistgħu jintgħażlu biss kalendarji kbar wisq biex jissinkronizzaw sħaħ, u l-avvenimenti wara l-firxa tiegħek qatt ma jitneħħew. Biex tirkupra l-avvenimenti mneħħija, agħżel firxa itwal jew „L-avvenimenti kollha“.</string>
+    <string name="trim_dialog_title">Neħħi avvenimenti qodma minn dan it-telefon</string>
+    <string name="trim_dialog_intro">Agħżel il-kalendarji li trid tnaddaf. L-avvenimenti li spiċċaw qabel %1$s jitneħħew minn dan it-telefon fis-sinkronizzazzjoni li jmiss, u dawk ta\' wara meta jsiru qodma daqshekk. Jibqgħu fil-kont Proton tiegħek. Avveniment rikorrenti li jkompli wara dik id-data jibqa\', bid-dati kollha tiegħu.</string>
+    <plurals name="trim_calendar_count">
+        <item quantity="one">Sa %1$d avveniment għat-tneħħija</item>
+        <item quantity="two">Sa %1$d avvenimenti għat-tneħħija</item>
+        <item quantity="few">Sa %1$d avvenimenti għat-tneħħija</item>
+        <item quantity="many">Sa %1$d avveniment għat-tneħħija</item>
+        <item quantity="other">Sa %1$d avveniment għat-tneħħija</item>
+    </plurals>
+    <string name="trim_calendar_nothing">Xejn x\'jitneħħa għalissa</string>
+    <string name="trim_calendar_whole">Għalissa jissinkronizza sħiħ, għalhekk ma jitneħħa xejn</string>
+    <string name="trim_not_synced_yet">Il-kalendarji ta\' dan il-kont għadhom ma ġewx sinkronizzati, għalhekk ma jistgħux jidhru fil-lista. Erġa\' pprova wara s-sinkronizzazzjoni li jmiss.</string>
+    <string name="trim_offer_keep">Żommhom</string>
+    <string name="trim_small_calendars_note">Il-kalendarji żgħar jissinkronizzaw sħaħ u jżommu kull avveniment, għalhekk ma jidhrux fil-lista.</string>
+    <string name="trim_no_large_calendars">L-ebda kalendarju ta\' dan il-kont mhu kbir biżżejjed. Il-kalendarji żgħar jissinkronizzaw sħaħ u jżommu kull avveniment.</string>
+    <string name="trim_external_off_note">Il-kalendarji abbonati u dawk tal-vaganzi ma jissinkronizzawx dment li „Inkludi kalendarji esterni“ ikun mitfi, għalhekk ma jidhrux fil-lista u ma jitneħħa xejn minnhom.</string>
+    <plurals name="trim_value_on">
+        <item quantity="one">Mixgħul għal %1$d kalendarju</item>
+        <item quantity="two">Mixgħul għal %1$d kalendarji</item>
+        <item quantity="few">Mixgħul għal %1$d kalendarji</item>
+        <item quantity="many">Mixgħul għal %1$d kalendarju</item>
+        <item quantity="other">Mixgħul għal %1$d kalendarju</item>
+    </plurals>
+    <string name="trim_dialog_save">Salva</string>
+    <string name="trim_read_failed">Il-kalendarji fuq dan it-telefon ma setgħux jinqraw, għalhekk ma nbidel xejn.</string>
     <string name="info_sync_range_window_body">Kemm-il jum qabel u wara llum għandhom jiġu sinkronizzati meta tkun magħżula „Firxa personalizzata\". Twieqi ikbar juru aktar mill-kalendarju tiegħek iżda jieħdu aktar ħin biex jissinkronizzaw. Ma għandha l-ebda effett fil-mod „L-avvenimenti kollha\".</string>
     <string name="info_poll_attendee_body">Meta mixgħula, l-app tiċċekkja mill-ġdid perjodikament l-avvenimenti li għandhom parteċipanti biex tinduna bit-tweġibiet aċċetta/irrifjuta/proviżorju. Il-feed tal-bidliet ta\' Proton ma jirrappurtax il-bidliet tal-RSVP, għalhekk dan jeħtieġ sejħiet API addizzjonali, jiswa li tixegħlu biss jekk tiddependi milli tara t-tweġibiet tal-parteċipanti fuq it-telefon tiegħek.</string>
     <string name="info_send_invites_body">Meta żżid parteċipanti ma\' avveniment fuq it-telefon tiegħek, ibgħatilhom stedina bl-email. Mitfi b\'mod prestabbilit: ixegħel biss jekk trid li l-app tibgħat emails lill-parteċipanti f\'ismek.</string>

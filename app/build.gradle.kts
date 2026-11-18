@@ -26,8 +26,8 @@ android {
         applicationId = "me.proton.sync"
         minSdk = 29
         targetSdk = 36
-        versionCode = 200004
-        versionName = "2.0.4"
+        versionCode = 201000
+        versionName = "2.1.0"
     }
 
     // Needed only so AGP can find llvm-objcopy for `debugSymbolLevel` below. There is no
@@ -201,6 +201,15 @@ tasks.withType<Test>().configureEach {
     inputs.files(fileTree("src/direct/res") { include("values*/strings.xml") })
         .withPropertyName("directStringResources")
         .withPathSensitivity(PathSensitivity.RELATIVE)
+    // SettingsViewStateTest and LogAndBackupViewStateTest read two layouts, where moving a control changes no compiled
+    // class, and the debug script, which the public source leaves out (files() allows a missing file; the test then
+    // skips that check).
+    inputs.files("src/main/res/layout/activity_settings.xml", "src/main/res/layout/activity_backup_settings.xml")
+        .withPropertyName("viewStateLayouts")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.files(rootProject.layout.projectDirectory.file("tools/debug/sync-debug.sh"))
+        .withPropertyName("debugScript")
+        .withPathSensitivity(PathSensitivity.NONE)
 }
 
 val roomVersion = "2.6.1"

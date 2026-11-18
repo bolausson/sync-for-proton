@@ -1,6 +1,7 @@
 package me.proton.sync
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 
 /**
@@ -14,6 +15,11 @@ import androidx.preference.PreferenceManager
  *  - **Delete from phone** → approve; the held deletions are carried out.
  *  - **Keep on phone**     → remember those ids as *kept*; never delete them, never re-prompt —
  *                            until they reappear on Proton (then they're pruned from *kept*).
+ *
+ * Not asked: an event of a read-only external calendar that Proton re-imported under a new id and that is on the phone
+ * again under that id with its row's content to the letter, so nothing is lost (`replacedByNewCopies` in the calendar
+ * package). Still asked when that row holds something of the user's or was moved there from a deleted calendar
+ * (`planServerDeletions`).
  *
  * Parameterised by [type] ([TYPE_CONTACTS] / [TYPE_CALENDAR]) so both sync adapters share it.
  * State lives in SharedPreferences (survives process death). All mutations are synchronized
@@ -50,6 +56,7 @@ object RemoteDeletionGuard {
     private fun pendingKey(t: String, a: String) = "remote_del_pending_${t}_$a"
     private fun approvedKey(t: String, a: String) = "remote_del_approved_${t}_$a"
     private fun keptKey(t: String, a: String) = "remote_del_kept_${t}_$a"
+    private fun rekeyedKey(a: String) = "remote_del_rekeyed_${TYPE_CALENDAR}_$a"
 
     private fun prefs(c: Context) = PreferenceManager.getDefaultSharedPreferences(c)
 
@@ -114,7 +121,46 @@ object RemoteDeletionGuard {
      */
     fun forgetHolds(c: Context, t: String, a: String) {
         clearPending(c, t, a)
+        // The re-keyed marks name local mappings, which every path that calls this wipes.
+        if (t == TYPE_CALENDAR) prefs(c).edit().remove(rekeyedKey(a)).apply()
         SyncNotificationHelper.cancelRemoteDeletionPrompt(c, a, t)
+    }
+
+    /**
+     * Event ids moved onto another calendar by a re-key: a calendar deleted on Proton and one created or subscribed
+     * again under the same name, a read-only feed's too (every re-key is marked). They may be the user's own events,
+     * gone from Proton, so they always reach the question, also when the new calendar is a subscribed feed with a copy
+     * of the same content; the external replacement never takes them (`planServerDeletions` in the calendar package).
+     * Kept until their mappings are gone ([keepOnlyRekeyed]).
+     */
+    fun rekeyedIds(c: Context, a: String): Set<String> = rekeyedIds(prefs(c), a)
+
+    internal fun rekeyedIds(p: SharedPreferences, a: String): Set<String> =
+        p.getStringSet(rekeyedKey(a), emptySet())?.toSet() ?: emptySet()
+
+    /**
+     * Record [ids] as re-keyed (see [rekeyedIds]). Written through (commit) before the caller moves the mappings in
+     * Room: with apply() a crash right after the move could lose the marks, and the next sync would replace the moved
+     * events like a feed's without asking.
+     */
+    fun markRekeyed(c: Context, a: String, ids: Set<String>) = markRekeyed(prefs(c), a, ids)
+
+    internal fun markRekeyed(p: SharedPreferences, a: String, ids: Set<String>) {
+        if (ids.isEmpty()) return
+        synchronized(lock) { p.edit().putStringSet(rekeyedKey(a), rekeyedIds(p, a) + ids).commit() }
+    }
+
+    /** Keep only the re-keyed ids that still have a mapping with a row ([stillMapped]); the rest were dealt with. */
+    fun keepOnlyRekeyed(c: Context, a: String, stillMapped: Set<String>) = keepOnlyRekeyed(prefs(c), a, stillMapped)
+
+    internal fun keepOnlyRekeyed(p: SharedPreferences, a: String, stillMapped: Set<String>) = synchronized(lock) {
+        val cur = rekeyedIds(p, a)
+        if (cur.isEmpty()) return
+        val remaining = cur.filter { it in stillMapped }.toSet()
+        if (remaining.size == cur.size) return
+        val e = p.edit()
+        if (remaining.isEmpty()) e.remove(rekeyedKey(a)) else e.putStringSet(rekeyedKey(a), remaining)
+        e.apply()
     }
 
     /** Every type, for a path that wipes an account wholesale. */
@@ -129,6 +175,27 @@ object RemoteDeletionGuard {
     /** Drop *kept* ids that are present again on the server (resume normal sync for them). */
     fun pruneKept(c: Context, t: String, a: String, presentIds: Set<String>) =
         pruneSet(c, keptKey(t, a), null, presentIds)
+
+    /**
+     * Drop held [ids] that were dealt with without the question: an external calendar's events that Proton re-imported
+     * under new ids, whose old copies were removed from the phone at once (`replacedByNewCopies`). The approved flag goes
+     * with the last held id, because it was given for those ids only and must not approve a later hold the user never saw.
+     */
+    fun forgetPending(c: Context, t: String, a: String, ids: Set<String>) = forgetPending(prefs(c), t, a, ids)
+
+    /** [forgetPending] on [p] itself, so the rule can be tested without a Context. */
+    internal fun forgetPending(p: SharedPreferences, t: String, a: String, ids: Set<String>) = synchronized(lock) {
+        val cur = p.getStringSet(pendingKey(t, a), emptySet()) ?: return
+        if (cur.none { it in ids }) return
+        val remaining = cur.filter { it !in ids }.toSet()
+        val e = p.edit()
+        if (remaining.isEmpty()) {
+            e.remove(pendingKey(t, a)).remove(countKey(t, a)).remove(approvedKey(t, a))
+        } else {
+            e.putStringSet(pendingKey(t, a), remaining).putInt(countKey(t, a), remaining.size)
+        }
+        e.apply()
+    }
 
     private fun pruneSet(c: Context, setKey: String, countKey: String?, presentIds: Set<String>) = synchronized(lock) {
         val cur = prefs(c).getStringSet(setKey, emptySet()) ?: return
