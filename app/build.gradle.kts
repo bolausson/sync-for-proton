@@ -26,8 +26,8 @@ android {
         applicationId = "me.proton.sync"
         minSdk = 29
         targetSdk = 36
-        versionCode = 201000
-        versionName = "2.1.0"
+        versionCode = 202000
+        versionName = "2.2.0"
     }
 
     // Needed only so AGP can find llvm-objcopy for `debugSymbolLevel` below. There is no
@@ -200,6 +200,11 @@ tasks.withType<Test>().configureEach {
     // language, which the play test task compiles no class from at all.
     inputs.files(fileTree("src/direct/res") { include("values*/strings.xml") })
         .withPropertyName("directStringResources")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    // NewEventHoldWiringTest reads the main manifest (its <queries>, the receiver's exported flag), which no unit-test
+    // classpath entry carries: an edit to it alone must re-run the tests.
+    inputs.files("src/main/AndroidManifest.xml")
+        .withPropertyName("mainManifest")
         .withPathSensitivity(PathSensitivity.RELATIVE)
     // SettingsViewStateTest and LogAndBackupViewStateTest read two layouts, where moving a control changes no compiled
     // class, and the debug script, which the public source leaves out (files() allows a missing file; the test then

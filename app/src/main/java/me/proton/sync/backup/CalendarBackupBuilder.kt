@@ -13,6 +13,7 @@ import me.proton.sync.api.models.CalendarEventDetail
 import me.proton.sync.api.models.CalendarInfo
 import me.proton.sync.api.models.CalendarKey
 import me.proton.sync.api.models.CalendarPassphrase
+import me.proton.sync.calendar.AddressKeysMissing
 import me.proton.sync.crypto.CalendarDecryptor
 import net.fortuna.ical4j.data.CalendarOutputter
 import net.fortuna.ical4j.model.component.VEvent
@@ -30,10 +31,18 @@ import net.fortuna.ical4j.model.component.VEvent
  *
  * Subscribed (Type 1) and holiday (Type 2) calendars are skipped: they are external,
  * read-only, re-addable data — not the user's own content a backup exists to protect.
+ *
+ * So is a calendar with keys while none of the account's address keys is loaded
+ * ([addressKeysLoaded], AddressKeysMissing), as when the account's addresses could not be read as the
+ * run began: none of its keys can be unlocked then, and every event would go into the file without its
+ * title, location and description, in a backup that read as complete. It counts as a skipped calendar,
+ * so the run is incomplete.
  */
 class CalendarBackupBuilder(
     private val apiClient: ProtonApiClient,
     private val calendarDecryptor: CalendarDecryptor,
+    /** Whether any address key of the account named is loaded (KeyManager.hasAddressKeys). */
+    private val addressKeysLoaded: (String) -> Boolean,
 ) {
     /** One serialized calendar. [eventCount] feeds the emptiness guard upstream. */
     data class CalendarIcs(val displayName: String, val fileBaseName: String, val ics: String, val eventCount: Int)
@@ -68,6 +77,11 @@ class CalendarBackupBuilder(
             val passphrases = fetchPassphrases(accountName, cal.id)
             if (keys.isEmpty()) {
                 SyncLog.w(TAG, "Backup INCOMPLETE: no keys for calendar '${cal.name ?: cal.id}', skipping")
+                skipped++
+                continue
+            }
+            if (AddressKeysMissing.skipsCalendar(keys.isNotEmpty(), addressKeysLoaded(accountName))) {
+                SyncLog.w(TAG, "Backup INCOMPLETE: no address key is loaded for $accountName, so the keys of calendar '${cal.name ?: cal.id}' cannot be unlocked; skipping")
                 skipped++
                 continue
             }

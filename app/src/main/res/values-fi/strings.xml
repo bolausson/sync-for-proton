@@ -44,7 +44,6 @@
 
     <string name="label_expand">Laajenna</string>
     <string name="label_display_name">Näyttönimi</string>
-    <string name="label_event_loop_interval">Tapahtumasilmukan väli</string>
     <string name="label_fallback_full_sync">Varatäyssynkronointi</string>
     <string name="label_notify_on_failure">Ilmoita virheistä</string>
     <string name="label_notify_in_progress">Näytä ilmoitus synkronoinnin aikana</string>
@@ -107,7 +106,6 @@
     <string name="dialog_message_display_name">Valitse uusi näyttönimi tälle tilille. Käytetään Asetukset → Hallitse tilejä -kohdassa ja yhteystiedon \"Tili\"-alaotsikossa.</string>
     <string name="dialog_title_past_events">Menneet tapahtumat</string>
     <string name="dialog_title_future_events">Tulevat tapahtumat</string>
-    <string name="dialog_title_event_loop_interval">Tapahtumasilmukan väli</string>
     <string name="dialog_title_contacts_fallback">Yhteystietojen varatäyssynkronointi</string>
     <string name="dialog_title_calendar_fallback">Kalenterin varatäyssynkronointi</string>
     <string name="dialog_title_remove_account">Poista tili</string>
@@ -165,13 +163,17 @@
     <string name="notification_sync_phase_decrypting">puretaan salausta %1$d/%2$d</string>
     <string name="label_sync_queued">Odottaa synkronointia</string>
     <string name="error_no_internet">Ei internetyhteyttä. Synkronointi yritetään uudelleen automaattisesti.</string>
+    <string name="error_no_internet_tap_sync">Ei internetyhteyttä. Napauta Synkronoi yrittääksesi uudelleen.</string>
     <string name="error_timeout">Palvelimeen ei saatu yhteyttä. Tarkista internetyhteytesi.</string>
     <string name="error_session_expired">Istuntosi on vanhentunut. Kirjaudu uudelleen sisään.</string>
     <string name="error_too_many_requests">Liian monta pyyntöä. Synkronointi yritetään uudelleen myöhemmin.</string>
+    <string name="error_too_many_requests_tap_sync">Liian monta pyyntöä. Napauta Synkronoi yrittääksesi uudelleen.</string>
     <string name="error_server_error">Proton-palvelinvirhe. Synkronointi yritetään uudelleen automaattisesti.</string>
+    <string name="error_server_error_tap_sync">Proton-palvelinvirhe. Napauta Synkronoi yrittääksesi uudelleen.</string>
     <string name="error_request_rejected">Palvelin hylkäsi synkronointipyynnön.</string>
     <string name="error_ssl">Suojattu yhteys epäonnistui. Tarkista verkkosi.</string>
     <string name="error_connection_interrupted">Yhteys katkesi. Synkronointi yritetään uudelleen.</string>
+    <string name="error_connection_interrupted_tap_sync">Yhteys katkesi. Napauta Synkronoi yrittääksesi uudelleen.</string>
     <string name="error_unexpected">Synkronoinnissa tapahtui odottamaton virhe.</string>
 
     <string name="notification_channel_auth">Todennus</string>
@@ -281,16 +283,16 @@
     <string name="label_info">Lisätietoja</string>
     <string name="info_language_body">Asettaa tämän sovelluksen omissa näkymissä käytettävän kielen. \"Automaattinen\" seuraa puhelimen järjestelmäkieltä. Tämä muuttaa vain sovelluksen käyttöliittymää, se ei käännä synkronoituja kalenteritapahtumiasi tai yhteystietojasi.</string>
     <string name="info_display_name_body">Tälle tilille Android-asetukset → Tilit -kohdassa sekä kalenteri-/yhteystietosovellusten valitsimissa näytettävä nimi. Se on vain paikallinen merkintä; sen muuttaminen ei vaikuta Proton-tiliisi.\n\nHuomautus: Samsung Calendar ja Samsung Contacts ohittavat mukautetut tilien nimet ja näyttävät aina oman merkintänsä (esim. \"Proton\"). Valitsemasi nimi ei ehkä näy siellä, tämä on Samsungin rajoitus, jota emme voi muuttaa. Muut sovellukset (Google Calendar/Contacts) näyttävät sen normaalisti.</string>
-    <string name="info_event_loop_body">Kuinka usein sovellus tarkistaa Protonista taustalla yhteystietojesi ja kalenterisi etämuutokset. Lyhyemmät välit tuovat muutokset esiin nopeammin, mutta käyttävät enemmän akkua ja dataa. Tämä on erillinen manuaalisesta synkronoinnista, jonka voit käynnistää milloin tahansa synkronointipainikkeilla.</string>
+    <string name="info_event_loop_body">Kuinka usein sovellus tarkistaa Protonista taustalla yhteystietojesi ja kalenterisi etämuutokset. Nämä tarkistukset tehdään vain, kun Androidin automaattinen synkronointi on käytössä; kun se on pois käytöstä, mikään ei synkronoidu itsestään. Lyhyemmät välit tuovat muutokset esiin nopeammin, mutta käyttävät enemmän akkua ja dataa. Tämä on erillinen manuaalisesta synkronoinnista, jonka voit käynnistää milloin tahansa synkronointipainikkeilla.</string>
     <string name="info_notify_in_progress_body">Näyttää hiljaisen, jatkuvan ilmoituksen synkronoinnin aikana reaaliaikaisella edistymisellä (tarkistus, lataus, salauksen purku). Se sijaitsee ilmoitusalueen alaosassa eikä koskaan tuota ääntä. Poista se käytöstä, jos haluat synkronoinnin tapahtuvan näkymättömästi.</string>
     <string name="info_sync_contacts_body">Kun tämä on käytössä, Proton-yhteystietosi synkronoituvat kaksisuuntaisesti Androidin yhteystietojen kanssa: kummallakin puolella tehdyt muutokset yhdistetään.\n\nHuomautus: Samsung Contacts näyttää yhteystiedot yhden \"Proton contacts\" -tilimerkinnän alla ja piilottaa sähköpostin alaotsikon kolmannen osapuolen tileiltä, kuten meidän, kovakoodattu Samsungin rajoitus, jota emme voi muuttaa. Google Contacts ja useimmat muut sovellukset näyttävät ne normaalisti.</string>
-    <string name="info_fallback_full_sync_body">Kuinka usein sovellus tekee täydellisen uudelleentarkistuksen nopean lisäävän synkronoinnin sijaan. Täysi synkronointi havaitsee kaiken, minkä lisäävä ajo saattaa ohittaa (esim. offline-tilassa tehdyt muutokset) suuremman ajan ja datan kustannuksella. Jätä oletusarvoon, ellet epäile, että jotkin kohteet eivät synkronoidu.</string>
+    <string name="info_fallback_full_sync_body">Kuinka usein sovellus tekee täydellisen uudelleentarkistuksen nopean lisäävän synkronoinnin sijaan. Se tehdään vain, kun Androidin automaattinen synkronointi on käytössä. Täysi synkronointi havaitsee kaiken, minkä lisäävä ajo saattaa ohittaa (esim. offline-tilassa tehdyt muutokset) suuremman ajan ja datan kustannuksella. Jätä oletusarvoon, ellet epäile, että jotkin kohteet eivät synkronoidu.</string>
     <string name="info_notify_on_failure_body">Näyttää ilmoituksen, jos synkronointi epäonnistuu (esim. verkkovirhe tai vanhentunut istunto). Napauta sitä saadaksesi selkokielisen syyn ja linkin lokeihin. Poista se käytöstä, jos et halua saada ilmoitusta ohimenevistä epäonnistumisista.</string>
-    <string name="info_sync_calendar_body">Kun tämä on käytössä, Proton-kalenterisi synkronoituvat Androidin kalenteriin, jolloin tapahtumat näkyvät Google Calendarissa, Samsung Calendarissa ja missä tahansa muussa kalenterisovelluksessa. Kaksisuuntainen: puhelimessa tekemäsi muokkaukset ladataan takaisin Protoniin omistamiesi kalentereiden osalta.</string>
+    <string name="info_sync_calendar_body">Kun tämä on käytössä, Proton-kalenterisi synkronoituvat Androidin kalenteriin, jolloin tapahtumat näkyvät Google Calendarissa, Samsung Calendarissa ja missä tahansa muussa kalenterisovelluksessa. Kaksisuuntainen: puhelimessa tekemäsi muokkaukset ladataan takaisin Protoniin kaikissa kalentereissa, joita voit muokata, myös kalentereissa, jotka muut ovat jakaneet kanssasi.</string>
     <string name="info_include_external_calendars_body">Proton voi sisältää tilattuja kalentereita (esim. ulkoinen ICS-syöte) ja juhlapyhäkalentereita. Nämä ovat vain luettavissa Protonin puolella. Kun tämä on pois käytöstä, sovellus ohittaa ne ja synkronoi vain omat muokattavat kalenterisi. Ota käyttöön, jos haluat myös nämä vain luettavat kalenterit peilattavan puhelimeesi.</string>
     <string name="info_sync_mode_body">\"Kaikki tapahtumat\" synkronoi koko kalenterihistoriasi ja kaikki tulevat tapahtumat, paras vaihtoehto, jos haluat kaiken puhelimeesi (suuren kalenterin ensimmäinen synkronointi voi kestää useita minuutteja). \"Mukautettu väli\" pitää suuret kalenterit nopeina synkronoimalla vain tämän päivän ympärillä olevan päiväikkunan: niiden ikkunan ulkopuolisia tapahtumia ei ladata, ja tässä puhelimessa jo olevat tapahtumat säilyvät, ellei \"Poista vanhemmat tapahtumat tästä puhelimesta\" ole käytössä niiden kalenterissa. Pienet kalenterit synkronoidaan aina kokonaan.</string>
     <string name="label_trim_old_events">Poista vanhemmat tapahtumat tästä puhelimesta</string>
-    <string name="info_trim_old_events_body">Valitsemiesi kalenterien tapahtumat, jotka päättyivät yli päivää ennen välin alkua, poistetaan tästä puhelimesta nyt ja myöhemmissä synkronoinneissa. Ne säilyvät Proton-tililläsi, eikä sieltä poisteta mitään. Omien kalenteriesi varmuuskopiot tehdään Protonista, joten tapahtumat ovat niissä yhä tallessa; tilattuja kalentereita ja juhlapyhäkalentereita ei varmuuskopioida. Toistuva tapahtuma säilyy kaikkine aiempine päivämäärineen niin kauan kuin se toistuu vielä välin aikana tai sillä ei ole päättymispäivää, koska puhelin tallentaa toistuvan tapahtuman yhtenä merkintänä. Myös tapahtumat, joiden muutoksia ei ole vielä lähetetty Protoniin, säilyvät, samoin kuin tapahtumat, jotka on luotu tai viimeksi muutettu viimeisten 7 päivän aikana tässä puhelimessa olevan version mukaan, ei sen mukaan, milloin puhelin latasi sen. Valittavissa ovat vain kalenterit, jotka ovat liian suuria kokonaan synkronoitaviksi, eikä välin jälkeisiä tapahtumia poisteta koskaan. Saat poistetut tapahtumat takaisin valitsemalla pidemmän välin tai vaihtoehdon \"Kaikki tapahtumat\".</string>
+    <string name="info_trim_old_events_body">Valitsemiesi kalenterien tapahtumat, jotka päättyivät yli päivää ennen välin alkua, poistetaan tästä puhelimesta seuraavassa synkronoinnissa ja myöhemmät sitten, kun ne ovat yhtä vanhoja. Ne säilyvät Proton-tililläsi, eikä sieltä poisteta mitään. Omien kalenteriesi varmuuskopiot tehdään Protonista, joten tapahtumat ovat niissä yhä tallessa; tilattuja kalentereita ja juhlapyhäkalentereita ei varmuuskopioida. Toistuva tapahtuma säilyy kaikkine aiempine päivämäärineen niin kauan kuin se toistuu vielä välin aikana tai sillä ei ole päättymispäivää, koska puhelin tallentaa toistuvan tapahtuman yhtenä merkintänä. Myös tapahtumat, joiden muutoksia ei ole vielä lähetetty Protoniin, säilyvät, samoin kuin tapahtumat, jotka on luotu tai viimeksi muutettu viimeisten 7 päivän aikana tässä puhelimessa olevan version mukaan, ei sen mukaan, milloin puhelin latasi sen. Valittavissa ovat vain kalenterit, jotka ovat liian suuria kokonaan synkronoitaviksi, eikä välin jälkeisiä tapahtumia poisteta koskaan. Saat poistetut tapahtumat takaisin valitsemalla pidemmän välin tai vaihtoehdon \"Kaikki tapahtumat\".</string>
     <string name="trim_dialog_title">Poista vanhemmat tapahtumat tästä puhelimesta</string>
     <string name="trim_dialog_intro">Valitse siivottavat kalenterit. Ennen %1$s päättyneet tapahtumat poistetaan tästä puhelimesta seuraavassa synkronoinnissa ja myöhemmät sitten, kun ne ovat yhtä vanhoja. Ne säilyvät Proton-tililläsi. Tämän päivämäärän jälkeen jatkuva toistuva tapahtuma säilyy kaikkine päivämäärineen.</string>
     <plurals name="trim_calendar_count">
@@ -310,6 +312,32 @@
     </plurals>
     <string name="trim_dialog_save">Tallenna</string>
     <string name="trim_read_failed">Tämän puhelimen kalentereita ei voitu lukea, joten mitään ei muutettu.</string>
+    <string name="label_default_calendar">Oletuskalenteri</string>
+    <string name="info_default_calendar_body">Protonissa uudet tapahtumat menevät oletuskalenteriisi, jonka tämä puhelin merkitsee tilin pääkalenteriksi. Jos vaihdat oletuskalenterin tässä, se vaihtuu myös Protonissa, joten Protonin verkkoversio, Protonin sovellukset ja kutsut, joihin vastaat Proton Mailissa, käyttävät uutta kalenteria. Oletuskalenteriksi kelpaa vain aktiivinen oma kalenteri, ei jaettu tai tilattu kalenteri eikä juhlapyhäkalenteri.</string>
+    <string name="default_calendar_connecting">Yhdistetään Protoniin…</string>
+    <string name="default_calendar_changed">Oletuskalenteri vaihdettu</string>
+    <string name="default_calendar_unreachable">Protoniin ei saatu yhteyttä. Yritä hetken kuluttua uudelleen.</string>
+    <string name="default_calendar_refused">Proton ei hyväksynyt muutosta, joten mitään ei muutettu.</string>
+    <string name="default_calendar_none_own">Tällä tilillä ei ole omaa aktiivista kalenteria, joka voisi olla oletuskalenteri. Jaetut ja tilatut kalenterit sekä juhlapyhäkalenterit eivät kelpaa oletuskalenteriksi.</string>
+    <string name="default_calendar_incomplete">Kaikkia tämän tilin kalentereita ei voitu lukea, joten sen oletuskalenteria ei voi vaihtaa tässä.</string>
+    <string name="notification_new_event_hold_title">Uusi tapahtuma jaetussa kalenterissa</string>
+    <string name="notification_new_event_hold_body">%1$s lisäsi tapahtuman ”%2$s” kalenteriin %3$s. Muut, joilla on pääsy tähän kalenteriin, näkisivät sen.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Jokin sovellus lisäsi tapahtuman ”%1$s” kalenteriin %2$s. Muut, joilla on pääsy tähän kalenteriin, näkisivät sen.</string>
+    <string name="action_new_event_move">Siirrä kalenteriin %1$s</string>
+    <string name="action_new_event_publish">Julkaise</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d tapahtuma odottaa valintaasi</item>
+        <item quantity="other">%d tapahtumaa odottaa valintaasi</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d tapahtuma säilytetty vain tässä puhelimessa</item>
+        <item quantity="other">%d tapahtumaa säilytetty vain tässä puhelimessa</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Vielä %d tapahtuma odottaa valintaasi</item>
+        <item quantity="other">Vielä %d tapahtumaa odottaa valintaasi</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Kun muu kuin kalenterisovellus lisää tapahtuman kalenteriin, jonka joku on jakanut kanssasi, tapahtuma odottaa tässä puhelimessa, kunnes teet valinnan. ”Siirrä” vie sen jaetun kalenterin sijaan oletuskalenteriisi. ”Julkaise” lähettää sen jaettuun kalenteriin, jossa kaikki, joilla on pääsy kalenteriin, näkevät sen. ”Säilytä puhelimessa” ei lähetä sitä koskaan Protoniin: sitä ei ole Proton Calendarissa, verkossa, muissa laitteissasi eikä tämän sovelluksen varmuuskopioissa, ja se katoaa, jos poistat tämän sovelluksen tai tämän tilin. Säilytetyt tapahtumat näkyvät edelleen tämän tilin kortilla, jossa voit yhä siirtää tai julkaista ne.</string>
     <string name="info_sync_range_window_body">Kuinka monta päivää ennen ja jälkeen tämän päivän synkronoidaan, kun \"Mukautettu väli\" on valittuna. Suuremmat ikkunat näyttävät enemmän kalenteristasi, mutta niiden synkronointi kestää kauemmin. Ei vaikuta \"Kaikki tapahtumat\" -tilassa.</string>
     <string name="info_poll_attendee_body">Kun tämä on käytössä, sovellus tarkistaa säännöllisesti uudelleen tapahtumat, joissa on osallistujia, havaitakseen hyväksy/hylkää/alustava-vastaukset. Protonin muutossyöte ei raportoi RSVP-muutoksia, joten tämä vaatii ylimääräisiä API-kutsuja, kannattaa ottaa käyttöön vain, jos haluat nähdä osallistujien vastaukset puhelimessasi.</string>
     <string name="info_send_invites_body">Kun lisäät osallistujia tapahtumaan puhelimessasi, lähetä heille kutsu sähköpostitse. Oletuksena pois päältä: ota käyttöön vain, jos haluat sovelluksen lähettävän sähköpostia osallistujille puolestasi.</string>
@@ -317,7 +345,7 @@
     <string name="info_send_cancellations_body">Lähetä sähköpostia osallistujille, kun poistat heille kutsutun tapahtuman, jotta myös heidän kalentereistaan se poistuu. Oletuksena pois päältä.</string>
     <string name="info_invite_subject_title_body">Kun lähetät kutsusähköposteja, laita tapahtuman otsikko sähköpostin aiheriville, jotta vastaanottajat tunnistavat sen yhdellä silmäyksellä. Oletuksena pois päältä yksityisyyden vuoksi: sähköpostin aiheita ei ole salattu tavallisessa postinkuljetuksessa, joten otsikko olisi näkyvissä reitin varrella oleville sähköpostipalvelimille.</string>
     <string name="info_background_sync_body">Android saattaa keskeyttää taustasynkronoinnin akun säästämiseksi, mikä voi viivästyttää tai pysäyttää automaattisen synkronoinnin. Tämän sovelluksen jättäminen pois akun optimoinnista pitää ajastetut synkronoinnit käynnissä luotettavasti. Käytä painiketta avataksesi sovelluksen järjestelmän akkuasetukset.</string>
-    <string name="info_verbose_logging_body">Tallentaa lisädiagnostiikkatietoja (todennustila, avainten avaus, synkronoinnin sisäiset toiminnot) lokiin, hyödyllinen ongelmaa raportoitaessa. Sovellus korvaa lokin sähköpostiosoitteet lyhyillä koodeilla, mutta loki voi sisältää tilien ja kalenterien nimiä, joten jaa lokeja vain kehittäjän kanssa. Jätä pois päältä normaalissa käytössä.</string>
+    <string name="info_verbose_logging_body">Tallentaa lisädiagnostiikkatietoja (todennustila, avainten avaus, synkronoinnin sisäiset toiminnot) lokiin, hyödyllinen ongelmaa raportoitaessa. Kun tämä on käytössä, lokissa mainitaan myös kalenteriesi ja niihin tapahtumia lisäävien sovellusten nimet. Sovellus korvaa lokin sähköpostiosoitteet lyhyillä koodeilla, mutta loki voi sisältää tilien ja kalenterien nimiä, joten jaa lokeja vain kehittäjän kanssa. Jätä pois päältä normaalissa käytössä.</string>
     <string name="info_file_logging_body">Kirjoittaa sovelluksen lokin aikaleimattuun tekstitiedostoon (sync-for-proton-log-….txt) valitsemaasi kansioon. Muuten sovellus säilyttää lokin vain muistissa, joten ota tämä käyttöön, kun haluat tallentaa vaikeasti toistettavan ongelman. Uusi tiedosto luodaan aina sovelluksen käynnistyessä. Sovellus korvaa tiedoston sähköpostiosoitteet lyhyillä koodeilla, mutta tiedosto voi sisältää tilien ja kalenterien nimiä, joten jaa se vain kehittäjälle. Jätä pois päältä normaalikäytössä.</string>
     <string name="info_timezone_updates_text">Tapahtumien ajat riippuvat aikavyöhykkeiden säännöistä, ja maat muuttavat näitä sääntöjä aika ajoin. Android säilyttää ne puhelimen aikavyöhyketiedoissa, jotka tulevat järjestelmäpäivitysten mukana. Puhelin, joka ei enää saa niitä, esimerkiksi vanhemmalla Android-versiolla tai ilman Google Play -järjestelmäpäivityksiä, pitää vanhat säännöt, ja tapahtumat paikoissa, joiden säännöt ovat sen jälkeen muuttuneet, voivat näkyä väärään aikaan.\n\nAikavyöhyketiedot tässä puhelimessa: versio %1$s\n\nKun tämä ei ole käytössä (oletus), sovellus käyttää puhelimen omia aikavyöhyketietoja eikä lähetä mitään www.tzurl.org-palveluun.\n\nKun tämä on käytössä, sovellus lataa jokaisen tapahtumiesi käyttämän aikavyöhykkeen ajantasaiset säännöt www.tzurl.org-palvelusta, joka on kolmannen osapuolen palvelu, enintään kerran aikavyöhykettä kohden aina sovelluksen käynnistyttyä, ja käyttää niitä vain, jos ne ovat puhelimen tietoja uudempia. www.tzurl.org näkee tällöin IP-osoitteesi ja näiden aikavyöhykkeiden nimet, esimerkiksi Europe/Berlin. Muuta tietoa tapahtumistasi tai tileistäsi ei lähetetä. Jos www.tzurl.org ei ole tavoitettavissa, käytetään puhelimen tietoja. Toistuvat tapahtumat lasketaan edelleen puhelimen tiedoilla.\n\nMuutoksen jälkeen puhelimessa jo olevat tapahtumat tarkistetaan ja korjataan seuraavassa synkronoinnissa.</string>
     <string name="tz_data_version_unknown">tuntematon</string>
@@ -401,6 +429,8 @@
     <string name="backup_unit_days">päivä</string>
     <string name="backup_retention_label">Säilytä viimeiset</string>
     <string name="backup_unit_runs">varmuuskopiota</string>
+    <string name="backup_when_auto_sync_off_label">Varmuuskopioi myös ilman automaattista synkronointia</string>
+    <string name="info_backup_when_auto_sync_off_body">Androidin ”Synkronoi tiedot automaattisesti” -kytkin pysäyttää kaikkien sovellusten taustasynkronoinnin, ja ajastetut varmuuskopioinnit noudattavat sitä: kun kytkin on pois päältä, ajastettu varmuuskopiointi ohitetaan, ja tämä näkymä kertoo siitä painikkeen ”Varmuuskopioi nyt” alla. Ota tämä käyttöön, niin ajastetut varmuuskopioinnit tehdään silti. Jokainen varmuuskopiointi lataa kaikki kalenterisi ja yhteystietosi Protonista, mikä voi kuluttaa paljon mobiilidataa. ”Varmuuskopioi nyt” toimii aina.</string>
     <string name="backup_section_contents">Mitä varmuuskopioidaan</string>
     <string name="backup_include_calendars_label">Kalenterit (.ics)</string>
     <string name="backup_include_contacts_label">Yhteystiedot (.vcf)</string>
@@ -423,6 +453,7 @@
     <string name="backup_running">Varmuuskopioidaan…</string>
     <string name="backup_last_never">Ei vielä varmuuskopiota.</string>
     <string name="backup_last_run">Viimeisin varmuuskopio: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Ajastettu varmuuskopiointi ohitettiin %1$s: Androidin automaattinen synkronointi on pois käytöstä</string>
     <string name="backup_decrypt_action">Pura varmuuskopion salaus…</string>
     <string name="backup_decrypt_body">Valitse salattu varmuuskopiotiedosto (.gpg) ja anna sen salasana. Sisältö tallennetaan puretussa muodossa varmuuskopiokansioosi.</string>
     <string name="backup_decrypting">Puretaan salausta…</string>
@@ -480,7 +511,7 @@
     <string name="sfp_group_account">Tili</string>
     <string name="sfp_group_contacts">Yhteystiedot</string>
     <string name="sfp_group_calendar">Kalenteri</string>
-    <string name="sfp_event_loop_subtitle">Kuinka usein etämuutoksia tarkistetaan</string>
+    <string name="sfp_event_loop_subtitle">Kuinka usein etämuutoksia tarkistetaan, kun Androidin automaattinen synkronointi on käytössä</string>
     <string name="sfp_show_advanced">Näytä sähköposti- ja lisäasetukset</string>
     <string name="sfp_hide_advanced">Piilota sähköposti- ja lisäasetukset</string>
     <string name="sfp_group_email_attendees">Sähköposti osallistujille</string>
@@ -491,6 +522,7 @@
     <string name="sfp_hero_subtitle_ok">Kaikki käytössä olevat tilit ovat ajan tasalla</string>
     <string name="sfp_hero_subtitle_warn">Yksi tai useampi tili vaatii synkronoinnin tai kirjautumisen</string>
     <string name="sfp_sync_all_now">Synkronoi kaikki nyt</string>
+    <string name="sfp_auto_sync_off">Androidin automaattinen synkronointi on pois käytöstä: tilit synkronoituvat vain, kun napautat Synkronoi</string>
     <string name="sfp_tile_logs">Synkronointiloki</string>
     <string name="sfp_tile_backup">Varmuuskopio</string>
     <string name="sfp_tile_battery">Akku</string>
@@ -529,6 +561,10 @@
     <string name="notification_contacts_too_large_summary">Nämä tilin %1$s yhteystiedot ovat liian suuria Androidin yhteystietojen tallennustilaan. Protonissa ne säilyvät täydellisinä:</string>
     <string name="notification_contacts_too_large_outdated">tässä puhelimessa on vanhempi versio</string>
     <string name="notification_contacts_too_large_missing">ei tässä puhelimessa</string>
+    <string name="notification_contacts_delete_refused_title">Joitakin yhteystietoja ei voitu poistaa Protonista</string>
+    <string name="notification_contacts_delete_refused_summary">Nämä tilin %1$s yhteystiedot poistettiin tästä puhelimesta, mutta Proton kieltäytyi poistamasta niitä. Ne ovat yhä Protonissa ja muissa laitteissasi:</string>
+    <string name="notification_events_delete_refused_title">Joitakin tapahtumia ei voitu poistaa Protonista</string>
+    <string name="notification_events_delete_refused_summary">Nämä tilin %1$s tapahtumat poistettiin tästä puhelimesta, mutta Proton kieltäytyi poistamasta niitä. Ne ovat yhä Protonissa ja muissa laitteissasi:</string>
     <string name="notification_conflict_title">Tapahtumaa muutettu kahdessa paikassa</string>
     <string name="notification_conflict_body">”%1$s” muokattiin tässä puhelimessa ja Proton Calendarissa. Kumman version haluat säilyttää?</string>
     <string name="notification_conflict_body_shared">”%1$s” muokattiin tässä puhelimessa, ja %2$s muokkasi sitä Proton Calendarissa. Oman version säilyttäminen korvaa hänen versionsa.</string>

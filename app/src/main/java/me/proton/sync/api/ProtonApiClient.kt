@@ -149,23 +149,35 @@ interface ProtonApiClient {
         @Query("PageSize") pageSize: Int = 100
     ): Response<Map<String, Any>>
 
-    // Event Loop — unified change detection for contacts + calendar
-    @GET("core/v5/events/latest")
-    suspend fun getLatestEventId(
-        @Tag accountName: String
-    ): Response<Map<String, Any>>
-
-    @GET("core/v5/events/{eventId}")
-    suspend fun getEvents(
-        @Tag accountName: String,
-        @Path("eventId") eventId: String
-    ): Response<Map<String, Any>>
-
     // Calendar
     @GET("calendar/v1")
     suspend fun getCalendars(
         @Tag accountName: String
     ): Response<CalendarListResponse>
+
+    /**
+     * The account's calendar settings, read for DefaultCalendarID only: the calendar Proton treats as the
+     * default becomes the phone's primary calendar (PrimaryCalendarChooser). The calendar sync and the account
+     * card's Default calendar row read it through CalendarUserSettingsFetch; the row changes it with
+     * [updateCalendarUserSettings].
+     */
+    @GET("settings/calendar")
+    suspend fun getCalendarUserSettings(
+        @Tag accountName: String
+    ): Response<CalendarUserSettingsResponse>
+
+    /**
+     * Changes the account's calendar settings. Proton takes a partial body, so only the fields sent change
+     * (WebClients api/calendars.ts updateCalendarUserSettings; Proton's Android calendar SettingsApiImpl,
+     * updateCalendarUserDefaultCalendarId), and it answers in the shape of [getCalendarUserSettings]. No Proton
+     * client wraps it in a password or unlock step. The only caller is DefaultCalendarService.save, which sends
+     * DefaultCalendarID alone.
+     */
+    @PUT("settings/calendar")
+    suspend fun updateCalendarUserSettings(
+        @Tag accountName: String,
+        @Body body: UpdateCalendarUserSettingsRequest
+    ): Response<CalendarUserSettingsResponse>
 
     /**
      * Proton's CalendarEventsQuery partitions events into 4 buckets (PartDayInsideWindow=0,

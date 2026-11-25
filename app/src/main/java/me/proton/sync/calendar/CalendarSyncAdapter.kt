@@ -12,6 +12,7 @@ import me.proton.sync.LogRedaction
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncTriggerType
 import me.proton.sync.SyncUtils
 import androidx.preference.PreferenceManager
@@ -104,7 +105,6 @@ class CalendarSyncAdapter(
         private const val TAG = "CalendarSync"
         private const val PAGE_SIZE = 50
         private const val METADATA_PAGE_SIZE = 100
-
     }
 
     override fun onPerformSync(
@@ -125,6 +125,12 @@ class CalendarSyncAdapter(
             SyncLog.i(TAG, "Calendar sync is switched off for ${account.name}; not syncing")
             return
         }
+        // Android's retry of a manual sync the retry rule no longer allows, or a manual background request an older
+        // version left queued: ended here, before the ongoing notification, with no result, so nothing retries it.
+        if (SyncScheduling.endsStaleManualRun(context, account.name, extras, "Calendar", TAG)) return
+        // On Manual only, a sync Android started by itself (its automatic sync or this type's switch turned on): ended
+        // the same way. The app's own requests, and Android's upload after an edit, go on.
+        if (SyncScheduling.endsUnaskedRun(context, account.name, extras, "Calendar", TAG)) return
 
         SyncNotificationHelper.showOngoing(context, account.name, "calendar")
         try {
@@ -240,6 +246,9 @@ class CalendarSyncAdapter(
             provider = provider
         )
 
+        // And the new events held in shared calendars whose row was deleted, moved or synced meanwhile.
+        sweepNewEventHolds(account, provider)
+
         // And the retry counters left behind by events that no longer exist.
         sweepStaleRetryCounters(
             account = account,
@@ -265,10 +274,11 @@ class CalendarSyncAdapter(
         // incrementally-built serverCalIds below) so the check is correct regardless of iteration order.
         val allServerCalIds = calendars.map { it.id }.toSet()
 
-        // Log raw calendar data for debugging
-        for (cal in calendars) {
-            SyncLog.d(TAG, "Calendar: id=${cal.id?.take(20)}.., type=${cal.type}")
-        }
+        // The calendar this phone marks as the account's primary one (IS_PRIMARY), from Proton's default and the FULL
+        // list, before the external skip below. prepareCalendarJob writes it as it touches each row, and
+        // settlePrimaryCalendar brings the rows the loop does not touch in line afterwards. A failed or slow settings
+        // read never stops the run: it only leaves the flag as it is. Also logs (verbose) each calendar's raw data.
+        val primaryCalendar = decidePrimaryCalendar(account, calendars)
 
         // Disambiguate display names when multiple accounts exist
         val allAccounts = AccountManager.get(context).getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
@@ -278,11 +288,21 @@ class CalendarSyncAdapter(
             .associateBy { it.protonCalendarId }
         val serverCalIds = mutableSetOf<String>()
 
+        // A row an earlier version kept for a calendar removed on Proton carries no kept-for marker: marked first, so
+        // the listing below never hands it to another calendar of its name. The calendars the event mappings name, read
+        // for the marking, tell the listing which removed calendars still have events kept in their row.
+        val eventCalendarIds = markCalendarsKeptByOlderVersions(account, provider, existingCalMappings, allServerCalIds)
+
         val existingLocalCalendars = readAndDedupeLocalCalendars(
             account = account,
             provider = provider,
-            existingCalMappings = existingCalMappings
+            existingCalMappings = existingCalMappings,
+            listedIds = allServerCalIds,
+            eventCalendarIds = eventCalendarIds
         )
+        // What the loop writes into each row's IS_PRIMARY: taken now, before the loop claims rows out of
+        // existingLocalCalendars, so it knows every row of this account and the rows two listed calendars share.
+        val primaryRun = PrimaryCalendarRun.of(primaryCalendar, existingLocalCalendars, existingCalMappings.values, allServerCalIds)
 
         // Prepare calendar metadata (bootstrap, keys) and sync events in parallel
         val jobs = mutableListOf<CalendarJob>()
@@ -312,23 +332,27 @@ class CalendarSyncAdapter(
                 allServerCalIds = allServerCalIds,
                 existingCalMappings = existingCalMappings,
                 existingLocalCalendars = existingLocalCalendars,
-                serverBackedAndroidCalIds = serverBackedAndroidCalIds
+                serverBackedAndroidCalIds = serverBackedAndroidCalIds,
+                primaryRun = primaryRun
             )
             if (job == null) {
                 // Past the skip above, null means the calendar could not be PREPARED: its keys or passphrases
-                // could not be read, or its local calendar row could not be created. Either way none of its
-                // events can be downloaded this run. Skipping it quietly left savePostSyncResult on its success
-                // branch: no retry, the failure notification cleared, and the user told everything had synced.
+                // could not be read (a personal calendar's, or an external one's for want of a network or for a
+                // passing failure at Proton: CalendarKeysFailure), none of them can be unlocked because no address
+                // key is loaded (AddressKeysMissing), or its local calendar row could not be created. Either way
+                // none of its events can be downloaded this run. Skipping it quietly left savePostSyncResult on its
+                // success branch: no retry, the failure notification cleared, and the user told everything had synced.
                 synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
-                SyncUtils.recordSwallowedFailure(
-                    "calendar", account.name,
-                    "Calendar '${calInfo.name ?: calInfo.id.take(8)}' could not be opened, so none of its " +
-                        "events were downloaded"
-                )
+                // A no-op when prepareCalendarJob recorded it already, with its cause: the first reason wins.
+                recordCalendarNotOpened(account, calInfo, null)
                 continue
             }
             jobs.add(job)
         }
+
+        // Every row of this account the loop did not touch (external calendars while their switch is off, calendars
+        // gone from Proton but kept on the phone, unmapped duplicates) brought to the same decision, and the choice logged.
+        settlePrimaryCalendar(account, provider, primaryRun)
 
         // Sync all calendars in parallel
         val trimSeeds = java.util.concurrent.ConcurrentHashMap<Long, RangeTrimRunner.Seed>()
@@ -344,7 +368,7 @@ class CalendarSyncAdapter(
                         } catch (e: Exception) {
                             SyncLog.e(TAG, "Failed to sync calendar '${job.displayName}': ${e.message}", e)
                             synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
-                            SyncUtils.recordSwallowedFailure("calendar", account.name, e.message)
+                            SyncUtils.recordSwallowedFailure("calendar", account.name, e.message, e)
                         }
                     }
                 }.awaitAll()
@@ -378,7 +402,7 @@ class CalendarSyncAdapter(
         // suppress invite/update/cancel emails during a forced full re-sync — those
         // pushes are reconciliation, not user edits, and don't represent intent to
         // notify attendees.
-        uploadDirtyEvents(account, provider, syncResult, triggerType)
+        uploadDirtyEvents(account, provider, syncResult, triggerType, calendars)
 
         removeCalendarsGoneFromServer(
             account = account,
@@ -411,7 +435,9 @@ class CalendarSyncAdapter(
         multiAccount: Boolean,
         allServerCalIds: Set<String>,
         existingCalMappings: Map<String, CalendarSyncEntity>,
-        existingLocalCalendars: MutableMap<String, MutableList<Long>>
+        existingLocalCalendars: MutableMap<String, MutableList<Long>>,
+        /** This run's primary-calendar decision: what the row stores, 1 or 0, or null to keep its value (PrimaryCalendarRun). */
+        primaryRun: PrimaryCalendarRun
     ): CalendarJob? {
         val isExternalCalendar = calInfo.type != 0
 
@@ -425,6 +451,8 @@ class CalendarSyncAdapter(
         // so on a shared calendar another member's colour is not ours.
         var calName = calInfo.name ?: calInfo.description
         var calColorStr = calInfo.color ?: memberInfo?.color
+        // The bootstrap read below was needed and failed: what it would have given is unknown, not absent (CalendarRowLabel).
+        var bootstrapFailed = false
 
         // Try bootstrap endpoint if name is missing
         if (calName == null) {
@@ -449,20 +477,26 @@ class CalendarSyncAdapter(
                         }
                     }
                     SyncLog.d(TAG, "Resolved name='$calName'")
+                } else {
+                    bootstrapFailed = true
+                    SyncLog.w(TAG, "Failed to fetch bootstrap for ${calInfo.id}: HTTP ${bootstrapResp.code()}${bootstrapResp.protonErrorSuffix()}")
                 }
             } catch (e: Exception) {
+                bootstrapFailed = true
                 SyncLog.w(TAG, "Failed to fetch bootstrap for ${calInfo.id}: ${e.message}")
             }
         }
 
-        calName = calName ?: if (calInfo.type == 0) "My Calendar" else "Proton Calendar"
-        val displayName = if (multiAccount) {
-            "${account.name} - $calName"
+        // The placeholder name and the default colour where Proton gave none. Where the read above failed instead, an
+        // existing row keeps its own (updateLocalCalendar), and a placeholder takes no row by name (below).
+        val label = CalendarRowLabel.of(calName, calColorStr, calInfo.type, bootstrapFailed)
+        var displayName = if (multiAccount) {
+            "${account.name} - ${label.name}"
         } else {
-            calName
+            label.name
         }
 
-        val calColor = parseColor(calColorStr ?: "#657ee4")
+        var calColor = parseColor(label.color)
 
         // Ensure local calendar exists. Resolve the user's email for OWNER_ACCOUNT —
         // CalendarContract uses this field as the default ATTENDEE_EMAIL when the
@@ -475,26 +509,56 @@ class CalendarSyncAdapter(
         val ownerEmail = memberInfo?.email ?: userEmails.firstOrNull() ?: account.name
         val existingMapping = existingCalMappings[calInfo.id]
         val androidCalId = if (existingMapping?.androidCalendarId != null) {
-            updateLocalCalendar(provider, account, existingMapping.androidCalendarId, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions)
+            updateLocalCalendar(provider, account, existingMapping.androidCalendarId, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions,
+                isPrimary = primaryRun.forExistingRow(calInfo.id, existingMapping.androidCalendarId), label = label)
             existingMapping.androidCalendarId
         } else {
             // No mapping — check if a calendar already exists in CalendarContract (orphaned from
-            // a previous sync, reinstall, or full re-sync that cleared mappings but not calendars)
-            val orphanedCalId = existingLocalCalendars[displayName]?.firstOrNull()
-            if (orphanedCalId != null) {
-                SyncLog.i(TAG, "Reusing existing calendar '$displayName' (androidId=$orphanedCalId) instead of creating duplicate")
-                updateLocalCalendar(provider, account, orphanedCalId, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions)
+            // a previous sync, reinstall, or full re-sync that cleared mappings but not calendars).
+            // Never one another calendar still on Proton maps to (CalendarRowClaims): taking that over merged two
+            // calendars into one row.
+            // Nor a row kept on this phone for a calendar removed on Proton: it is listed under that calendar's own key,
+            // never its name (CalendarRowClaims.listingKey), and only that calendar takes it back, first (a re-share
+            // keeps the Proton id). Its events were never sent anywhere, or the user kept them here.
+            // Nor by a placeholder name (CalendarRowLabel), which is no calendar's own: a row of that name may be another
+            // calendar's, a row an earlier failed read renamed among them.
+            val sameNameRows = existingLocalCalendars[displayName]
+            val orphanedCalId = CalendarRowClaims.reusableRow(sameNameRows, calInfo.id, existingCalMappings.values, allServerCalIds)
+                .takeUnless { label.placeholder }
+            val keptKey = CalendarRowClaims.keptRowKey(calInfo.id)
+            val keptRow = existingLocalCalendars[keptKey]?.firstOrNull()
+            val reusedCalId = keptRow ?: orphanedCalId
+            if (reusedCalId == null && !sameNameRows.isNullOrEmpty()) {
+                SyncLog.i(TAG, "Calendar ${calInfo.id.take(8)}${me.proton.sync.LogNames.named(displayName)} gets a row of its own: " +
+                    if (label.placeholder) "its name is a placeholder, which takes no row" else "every row of its name belongs to another calendar still on Proton")
+            }
+            if (reusedCalId != null) {
+                SyncLog.i(TAG, "Reusing existing calendar '$displayName' (androidId=$reusedCalId) instead of creating duplicate" +
+                    if (reusedCalId == keptRow) ": kept on this phone since it was removed on Proton, and back now" else "")
+                updateLocalCalendar(provider, account, reusedCalId, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions,
+                    isPrimary = primaryRun.forExistingRow(calInfo.id, reusedCalId), clearKeptMarker = reusedCalId == keptRow, label = label)
                 // Remove from the map so it won't be reused by another Proton calendar
-                existingLocalCalendars[displayName]?.remove(orphanedCalId)
-                orphanedCalId
+                existingLocalCalendars[displayName]?.remove(reusedCalId)
+                existingLocalCalendars[keptKey]?.remove(reusedCalId)
+                reusedCalId
             } else {
-                insertLocalCalendar(provider, account, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions)
+                // A new row stores an explicit 0 while the decision is unknown, never NULL (see insertLocalCalendar).
+                insertLocalCalendar(provider, account, displayName, calColor, ownerEmail, calInfo.type, memberInfo?.permissions,
+                    isPrimary = primaryRun.forNewRow(calInfo.id))
             }
         }
 
         if (androidCalId == null) {
             SyncLog.e(TAG, "Failed to create/update local calendar for ${calInfo.id}")
             return null
+        }
+
+        // A row that kept its own name or colour above is recorded under them, in its mapping and this run's lines: the
+        // mapping's name is what the Default calendar picker and the prompts show.
+        if (label.keepRowName || label.keepRowColor) {
+            val kept = keptRowLabel(provider, account, androidCalId, calInfo.id, label, existingMapping, displayName, calColor)
+            displayName = kept.first
+            calColor = kept.second
         }
 
         val existingCalMapping = existingCalMappings[calInfo.id]
@@ -537,6 +601,7 @@ class CalendarSyncAdapter(
                 "(${old.protonCalendarId.take(8)}…→${calInfo.id.take(8)}…); re-keyed $moved event mapping(s) " +
                 "so they go through the deletion prompt instead of a silent wipe")
         }
+        if (supersededMappings.isNotEmpty()) unpublishTakenOverRow(account, androidCalId)
 
         serverBackedAndroidCalIds.add(androidCalId)
 
@@ -547,30 +612,52 @@ class CalendarSyncAdapter(
             calKeys = fetchCalendarKeys(account.name, calInfo.id)
             calPassphrases = fetchCalendarPassphrases(account.name, calInfo.id)
         } catch (e: Exception) {
-            if (isExternalCalendar) {
+            if (!CalendarKeysFailure.skipsCalendar(isExternalCalendar, e)) {
                 SyncLog.w(TAG, "No keys for external calendar ${calInfo.id} (expected): ${e.message}")
-                // Expected for a subscribed calendar that carries none, and NOT expected when the fetch
-                // simply failed: the events are then written from the cleartext structural part alone and
-                // quietly lose whatever was encrypted. There is no way to tell the two apart here, so the
-                // run stops claiming success and says which calendar to look at.
-                SyncUtils.recordSwallowedFailure(
+                // Expected for a subscribed calendar that carries none, and NOT expected when Proton answered
+                // the fetch with a failure: the events are then written from the cleartext structural part
+                // alone and quietly lose whatever was encrypted. A fetch the network broke, or one Proton answered
+                // with a passing failure (401, 408, 429, 5xx), does not get here: that calendar is skipped below, like a
+                // personal one (CalendarKeysFailure). It fails nothing, so it is a note: named only if the run fails
+                // and records no failure of its own. Recorded as a failure, it came first and took the place of every
+                // later failure's reason.
+                SyncUtils.recordSwallowedNote(
                     "calendar", account.name,
-                    "Could not read the keys for the external calendar '$displayName'; its events may be missing details this run"
+                    "Could not read the keys for the external calendar '$displayName'; its events may be missing details this run",
+                    e
                 )
             } else {
-                SyncLog.e(TAG, "Skipping ENTIRE personal calendar '$displayName' (${calInfo.id.take(8)}…) for ${account.name} - key/passphrase fetch failed, none of its events will download this run", e)
-                // The CALLER records the failure, because syncResult is in scope there. Returning null here
-                // means exactly one thing and the caller relies on it: a personal calendar that cannot be
-                // decrypted this run.
+                if (isExternalCalendar) {
+                    // Synced without its keys, the events this run downloads would be rebuilt from their
+                    // unencrypted part alone and replace what the phone shows (CalendarKeysFailure).
+                    SyncLog.e(TAG, "Skipping external calendar ${calInfo.id.take(8)}${me.proton.sync.LogNames.named(displayName)} for ${account.name} this run - its keys could not be read (no network, or a passing failure at Proton), so none of its events will download", e)
+                } else {
+                    SyncLog.e(TAG, "Skipping ENTIRE personal calendar '$displayName' (${calInfo.id.take(8)}…) for ${account.name} - key/passphrase fetch failed, none of its events will download this run", e)
+                }
+                // The CALLER counts the failure, because syncResult is in scope there. Returning null here
+                // means exactly one thing and the caller relies on it: a calendar that cannot be decrypted this
+                // run (a personal one, or an external one whose keys the network or a passing failure at Proton kept
+                // from it). Its reason is recorded here, where the exception is, so that it carries the fetch's
+                // network cause (NetworkCause): recorded by the caller alone, a calendar that could not be opened for
+                // want of a network read as an unexpected error.
+                recordCalendarNotOpened(account, calInfo, e)
                 return null
             }
         }
+
+        // No address key loaded, as when the account's addresses could not be read at the start of this sync: no key of
+        // this calendar can be unlocked, and every event this run downloaded would lose its title, location and
+        // description. Skipped like a calendar whose keys could not be read (AddressKeysMissing).
+        if (skippedForMissingAddressKeys(account, calInfo, calKeys, displayName)) return null
 
         return CalendarJob(calInfo, androidCalId, calKeys, calPassphrases, isExternalCalendar, displayName)
     }
 
     /**
-     * Every local calendar of this account by display name, with the unmapped duplicates deleted.
+     * Every local calendar of this account by display name, with the unmapped duplicates deleted; a row kept for a
+     * calendar removed on Proton that is left after that is listed under that calendar's own key instead
+     * (CalendarRowClaims.keptRowKey), which only that calendar looks up, unless a calendar of [listedIds] maps it while
+     * no event mapping of that calendar is left ([eventCalendarIds]; CalendarRowClaims.listedAsKept).
      *
      * The SAME mutable lists are handed back, not copies: the preparation loop removes an id from one as it
      * claims an orphaned calendar, so that no second Proton calendar reuses the same Android row. A read-only
@@ -579,23 +666,25 @@ class CalendarSyncAdapter(
     private fun readAndDedupeLocalCalendars(
         account: Account,
         provider: ContentProviderClient,
-        existingCalMappings: Map<String, CalendarSyncEntity>
+        existingCalMappings: Map<String, CalendarSyncEntity>,
+        /** The calendars Proton listed this run. */
+        listedIds: Set<String>,
+        /** The calendars this account's event mappings with a local row name (markCalendarsKeptByOlderVersions). */
+        eventCalendarIds: Set<String>
     ): MutableMap<String, MutableList<Long>> {
         // Query ALL existing local calendars for this account (for orphan detection and dedup)
         val existingLocalCalendars = mutableMapOf<String, MutableList<Long>>() // displayName → list of androidCalIds
+        // Rows kept for a calendar removed on Proton (markKeptCalendarRow): (row, name, marker).
+        val keptRows = ArrayList<Triple<Long, String, String>>()
         try {
-            val calCursor = provider.query(
-                CalendarContract.Calendars.CONTENT_URI,
-                arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.CALENDAR_DISPLAY_NAME),
-                "${CalendarContract.Calendars.ACCOUNT_NAME} = ? AND ${CalendarContract.Calendars.ACCOUNT_TYPE} = ?",
-                arrayOf(account.name, account.type),
-                null
-            )
+            val calCursor = keptRowsQuery(provider, account)
             calCursor?.use { c ->
                 while (c.moveToNext()) {
                     val id = c.getLong(0)
                     val name = c.getString(1) ?: ""
                     existingLocalCalendars.getOrPut(name) { mutableListOf() }.add(id)
+                    val marker = if (c.columnCount > 2 && c.getType(2) == Cursor.FIELD_TYPE_STRING) c.getString(2) else null
+                    marker?.takeIf { CalendarRowClaims.keptFor(it) != null }?.let { keptRows.add(Triple(id, name, it)) }
                 }
             }
             // Clean up duplicates: if multiple Android calendars share a name, remove the extras — but
@@ -632,6 +721,17 @@ class CalendarSyncAdapter(
                         ids.removeAll(toDelete.toSet())
                     }
                 }
+            }
+            // Then a row kept for a calendar removed on Proton that is still here leaves its name's list for that
+            // calendar's own key (CalendarRowClaims.listingKey): only that calendar takes it back, never another one
+            // of its name, whose members would then get the events in it. Not one a listed calendar maps (a version up to
+            // 2.1.0, installed over this one, reused it by name and left the marker), unless events kept for the removed
+            // calendar still have their mappings: they sit in it, so it still goes back to that calendar
+            // (CalendarRowClaims.listedAsKept).
+            for ((id, name, marker) in keptRows) {
+                if (!CalendarRowClaims.listedAsKept(id, marker, existingCalMappings.values, listedIds, eventCalendarIds)) continue
+                if (existingLocalCalendars[name]?.remove(id) != true) continue
+                existingLocalCalendars.getOrPut(CalendarRowClaims.listingKey(name, marker)) { mutableListOf() }.add(id)
             }
         } catch (e: Exception) {
             SyncLog.w(TAG, "Failed to query existing local calendars: ${e.message}")
@@ -693,6 +793,230 @@ class CalendarSyncAdapter(
         return calendars
     }
 
+    /**
+     * This run's primary-calendar decision ([PrimaryCalendarChooser]): Proton's default from settings/calendar, checked
+     * against the full calendar list. Never throws and never fails the run; a settings read that fails or takes too
+     * long is an Unknown decision, which writes nothing. Carries the Default calendar row's pick generation as read
+     * just before the settings, so the settle pass keeps a choice made on that row during this run ([PrimaryCalendarPicks]).
+     */
+    private suspend fun decidePrimaryCalendar(
+        account: Account,
+        calendars: List<CalendarInfo>
+    ): PrimaryCalendarChooser.Result {
+        val userAddresses = keyManager.getAddressEmails(account.name)
+        logCalendarMembership(calendars, userAddresses)
+        val pickGeneration = PrimaryCalendarPicks.generation(account.name)
+        val settings = fetchCalendarUserSettings(account)
+        val result = PrimaryCalendarChooser.choose(calendars, userAddresses, settings).copy(pickGeneration = pickGeneration)
+        if (PrimaryCalendarChooser.wantsAddressRefresh(result.decision, calendars, userAddresses)) {
+            // The evidence ownMemberIdForWrites reads the same way: the next sync's preflight reads the account's
+            // addresses again instead of waiting out the key cache. Nothing is requested, neither a sync nor, in this
+            // run, another request.
+            SyncUtils.invalidateKeyCache(account.name)
+            SyncLog.i(TAG, "Primary calendar: a personal calendar lists members on none of the loaded addresses; the account's addresses are read again at the next sync")
+        }
+        return result
+    }
+
+    /** Verbose only: each calendar's raw data, with what the primary-calendar choice reads off our own member. */
+    private fun logCalendarMembership(calendars: List<CalendarInfo>, userAddresses: Set<String>) {
+        for (cal in calendars) {
+            val own = ownMember(cal.members, userAddresses)
+            SyncLog.d(
+                TAG,
+                "Calendar: id=${cal.id.take(20)}.., type=${cal.type}, owned=${isCalendarOwner(cal.members, userAddresses)}, " +
+                    "own member flags=${own?.flags}, priority=${own?.priority}"
+            )
+        }
+    }
+
+    /**
+     * Proton's calendar settings as the chooser reads them ([CalendarUserSettingsFetch]: Loaded with DefaultCalendarID,
+     * which may be null, or Failed with the reason, within [CalendarUserSettingsFetch.TIMEOUT_MS]). Read-only, and never
+     * thrown on, so the settings cost the run one request at most. In debug builds the default-calendar-fixture verb
+     * may answer instead, and then nothing is asked.
+     */
+    private suspend fun fetchCalendarUserSettings(account: Account): PrimaryCalendarChooser.Settings {
+        if (me.proton.sync.BuildConfig.DEBUG) {
+            val raw = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SyncPreferences.debugDefaultCalendarFixtureKey(account.name), null)
+            PrimaryCalendarDebug.fixtureSettings(raw)?.let {
+                SyncLog.w(TAG, "settings/calendar not asked for ${account.name}: the debug fixture '$raw' answers")
+                return it
+            }
+        }
+        return CalendarUserSettingsFetch.fetch(apiClient, account.name)
+    }
+
+    /**
+     * After the per-calendar loop: every row of this account brought to [run]'s decision, or to a choice made on the
+     * Default calendar row during this run, through [PrimaryCalendarRows] (it reaches the rows the loop does not touch),
+     * and the choice logged. Suspends only to read this account's calendar mappings, which say where the chosen calendar
+     * sits, whatever the decision: a choice made on the row may name any calendar. The rest is [writePrimaryCalendar].
+     */
+    private suspend fun settlePrimaryCalendar(
+        account: Account,
+        provider: ContentProviderClient,
+        run: PrimaryCalendarRun
+    ) {
+        var mappingError: String? = null
+        val mappings = try {
+            calendarSyncDao.getAllByAccount(account.name)
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            mappingError = e.message ?: e.javaClass.simpleName
+            null
+        }
+        writePrimaryCalendar(account, provider, run, mappings, mappingError)
+    }
+
+    /**
+     * The non-suspend part of [settlePrimaryCalendar], under [PrimaryCalendarPicks.lock], so it and a choice made on the
+     * Default calendar row never interleave. [PrimaryCalendarPicks.settle] says what to write: a pick made since this
+     * run read Proton's settings is kept over the run's own decision; otherwise the target is
+     * [PrimaryCalendarRows.targetFor]'s, from where the chosen calendar sits by [mappings] (this account's calendar
+     * mappings; null when they could not be read, and then [mappingError] says why, and nothing is written). The
+     * decision's name is [DefaultCalendarChoices.nameOf]'s, the one the row shows, worked out before the lock. Logs it
+     * as [writeSettled] does, and a W line when nothing was written because the decision is unknown. Never throws.
+     */
+    private fun writePrimaryCalendar(
+        account: Account,
+        provider: ContentProviderClient,
+        run: PrimaryCalendarRun,
+        mappings: List<CalendarSyncEntity>?,
+        mappingError: String?
+    ) {
+        val primary = run.result
+        val decision = primary.decision
+        val chosenId = (decision as? PrimaryCalendarChooser.Decision.Known)?.protonCalendarId
+        val decisionName = chosenId?.let { id ->
+            val calendar = primary.candidates.firstOrNull { it.id == id }
+            DefaultCalendarChoices.nameOf(
+                calendar, ownMember(calendar?.members, keyManager.getAddressEmails(account.name)),
+                mappings?.firstOrNull { it.protonCalendarId == id }?.displayName, account.name
+            )
+        }
+        val rows = mappings?.map { it.protonCalendarId to it.androidCalendarId }
+        synchronized(PrimaryCalendarPicks.lock(account.name)) {
+            val pick = PrimaryCalendarPicks.since(account.name, primary.pickGeneration)
+            val settle = PrimaryCalendarPicks.settle(decision, decisionName, pick) { id ->
+                PrimaryCalendarRows.locate(id, rows, run.liveProtonIds)
+            }
+            if (settle == null) {
+                val unknown = decision as PrimaryCalendarChooser.Decision.Unknown
+                SyncLog.w(
+                    TAG,
+                    "Primary calendar left as it was: " + when (unknown.reason) {
+                        PrimaryCalendarChooser.UnknownReason.SETTINGS_FAILED -> "settings/calendar failed (${unknown.detail})"
+                        PrimaryCalendarChooser.UnknownReason.NO_OWN_MEMBER -> unknown.detail
+                        PrimaryCalendarChooser.UnknownReason.PARTIAL_ADDRESSES -> unknown.detail
+                    }
+                )
+                return
+            }
+            writeSettled(account, provider, settle, mappingError)
+        }
+    }
+
+    /**
+     * [settle] written and logged, under [PrimaryCalendarPicks.lock]: one line naming the chosen calendar and the reason,
+     * or the kept pick (a W line when no row could be made primary for it; when its calendar has no row yet, the rows
+     * follow this run's own decision, [PrimaryCalendarPicks.Settle.followsRun], and a W line says so when that
+     * decision's row turns out not to be one of the account's, so no row is primary), a "moved" line when the run's own
+     * decision differs from the last one, and the record kept for the next run ([PrimaryCalendarMemory]). Mappings that
+     * could not be read write nothing: the rows the loop touched carry this run's decision already and the others keep
+     * what they store; taking it as "no row" would clear the 1 the loop just wrote.
+     */
+    private fun writeSettled(
+        account: Account,
+        provider: ContentProviderClient,
+        settle: PrimaryCalendarPicks.Settle,
+        mappingError: String?
+    ) {
+        val last = settle.last
+        val chosenId = last.protonCalendarId
+        val reason = PrimaryCalendarChooser.Reason.entries.firstOrNull { it.name == last.reason }?.text ?: last.reason
+        // The calendar's name only with Verbose logging, else its id (LogNames).
+        val shownCalendar = me.proton.sync.LogNames.calendar(last.name, chosenId?.take(8))
+        val what = if (settle.keptPick) "kept $shownCalendar, set from the Default calendar row during this sync"
+            else "$shownCalendar ($reason)"
+        if (settle.chosen is PrimaryCalendarRows.ChosenRow.Unreadable) {
+            SyncLog.w(
+                TAG,
+                "Primary calendar: $what; this account's calendar mappings could not be read ($mappingError), so " +
+                    if (settle.keptPick) "the rows the calendar loop touched carry this run's own decision and the " +
+                        "others were left as they were, until the next calendar sync settles them"
+                    else "the rows the calendar loop did not touch were left as they were"
+            )
+            return
+        }
+        val target = settle.target
+        var writeError: String? = null
+        val applied = try {
+            PrimaryCalendarRows.apply(provider, account, target)
+        } catch (e: Exception) {
+            writeError = e.message ?: e.javaClass.simpleName
+            null
+        }
+        val found = settle.chosen as? PrimaryCalendarRows.ChosenRow.Found
+        val rowId = (target as? PrimaryCalendarRows.Target.Primary)?.androidCalId
+        when {
+            chosenId == null -> SyncLog.i(TAG, "Primary calendar: none ($reason)")
+            found != null && found.sharedWith > 0 -> SyncLog.w(
+                TAG,
+                "Primary calendar: $what, but its row ${found.androidCalId} also holds ${found.sharedWith} other " +
+                    "calendar(s) on Proton, so no row is primary"
+            )
+            // Whether the run's own row is the account's shows only now: the write found it is not among its rows.
+            settle.followsRun && applied?.chosenRowFound == false -> SyncLog.w(
+                TAG,
+                "Primary calendar: $what; its calendar has no row on this phone yet, and this run's own decision names " +
+                    "row $rowId, which is not one of this account's calendars, so no row is primary until a sync brings it down"
+            )
+            settle.followsRun -> SyncLog.i(
+                TAG,
+                "Primary calendar: $what; its calendar has no row on this phone yet, so the rows follow this run's own " +
+                    "decision (row $rowId) until a sync brings it down"
+            )
+            target !is PrimaryCalendarRows.Target.Primary -> SyncLog.i(
+                TAG, "Primary calendar: $what; its calendar has no row on this phone yet, so the rows were left as they were"
+            )
+            rowId == null -> SyncLog.i(TAG, "Primary calendar: $what, but it has no row on this phone yet, so no row is primary")
+            applied?.chosenRowFound == false -> SyncLog.w(
+                TAG,
+                "Primary calendar: $what, but its mapping names row $rowId, which is not one of this account's " +
+                    "calendars, so no row is primary"
+            )
+            else -> SyncLog.i(TAG, "Primary calendar: $what")
+        }
+        when {
+            writeError != null -> SyncLog.w(TAG, "Primary calendar: could not write the flag on this account's calendar rows: $writeError")
+            applied == null -> SyncLog.w(TAG, "Primary calendar: this account's calendar rows could not be read, so the rows the calendar loop did not touch were not checked")
+            applied.writes.isNotEmpty() -> SyncLog.i(
+                TAG,
+                "Primary calendar: the clean-up pass set IS_PRIMARY on ${applied.writes.size} row(s): " +
+                    applied.writes.joinToString { "${it.id}=${it.value}" }
+            )
+        }
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val key = SyncPreferences.primaryCalendarLastKey(account.name)
+        val stored = prefs.getString(key, null)
+        val previous = PrimaryCalendarMemory.decode(stored)
+        if (!settle.keptPick && PrimaryCalendarMemory.moved(previous, last)) {
+            // The record keeps no name, so the earlier calendar shows by its id; this run's by its name only with Verbose logging.
+            fun shown(id: String?, n: String?) = if (id == null) "none" else me.proton.sync.LogNames.calendar(n, id.take(8))
+            SyncLog.i(TAG, "Primary calendar moved: ${shown(previous?.protonCalendarId, previous?.name)} -> ${shown(chosenId, last.name)}")
+        }
+        // The row that holds the choice: none when the mapping names a row that is not this account's, and none for a
+        // kept pick whose calendar has no row yet (the rows then follow this run's own decision). After a failed write
+        // it is still the row chosen here, which for a kept pick the calendar loop may not have marked.
+        val heldBy = last.androidCalId?.takeIf { applied?.chosenRowFound != false }
+        val now = PrimaryCalendarMemory.encode(last.copy(androidCalId = heldBy))
+        if (now != stored) prefs.edit().putString(key, now).apply()
+    }
+
     private suspend fun applyBulkDeletionRestore(account: Account, provider: ContentProviderClient) {
         // Bulk-deletion "Keep on Proton" recovery: the user chose to keep the events that had
         // vanished locally. Re-download ONLY the affected calendars: wipe each one's local events
@@ -700,26 +1024,70 @@ class CalendarSyncAdapter(
         // "unchanged-skip"), then the download below re-creates them from Proton. Untouched
         // calendars keep their mappings and aren't re-downloaded. The wiped calendars have no
         // mapping when existingCalMappings loads below, so reconcileDeletedEvents skips them.
+        // Only the rows that came from Proton go (PhoneOnlyRows): the download brings those back, and nothing brings back
+        // an event that exists only on this phone (not sent yet, waiting for the user's choice, kept here).
         val restoreCals = BulkDeletionGuard.consumeRestore(context, account.name)
         if (restoreCals != null && restoreCals.isNotEmpty()) {
             SyncLog.i(TAG, "Bulk-deletion restore for ${account.name}: re-downloading ${restoreCals.size} affected calendar(s)")
             for (protonCalId in restoreCals) {
                 val androidCalId = calendarSyncDao.getByProtonId(account.name, protonCalId)?.androidCalendarId
                 if (androidCalId != null) {
-                    try {
-                        provider.delete(
-                            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
-                            "${CalendarContract.Events.CALENDAR_ID} = ?",
-                            arrayOf(androidCalId.toString())
+                    val mappedIds = calendarEventSyncDao.getAllByCalendar(account.name, protonCalId)
+                        .mapNotNullTo(HashSet()) { it.androidEventId }
+                    deleteProtonRowsOfCalendar(provider, account, androidCalId, mappedIds)?.let { (removed, stayed) ->
+                        SyncLog.i(
+                            TAG,
+                            "Restore: removed $removed row(s) of calendar $protonCalId that came from Proton; $stayed " +
+                                "event(s) that exist only on this phone stay"
                         )
-                    } catch (e: Exception) {
-                        SyncLog.w(TAG, "Restore: failed to clear events for calendar $protonCalId: ${e.message}")
                     }
                 }
                 calendarEventSyncDao.deleteByCalendar(account.name, protonCalId)
                 calendarSyncDao.deleteByProtonId(account.name, protonCalId)
             }
         }
+    }
+
+    /**
+     * Deletes, as the sync adapter (a hard delete, nothing is sent to Proton), the rows of calendar [androidCalId] that
+     * came from Proton ([PhoneOnlyRows.isFromProton]: one of [mappedIds], or a _SYNC_ID or ORIGINAL_SYNC_ID), 400 per
+     * batch, and returns how many went and how many stayed, or null when the rows could not be read or deleted (logged;
+     * the restore's re-download then meets the rows that are still there, as the orphan reclaim knows them).
+     */
+    private fun deleteProtonRowsOfCalendar(
+        provider: ContentProviderClient,
+        account: Account,
+        androidCalId: Long,
+        mappedIds: Set<Long>
+    ): Pair<Int, Int>? = try {
+        val uri = SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account)
+        val fromProton = ArrayList<Long>()
+        var stayed = 0
+        provider.query(
+            uri,
+            arrayOf(CalendarContract.Events._ID, CalendarContract.Events._SYNC_ID, CalendarContract.Events.ORIGINAL_SYNC_ID),
+            "${CalendarContract.Events.CALENDAR_ID} = ?",
+            arrayOf(androidCalId.toString()),
+            null
+        )?.use { c ->
+            fun text(i: Int) = if (c.getType(i) == Cursor.FIELD_TYPE_STRING) c.getString(i) else null
+            while (c.moveToNext()) {
+                val id = c.getLong(0)
+                if (PhoneOnlyRows.isFromProton(id, text(1), text(2), mappedIds)) fromProton.add(id) else stayed++
+            }
+        } ?: throw IllegalStateException("no cursor")
+        var removed = 0
+        for (chunk in fromProton.chunked(400)) {
+            removed += provider.delete(
+                uri,
+                "${CalendarContract.Events._ID} IN (${chunk.joinToString(",") { "?" }})",
+                chunk.map { it.toString() }.toTypedArray()
+            )
+        }
+        removed to stayed
+    } catch (e: Exception) {
+        SyncLog.w(TAG, "Restore: failed to clear the events from Proton of calendar $androidCalId: ${e.message}")
+        null
     }
 
     private suspend fun applyConfirmedRemoteDeletions(
@@ -782,6 +1150,8 @@ class CalendarSyncAdapter(
         // Not just the jobs: a calendar whose keys failed has no job this run, and treating its Android row
         // as orphaned is how a delete-and-recreate ends up proposing to wipe a calendar that is alive.
         val liveAndroidCalIds = jobs.map { it.androidCalId }.toSet() + serverBackedAndroidCalIds
+        // New events the user published to a calendar removed here before they went up: they wait again, and are asked about.
+        val waitingAgain = ArrayList<Long>()
         for ((protonId, mapping) in existingCalMappings) {
             val androidCalId = mapping.androidCalendarId
             if (protonId in serverCalIds || androidCalId == null) continue
@@ -841,28 +1211,329 @@ class CalendarSyncAdapter(
             if (calendarEventSyncDao.getAllByCalendar(account.name, protonId).isNotEmpty()) {
                 // Kept events remain — preserve the Android calendar + its events, but drop the stale
                 // Proton calendar mapping so we don't re-evaluate (and re-prompt for) a calendar that no
-                // longer exists on Proton on every future sync.
+                // longer exists on Proton on every future sync. Marked first: only this calendar maps it again.
+                markKeptCalendarRow(provider, account, androidCalId, protonId)
+                waitingAgain.addAll(unpublishUnmappedRow(account, androidCalId, "calendar $protonId was removed on Proton before they went up"))
                 calendarSyncDao.deleteByProtonId(account.name, protonId)
                 forgetTrimChoice()
                 SyncLog.w(TAG, "Calendar $protonId removed on Proton but kept event(s) remain - keeping them locally, dropping the stale mapping")
             } else {
+                // Deleting the Android calendar takes every row in it along (the provider's calendar_cleanup trigger),
+                // and a row that exists only on this phone (not sent yet, waiting for the user's choice in a calendar
+                // someone shared, kept here) has no other copy. So Proton's leftovers go first, and the calendar stays,
+                // unmapped, while rows of its own remain (or their number cannot be read).
+                deleteLeftoverProtonRows(provider, account, androidCalId)
+                val phoneOnly = phoneOnlyRowCount(provider, account, androidCalId)
+                val keepRow = PhoneOnlyRows.keepRemovedCalendarRow(phoneOnly)
                 try {
-                    provider.delete(
-                        ContentUris.withAppendedId(
-                            SyncUtils.asCallerSyncAdapter(CalendarContract.Calendars.CONTENT_URI, account),
-                            androidCalId
-                        ),
-                        null, null
-                    )
+                    if (!keepRow) {
+                        provider.delete(
+                            ContentUris.withAppendedId(
+                                SyncUtils.asCallerSyncAdapter(CalendarContract.Calendars.CONTENT_URI, account),
+                                androidCalId
+                            ),
+                            null, null
+                        )
+                    } else {
+                        // Kept: only this calendar maps the row again (a re-share), never another one of its name. What
+                        // the user published to it and had not gone up can go nowhere now, and waits for a choice again.
+                        markKeptCalendarRow(provider, account, androidCalId, protonId)
+                        waitingAgain.addAll(unpublishUnmappedRow(account, androidCalId, "calendar $protonId was removed on Proton before they went up"))
+                    }
+                    // Kept or deleted, the calendar is no longer Proton's: its mapping goes either way.
                     calendarSyncDao.deleteByProtonId(account.name, protonId)
                     forgetTrimChoice()
                     calendarEventSyncDao.deleteByCalendar(account.name, protonId)
-                    SyncLog.i(TAG, "Removed calendar $protonId (androidId=$androidCalId) from phone")
+                    if (keepRow) {
+                        SyncLog.w(
+                            TAG,
+                            "Calendar $protonId was removed on Proton, but ${phoneOnly ?: "an unknown number of"} event(s) " +
+                                "exist only on this phone: keeping the calendar here"
+                        )
+                    } else {
+                        SyncLog.i(TAG, "Removed calendar $protonId (androidId=$androidCalId) from phone")
+                    }
                 } catch (e: Exception) {
                     SyncLog.e(TAG, "Failed to delete calendar $protonId", e)
                 }
             }
         }
+        settleKeptCalendarRows(account, provider, serverCalIds, askAgain = waitingAgain.firstOrNull())
+    }
+
+    /**
+     * After the calendars gone from Proton are settled: a row kept on this phone for one of them ([markKeptCalendarRow])
+     * goes once nothing keeps it ([PhoneOnlyRows.removeKeptCalendarRow]; [serverCalIds] are the calendars Proton listed
+     * this run), so it does not stay for good, empty, unmapped and writable in every calendar app, where nothing written
+     * could reach Proton. Then the prompts of the new events a removal sent back to waiting are posted, [askAgain] (the
+     * first of them) with an alert: what the user published there cannot go up any more. A mapping read that fails
+     * keeps every row and posts nothing (logged); the next refresh posts the prompts.
+     */
+    private suspend fun settleKeptCalendarRows(
+        account: Account,
+        provider: ContentProviderClient,
+        serverCalIds: Set<String>,
+        askAgain: Long?
+    ) {
+        val kept = keptCalendarRows(provider, account)
+        if (kept.isEmpty() && askAgain == null) return
+        try {
+            val mappedRows = calendarSyncDao.getAllByAccount(account.name).mapNotNullTo(HashSet()) { it.androidCalendarId }
+            for ((androidCalId, protonId) in kept) {
+                val keptEvents = calendarEventSyncDao.getAllByCalendar(account.name, protonId).size
+                removeKeptCalendarRowIfEmpty(provider, account, androidCalId, protonId, serverCalIds, androidCalId in mappedRows, keptEvents)
+            }
+            if (askAgain != null) NewEventHolds.refreshPrompts(context, provider, account, mappedRows, alertId = askAgain)
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "The calendars kept on this phone for ${account.name} were not checked: the mappings could not be read (${e.javaClass.simpleName})")
+        }
+    }
+
+    /**
+     * This account's calendar rows that carry [markKeptCalendarRow]'s marker: row id to the removed Proton calendar it
+     * was. Empty when they cannot be read, or the provider refuses CAL_SYNC1 ([keptRowsQuery] logs that).
+     */
+    private fun keptCalendarRows(provider: ContentProviderClient, account: Account): Map<Long, String> {
+        val out = LinkedHashMap<Long, String>()
+        try {
+            keptRowsQuery(provider, account)?.use { c ->
+                while (c.moveToNext()) {
+                    if (c.columnCount < 3 || c.getType(2) != Cursor.FIELD_TYPE_STRING) continue
+                    CalendarRowClaims.keptFor(c.getString(2))?.let { out[c.getLong(0)] = it }
+                }
+            }
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "The calendar rows of ${account.name} kept for calendars removed on Proton could not be read: ${e.message}")
+        }
+        return out
+    }
+
+    /**
+     * Deletes kept calendar row [androidCalId] (Proton calendar [protonId], removed there) when nothing keeps it
+     * ([PhoneOnlyRows.removeKeptCalendarRow], from the two counts read just before), with the sync adapter's delete the
+     * removal itself uses. The provider's calendar_cleanup trigger then takes only what the counts leave out: tombstones,
+     * which an unmapped calendar can never send, and the download's cancelled-date placeholders.
+     */
+    private fun removeKeptCalendarRowIfEmpty(
+        provider: ContentProviderClient,
+        account: Account,
+        androidCalId: Long,
+        protonId: String,
+        serverCalIds: Set<String>,
+        rowMapped: Boolean,
+        keptEventMappings: Int
+    ) {
+        val live = calendarRowCount(provider, account, androidCalId)
+        val phoneOnly = phoneOnlyRowCount(provider, account, androidCalId)
+        if (!PhoneOnlyRows.removeKeptCalendarRow(protonId, serverCalIds, rowMapped, keptEventMappings, live, phoneOnly)) return
+        try {
+            provider.delete(
+                ContentUris.withAppendedId(SyncUtils.asCallerSyncAdapter(CalendarContract.Calendars.CONTENT_URI, account), androidCalId),
+                null, null
+            )
+            SyncLog.i(TAG, "Removed calendar row $androidCalId from the phone: kept since calendar $protonId was removed on Proton, and nothing is left in it")
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Could not remove calendar row $androidCalId, kept since calendar $protonId was removed on Proton: ${e.message}")
+        }
+    }
+
+    /**
+     * New events the user published to calendar row [androidCalId] that can go nowhere now, the row having no mapping
+     * any more ([why]): back to waiting (NewEventHoldStore.unpublishCalendar), so the user is asked again, with Move and
+     * Keep (Publish only once a re-share maps the calendar again). Returns their event ids, oldest first, for the prompt.
+     */
+    private fun unpublishUnmappedRow(account: Account, androidCalId: Long, why: String): List<Long> {
+        val again = NewEventHoldStore.unpublishCalendar(PreferenceManager.getDefaultSharedPreferences(context), account.name, androidCalId)
+        if (again.isNotEmpty()) {
+            SyncLog.w(TAG, "${again.size} new event(s) published to calendar row $androidCalId of ${account.name} wait for the user's choice again: $why")
+        }
+        return again.map { it.eventId }
+    }
+
+    /**
+     * Deletes the rows of calendar [androidCalId] that came from Proton ([PhoneOnlyRows.FROM_PROTON_SQL]: a _SYNC_ID or
+     * an ORIGINAL_SYNC_ID), as the sync adapter, so nothing is sent to Proton. For a calendar removed on Proton, before
+     * its rows of its own decide whether it stays. Returns how many went, or null when it failed (logged).
+     */
+    private fun deleteLeftoverProtonRows(provider: ContentProviderClient, account: Account, androidCalId: Long): Int? = try {
+        provider.delete(
+            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+            "${CalendarContract.Events.CALENDAR_ID} = ? AND ${PhoneOnlyRows.FROM_PROTON_SQL}",
+            arrayOf(androidCalId.toString())
+        )
+    } catch (e: Exception) {
+        SyncLog.w(TAG, "Could not remove Proton's rows of removed calendar $androidCalId: ${e.message}")
+        null
+    }
+
+    /**
+     * Marks calendar [androidCalId], removed on Proton as [protonId] but kept on this phone, with the calendar it was
+     * ([CalendarRowClaims.keptForMarker], in its CAL_SYNC1): only that calendar maps the row again, never another one
+     * of its name, so the events in it that never reached Proton cannot go up somewhere else. Logged when it fails;
+     * returns whether the row was written.
+     */
+    private fun markKeptCalendarRow(provider: ContentProviderClient, account: Account, androidCalId: Long, protonId: String): Boolean = try {
+        provider.update(
+            ContentUris.withAppendedId(SyncUtils.asCallerSyncAdapter(CalendarContract.Calendars.CONTENT_URI, account), androidCalId),
+            ContentValues().apply { put(CalendarContract.Calendars.CAL_SYNC1, CalendarRowClaims.keptForMarker(protonId)) },
+            null, null
+        ) > 0
+    } catch (e: Exception) {
+        SyncLog.w(TAG, "Could not mark calendar $androidCalId as kept for removed calendar $protonId (${e.message}): another calendar of its name could take it over")
+        false
+    }
+
+    /**
+     * Marks the calendar rows that a version up to 2.1.0 kept on this phone for a calendar removed on Proton ("Keep on
+     * phone"), which carry no kept-for marker ([markKeptCalendarRow]), before the rows are listed by name
+     * ([readAndDedupeLocalCalendars]): so another calendar of that name, someone else's above all, never takes one over
+     * with the events in it that never reached Proton. Such a row still holds the events that version kept, whose
+     * mappings name the removed calendar ([CalendarRowClaims.removedCalendarsWithEvents], by [existingCalMappings] and
+     * [listedIds], this run's calendar list). Once marked it is a row this version keeps: only that calendar maps it
+     * again, and it goes once nothing keeps it ([settleKeptCalendarRows]). Never a row a calendar uses: one a calendar
+     * mapping points at, or, for a listed calendar without one (the run of a Local to Remote re-sync), one its mapped
+     * events sit in ([eventsOfListedWithoutMapping]). Suspends only for the event mappings, and reads nothing more while
+     * no removed calendar left mapped events behind or each such one has its marked row; the provider part is
+     * [markRowsKeptByOlderVersions]. Returns the calendars this account's event mappings with a local row name, read
+     * first, which the listing needs as well (CalendarRowClaims.listedAsKept).
+     */
+    private suspend fun markCalendarsKeptByOlderVersions(
+        account: Account,
+        provider: ContentProviderClient,
+        existingCalMappings: Map<String, CalendarSyncEntity>,
+        listedIds: Set<String>
+    ): Set<String> {
+        val eventCalendarIds = calendarEventSyncDao.mappedCalendarIdsByAccount(account.name).toSet()
+        val removed = CalendarRowClaims.removedCalendarsWithEvents(eventCalendarIds, existingCalMappings.keys, listedIds)
+        if (removed.isEmpty()) return eventCalendarIds
+        val marked = keptCalendarRows(provider, account)
+        val unmarked = removed - marked.values.toSet()
+        if (unmarked.isEmpty()) return eventCalendarIds
+        val eventsOfRemoved = LinkedHashMap<String, List<Long>>()
+        for (protonId in unmarked) {
+            eventsOfRemoved[protonId] = calendarEventSyncDao.getAllByCalendar(account.name, protonId).mapNotNull { it.androidEventId }
+        }
+        val eventsOfListed = eventsOfListedWithoutMapping(account, existingCalMappings, listedIds)
+        markRowsKeptByOlderVersions(account, provider, eventsOfRemoved, eventsOfListed, existingCalMappings, marked.keys)
+        return eventCalendarIds
+    }
+
+    /**
+     * For [markCalendarsKeptByOlderVersions]: the Android event ids of the mapped events of every calendar Proton lists
+     * ([listedIds]) that has no calendar mapping ([CalendarRowClaims.listedWithoutMapping]). Empty while each listed
+     * calendar with events has its mapping; in the run of a Local to Remote re-sync, which deleted the calendar mappings
+     * and kept the events', the events of every listed calendar: the rows they sit in are rows those calendars use.
+     */
+    private suspend fun eventsOfListedWithoutMapping(
+        account: Account,
+        existingCalMappings: Map<String, CalendarSyncEntity>,
+        listedIds: Set<String>
+    ): List<Long> {
+        val unmapped = CalendarRowClaims.listedWithoutMapping(
+            calendarEventSyncDao.mappedCalendarIdsByAccount(account.name), existingCalMappings.keys, listedIds
+        )
+        val out = ArrayList<Long>()
+        for (protonId in unmapped) {
+            calendarEventSyncDao.getAllByCalendar(account.name, protonId).mapNotNullTo(out) { it.androidEventId }
+        }
+        return out
+    }
+
+    /**
+     * The provider half of [markCalendarsKeptByOlderVersions]: where the mapped events of each removed calendar sit
+     * ([eventsOfRemoved], Android event ids; only the account's own calendars answer the sync adapter's read), and where
+     * those of the listed calendars without a calendar mapping sit ([eventsOfListed]: rows those calendars use, so a row
+     * 2.1.0 handed to one of them by name is never marked), then the rows [CalendarRowClaims.unmarkedKeptRows] names
+     * marked and logged. [markedRows] carry a marker already. A read that fails marks nothing, and the next sync tries
+     * again.
+     */
+    private fun markRowsKeptByOlderVersions(
+        account: Account,
+        provider: ContentProviderClient,
+        eventsOfRemoved: Map<String, List<Long>>,
+        eventsOfListed: List<Long>,
+        existingCalMappings: Map<String, CalendarSyncEntity>,
+        markedRows: Set<Long>
+    ) {
+        // The calendar rows the events [eventIds] sit in; throws when a read fails.
+        fun rowsOf(eventIds: List<Long>): Set<Long> {
+            val rows = HashSet<Long>()
+            for (chunk in eventIds.chunked(400)) {
+                provider.query(
+                    SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+                    arrayOf(CalendarContract.Events.CALENDAR_ID),
+                    "${CalendarContract.Events._ID} IN (${chunk.joinToString(",") { "?" }})",
+                    chunk.map { it.toString() }.toTypedArray(),
+                    null
+                )?.use { c -> while (c.moveToNext()) rows.add(c.getLong(0)) } ?: throw IllegalStateException("no cursor")
+            }
+            return rows
+        }
+        val rowsOfRemoved = HashMap<String, Set<Long>>()
+        val rowsOfListed = try {
+            for ((protonId, eventIds) in eventsOfRemoved) rowsOfRemoved[protonId] = rowsOf(eventIds)
+            rowsOf(eventsOfListed)
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Could not read where the events kept for ${eventsOfRemoved.size} calendar(s) removed on Proton, or the events of the calendars Proton lists, sit (${e.javaClass.simpleName}); no row is marked this sync")
+            return
+        }
+        val mappedRows = CalendarRowClaims.rowsInUse(existingCalMappings.values, rowsOfListed)
+        for ((row, protonId) in CalendarRowClaims.unmarkedKeptRows(rowsOfRemoved, mappedRows, markedRows)) {
+            if (!markKeptCalendarRow(provider, account, row, protonId)) continue
+            SyncLog.i(
+                TAG,
+                "Calendar row $row of ${account.name}, kept on this phone by an earlier version after calendar $protonId was " +
+                    "removed on Proton: marked, so only that calendar maps it again"
+            )
+        }
+    }
+
+    /**
+     * This account's calendar rows for [readAndDedupeLocalCalendars]: _ID, CALENDAR_DISPLAY_NAME and CAL_SYNC1, which
+     * holds [markKeptCalendarRow]'s marker. Should a provider refuse that column, the rows are read without it, as
+     * before the marker (logged): a row kept there is then listed by its name.
+     */
+    private fun keptRowsQuery(provider: ContentProviderClient, account: Account): Cursor? {
+        val selection = "${CalendarContract.Calendars.ACCOUNT_NAME} = ? AND ${CalendarContract.Calendars.ACCOUNT_TYPE} = ?"
+        val args = arrayOf(account.name, account.type)
+        val columns = arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
+        return try {
+            provider.query(CalendarContract.Calendars.CONTENT_URI, columns + CalendarContract.Calendars.CAL_SYNC1, selection, args, null)
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "The calendar rows of ${account.name} could not be read with CAL_SYNC1 (${e.javaClass.simpleName}); reading them without it")
+            provider.query(CalendarContract.Calendars.CONTENT_URI, columns, selection, args, null)
+        }
+    }
+
+    /**
+     * New events published to the calendar row [androidCalId] belonged to, before another Proton calendar of the same
+     * name took the row over (a calendar deleted and re-created): back to waiting, so the user is asked again, about the
+     * calendar the row is now.
+     */
+    private fun unpublishTakenOverRow(account: Account, androidCalId: Long) {
+        val n = NewEventHoldStore.unpublishCalendar(PreferenceManager.getDefaultSharedPreferences(context), account.name, androidCalId).size
+        if (n > 0) {
+            SyncLog.w(TAG, "$n new event(s) published to the calendar that row $androidCalId belonged to wait for the user's choice again: another Proton calendar took the row over")
+        }
+    }
+
+    /**
+     * The live rows of calendar [androidCalId] that carry nothing of Proton's ([PhoneOnlyRows.PHONE_ONLY_SQL]), or null
+     * when they cannot be counted.
+     */
+    private fun phoneOnlyRowCount(provider: ContentProviderClient, account: Account, androidCalId: Long): Int? = try {
+        provider.query(
+            SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
+            arrayOf(CalendarContract.Events._ID),
+            "${CalendarContract.Events.CALENDAR_ID} = ? AND ${CalendarContract.Events.DELETED} = 0 AND ${PhoneOnlyRows.PHONE_ONLY_SQL}",
+            arrayOf(androidCalId.toString()),
+            null
+        )?.use { it.count }
+    } catch (e: Exception) {
+        SyncLog.w(TAG, "Could not count the events of calendar $androidCalId that exist only on this phone: ${e.message}")
+        null
     }
 
     /**
@@ -1203,7 +1874,13 @@ class CalendarSyncAdapter(
             fetchEventsFlat(account, calInfo, calDisplayName, totalEventCount, plan)
         } else {
             fetchEventsDense(account, calInfo, calDisplayName, plan, existingEventMappings)
-        } ?: return  // CRITICAL: a partial fetch would mark surviving server-side events as deleted
+        } ?: run {
+            // CRITICAL: a partial fetch would mark surviving server-side events as deleted, so nothing of this
+            // calendar is written this run. The run is a failed one (the reason was recorded where the listing
+            // failed: recordEventListingFailed); returning without a count let it report success.
+            countFailedEventListing(syncResult)
+            return
+        }
         val filteredEvents = fetch.events
         val serverEventIds = fetch.serverEventIds
         val fetchHadFailures = fetch.hadFailures
@@ -1676,9 +2353,10 @@ class CalendarSyncAdapter(
      * Drop per-event retry counters whose event no longer exists.
      *
      * Three families count strikes against one event and each is cleared only when its operation
-     * finally succeeds or gives up, so an event deleted in between leaves its counter behind for the
-     * life of the install. Two were found on a test phone at 2 strikes each, naming rows deleted days
-     * earlier, having survived two account removals.
+     * finally succeeds or gives up (a later send without a failure leaves the invitation counter as
+     * it is), so an event deleted in between leaves its counter behind for the life of the install.
+     * Two were found on a test phone at 2 strikes each, naming rows deleted days earlier, having
+     * survived two account removals.
      *
      * Mostly bloat, but the Android-id families have an edge: a row id can be handed to a different
      * event later, and a `delete_reject_count_` left at 2 would cut a good delete short on its first
@@ -1686,8 +2364,21 @@ class CalendarSyncAdapter(
      *
      * Fails closed in the only direction that matters: if the provider cannot be read, nothing is
      * swept, because removing a counter for an event that DOES exist hands it a free strike.
+     *
+     * The keys name no account, so a counter this account's rows and mappings do not explain is asked of
+     * this app's other accounts too ([withOtherAccountsRows], [mappedInOtherAccounts]): until 2.2.0 each
+     * account's sync dropped the other accounts' counters, and with two Proton accounts an upload or a
+     * deletion Proton kept rejecting never reached its third strike (the invitation counter limits no
+     * send). A removed account is not asked, so its counters go here (StaleEventCounters).
+     *
+     * The deletion pass's refusals and rejections (DeletionPassRefusals) are pruned first, by the mapping
+     * table too ([pruneDeletionPassRefusals]). Until 2.2.0 the pass counted its rejections under
+     * `delete_reject_count_<protonEventId>`, which this sweep dropped at every sync as naming no row, so
+     * its third never came; the family is the tombstones' alone now, by row id, as it was written for.
      */
     private suspend fun sweepStaleRetryCounters(account: Account, provider: ContentProviderClient) {
+        // The deletion pass's refusals, one list per account by Proton event id: those whose mapping is gone go.
+        pruneDeletionPassRefusals(account)
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val allKeys = prefs.all.keys.toSet()
         val uploadPrefix = "upload_reject_count_"
@@ -1698,17 +2389,20 @@ class CalendarSyncAdapter(
         }
 
         // The Android-id families, checked against the provider. A tombstone still counts as existing:
-        // its deletion has not been sent yet, so its strikes are still live.
+        // its deletion has not been sent yet, so its strikes are still live. A row of another account of
+        // this app counts too: the provider numbers every account's rows in one sequence.
         val androidIds = (allKeys.filter { it.startsWith(uploadPrefix) }.map { it.removePrefix(uploadPrefix) } +
             allKeys.filter { it.startsWith(deletePrefix) }.map { it.removePrefix(deletePrefix) })
             .mapNotNull { it.toLongOrNull() }
             .toSet()
         val liveAndroidIds = existingEventRowIds(provider, account, androidIds)
+            ?.let { withOtherAccountsRows(provider, account, androidIds, it) }
             ?.mapTo(mutableSetOf()) { it.toString() }
 
         // The Proton-id family, checked against the mapping table, which is this app's own record of
         // what it has on the phone. Only the ids a counter actually names are asked about, so the
-        // query stays bounded however many events the account has.
+        // query stays bounded however many events the account has. A mapping of another account of
+        // this app counts too.
         val countedProtonIds = allKeys.filter { it.startsWith(invitePrefix) }
             .map { it.removePrefix(invitePrefix) }
             .filter { it.isNotEmpty() }
@@ -1716,6 +2410,7 @@ class CalendarSyncAdapter(
         for (chunk in countedProtonIds.chunked(400)) {
             calendarEventSyncDao.mappedRows(account.name, chunk).forEach { mappedProtonIds.add(it.protonEventId) }
         }
+        mappedProtonIds.addAll(mappedInOtherAccounts(account, countedProtonIds - mappedProtonIds))
 
         val stale = staleCounterKeys(allKeys, uploadPrefix, liveAndroidIds) +
             staleCounterKeys(allKeys, deletePrefix, liveAndroidIds) +
@@ -1771,6 +2466,25 @@ class CalendarSyncAdapter(
     }
 
     /**
+     * Drop the new events held in shared calendars ([NewEventHoldStore]) whose question is gone: the row was deleted,
+     * moved to another calendar, or reached Proton ([NewEventHolds.sweep]), on positive evidence only, and before the
+     * upload reads its snapshot of them. Returns at once when nothing is held, which is the normal case; a mapping read
+     * that fails keeps everything.
+     */
+    private suspend fun sweepNewEventHolds(account: Account, provider: ContentProviderClient) {
+        if (NewEventHoldStore.snapshot(PreferenceManager.getDefaultSharedPreferences(context), account.name).isEmpty()) return
+        val mapped = try {
+            calendarEventSyncDao.androidEventIdsByAccount(account.name).toHashSet()
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "The new events held for ${account.name} were not checked: the event mappings could not be read")
+            return
+        }
+        NewEventHolds.sweep(context, provider, account, mapped)
+    }
+
+    /**
      * Which of [androidEventIds] still exist as rows, or null when the provider could not be read.
      * An empty input is not a question worth asking, so it answers with an empty set.
      */
@@ -1797,6 +2511,49 @@ class CalendarSyncAdapter(
             return null
         }
         return found
+    }
+
+    /**
+     * [own], the rows of [androidEventIds] the syncing [account] still has ([existingEventRowIds]), with those another
+     * account of this app still has, for [sweepStaleRetryCounters]: the per-row counters name no account, and the
+     * provider numbers every account's rows in one sequence. Null when the rows of one of them could not be read
+     * ([liveInAnyAccount]), so nothing of the Android-id families is swept, as when this account's could not be. Only
+     * the ids [own] lacks are asked about, so one account, or counters of this account's rows alone, read nothing more.
+     * Non-suspend.
+     */
+    private fun withOtherAccountsRows(
+        provider: ContentProviderClient,
+        account: Account,
+        androidEventIds: Set<Long>,
+        own: Set<Long>
+    ): Set<Long>? {
+        val missing = androidEventIds - own
+        if (missing.isEmpty()) return own
+        val answers = mutableListOf<Set<Long>?>(own)
+        for (other in otherAccounts(account)) answers.add(existingEventRowIds(provider, other, missing))
+        return liveInAnyAccount(answers)
+    }
+
+    /**
+     * Which of [protonIds] another account of this app still maps to a row, for [sweepStaleRetryCounters]: an
+     * invitation counter names no account, and its event is still known while any account has it. Asks nothing for an
+     * empty list.
+     */
+    private suspend fun mappedInOtherAccounts(account: Account, protonIds: List<String>): Set<String> {
+        if (protonIds.isEmpty()) return emptySet()
+        val mapped = HashSet<String>()
+        for (other in otherAccounts(account)) {
+            for (chunk in protonIds.chunked(400)) {
+                calendarEventSyncDao.mappedRows(other.name, chunk).forEach { mapped.add(it.protonEventId) }
+            }
+        }
+        return mapped
+    }
+
+    /** This app's accounts but [account], as AccountManager lists them now ([otherAccountsToAsk]). Non-suspend. */
+    private fun otherAccounts(account: Account): List<Account> {
+        val listed = AccountManager.get(context).getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE).map { it.name }
+        return otherAccountsToAsk(account.name, listed).map { Account(it, ProtonSyncApp.ACCOUNT_TYPE) }
     }
 
     /**
@@ -2584,10 +3341,12 @@ class CalendarSyncAdapter(
                     apiClient.getCalendarEventIds(account.name, calInfo.id, limit = 100, afterId = afterId)
                 } catch (e: Exception) {
                     SyncLog.e(TAG, "Failed to fetch event IDs for '$calDisplayName': ${e.message}, aborting sync")
+                    recordEventListingFailed(account, calInfo, null, e)
                     return null
                 }
                 if (!resp.isSuccessful) {
                     SyncLog.e(TAG, "Failed to fetch event IDs for '$calDisplayName': HTTP ${resp.code()}${resp.protonErrorSuffix()}, aborting sync")
+                    recordEventListingFailed(account, calInfo, resp.code(), null)
                     return null
                 }
                 @Suppress("UNCHECKED_CAST")
@@ -2805,6 +3564,10 @@ class CalendarSyncAdapter(
                         val spanDays = (windowEnd - windowStart) / SyncConstants.SECONDS_PER_DAY
                         SyncLog.e(TAG, "Failed to fetch $label for '$calDisplayName' (Type=$type, Page=$page, span=${spanDays}d): HTTP ${resp.code()}${ProtonApiError.describe(errorBody)}, aborting sync")
                         SyncLog.e(TAG, "  Request URL: $requestUrl")
+                        // Proton's status is the reason. A request that throws is not caught in this function:
+                        // the exception ends the calendar's sync, which performCalendarSync counts and records
+                        // with its cause.
+                        recordEventListingFailed(account, calInfo, resp.code(), null)
                         return null
                     }
                     val events = resp.body()?.events
@@ -3064,6 +3827,11 @@ class CalendarSyncAdapter(
     }
 
 
+    /**
+     * A new calendar row. [isPrimary] is this run's primary-calendar decision for it (PrimaryCalendarChooser), false
+     * while the decision is unknown: the column always gets an explicit 1 or 0, never NULL, because the provider reads
+     * a NULL as `ownerAccount = account_name` and could make a shared calendar look primary.
+     */
     private fun insertLocalCalendar(
         provider: ContentProviderClient,
         account: Account,
@@ -3072,6 +3840,7 @@ class CalendarSyncAdapter(
         ownerEmail: String,
         calendarType: Int,
         memberPermissions: Int?,
+        isPrimary: Boolean,
     ): Long? {
         val values = ContentValues().apply {
             put(CalendarContract.Calendars.ACCOUNT_NAME, account.name)
@@ -3097,7 +3866,7 @@ class CalendarSyncAdapter(
                 "${CalendarContract.Reminders.METHOD_DEFAULT},${CalendarContract.Reminders.METHOD_ALERT},${CalendarContract.Reminders.METHOD_EMAIL}")
             put(CalendarContract.Calendars.ALLOWED_AVAILABILITY, "${CalendarContract.Events.AVAILABILITY_BUSY},${CalendarContract.Events.AVAILABILITY_FREE}")
             put(CalendarContract.Calendars.ALLOWED_ATTENDEE_TYPES, "${CalendarContract.Attendees.TYPE_NONE},${CalendarContract.Attendees.TYPE_REQUIRED},${CalendarContract.Attendees.TYPE_OPTIONAL}")
-            put(CalendarContract.Calendars.IS_PRIMARY, 0)
+            put(CalendarContract.Calendars.IS_PRIMARY, if (isPrimary) 1 else 0)
             put(CalendarContract.Calendars.CAN_MODIFY_TIME_ZONE, 1)
             put(CalendarContract.Calendars.CAN_ORGANIZER_RESPOND, 1)
             put(CalendarContract.Calendars.MAX_REMINDERS, 5)
@@ -3110,6 +3879,15 @@ class CalendarSyncAdapter(
         return uri?.let { ContentUris.parseId(it) }
     }
 
+    /**
+     * An existing calendar row, rewritten on every sync. [isPrimary] is this run's primary-calendar decision for it
+     * (PrimaryCalendarRun): true or false writes 1 or 0, null (the decision is unknown for a calendar that could be the
+     * default, or the row is not one this account's read found) leaves the stored value alone, so a failed settings
+     * read never moves or clears the flag. NULL is never written (see insertLocalCalendar). [clearKeptMarker]: the row
+     * was kept for this calendar after its removal on Proton (markKeptCalendarRow) and is mapped again now. [label]: the
+     * row keeps its own name and colour where this run could not read the calendar's (CalendarRowLabel), so a failed read
+     * never renames it to a placeholder.
+     */
     private fun updateLocalCalendar(
         provider: ContentProviderClient,
         account: Account,
@@ -3119,10 +3897,13 @@ class CalendarSyncAdapter(
         ownerEmail: String,
         calendarType: Int,
         memberPermissions: Int?,
+        isPrimary: Boolean?,
+        clearKeptMarker: Boolean = false,
+        label: CalendarRowLabel.Label,
     ) {
         val values = ContentValues().apply {
-            put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, displayName)
-            put(CalendarContract.Calendars.CALENDAR_COLOR, color)
+            if (!label.keepRowName) put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, displayName)
+            if (!label.keepRowColor) put(CalendarContract.Calendars.CALENDAR_COLOR, color)
             // Heal legacy calendars whose OWNER_ACCOUNT was set to the alias (account.name)
             // before the v1.3.103 fix. See comment in insertLocalCalendar above.
             put(CalendarContract.Calendars.OWNER_ACCOUNT, ownerEmail)
@@ -3137,10 +3918,11 @@ class CalendarSyncAdapter(
                 "${CalendarContract.Reminders.METHOD_DEFAULT},${CalendarContract.Reminders.METHOD_ALERT},${CalendarContract.Reminders.METHOD_EMAIL}")
             put(CalendarContract.Calendars.ALLOWED_AVAILABILITY, "${CalendarContract.Events.AVAILABILITY_BUSY},${CalendarContract.Events.AVAILABILITY_FREE}")
             put(CalendarContract.Calendars.ALLOWED_ATTENDEE_TYPES, "${CalendarContract.Attendees.TYPE_NONE},${CalendarContract.Attendees.TYPE_REQUIRED},${CalendarContract.Attendees.TYPE_OPTIONAL}")
-            put(CalendarContract.Calendars.IS_PRIMARY, 0)
+            if (isPrimary != null) put(CalendarContract.Calendars.IS_PRIMARY, if (isPrimary) 1 else 0)
             put(CalendarContract.Calendars.CAN_MODIFY_TIME_ZONE, 1)
             put(CalendarContract.Calendars.CAN_ORGANIZER_RESPOND, 1)
             put(CalendarContract.Calendars.MAX_REMINDERS, 5)
+            if (clearKeptMarker) putNull(CalendarContract.Calendars.CAL_SYNC1)
         }
         provider.update(
             ContentUris.withAppendedId(
@@ -3149,6 +3931,110 @@ class CalendarSyncAdapter(
             ),
             values, null, null
         )
+    }
+
+    /**
+     * The name and colour this run records for row [androidCalId], which kept its own where [label] says so
+     * (updateLocalCalendar): the row's current ones, else what its mapping [stored], else [displayName] and [color]
+     * (CalendarRowLabel.keptName). Off the suspend function that calls it, for the ART limits.
+     */
+    private fun keptRowLabel(
+        provider: ContentProviderClient,
+        account: Account,
+        androidCalId: Long,
+        protonCalendarId: String,
+        label: CalendarRowLabel.Label,
+        stored: CalendarSyncEntity?,
+        displayName: String,
+        color: Int,
+    ): Pair<String, Int> {
+        var currentName: String? = null
+        var currentColor: Int? = null
+        try {
+            provider.query(
+                ContentUris.withAppendedId(SyncUtils.asCallerSyncAdapter(CalendarContract.Calendars.CONTENT_URI, account), androidCalId),
+                arrayOf(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, CalendarContract.Calendars.CALENDAR_COLOR),
+                null, null, null
+            )?.use { c ->
+                if (c.moveToFirst()) {
+                    if (!c.isNull(0)) currentName = c.getString(0)
+                    if (!c.isNull(1)) currentColor = c.getInt(1)
+                }
+            }
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Could not read calendar row $androidCalId: ${e.message}")
+        }
+        val name = if (label.keepRowName) CalendarRowLabel.keptName(currentName, stored?.displayName, displayName) else displayName
+        val kept = if (label.keepRowColor) CalendarRowLabel.keptColor(currentColor, stored?.color, color) else color
+        SyncLog.i(TAG, "Calendar ${protonCalendarId.take(8)}${me.proton.sync.LogNames.named(name)} keeps its name" +
+            (if (label.keepRowColor) " and colour" else "") + " on this phone: Proton's could not be read this run")
+        return name to kept
+    }
+
+    /**
+     * The reason a calendar that could not be prepared gives its run (performCalendarSync, prepareCalendarJob), with the
+     * network cause of [cause] after it when it has one (NetworkCause). The first reason a run records wins, so where
+     * Proton refused the calendar's keys ([CalendarKeysFailure.Refused]) the reason with Proton's status goes first: it
+     * picks the text the failure shows (the server error, too many requests), which "could not be opened" alone did not.
+     */
+    private fun recordCalendarNotOpened(account: Account, calInfo: CalendarInfo, cause: Throwable?) {
+        CalendarKeysFailure.refusedStatus(cause)?.let { status ->
+            SyncUtils.recordSwallowedFailure("calendar", account.name, CalendarKeysFailure.reason(calInfo.id, status))
+        }
+        SyncUtils.recordSwallowedFailure(
+            "calendar", account.name,
+            "Calendar '${calInfo.name ?: calInfo.id.take(8)}' could not be opened, so none of its events were downloaded",
+            cause
+        )
+    }
+
+    /**
+     * Whether [calInfo] is skipped for this run because it has keys ([calKeys]) while none of the account's address keys
+     * is loaded (AddressKeysMissing): no key of it can be unlocked then, and its events would be written without what was
+     * encrypted in them. Logs and records the reason, with the cause of the failed read of the account's addresses where
+     * there is one (SyncUtils.addressReadFailure), or, where the read succeeded, why no key loaded (me.proton.sync
+     * .AddressKeysLocked: no active address key, or none this app can read), recorded first. The caller returns null,
+     * which performCalendarSync counts as a failed run. Off the suspend function that calls it, for the ART limits.
+     */
+    private fun skippedForMissingAddressKeys(
+        account: Account,
+        calInfo: CalendarInfo,
+        calKeys: List<CalendarKey>,
+        displayName: String
+    ): Boolean {
+        if (!AddressKeysMissing.skipsCalendar(calKeys.isNotEmpty(), keyManager.hasAddressKeys(account.name))) return false
+        val failure = SyncUtils.addressReadFailure(account.name)
+        val read = SyncUtils.addressKeysRead(account.name)
+        val why = failure?.httpCode?.let { "the account's addresses could not be read: HTTP $it" }
+            ?: failure?.cause?.let { "the account's addresses could not be read: ${it.javaClass.simpleName}" }
+            ?: read?.let { "the addresses were read: ${it.state}, ${it.activeKeys} active key(s)" }
+            ?: "no address key unlocked"
+        SyncLog.e(
+            TAG,
+            "Skipping calendar ${calInfo.id.take(8)}${me.proton.sync.LogNames.named(displayName)} for ${account.name} this run - " +
+                "no address key is loaded ($why), so none of its keys can be unlocked and none of its events will download"
+        )
+        me.proton.sync.AddressKeysLocked.reason(calInfo.id, read)?.let { SyncUtils.recordSwallowedFailure("calendar", account.name, it) }
+        SyncUtils.recordSwallowedFailure("calendar", account.name, AddressKeysMissing.reason(calInfo.id, failure?.httpCode), failure?.cause)
+        return true
+    }
+
+    /**
+     * The reason a calendar whose event listing failed gives its run (fetchEventsFlat, fetchEventsDense): Proton's HTTP
+     * status [httpCode] where it answered, or the network cause of [cause] (EventListingFailure, NetworkCause), which
+     * pick the text the failure shows. syncCalendarEvents counts the failure (countFailedEventListing). The first reason
+     * a run records wins.
+     */
+    private fun recordEventListingFailed(account: Account, calInfo: CalendarInfo, httpCode: Int?, cause: Throwable?) =
+        SyncUtils.recordSwallowedFailure("calendar", account.name, EventListingFailure.reason(calInfo.id, httpCode), cause)
+
+    /**
+     * A calendar whose event listing failed downloaded none of its events this run, so the run counts as failed: the
+     * failure is shown with the reason recordEventListingFailed recorded, and Android retries the sync where it retries
+     * failed syncs. Off the suspend function that calls it, for the ART limits.
+     */
+    private fun countFailedEventListing(syncResult: SyncResult) {
+        synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
     }
 
     /**
@@ -3162,11 +4048,16 @@ class CalendarSyncAdapter(
      * Both callers already do the right thing with a throw: prepareCalendarJob skips the whole calendar for
      * the run, and prepareUploadContexts counts an IO error so the framework retries the sync. An empty list
      * from a 2xx still means what it always meant.
+     *
+     * The throw for Proton's answer carries its status (CalendarKeysFailure.Refused, an IOException with the same
+     * message), for the reason a skipped calendar records (recordCalendarNotOpened).
      */
     private suspend fun fetchCalendarKeys(accountName: String, calendarId: String): List<CalendarKey> {
         val response = apiClient.getCalendarKeys(accountName, calendarId)
         if (!response.isSuccessful) {
-            throw java.io.IOException("keys fetch failed for calendar $calendarId: HTTP ${response.code()}${response.protonErrorSuffix()}")
+            throw CalendarKeysFailure.Refused(
+                response.code(), "keys fetch failed for calendar $calendarId: HTTP ${response.code()}${response.protonErrorSuffix()}"
+            )
         }
         return response.body()?.keys ?: emptyList()
     }
@@ -3176,7 +4067,8 @@ class CalendarSyncAdapter(
         val response = apiClient.getCalendarPassphrase(accountName, calendarId)
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string() ?: "no body"
-            throw java.io.IOException(
+            throw CalendarKeysFailure.Refused(
+                response.code(),
                 "passphrase fetch failed for calendar $calendarId: HTTP ${response.code()}" + ProtonApiError.describe(errorBody)
             )
         }
@@ -3931,7 +4823,10 @@ class CalendarSyncAdapter(
      * Detect events that were deleted locally by checking which sync mappings
      * no longer have a corresponding event in CalendarContract.
      * Delete those events on the Proton server. A suspiciously large set of deletions
-     * is held for the user's confirmation instead (see BulkDeletionGuard).
+     * is held for the user's confirmation instead (see BulkDeletionGuard). One Proton
+     * refuses for the third time is given up, and the event comes back with the next
+     * sync (DeletionPassRefusals); so is one it rejects for the third time, or refuses on
+     * a read-only calendar, and the rejected-events notice names each.
      */
     private suspend fun reconcileDeletedEvents(
         account: Account,
@@ -4008,12 +4903,19 @@ class CalendarSyncAdapter(
 
             if (deletedMappings.isEmpty()) continue
 
+            // Only the mapped rows still on the phone count as local: an event that exists only on the phone (held for
+            // the user's choice, kept there, not sent yet) must not switch the whole-calendar rule off.
             if (!deletionApproved &&
-                BulkDeletionGuard.isSuspicious(deletedMappings.size, existingAndroidIds.size, eventMappings.size)) {
+                BulkDeletionGuard.isSuspicious(
+                    deletedMappings.size,
+                    BulkDeletionGuard.mappedRowsPresent(eventMappings.mapNotNull { it.androidEventId }, existingAndroidIds),
+                    eventMappings.size
+                )) {
                 heldDeletions += deletedMappings.size
                 heldCalendars.add(calMapping.protonCalendarId)
                 SyncLog.w(TAG, "Suspicious bulk deletion HELD for '${calMapping.displayName ?: calMapping.protonCalendarId}': " +
-                    "${deletedMappings.size}/${eventMappings.size} mapped events missing locally (local=${existingAndroidIds.size}); " +
+                    "${deletedMappings.size}/${eventMappings.size} mapped events missing locally (local=${existingAndroidIds.size}, " +
+                    "mapped still on the phone=${BulkDeletionGuard.mappedRowsPresent(eventMappings.mapNotNull { it.androidEventId }, existingAndroidIds)}); " +
                     "NOT deleting on Proton - awaiting user confirmation")
                 continue
             }
@@ -4027,6 +4929,8 @@ class CalendarSyncAdapter(
             val memberId = ownMemberIdForWrites(account, calInfo)
             if (memberId == null) {
                 SyncLog.e(TAG, "Could not find member ID for calendar ${calMapping.protonCalendarId}")
+                // A failed read of the calendars, or no member on a loaded address, fails the run (CalendarWriteFailures).
+                deletionsWithoutMember(account, syncResult, calResponse, calInfo)
                 continue
             }
 
@@ -4054,32 +4958,46 @@ class CalendarSyncAdapter(
                         DeleteOpVerdict.DELETED, DeleteOpVerdict.ALREADY_GONE -> {
                             calendarEventSyncDao.deleteByProtonId(account.name, mapping.protonEventId)
                             clearDeleteRejectionStrikes(deleteStrikeKey(null, mapping.protonEventId))
+                            forgetDeletionPassRefusals(account.name, mapping.protonEventId)
                             syncResult.stats.numDeletes++
                             SyncLog.i(TAG, "Successfully deleted event ${mapping.protonEventId} from Proton (opCode=${op?.code ?: "none"})")
                         }
                         DeleteOpVerdict.REFUSED -> {
                             // The row is already gone here: drop the mapping and let the next sync download it again.
+                            // Named in the rejected-events notice, as every deletion the pass gives up (passDeletionGivenUp).
                             calendarEventSyncDao.deleteByProtonId(account.name, mapping.protonEventId)
-                            clearDeleteRejectionStrikes(deleteStrikeKey(null, mapping.protonEventId))
                             resetCalendarCursor(account, mapping.protonCalendarId)
+                            passDeletionGivenUp(account.name, mapping.protonEventId, deleteRefusalReason())
                             SyncLog.w(TAG, "Proton refuses deleting event ${mapping.protonEventId} (code=${op?.code ?: 400}); " +
                                 "it comes back with the next sync")
                         }
                         DeleteOpVerdict.REJECTED -> {
                             // Three strikes, as the upload's delete path: an unknown rejection must not be re-sent for
                             // ever, and while the mapping stands the download's per-event skip keeps the event away
-                            // from the phone as well.
-                            val strikeKey = deleteStrikeKey(null, mapping.protonEventId)
-                            if (bumpDeleteRejectionStrike(strikeKey, mapping.protonEventId, op ?: SyncOpResult(null, null))) {
+                            // from the phone as well. Counted by Proton id in DeletionPassRefusals: 2.1.0's
+                            // delete_reject_count_ key was dropped by the stale-counter sweep at every sync start.
+                            // Named with Proton's own error, as the upload's delete path names its third rejection.
+                            if (passDeletionRejected(account.name, mapping.protonEventId, op ?: SyncOpResult(null, null))) {
                                 calendarEventSyncDao.deleteByProtonId(account.name, mapping.protonEventId)
                                 resetCalendarCursor(account, mapping.protonCalendarId)
+                                passDeletionGivenUp(account.name, mapping.protonEventId, DeletionPassRefusals.rejectionReason(op))
                                 SyncLog.w(TAG, "Giving up the delete of event ${mapping.protonEventId}; it comes back with the next sync")
                             }
                         }
-                        null -> SyncLog.e(TAG, "Failed to delete event on Proton: HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
+                        null -> {
+                            SyncLog.e(TAG, "Failed to delete event on Proton: HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
+                            // Logged alone until 2.2.0, so the run reported success (CalendarWriteFailures). A refusal fails
+                            // its first two syncs; the third gives the deletion up and the event comes back (DeletionPassRefusals).
+                            if (reconcileDeletionFailed(account, syncResult, response.code(), mapping.protonEventId)) {
+                                giveUpPassDeletion(account, mapping)
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     SyncLog.e(TAG, "Network error deleting event ${mapping.protonEventId}", e)
+                    // The mapping stays, so the deletion goes again at the next sync; the run now says so, with the cause.
+                    syncResult.stats.numIoExceptions++
+                    SyncUtils.recordSwallowedFailure("calendar", account.name, CalendarWriteFailures.DELETION_NOT_SENT, e)
                 }
             }
         }
@@ -4177,9 +5095,6 @@ class CalendarSyncAdapter(
         val serverRrule: String?
     )
 
-    /** One row of the dirty/deleted set the upload walks. */
-    private data class DirtyRow(val androidEventId: Long, val androidCalId: Long, val deleted: Int)
-
     /**
      * Per-calendar metadata captured once before the per-event upload loop.
      *
@@ -4193,7 +5108,9 @@ class CalendarSyncAdapter(
         val calInfo: CalendarInfo,
         val memberId: String,
         /** Needed so an upload can tell "inherits the calendar defaults" from "pinned reminders". */
-        val calendarSettings: CalendarSettingsData? = null
+        val calendarSettings: CalendarSettingsData? = null,
+        /** The calendar's name on this phone (its mapping's), for log lines. */
+        val displayName: String? = null
     )
 
     /**
@@ -4202,11 +5119,15 @@ class CalendarSyncAdapter(
      * and member email), then fetching keys + passphrases and unlocking each
      * key into KeyManager. Returns null when the calendar can't be prepared
      * (no mapping, no member of this account's own ([ownMemberIdForWrites]), or
-     * network failure looking up keys).
+     * network failure looking up keys). Its own read of the calendars failing, no
+     * member on an address whose keys loaded, and no key unlocking also fail the run
+     * (CalendarWriteFailures, [uploadContextFailed]): the rows wait as before, but the
+     * run used to report success.
      */
     private suspend fun prepareCalendarUploadContext(
         account: Account,
-        androidCalId: Long
+        androidCalId: Long,
+        syncResult: SyncResult
     ): CalendarUploadContext? {
         val calMapping = calendarSyncDao.getAllByAccount(account.name)
             .firstOrNull { it.androidCalendarId == androidCalId }
@@ -4214,9 +5135,18 @@ class CalendarSyncAdapter(
         val protonCalendarId = calMapping.protonCalendarId
 
         val calResponse = apiClient.getCalendars(account.name)
+        if (!calResponse.isSuccessful) {
+            uploadContextFailed(account, syncResult, CalendarWriteFailures.calendarsNotReadForUpload(calResponse.code()))
+            return null
+        }
         val calInfo = calResponse.body()?.calendars?.firstOrNull { it.id == protonCalendarId }
             ?: return null
-        val memberId = ownMemberIdForWrites(account, calInfo) ?: return null
+        val memberId = ownMemberIdForWrites(account, calInfo)
+        if (memberId == null) {
+            // Its reason is recorded where the member is looked for (reloadKeysForUnknownMembership).
+            if (CalendarWriteFailures.countsMissingOwnMember(calInfo.members)) uploadContextFailed(account, syncResult, null)
+            return null
+        }
 
         val calKeys = fetchCalendarKeys(account.name, protonCalendarId)
         val calPassphrases = fetchCalendarPassphrases(account.name, protonCalendarId)
@@ -4254,6 +5184,8 @@ class CalendarSyncAdapter(
                 "calendar", account.name,
                 "None of the keys for one calendar could be unlocked, so nothing was uploaded to it. This usually means the account's address keys changed; the next sync re-reads them."
             )
+            // Counted too: recorded alone, the reason was thrown away by a run that reported success.
+            uploadContextFailed(account, syncResult, null)
             return null
         }
 
@@ -4261,7 +5193,8 @@ class CalendarSyncAdapter(
             protonCalendarId = protonCalendarId,
             calInfo = calInfo,
             memberId = memberId,
-            calendarSettings = fetchCalendarSettings(account.name, protonCalendarId)
+            calendarSettings = fetchCalendarSettings(account.name, protonCalendarId),
+            displayName = calMapping.displayName.takeIf { it.isNotEmpty() }
         )
     }
 
@@ -4280,18 +5213,161 @@ class CalendarSyncAdapter(
             SyncLog.w(TAG, "No member of calendar ${calInfo.id} is this account's " +
                 "(${calInfo.members?.size ?: 0} member(s), ${userAddresses.size} address(es) with keys): " +
                 "nothing is written to it this run, and never through another member")
-            if (!calInfo.members.isNullOrEmpty()) {
-                // A membership on none of the addresses whose keys were loaded is what a key ring older than the
-                // account looks like: a calendar on an address added since. Read the keys again at the next sync,
-                // as the "No calendar key unlocked" path does, rather than wait out the key cache.
-                SyncUtils.invalidateKeyCache(account.name)
-                SyncUtils.recordSwallowedFailure(
-                    "calendar", account.name,
-                    "One calendar belongs to an address this app has not loaded yet, so nothing was uploaded to it. The next sync re-reads the account's addresses."
-                )
-            }
+            reloadKeysForUnknownMembership(account, calInfo)
         }
         return member?.id
+    }
+
+    /**
+     * No member of [calInfo] is on an address whose keys loaded: what a key ring older than the account looks like, a
+     * calendar on an address added since, or shared with one. Read the keys again at the next sync, as the "No calendar
+     * key unlocked" path does, rather than wait out the key cache, and say why nothing went up. For the upload context
+     * ([ownMemberIdForWrites]) and for new events held unasked in such a calendar ([applyNewEventHolds]), which never
+     * reach the upload context. Nothing for a calendar without members.
+     */
+    private fun reloadKeysForUnknownMembership(account: Account, calInfo: CalendarInfo) {
+        if (calInfo.members.isNullOrEmpty()) return
+        SyncUtils.invalidateKeyCache(account.name)
+        SyncUtils.recordSwallowedFailure(
+            "calendar", account.name,
+            "One calendar belongs to an address this app has not loaded yet, so nothing was uploaded to it. The next sync re-reads the account's addresses."
+        )
+    }
+
+    /**
+     * A calendar's upload context could not be prepared ([prepareCalendarUploadContext]): count the failure, and record
+     * [reason] when the caller did not record one already (the first reason a run records wins). Its rows stay pending as
+     * before; the run used to report success, so with Android's automatic sync off nothing told the user to tap Sync, and
+     * the reason recorded was thrown away (CalendarWriteFailures). Off the suspend function that calls it, for the ART
+     * limits.
+     */
+    private fun uploadContextFailed(account: Account, syncResult: SyncResult, reason: String?) {
+        synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
+        if (reason != null) SyncUtils.recordSwallowedFailure("calendar", account.name, reason)
+    }
+
+    /**
+     * The deletion pass ([reconcileDeletedEvents]) found no member of the calendar of the account's own, so none of that
+     * calendar's deletions went to Proton: a failure when its read of the calendars ([calResponse]) failed, with Proton's
+     * status, or when the calendar has members none of which is on an address whose keys loaded (reason recorded by
+     * [reloadKeysForUnknownMembership]). A calendar gone from a list read whole, or listed without members, fails nothing,
+     * as before. The mappings stay, so the deletions go again at the next sync (CalendarWriteFailures). Non-suspend.
+     */
+    private fun deletionsWithoutMember(
+        account: Account,
+        syncResult: SyncResult,
+        calResponse: retrofit2.Response<*>,
+        calInfo: CalendarInfo?
+    ) {
+        if (!CalendarWriteFailures.missingMemberFails(calResponse.isSuccessful, calInfo)) return
+        synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
+        if (!calResponse.isSuccessful) {
+            SyncUtils.recordSwallowedFailure("calendar", account.name, CalendarWriteFailures.calendarsNotReadForDeletions(calResponse.code()))
+        }
+    }
+
+    /**
+     * A deletion of the deletion pass ([reconcileDeletedEvents]) Proton answered with the failure [httpCode] (any but the
+     * read-only calendar's 400, whose event comes back): counted, with the status, which picks the text shown, and the
+     * mapping stays, so the deletion goes again at the next sync (CalendarWriteFailures). A refusal of the deletion itself
+     * also counts a strike for [protonEventId] (DeletionPassRefusals): the third is not counted as a failure but returns
+     * true, and the caller gives the deletion up ([giveUpPassDeletion]). An answer about the connection or the session
+     * counts no strike and fails every run it comes in. Non-suspend.
+     */
+    private fun reconcileDeletionFailed(account: Account, syncResult: SyncResult, httpCode: Int, protonEventId: String): Boolean {
+        val refusals = if (EventDeletionFailures.isRefusal(httpCode)) {
+            DeletionPassRefusals.recordRefusal(PreferenceManager.getDefaultSharedPreferences(context), account.name, protonEventId)
+        } else 0
+        if (DeletionPassRefusals.givesUp(httpCode, refusals)) {
+            SyncLog.w(TAG, "Proton refused the deletion of event $protonEventId $refusals times (HTTP $httpCode); giving it up, " +
+                "it comes back with the next sync")
+            return true
+        }
+        synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
+        SyncUtils.recordSwallowedFailure("calendar", account.name, EventDeletionFailures.reason(httpCode))
+        return false
+    }
+
+    /**
+     * Give up a deletion of the deletion pass that Proton refused for the third time ([reconcileDeletionFailed]), the way
+     * the pass gives up one it refused on a read-only calendar or rejected three times: the mapping goes and the
+     * calendar's download cursor is reset, so the next sync downloads the event again as Proton has it (the
+     * unchanged-skip and the per-event LastEditTime gate need a cursor and a mapping) and maps it to the row it writes.
+     * Nothing is deleted, on the phone or on Proton. The cursor goes first: should the mapping's removal fail, the
+     * deletion is sent again at the next sync and given up again, its strikes being kept until then. Then
+     * [passDeletionGivenUp], with the refused deletion's text ([deleteRefusalReason]).
+     */
+    private suspend fun giveUpPassDeletion(account: Account, mapping: CalendarEventSyncEntity) {
+        resetCalendarCursor(account, mapping.protonCalendarId)
+        calendarEventSyncDao.deleteByProtonId(account.name, mapping.protonEventId)
+        passDeletionGivenUp(account.name, mapping.protonEventId, deleteRefusalReason())
+    }
+
+    /**
+     * One more rejection of a deletion of the deletion pass ([reconcileDeletedEvents]): Proton answered 200 and rejected
+     * its operation (DeleteOpVerdict.REJECTED). Counted by Proton event id in DeletionPassRefusals, apart from the HTTP
+     * refusals ([reconcileDeletionFailed]). 2.1.0 kept the count under delete_reject_count_<protonEventId>, which
+     * [sweepStaleRetryCounters] drops at the start of every sync because it names no row: the third never came, and the
+     * deletion was sent again at every sync, silently. A rejection fails no run, as before. True on the third: the caller
+     * gives the deletion up as it always meant to (mapping, cursor), then [passDeletionGivenUp] with Proton's own error
+     * (DeletionPassRefusals.rejectionReason). Should dropping the mapping fail, the count stays at three and the next
+     * rejection gives the deletion up again. Non-suspend.
+     */
+    private fun passDeletionRejected(accountName: String, protonEventId: String, op: SyncOpResult): Boolean {
+        val rejections = DeletionPassRefusals.recordRejection(
+            PreferenceManager.getDefaultSharedPreferences(context), accountName, protonEventId
+        )
+        val givesUp = DeletionPassRefusals.rejectionGivesUp(rejections)
+        SyncLog.e(TAG, "Delete of event $protonEventId rejected by Proton (code=${op.code} error='${ProtonApiError.clean(op.error)}') " +
+            "- attempt $rejections/${DeletionPassRefusals.REJECTION_GIVE_UP_AT}, " + (if (givesUp) "giving it up" else "retrying next sync"))
+        return givesUp
+    }
+
+    /**
+     * After the deletion pass gave a deletion up: refused on a read-only calendar (its REFUSED branch), rejected for
+     * the third time (its REJECTED branch, [passDeletionRejected]) or refused for the third time
+     * ([giveUpPassDeletion]). Each dropped the mapping and reset the calendar's cursor first, so the event comes back
+     * in all three. The deletion's strikes (both lists, DeletionPassRefusals) and any rejection strike 2.1.0 left go,
+     * as its mapping did, and the user is told with the rejected-events notice ([uploadDirtyEvents] posts it at its
+     * end, [takeGaveUpList]), in a line that gives [reason], from the caller (owner, 2026-11-23). The read-only
+     * refusal and the third refusal give the existing text ([deleteRefusalReason]: "this account cannot delete it on
+     * Proton, so it comes back to this phone with the next sync"). The third rejection gives Proton's own error
+     * (DeletionPassRefusals.rejectionReason), as the upload's delete path names its own third rejection
+     * ([settleDeleteResponse]): a rejection may pass at a later attempt (DeleteOpVerdict.REJECTED), so it is not Proton
+     * saying that this account cannot delete it. The row is gone and with it the title, so the event is named as an
+     * untitled one ([rejectedEventTitle] of nothing): the app keeps no title of its own, and the row's id may belong to
+     * another event by now. One line for each deletion given up, never merged: untitled, the lines of different events
+     * read the same, and one line would tell of one event where several come back. Non-suspend.
+     */
+    private fun passDeletionGivenUp(accountName: String, protonEventId: String, reason: String) {
+        forgetDeletionPassRefusals(accountName, protonEventId)
+        clearDeleteRejectionStrikes(deleteStrikeKey(null, protonEventId))
+        val entry = rejectedEventTitle("") to reason
+        val list = passGaveUpByAccount.computeIfAbsent(accountName) { java.util.Collections.synchronizedList(mutableListOf()) }
+        list.add(entry)
+    }
+
+    /** Forget the deletion pass's refusals of [protonEventId]: Proton took the deletion, or it was given up. Non-suspend. */
+    private fun forgetDeletionPassRefusals(accountName: String, protonEventId: String) {
+        DeletionPassRefusals.forget(PreferenceManager.getDefaultSharedPreferences(context), accountName, protonEventId)
+    }
+
+    /**
+     * The deletion pass's refusals of events whose mapping is gone are dropped (DeletionPassRefusals): Proton deleted the
+     * event, the pass gave it up or put it back, a calendar went, or a forced download cleared the mappings. Only the ids
+     * counted are looked up, so the query stays bounded. Called first by [sweepStaleRetryCounters], at the start of a sync
+     * and before the download maps an event again: a forced download maps it under the same Proton id, and an old count
+     * must not cut its next deletion short.
+     */
+    private suspend fun pruneDeletionPassRefusals(account: Account) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val counted = DeletionPassRefusals.countedIds(prefs, account.name)
+        if (counted.isEmpty()) return
+        val mapped = HashSet<String>()
+        for (chunk in counted.toList().chunked(400)) {
+            calendarEventSyncDao.mappedRows(account.name, chunk).forEach { mapped.add(it.protonEventId) }
+        }
+        DeletionPassRefusals.retain(prefs, account.name) { it in mapped }
     }
 
     /**
@@ -4301,6 +5377,22 @@ class CalendarSyncAdapter(
      * so a permanently-rejected event is surfaced to the user instead of vanishing silently.
      */
     private val gaveUpByAccount = java.util.concurrent.ConcurrentHashMap<String, MutableList<Pair<String, String>>>()
+
+    /**
+     * Deletions the deletion pass gave up ([passDeletionGivenUp]), as (title, reason) pairs keyed by account, until the end
+     * of an upload names them in its notice ([takeGaveUpList]). Kept apart from [gaveUpByAccount], which every upload opens
+     * empty: an upload that stops before its end leaves them for the next one's notice, and the merge of one series' lines
+     * ([restoreRefusedDelete]) never takes in a line of the pass.
+     */
+    private val passGaveUpByAccount = java.util.concurrent.ConcurrentHashMap<String, MutableList<Pair<String, String>>>()
+
+    /**
+     * The lines of the rejected-events notice, taken out where [uploadDirtyEvents] posts it, at its end, and nowhere else:
+     * the deletions the deletion pass gave up ([passGaveUpByAccount]), at this run or at one whose upload stopped before
+     * its end, then the events this upload gave up ([gaveUpByAccount]). Non-suspend.
+     */
+    private fun takeGaveUpList(accountName: String): List<Pair<String, String>> =
+        passGaveUpByAccount.remove(accountName).orEmpty() + gaveUpByAccount.remove(accountName).orEmpty()
 
     /**
      * After a forced Remote→Local download: clear DIRTY on the rows the download wrote, and keep it
@@ -4326,7 +5418,8 @@ class CalendarSyncAdapter(
             "(${CalendarContract.Events._SYNC_ID} IS NOT NULL OR ${CalendarContract.Events.ORIGINAL_SYNC_ID} IS NOT NULL)"
         val liveRow = "${CalendarContract.Events.DELETED} = 0"
         var cleared = 0
-        var keptLocal = 0
+        // The phone-only rows that stay pending, as the upload's plan reads them, to tell the waiting and kept ones apart.
+        val pendingLocal = ArrayList<NewEventHoldRules.Row>()
         try {
             val calIds = mutableListOf<Long>()
             provider.query(
@@ -4348,20 +5441,43 @@ class CalendarSyncAdapter(
                 )
                 provider.query(
                     SyncUtils.asCallerSyncAdapter(CalendarContract.Events.CONTENT_URI, account),
-                    arrayOf(CalendarContract.Events._ID),
+                    arrayOf(
+                        CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ORIGINAL_ID,
+                        CalendarContract.Events.UID_2445,
+                    ),
                     "$inCalendars AND NOT $downloadedRow AND $liveRow AND ${CalendarContract.Events.DIRTY} = 1",
                     args,
                     null
-                )?.use { keptLocal = it.count }
+                )?.use { c ->
+                    while (c.moveToNext()) {
+                        pendingLocal.add(
+                            NewEventHoldRules.Row(
+                                id = c.getLong(0), calendarId = c.getLong(1), deleted = false, syncId = null,
+                                originalId = if (c.getType(2) == Cursor.FIELD_TYPE_INTEGER) c.getLong(2) else null,
+                                originalSyncId = null,
+                                uid = if (c.getType(3) == Cursor.FIELD_TYPE_STRING) c.getString(3) else null,
+                                mutators = null, mutatorsReadable = true,
+                            )
+                        )
+                    }
+                }
             }
         } catch (e: Exception) {
             SyncLog.w(TAG, "Bulk-clear DIRTY failed: ${e.message}")
         }
+        // Of those, the rows of a series waiting for the user's choice or kept on this phone (NewEventHoldStore), found
+        // as the upload's plan finds them (its exceptions, its same-UID rows and theirs): they stay out of the upload
+        // whatever the next sync is. The rest are not all sent: that sync's checks hold or keep some out too.
+        val entries = NewEventHoldStore.snapshot(PreferenceManager.getDefaultSharedPreferences(context), account.name)
+        val seriesOf = NewEventHoldRules.seriesIndex(pendingLocal, entries, emptySet())
+        val waiting = pendingLocal.count { seriesOf(it)?.state == NewEventHoldRules.State.WAITING }
+        val kept = pendingLocal.count { seriesOf(it)?.state == NewEventHoldRules.State.KEPT }
         SyncLog.i(
             TAG,
             "Skipping dirty-row upload (forced Remote→Local - cleared DIRTY on $cleared downloaded events; " +
-                "pending edits to Proton events are intentionally discarded; $keptLocal event(s) created on " +
-                "the phone and not uploaded yet stay pending and upload on the next sync)"
+                "pending edits to Proton events are intentionally discarded; ${pendingLocal.size} row(s) created on " +
+                "the phone and not uploaded yet stay pending: $waiting wait for the user's choice, $kept are kept on " +
+                "this phone, and the rest go through the next sync's upload checks)"
         )
     }
 
@@ -4369,7 +5485,9 @@ class CalendarSyncAdapter(
         account: Account,
         provider: ContentProviderClient,
         syncResult: SyncResult,
-        triggerType: SyncTriggerType
+        triggerType: SyncTriggerType,
+        /** This run's calendar list: which calendars someone else shared with this account (readDirtyRows' holds). */
+        calendars: List<CalendarInfo>
     ) {
         gaveUpByAccount[account.name] = java.util.Collections.synchronizedList(mutableListOf())
         // Remote→Local force sync wipes the local side and re-fetches everything from
@@ -4392,7 +5510,8 @@ class CalendarSyncAdapter(
         val suppressAttendeeEmails = triggerType == SyncTriggerType.ManualForceLocalToRemote
         val dirtyRows = readDirtyRows(
             account = account,
-            provider = provider
+            provider = provider,
+            calendars = calendars
         ) ?: return
         val calendarContexts = prepareUploadContexts(
             account = account,
@@ -4473,6 +5592,10 @@ class CalendarSyncAdapter(
         if (finalTombstones > 0) {
             SyncLog.i(TAG, "Cleaned up $finalTombstones unmapped tombstones total")
         }
+        // The refusal counts of deletions no longer pending go (EventDeletionFailures), and the lasting notice of the
+        // deletions refused for good is settled from what is left.
+        pruneEventDeletionRefusals(account.name, dirtyRows)
+        noticeRefusedEventDeletions(account.name, provider)
 
         // Cancellations an earlier sync could not send. After this run's uploads, so a guest re-added in the
         // same run is already off the queue; ones queued just now wait for the next sync (their turn is later).
@@ -4480,18 +5603,29 @@ class CalendarSyncAdapter(
 
         // Surface any events we permanently gave up on (3-strike cap) so the user knows
         // — listing each title with the server's reason — instead of them vanishing silently.
-        val gaveUp = gaveUpByAccount.remove(account.name)
-        if (!gaveUp.isNullOrEmpty()) {
-            SyncNotificationHelper.notifyEventsRejected(context, account.name, gaveUp.toList())
+        // With them the deletions the deletion pass gave up, taken out only here (takeGaveUpList).
+        val gaveUp = takeGaveUpList(account.name)
+        if (gaveUp.isNotEmpty()) {
+            SyncNotificationHelper.notifyEventsRejected(context, account.name, gaveUp)
         }
     }
 
     /**
      * The rows this upload has to deal with: every dirty or deleted event of this account's calendars, minus the
-     * ones held for a collision decision. Null when there is nothing to do at all (no calendars of ours, or the
-     * provider gave no cursor), which keeps the caller from draining anything.
+     * ones held for a collision decision and the new events another app wrote into a calendar someone else shared
+     * with the account ([holdNewEventsFromOtherApps]; [calendars] is this run's calendar list). Null when there is
+     * nothing to do at all (no calendars of ours, or the provider gave no cursor), which keeps the caller from
+     * draining anything.
      */
-    private suspend fun readDirtyRows(account: Account, provider: ContentProviderClient): MutableList<DirtyRow>? {
+    private suspend fun readDirtyRows(
+        account: Account,
+        provider: ContentProviderClient,
+        calendars: List<CalendarInfo>
+    ): MutableList<DirtyRow>? {
+        // FIRST, before the rows are read: an answer given while this runs (Keep, Publish, Move) is then either in
+        // this snapshot or applied to rows read after it, never half of each. Move writes the row before it drops the
+        // entry, so a row read in its new calendar is judged there; Keep and Publish change the entry alone.
+        val holdSnapshot = NewEventHoldStore.snapshot(PreferenceManager.getDefaultSharedPreferences(context), account.name)
         // Collect all local calendar IDs belonging to this account.
         val calIds = mutableListOf<Long>()
         val calCursor = provider.query(
@@ -4506,30 +5640,15 @@ class CalendarSyncAdapter(
 
         // Query dirty events (includes soft-deleted rows where DELETED=1).
         // CalendarContract keeps deleted rows until the sync adapter removes them.
-        val placeholders = calIds.joinToString(",") { "?" }
-        val cursor = provider.query(
-            CalendarContract.Events.CONTENT_URI,
-            arrayOf(
-                CalendarContract.Events._ID,
-                CalendarContract.Events.CALENDAR_ID,
-                CalendarContract.Events.DELETED
-            ),
-            "(${CalendarContract.Events.DIRTY} = 1 OR ${CalendarContract.Events.DELETED} = 1) AND ${CalendarContract.Events.CALENDAR_ID} IN ($placeholders)",
-            calIds.map { it.toString() }.toTypedArray(),
-            null
-        ) ?: return null
+        val cursor = queryDirtyEvents(provider, calIds) ?: return null
 
-        // Snapshot the rows so we can close the cursor before making network calls.
+        // Snapshot the rows so we can close the cursor before making network calls. By column name and type
+        // (DirtyRowReader): the retry without MUTATORS has one column fewer, and getString on a BLOB throws.
         val dirtyRows = mutableListOf<DirtyRow>()
         try {
+            val columns = DirtyRowReader.columns(cursor.columnNames)
             while (cursor.moveToNext()) {
-                dirtyRows.add(
-                    DirtyRow(
-                        androidEventId = cursor.getLong(0),
-                        androidCalId   = cursor.getLong(1),
-                        deleted        = cursor.getInt(2)
-                    )
-                )
+                dirtyRows.add(DirtyRowReader.read(columns, cursor::getType, cursor::getString, cursor::getLong))
             }
         } finally {
             cursor.close()
@@ -4571,10 +5690,278 @@ class CalendarSyncAdapter(
             }
         }
 
+        holdNewEventsFromOtherApps(account, provider, dirtyRows, calendars, holdSnapshot)
+
         if (dirtyRows.isNotEmpty()) {
             SyncLog.i(TAG, "Found ${dirtyRows.size} dirty/deleted events to process")
         }
         return dirtyRows
+    }
+
+    /**
+     * The dirty and deleted events of the calendars [calIds]: _ID, CALENDAR_ID, DELETED, _SYNC_ID, ORIGINAL_ID,
+     * ORIGINAL_SYNC_ID and UID_2445, which tell a new event from one of Proton's and its series, and MUTATORS, the
+     * app(s) that wrote the row: for the log line of a new event, and for the hold of one another app wrote into a
+     * calendar someone else shared ([NewEventHoldRules.verdict]). MUTATORS is public API since 18, below this app's
+     * minSdk, and the stock provider's events view carries it; should a provider refuse the column anyway, the query
+     * runs again without it, and such a new event then counts as one with no writer recorded, which is held.
+     *
+     * The query with the column is tried twice before that: a hold made from a read without it stays until the user
+     * answers, so a failure that passes (a busy database) must not hold the calendar apps' new events of a whole run.
+     */
+    private fun queryDirtyEvents(provider: ContentProviderClient, calIds: List<Long>): Cursor? {
+        val selection = "(${CalendarContract.Events.DIRTY} = 1 OR ${CalendarContract.Events.DELETED} = 1) AND " +
+            "${CalendarContract.Events.CALENDAR_ID} IN (${calIds.joinToString(",") { "?" }})"
+        val args = calIds.map { it.toString() }.toTypedArray()
+        val columns = arrayOf(
+            CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.DELETED,
+            CalendarContract.Events._SYNC_ID, CalendarContract.Events.ORIGINAL_ID, CalendarContract.Events.ORIGINAL_SYNC_ID,
+            CalendarContract.Events.UID_2445,
+        )
+        val withWriter = columns + CalendarContract.Events.MUTATORS
+        return try {
+            provider.query(CalendarContract.Events.CONTENT_URI, withWriter, selection, args, null)
+        } catch (first: Exception) {
+            try {
+                provider.query(CalendarContract.Events.CONTENT_URI, withWriter, selection, args, null).also {
+                    SyncLog.w(TAG, "The dirty-event query with MUTATORS failed once (${first.javaClass.simpleName}) and worked the second time")
+                }
+            } catch (e: Exception) {
+                // A failure that is not about the column fails the retry the same way and is thrown from there, as before.
+                SyncLog.w(TAG, "The dirty-event query with MUTATORS failed twice (${e.javaClass.simpleName}); retrying without it, so new events are logged without their writer, and those in calendars shared with this account wait for the user's choice")
+                provider.query(CalendarContract.Events.CONTENT_URI, columns, selection, args, null)
+            }
+        }
+    }
+
+    /**
+     * New events that an app which is not a calendar app wrote into a calendar someone else shared with this account:
+     * held out of this upload until the user chooses ([NewEventHoldRules.plan] decides, [NewEventHoldStore] keeps
+     * them, [NewEventHolds] asks). Takes out of [dirtyRows] the rows of waiting and kept series, new holds and their
+     * rows, and new rows of calendars whose membership is undecided; [holdSnapshot] is the store as it was before the
+     * rows were read. Only reads the account's mappings here (suspend); the rest is [applyNewEventHolds]. A mapping read
+     * that fails fails the upload, so nothing new goes up unchecked.
+     */
+    private suspend fun holdNewEventsFromOtherApps(
+        account: Account,
+        provider: ContentProviderClient,
+        dirtyRows: MutableList<DirtyRow>,
+        calendars: List<CalendarInfo>,
+        holdSnapshot: List<NewEventHoldRules.Entry>
+    ) {
+        // W and K rows stay DIRTY, so they always come back here; with no row there is nothing to hold or to re-post.
+        if (dirtyRows.isEmpty()) return
+        val mappings = calendarSyncDao.getAllByAccount(account.name)
+        val mappedIds = calendarEventSyncDao.androidEventIdsByAccount(account.name).toHashSet()
+        val parentProtonCalendars = parentProtonCalendarsOf(account, dirtyRows, mappedIds)
+        applyNewEventHolds(account, provider, dirtyRows, calendars, holdSnapshot, mappings, mappedIds, parentProtonCalendars)
+    }
+
+    /**
+     * The Proton calendars of each mapped parent row of the live exceptions in [dirtyRows] that have no Proton event of
+     * their own (no _SYNC_ID, not in [mappedIds], this account's mapped event ids), by parent row id: where such a parent
+     * lives on Proton, for NewEventHoldRules.livesApart. Only those mappings are read, a few hundred per query.
+     */
+    private suspend fun parentProtonCalendarsOf(
+        account: Account,
+        dirtyRows: List<DirtyRow>,
+        mappedIds: Set<Long>
+    ): Map<Long, Set<String>> {
+        val parents = dirtyRows.mapNotNullTo(LinkedHashSet()) { r ->
+            r.originalId?.takeIf { it in mappedIds && r.deleted != 1 && r.syncId.isNullOrBlank() && r.androidEventId !in mappedIds }
+        }
+        if (parents.isEmpty()) return emptyMap()
+        val out = HashMap<Long, MutableSet<String>>()
+        for (chunk in parents.chunked(400)) {
+            for (m in calendarEventSyncDao.getByAndroidIds(account.name, chunk)) {
+                m.androidEventId?.let { out.getOrPut(it) { HashSet() }.add(m.protonCalendarId) }
+            }
+        }
+        return out
+    }
+
+    /**
+     * The non-suspend part of [holdNewEventsFromOtherApps]: each mapped calendar's decision from this run's list
+     * ([NewEventHoldRules.holdDecision], our member found by the addresses whose keys loaded) and whether someone else
+     * shared it with this account ([NewEventHoldRules.sharedWithAccount]), the plan, the store
+     * writes, the log lines and the prompts. The calendar editors are listed only when a verdict needs them.
+     * [parentProtonCalendars] is where mapped parents of exceptions made on this phone live on Proton.
+     */
+    private fun applyNewEventHolds(
+        account: Account,
+        provider: ContentProviderClient,
+        dirtyRows: MutableList<DirtyRow>,
+        calendars: List<CalendarInfo>,
+        holdSnapshot: List<NewEventHoldRules.Entry>,
+        mappings: List<CalendarSyncEntity>,
+        mappedIds: Set<Long>,
+        parentProtonCalendars: Map<Long, Set<String>>
+    ) {
+        val userAddresses = keyManager.getAddressEmails(account.name)
+        val listed = calendars.associateBy { it.id }
+        val decisions = HashMap<Long, NewEventHoldRules.HoldDecision>()
+        // Shared with this account by someone else, with or without the right to write: a parent row that never reached
+        // Proton keeps its dates in other calendars on the phone while it sits in one (owner, 2026-11-22).
+        val shared = HashSet<Long>()
+        val names = HashMap<Long, String>()
+        val undecidedInfo = HashMap<Long, CalendarInfo>()
+        for (m in mappings) {
+            val androidCalId = m.androidCalendarId ?: continue
+            names.putIfAbsent(androidCalId, m.displayName)
+            val info = listed[m.protonCalendarId] ?: continue
+            val decision = NewEventHoldRules.holdDecision(info.type, info.members, userAddresses)
+            if (decision == NewEventHoldRules.HoldDecision.UNDECIDED) undecidedInfo.putIfAbsent(androidCalId, info)
+            if (NewEventHoldRules.sharedWithAccount(info.type, info.members, userAddresses)) shared.add(androidCalId)
+            // A row two calendars map to gets the stricter decision, whichever the upload would take.
+            decisions.merge(androidCalId, decision) { a, b -> NewEventHoldRules.stricter(a, b) }
+        }
+        val ownPackage = context.packageName
+        val pm = context.packageManager
+        var editors: Set<String>? = null
+        var editorsListed = false
+        val verdictOf: (NewEventHoldRules.Row) -> NewEventHoldRules.Verdict = { row ->
+            if (!editorsListed) {
+                editorsListed = true
+                editors = CalendarEditors.packages(context)
+                if (editors == null) {
+                    SyncLog.w(TAG, "The calendar apps on this phone could not be listed: every new event another app wrote into a calendar shared with ${account.name} waits for the user's choice")
+                }
+            }
+            val known = editors.orEmpty()
+            NewEventHoldRules.verdict(row.mutators, row.mutatorsReadable, ownPackage) { entry ->
+                CalendarEditors.isEditor(entry, known) { uid -> pm.getPackagesForUid(uid) }
+            }
+        }
+        val rows = dirtyRows.map {
+            NewEventHoldRules.Row(
+                id = it.androidEventId, calendarId = it.androidCalId, deleted = it.deleted == 1, syncId = it.syncId,
+                originalId = it.originalId, originalSyncId = it.originalSyncId, uid = it.uid, mutators = it.mutators,
+                mutatorsReadable = it.mutatorsReadable,
+            )
+        }
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val mappedCalendarIds = mappings.mapNotNullTo(HashSet()) { it.androidCalendarId }
+        // A published series whose calendar has no mapping now can go nowhere (Proton removed the calendar before it went
+        // up, and the answer came while that sync ran): it waits for the user's choice again, in this run's plan too.
+        val nowhere = NewEventHoldRules.publishedNowhere(holdSnapshot, mappedCalendarIds)
+        val askAgain = nowhere.mapTo(LinkedHashSet()) { it.calendarId }
+            .flatMap { unpublishUnmappedRow(account, it, "the calendar has no mapping any more, so they cannot go up") }
+        val entries = holdSnapshot.map { if (it in nowhere) it.copy(state = NewEventHoldRules.State.WAITING) else it }
+        // Where the parent rows not in the run sit, and which of those calendars are this account's: one of them without
+        // a decision this run (Proton no longer lists it, or the phone keeps it for a removed calendar) keeps the dates
+        // of a parent that never reached Proton out, as a calendar shared with the account does (owner, 2026-11-22).
+        val (parentCalendars, accountCalendars) = parentCalendarsOf(account, provider, rows, decisions, mappedIds)
+        val plan = NewEventHoldRules.plan(
+            rows, entries, decisions, mappedIds, verdictOf, System.currentTimeMillis(),
+            parentCalendars = parentCalendars,
+            parentHomes = NewEventHoldRules.homesOf(
+                parentProtonCalendars, mappings.mapNotNull { m -> m.androidCalendarId?.let { m.protonCalendarId to it } }
+            ),
+            accountCalendars = accountCalendars,
+            sharedCalendars = shared
+        )
+        NewEventHoldStore.addHolds(prefs, account.name, plan.newHolds)
+        // The parent's tombstone goes up now (one never synced is only removed on the phone): its question ends, or passes
+        // to a row of the series left with its UID, a split's clone above all, as the sweep settles a parent deleted for
+        // good. Its prompt comes down either way.
+        for (e in plan.dropEntries) NewEventHolds.passOnOrDrop(context, provider, prefs, account, e, row = null, mappedEventIds = mappedIds)
+        val out = HashSet<Long>()
+        plan.skipped.mapTo(out) { it.id }
+        plan.undecided.mapTo(out) { it.id }
+        plan.apart.mapTo(out) { it.id }
+        if (out.isNotEmpty()) dirtyRows.removeAll { it.androidEventId in out }
+        if (plan.apart.isNotEmpty()) {
+            SyncLog.w(
+                TAG,
+                "Keeping ${plan.apart.size} event(s) out of this upload: a changed date of a repeating event, made on " +
+                    "this phone and left in another calendar than the event's own (an app moved the event without it); " +
+                    "going up where it sits, it would put the event in a second calendar of ${account.name}"
+            )
+        }
+
+        // Calendar names and the writing app's package only with Verbose logging (LogNames).
+        for (e in plan.newHolds) {
+            SyncLog.i(
+                TAG,
+                "Holding new event ${e.eventId} in calendar ${e.calendarId}${me.proton.sync.LogNames.named(names[e.calendarId])} (" +
+                    (me.proton.sync.LogNames.app(e.writer)?.let { "written by $it" } ?: "no writer recorded") +
+                    "): a calendar another Proton user shared with this account; nothing is sent to Proton until the user chooses"
+            )
+        }
+        if (plan.skipped.isNotEmpty()) {
+            val counts = NewEventHoldStore.counts(prefs, account.name)
+            SyncLog.i(
+                TAG,
+                "Holding ${plan.skipped.size} event(s) out of this upload: ${counts.waiting} waiting for the user's choice, " +
+                    "${counts.kept} kept on this phone"
+            )
+        }
+        for (calId in plan.undecided.map { it.calendarId }.distinct()) {
+            SyncLog.w(
+                TAG,
+                "New events in calendar $calId${me.proton.sync.LogNames.named(names[calId])} wait for the next sync: no member of it is one " +
+                    "of this account's ${userAddresses.size} loaded address(es), so whose calendar it is is not known"
+            )
+            // These rows never reach the upload context, whose own check would ask for the keys again.
+            undecidedInfo[calId]?.let { reloadKeysForUnknownMembership(account, it) }
+        }
+        NewEventHolds.refreshPrompts(
+            context, provider, account, mappedCalendarIds,
+            alertId = plan.newHolds.firstOrNull()?.eventId ?: askAgain.firstOrNull()
+        )
+    }
+
+    /**
+     * Where the parent rows sit, by row id, of the exceptions in [rows] whose upload depends on it
+     * ([NewEventHoldRules.parentCalendarCounts]: made on this phone, in a calendar that holds or is undecided by
+     * [decisions], with this account's [mappedIds]; or live, wherever they sit, with a parent that never reached Proton)
+     * and whose parent is not one of [rows]: for [NewEventHoldRules.plan], which keeps such an exception out when its
+     * parent sits in another calendar, and a date of a parent that never reached Proton while that parent sits in a
+     * calendar shared with this account (owner, 2026-11-22). Read through the plain Events URI, so a parent moved to
+     * another account's calendar counts as elsewhere too, and one in another account of this app as not read
+     * ([NewEventHoldRules.parentCalendar]: whether that calendar is shared with that account is not known here); a parent
+     * that is gone is missing. When the read fails, every such parent gets [NewEventHoldRules.UNREAD_CALENDAR], an id no
+     * calendar has, so those exceptions wait for the next run. Second, the calendars of this account among those
+     * ([NewEventHoldRules.inAccount], from the same read), for the plan's accountCalendars: one without a decision this
+     * run keeps the dates out too (owner, 2026-11-22).
+     */
+    private fun parentCalendarsOf(
+        account: Account,
+        provider: ContentProviderClient,
+        rows: List<NewEventHoldRules.Row>,
+        decisions: Map<Long, NewEventHoldRules.HoldDecision>,
+        mappedIds: Set<Long>
+    ): Pair<Map<Long, Long>, Set<Long>> {
+        val inRun = rows.mapTo(HashSet()) { it.id }
+        val wanted = rows.mapNotNullTo(LinkedHashSet()) { r ->
+            r.originalId?.takeIf { it !in inRun && NewEventHoldRules.parentCalendarCounts(r, decisions, mappedIds) }
+        }
+        if (wanted.isEmpty()) return emptyMap<Long, Long>() to emptySet<Long>()
+        val out = HashMap<Long, Long>()
+        val ofAccount = HashSet<Long>()
+        return try {
+            for (chunk in wanted.chunked(400)) {
+                provider.query(
+                    CalendarContract.Events.CONTENT_URI,
+                    arrayOf(
+                        CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID,
+                        CalendarContract.Events.ACCOUNT_NAME, CalendarContract.Events.ACCOUNT_TYPE
+                    ),
+                    "${CalendarContract.Events._ID} IN (${chunk.joinToString(",") { "?" }})",
+                    chunk.map { it.toString() }.toTypedArray(),
+                    null
+                )?.use { c ->
+                    while (c.moveToNext()) {
+                        out[c.getLong(0)] = NewEventHoldRules.parentCalendar(c.getLong(1), c.getString(2), c.getString(3), account.name, account.type)
+                        if (NewEventHoldRules.inAccount(c.getString(2), c.getString(3), account.name, account.type)) ofAccount.add(c.getLong(1))
+                    }
+                } ?: throw IllegalStateException("no cursor")
+            }
+            out to ofAccount
+        } catch (e: Exception) {
+            SyncLog.w(TAG, "Could not read where ${wanted.size} repeating event(s) sit (${e.javaClass.simpleName}); their changed and cancelled dates wait for the next sync")
+            wanted.associateWith { NewEventHoldRules.UNREAD_CALENDAR } to emptySet<Long>()
+        }
     }
 
     /**
@@ -4593,7 +5980,7 @@ class CalendarSyncAdapter(
         val calendarContexts = mutableMapOf<Long, CalendarUploadContext?>()
         for (androidCalId in uniqueAndroidCalIds) {
             calendarContexts[androidCalId] = try {
-                prepareCalendarUploadContext(account, androidCalId)
+                prepareCalendarUploadContext(account, androidCalId, syncResult)
             } catch (e: Exception) {
                 // Network drops while preparing the upload context (e.g. UnknownHostException
                 // from getCalendars / fetchCalendarKeys) used to silently null out this
@@ -4602,7 +5989,7 @@ class CalendarSyncAdapter(
                 // doPerformSync's hasError() check writes the failure timestamp.
                 SyncLog.e(TAG, "Failed to prepare upload context for androidCalId=$androidCalId: ${e.message}", e)
                 synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
-                SyncUtils.recordSwallowedFailure("calendar", account.name, e.message)
+                SyncUtils.recordSwallowedFailure("calendar", account.name, e.message, e)
                 null
             }
         }
@@ -4641,6 +6028,9 @@ class CalendarSyncAdapter(
             } catch (e: Exception) {
                 SyncLog.e(TAG, "Network error deleting event ${mapping.protonEventId}", e)
                 synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
+                // Counted with no reason, the run read "Sync incomplete", an unexpected error, also when the network
+                // was why. With the exception its cause is named (NetworkCause). The tombstone stays for the next sync.
+                SyncUtils.recordSwallowedFailure("calendar", account.name, "Could not send a deleted event to Proton", e)
                 return
             }
 
@@ -4732,7 +6122,12 @@ class CalendarSyncAdapter(
             if (uploadContext == null) {
                 SyncLog.e(TAG, "Skipping event ${row.androidEventId}: no calendar context for androidCalId=${row.androidCalId}")
             } else {
-                SyncLog.i(TAG, "Local event ${row.androidEventId} modified; uploading to Proton")
+                // A row with no Proton event yet goes up as a create (uploadModifiedEvent decides the same way), and its
+                // line names the app that wrote it, so a third-party insert into the wrong calendar shows in the log. Its
+                // lookup cannot fail the row: a failure only gives the "modified" line (see uploadStartLine).
+                SyncLog.i(TAG, LocalEventOrigin.uploadStartLine(row.androidEventId, row.mutators, uploadContext.displayName) {
+                    calendarEventSyncDao.getByAndroidId(account.name, row.androidEventId)?.protonEventId
+                })
                 try {
                     // The same event can be asked for twice in one run: once as itself, because the user
                     // edited it, and once as the parent carrying a cancelled occurrence's EXDATE. They ran
@@ -4759,7 +6154,7 @@ class CalendarSyncAdapter(
                     // notification says "an unexpected error occurred", while the cause sits one line
                     // above in the log. Every sibling failure path already names its reason.
                     SyncUtils.recordSwallowedFailure(
-                        "calendar", account.name, "Could not upload an event to Proton: ${e.message}"
+                        "calendar", account.name, "Could not upload an event to Proton: ${e.message}", e
                     )
                 }
             }
@@ -4774,7 +6169,8 @@ class CalendarSyncAdapter(
      * when this delete removed it (whoever deleted it elsewhere was offered to tell them by their own
      * client). Refused (2011 or 2026, per operation or as HTTP 400): Proton keeps the event, so it is
      * restored ([restoreRefusedDelete]) instead of its guests being told it is cancelled. Any other
-     * rejection is tried twice more, then restored the same way; an HTTP error is retried next sync.
+     * rejection is tried twice more, then restored the same way; an HTTP error is retried next sync, and
+     * fails the sync with its status where EventDeletionFailures says so ([reportDeletionNotTaken]).
      */
     private suspend fun settleDeleteResponse(
         account: Account,
@@ -4798,6 +6194,7 @@ class CalendarSyncAdapter(
                     }
                     forgetInviteRecords(mapping.protonEventId)
                     clearDeleteRejectionStrikes(deleteStrikeKey(androidEventId, mapping.protonEventId))
+                    forgetEventDeletionRefusals(account.name, androidEventId)
                     calendarEventSyncDao.deleteByProtonId(account.name, mapping.protonEventId)
                     removeTombstone(provider, account, androidEventId)
                     synchronized(syncResult.stats) { syncResult.stats.numDeletes++ }
@@ -4833,8 +6230,9 @@ class CalendarSyncAdapter(
             restoreRefusedDelete(account, provider, mapping, androidEventId, deleteRefusalReason(), syncResult)
         } else {
             SyncLog.e(TAG, "Failed to delete event ${mapping.protonEventId} on Proton (calendar=${mapping.protonCalendarId}): HTTP ${response.code()}${ProtonApiError.describe(errorBody)}")
-            synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
-            // Leave the tombstone: the delete is retried next sync.
+            // Leave the tombstone: the delete is retried next sync. Until 2.2.0 every such answer failed the run with no
+            // reason, so a refusal for good read "unexpected error" at every sync for ever (EventDeletionFailures).
+            reportDeletionNotTaken(account, syncResult, androidEventId, response.code())
         }
     }
 
@@ -4859,6 +6257,8 @@ class CalendarSyncAdapter(
         removeTombstone(provider, account, androidEventId)
         resetCalendarCursor(account, mapping.protonCalendarId)
         clearDeleteRejectionStrikes(deleteStrikeKey(androidEventId, mapping.protonEventId))
+        // No longer a pending deletion: its HTTP refusals go, so the lasting notice no longer names it this run.
+        forgetEventDeletionRefusals(account.name, androidEventId)
         val entry = rejectedEventTitle(title) to reason
         // A series and its edited occurrences are separate rows with one title: name it once.
         gaveUpByAccount[account.name]?.let { list -> synchronized(list) { if (entry !in list) list.add(entry) } }
@@ -4963,7 +6363,76 @@ class CalendarSyncAdapter(
         if (prefs.contains(strikeKey)) prefs.edit().remove(strikeKey).apply()
     }
 
-    /** The strike key of a delete: the row's id while it exists, the Proton id once only the mapping is left. */
+    /**
+     * An event deleted on this phone whose deletion Proton answered with the failure [httpCode] (settleDeleteResponse).
+     * The tombstone stays and the deletion is sent again at the next sync, as before. The run fails with Proton's status
+     * where EventDeletionFailures says so: every time for a status about the connection or the session, and on its first
+     * few syncs only for a refusal of the deletion itself, which is still sent again at every sync but fails no further
+     * run. A request that threw is counted where it is caught (uploadDeletedRow). Off the suspend functions that call it,
+     * for the ART limits.
+     */
+    private fun reportDeletionNotTaken(account: Account, syncResult: SyncResult, androidEventId: Long, httpCode: Int) {
+        val refusals = if (EventDeletionFailures.isRefusal(httpCode)) {
+            EventDeletionFailures.recordRefusal(PreferenceManager.getDefaultSharedPreferences(context), account.name, androidEventId)
+        } else 0
+        if (EventDeletionFailures.failsRun(httpCode, refusals)) {
+            synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
+            SyncUtils.recordSwallowedFailure("calendar", account.name, EventDeletionFailures.reason(httpCode))
+        } else {
+            SyncLog.w(
+                TAG,
+                "Proton refused the deletion of event $androidEventId $refusals times (HTTP $httpCode); it stays pending, " +
+                    "and no longer fails the sync after ${EventDeletionFailures.MAX_REPORTED_REFUSALS}"
+            )
+        }
+    }
+
+    /** Forget the refusals of the deletion of [androidEventId]: Proton took it (EventDeletionFailures). */
+    private fun forgetEventDeletionRefusals(accountName: String, androidEventId: Long) {
+        EventDeletionFailures.forget(PreferenceManager.getDefaultSharedPreferences(context), accountName, androidEventId)
+    }
+
+    /**
+     * Forget the refusals of deletions no longer pending: a deleted row that is not among this upload's rows ([dirtyRows])
+     * is gone, or nobody sends it any more. Its count must not go on to a row a cleared calendar storage gives the same id.
+     */
+    private fun pruneEventDeletionRefusals(accountName: String, dirtyRows: List<DirtyRow>) {
+        val pending = HashSet<Long>()
+        for (row in dirtyRows) if (row.deleted == 1) pending.add(row.androidEventId)
+        EventDeletionFailures.retain(PreferenceManager.getDefaultSharedPreferences(context), accountName) { it in pending }
+    }
+
+    /**
+     * The lasting notice of events deleted on this phone whose deletion Proton refused for good (the third refusal and
+     * on): posted when one joined since an upload last settled it, brought up to date while still shown when one left,
+     * and withdrawn once none is left (EventDeletionFailures.notice, the contacts' rule). Each event is named as the
+     * rejected-events notice names it ([rejectedEventTitle] of the deleted row's title), once per title, as a series and
+     * its edited occurrences share one. What it names is kept at the end, so an upload that stopped between a third
+     * refusal and this step leaves the next one to post it. The deletions stay pending. Titles appear in the
+     * notification only, never in the log. Off the suspend function that calls it, for the ART limits.
+     */
+    private fun noticeRefusedEventDeletions(accountName: String, provider: ContentProviderClient) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val now = EventDeletionFailures.refusedForGood(prefs, accountName)
+        val notice = EventDeletionFailures.notice(EventDeletionFailures.noticedIds(prefs, accountName), now) {
+            SyncNotificationHelper.isEventDeletionsRefusedShown(context, accountName)
+        }
+        if (notice == me.proton.sync.contacts.ContactDeletionFailures.Notice.CANCEL) {
+            SyncNotificationHelper.cancelEventDeletionsRefused(context, accountName)
+        } else if (notice == me.proton.sync.contacts.ContactDeletionFailures.Notice.POST) {
+            SyncNotificationHelper.notifyEventDeletionsRefused(
+                context, accountName, now.sorted().map { rejectedEventTitle(localEventTitle(provider, it)) }.distinct()
+            )
+        }
+        EventDeletionFailures.rememberNoticed(prefs, accountName, now)
+    }
+
+    /**
+     * The strike key of a delete: the row's id while it exists, the Proton id once only the mapping is left. Only the
+     * row's is counted ([bumpDeleteRejectionStrike], an event deleted on the phone). The Proton id's was the deletion
+     * pass's rejection count until 2.2.0, now kept in DeletionPassRefusals: nothing writes or reads it any more, the pass
+     * only clears one 2.1.0 left, and the stale-counter sweep drops it too.
+     */
     private fun deleteStrikeKey(androidEventId: Long?, protonEventId: String): String =
         if (androidEventId != null) "delete_reject_count_$androidEventId" else "delete_reject_count_$protonEventId"
 
@@ -5401,7 +6870,7 @@ class CalendarSyncAdapter(
         SyncLog.e(TAG, "Failed to upload the EXDATE update of parent $parentId", e)
         synchronized(syncResult.stats) { syncResult.stats.numIoExceptions++ }
         SyncUtils.recordSwallowedFailure(
-            "calendar", account.name, "Could not send a deleted occurrence to Proton: ${e.message}"
+            "calendar", account.name, "Could not send a deleted occurrence to Proton: ${e.message}", e
         )
         UploadOutcome.RETRY
     }

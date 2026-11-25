@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Scipeáil féilirí síntiúis/iompórtáilte (m.sh. ó Google)</string>
     <string name="label_expand">Leathnaigh</string>
     <string name="label_display_name">Ainm taispeána</string>
-    <string name="label_event_loop_interval">Eatramh lúb imeachtaí</string>
     <string name="label_fallback_full_sync">Sioncronú iomlán cúltaca</string>
     <string name="label_notify_on_failure">Fógraigh ar theip</string>
     <string name="label_notify_in_progress">Taispeáin fógra le linn sioncronaithe</string>
@@ -120,7 +119,6 @@
     <string name="dialog_label_sync_reason">Cúis: %s</string>
     <string name="dialog_title_past_events">Imeachtaí san am a chuaigh thart</string>
     <string name="dialog_title_future_events">Imeachtaí amach anseo</string>
-    <string name="dialog_title_event_loop_interval">Eatramh lúb imeachtaí</string>
     <string name="dialog_title_contacts_fallback">Sioncronú iomlán cúltaca teagmhálaithe</string>
     <string name="dialog_title_calendar_fallback">Sioncronú iomlán cúltaca féilire</string>
     <string name="dialog_title_remove_account">Bain cuntas</string>
@@ -183,13 +181,17 @@
     <string name="label_sync_queued">Ar feitheamh sioncronaithe</string>
     <string name="notification_action_view_details">Féach ar shonraí</string>
     <string name="error_no_internet">Gan nasc idirlín. Déanfar iarracht arís go huathoibríoch.</string>
+    <string name="error_no_internet_tap_sync">Gan nasc idirlín. Tapáil Sioncronaigh chun triail eile a bhaint as.</string>
     <string name="error_timeout">Níorbh fhéidir an freastalaí a bhaint amach. Seiceáil do nasc idirlín.</string>
     <string name="error_session_expired">Tá do sheisiún éagtha. Sínigh isteach arís le do thoil.</string>
     <string name="error_too_many_requests">An iomarca iarratas. Déanfar iarracht arís níos déanaí.</string>
+    <string name="error_too_many_requests_tap_sync">An iomarca iarratas. Tapáil Sioncronaigh chun triail eile a bhaint as.</string>
     <string name="error_server_error">Earráid fhreastalaí Proton. Déanfar iarracht arís go huathoibríoch.</string>
+    <string name="error_server_error_tap_sync">Earráid fhreastalaí Proton. Tapáil Sioncronaigh chun triail eile a bhaint as.</string>
     <string name="error_request_rejected">Dhiúltaigh an freastalaí don iarratas sioncronaithe.</string>
     <string name="error_ssl">Theip ar nasc slán. Seiceáil do líonra.</string>
     <string name="error_connection_interrupted">Briseadh an nasc. Déanfar iarracht arís.</string>
+    <string name="error_connection_interrupted_tap_sync">Briseadh an nasc. Tapáil Sioncronaigh chun triail eile a bhaint as.</string>
     <string name="error_unexpected">Tharla earráid gan choinne le linn sioncronaithe.</string>
     <string name="notification_channel_auth">Fíordheimhniú</string>
     <string name="notification_channel_auth_description">Fógraí faoi shíniú isteach a bheith ag teastáil</string>
@@ -282,16 +284,16 @@
     <string name="label_info">Tuilleadh eolais</string>
     <string name="info_language_body">Socraíonn sé an teanga a úsáidtear do scáileáin na haipe féin. Leanann „Auto\" teanga chórais do ghutháin. Ní athraíonn sé seo ach comhéadan na haipe, ní aistríonn sé d\'imeachtaí féilire sioncronaithe ná do theagmhálaithe.</string>
     <string name="info_display_name_body">An t-ainm a thaispeántar don chuntas seo i Socruithe Android → Cuntais agus i roghnóirí aipeanna féilire/teagmhálaithe. Níl ann ach lipéad áitiúil; ní dhéanann a athrú difear do do chuntas Proton.\n\nNóta: Déanann Samsung Calendar agus Samsung Contacts neamhaird d\'ainmneacha cuntais saincheaptha agus taispeánann siad a lipéad féin i gcónaí (m.sh. „Proton\"). Seans nach dtaispeánfar an t-ainm a roghnaigh tú ann, is teorannú de chuid Samsung é seo nach féidir linn a athrú. Taispeánann aipeanna eile (Google Calendar/Contacts) go normálta é.</string>
-    <string name="info_event_loop_body">Cé chomh minic is a sheiceálann an aip Proton sa chúlra le haghaidh athruithe cianda ar do theagmhálaithe agus ar do fhéilire. Taispeánann eatraimh níos giorra athruithe níos tapúla ach úsáideann siad níos mó ceallra agus sonraí. Tá sé seo ar leithligh ón sioncronú láimhe, ar féidir leat é a thosú am ar bith leis na cnaipí sioncronaithe.</string>
+    <string name="info_event_loop_body">Cé chomh minic is a sheiceálann an aip Proton sa chúlra le haghaidh athruithe cianda ar do theagmhálaithe agus ar do fhéilire. Ní dhéantar na seiceálacha seo ach fad atá sioncronú uathoibríoch Android ar siúl; fad atá sé múchta, ní tharlaíonn aon sioncronú uaidh féin. Taispeánann eatraimh níos giorra athruithe níos tapúla ach úsáideann siad níos mó ceallra agus sonraí. Tá sé seo ar leithligh ón sioncronú láimhe, ar féidir leat é a thosú am ar bith leis na cnaipí sioncronaithe.</string>
     <string name="info_notify_in_progress_body">Taispeánann sé fógra ciúin leanúnach le linn sioncronaithe, le dul chun cinn beo (scanadh, íoslódáil, díchriptiú). Suíonn sé ag bun an scáth-fhuinneoige fógraí agus ní dhéanann sé fuaim riamh. Múch é más fearr leat go rithfeadh an sioncronú go dofheicthe.</string>
     <string name="info_sync_contacts_body">Nuair atá sé ar siúl, déantar do theagmhálaithe Proton a shioncronú go déthreoch le teagmhálaithe Android: cumasctar athruithe ar gach taobh.\n\nNóta: Taispeánann Samsung Contacts teagmhálaithe faoi lipéad cuntais aonair „Proton contacts\" agus folaíonn sé fotheideal an ríomhphoist do chuntais tríú páirtí cosúil lenár gceann féin, teorannú de chuid Samsung atá códaithe go crua nach féidir linn a athrú. Taispeánann Google Contacts agus formhór na n-aipeanna eile go normálta iad.</string>
-    <string name="info_fallback_full_sync_body">Cé chomh minic is a dhéanann an aip athsheiceáil iomlán in ionad sioncronaithe incriminteach tapa. Gabhann sioncronú iomlán aon rud a d\'fhéadfadh pas incriminteach a chailleadh (m.sh. athruithe a rinneadh as líne) ar chostas níos mó ama agus sonraí. Fág ar an réamhshocrú mura bhfuil amhras ort nach bhfuil míreanna á sioncronú.</string>
+    <string name="info_fallback_full_sync_body">Cé chomh minic is a dhéanann an aip athsheiceáil iomlán in ionad sioncronaithe incriminteach tapa. Ní dhéantar an athsheiceáil seo ach fad atá sioncronú uathoibríoch Android ar siúl. Gabhann sioncronú iomlán aon rud a d\'fhéadfadh pas incriminteach a chailleadh (m.sh. athruithe a rinneadh as líne) ar chostas níos mó ama agus sonraí. Fág ar an réamhshocrú mura bhfuil amhras ort nach bhfuil míreanna á sioncronú.</string>
     <string name="info_notify_on_failure_body">Taispeánann sé fógra má theipeann ar shioncronú (m.sh. earráid líonra nó seisiún éagtha). Tapáil é le haghaidh cúis i ngnáththeanga agus nasc chuig na logaí. Múch é mura dteastaíonn uait fógra a fháil faoi theipeanna sealadacha.</string>
-    <string name="info_sync_calendar_body">Nuair atá sé ar siúl, sioncronaítear do fhéilirí Proton isteach i bhféilire Android, mar sin taispeántar imeachtaí in Google Calendar, Samsung Calendar agus aon aip fhéilire eile. Déthreoch: uaslódáiltear na heagarthóireachtaí a dhéanann tú ar an nguthán ar ais chuig Proton do na féilirí ar leatsa iad.</string>
+    <string name="info_sync_calendar_body">Nuair atá sé ar siúl, sioncronaítear do fhéilirí Proton isteach i bhféilire Android, mar sin taispeántar imeachtaí in Google Calendar, Samsung Calendar agus aon aip fhéilire eile. Déthreoch: uaslódáiltear na heagarthóireachtaí a dhéanann tú ar an nguthán ar ais chuig Proton do gach féilire ar féidir leat é a chur in eagar, lena n-áirítear féilirí a roinneann daoine eile leat.</string>
     <string name="info_include_external_calendars_body">Is féidir le Proton féilirí síntiúis a choinneáil (m.sh. fotha ICS seachtrach) agus féilirí saoire. Tá siad seo inléite amháin ar thaobh Proton. Nuair atá sé múchta, scipeálann an aip iad agus ní shioncronaíonn sé ach do chuid féilirí ineagarthóireachta féin. Cuir ar siúl é más mian leat go ndéanfaí scáthánú ar na féilirí inléite amháin sin chuig do ghuthán freisin.</string>
     <string name="info_sync_mode_body">Sioncronaíonn „Gach imeacht“ stair iomlán d\'fhéilire agus gach imeacht amach anseo, is fearr é más mian leat gach rud a bheith ar do ghuthán (d\'fhéadfadh an chéad sioncronú ar fhéilire mór roinnt nóiméad a thógáil). Coinníonn „Raon saincheaptha“ féilirí móra tapa trí gan ach fuinneog laethanta timpeall an lae inniu a shioncronú: ní íoslódáiltear a n-imeachtaí lasmuigh den fhuinneog, agus fanann imeachtaí atá ar an nguthán seo cheana mura bhfuil „Bain imeachtaí níos sine den ghuthán seo“ ar siúl dá bhféilire. Sioncronaítear féilirí beaga ina n-iomláine i gcónaí.</string>
     <string name="label_trim_old_events">Bain imeachtaí níos sine den ghuthán seo</string>
-    <string name="info_trim_old_events_body">I gcás na bhféilirí a roghnaíonn tú, baintear den ghuthán seo na himeachtaí a chríochnaigh níos mó ná lá roimh thús do raoin, anois agus ag gach sioncronú ina dhiaidh sin. Fanann siad i do chuntas Proton agus ní scriostar aon rud ansin. Déantar cúltacaí de do chuid féilirí féin ó Proton, mar sin tá siad iontu fós; ní dhéantar cúltaca d\'fhéilirí síntiúis ná d\'fhéilirí saoire. Fanann imeacht athfhillteach, lena dhátaí níos luaithe go léir, má leanann sé ar aghaidh isteach i do raon nó mura bhfuil dáta deiridh aige, toisc go gcoinníonn an guthán imeacht athfhillteach mar iontráil amháin. Fanann imeachtaí freisin má tá athruithe orthu nár seoladh chuig Proton fós, nó má cruthaíodh iad nó má rinneadh an t-athrú is déanaí orthu le 7 lá anuas, de réir an leagain díobh atá ar an nguthán seo, seachas de réir an ama a d\'íoslódáil an guthán seo é. Ní féidir ach féilirí atá rómhór le sioncronú ina n-iomláine a roghnú, agus ní bhaintear riamh imeachtaí a thagann i ndiaidh do raoin. Chun imeachtaí a baineadh a fháil ar ais, roghnaigh raon níos faide nó „Gach imeacht“.</string>
+    <string name="info_trim_old_events_body">I gcás na bhféilirí a roghnaíonn tú, baintear den ghuthán seo, ag an gcéad sioncronú eile, na himeachtaí a chríochnaigh níos mó ná lá roimh thús do raoin, agus imeachtaí níos déanaí nuair a bheidh siad chomh sean céanna. Fanann siad i do chuntas Proton agus ní scriostar aon rud ansin. Déantar cúltacaí de do chuid féilirí féin ó Proton, mar sin tá siad iontu fós; ní dhéantar cúltaca d\'fhéilirí síntiúis ná d\'fhéilirí saoire. Fanann imeacht athfhillteach, lena dhátaí níos luaithe go léir, má leanann sé ar aghaidh isteach i do raon nó mura bhfuil dáta deiridh aige, toisc go gcoinníonn an guthán imeacht athfhillteach mar iontráil amháin. Fanann imeachtaí freisin má tá athruithe orthu nár seoladh chuig Proton fós, nó má cruthaíodh iad nó má rinneadh an t-athrú is déanaí orthu le 7 lá anuas, de réir an leagain díobh atá ar an nguthán seo, seachas de réir an ama a d\'íoslódáil an guthán seo é. Ní féidir ach féilirí atá rómhór le sioncronú ina n-iomláine a roghnú, agus ní bhaintear riamh imeachtaí a thagann i ndiaidh do raoin. Chun imeachtaí a baineadh a fháil ar ais, roghnaigh raon níos faide nó „Gach imeacht“.</string>
     <string name="trim_dialog_title">Bain imeachtaí níos sine den ghuthán seo</string>
     <string name="trim_dialog_intro">Roghnaigh na féilirí ar mian leat slacht a chur orthu. Baintear na himeachtaí a chríochnaigh roimh %1$s den ghuthán seo ag an gcéad sioncronú eile, agus imeachtaí níos déanaí nuair a bheidh siad chomh sean céanna. Fanann siad i do chuntas Proton. Fanann imeacht athfhillteach a leanann ar aghaidh i ndiaidh an dáta sin, lena dhátaí go léir.</string>
     <plurals name="trim_calendar_count">
@@ -317,6 +319,41 @@
     </plurals>
     <string name="trim_dialog_save">Sábháil</string>
     <string name="trim_read_failed">Níorbh fhéidir na féilirí ar an nguthán seo a léamh, mar sin níor athraíodh aon rud.</string>
+    <string name="label_default_calendar">Féilire réamhshocraithe</string>
+    <string name="info_default_calendar_body">Téann imeachtaí nua chuig d\'fhéilire réamhshocraithe in Proton, agus marcálann an fón seo mar phríomhfhéilire an chuntais é. Má athraíonn tú anseo é, athraítear in Proton é freisin, mar sin úsáideann Proton ar an ngréasán agus aipeanna Proton an ceann nua, agus is ann a théann na cuirí a fhreagraíonn tú in Proton Mail. Ní féidir ach féilire gníomhach de do chuid féin a roghnú mar réamhshocrú, seachas féilire comhroinnte, féilire síntiúis nó féilire saoire.</string>
+    <string name="default_calendar_connecting">Ag ceangal le Proton…</string>
+    <string name="default_calendar_changed">Athraíodh an féilire réamhshocraithe</string>
+    <string name="default_calendar_unreachable">Níorbh fhéidir teacht ar Proton. Bain triail eile as ar ball.</string>
+    <string name="default_calendar_refused">Níor ghlac Proton leis an athrú, mar sin níor athraíodh aon rud.</string>
+    <string name="default_calendar_none_own">Níl aon fhéilire gníomhach dá chuid féin ag an gcuntas seo ar féidir é a roghnú mar réamhshocrú. Ní féidir féilirí comhroinnte, féilirí síntiúis ná féilirí saoire a roghnú mar réamhshocrú.</string>
+    <string name="default_calendar_incomplete">Níorbh fhéidir gach ceann d\'fhéilirí an chuntais seo a léamh, mar sin ní féidir a fhéilire réamhshocraithe a athrú anseo.</string>
+    <string name="notification_new_event_hold_title">Imeacht nua i bhféilire comhroinnte</string>
+    <string name="notification_new_event_hold_body">Chuir %1$s “%2$s” leis an bhféilire %3$s. D\'fheicfeadh baill eile an fhéilire seo é.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Chuir aip éigin “%1$s” leis an bhféilire %2$s. D\'fheicfeadh baill eile an fhéilire seo é.</string>
+    <string name="action_new_event_move">Bog chuig %1$s</string>
+    <string name="action_new_event_publish">Foilsigh</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d imeacht ag fanacht le do rogha</item>
+        <item quantity="two">%d imeacht ag fanacht le do rogha</item>
+        <item quantity="few">%d imeacht ag fanacht le do rogha</item>
+        <item quantity="many">%d n-imeacht ag fanacht le do rogha</item>
+        <item quantity="other">%d imeacht ag fanacht le do rogha</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d imeacht coinnithe ar an bhfón seo amháin</item>
+        <item quantity="two">%d imeacht coinnithe ar an bhfón seo amháin</item>
+        <item quantity="few">%d imeacht coinnithe ar an bhfón seo amháin</item>
+        <item quantity="many">%d n-imeacht coinnithe ar an bhfón seo amháin</item>
+        <item quantity="other">%d imeacht coinnithe ar an bhfón seo amháin</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d imeacht eile ag fanacht le do rogha</item>
+        <item quantity="two">%d imeacht eile ag fanacht le do rogha</item>
+        <item quantity="few">%d imeacht eile ag fanacht le do rogha</item>
+        <item quantity="many">%d n-imeacht eile ag fanacht le do rogha</item>
+        <item quantity="other">%d imeacht eile ag fanacht le do rogha</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Nuair a chuireann aip nach aip fhéilire í imeacht le féilire a roinn duine éigin leat, fanann an t-imeacht ar an bhfón seo go dtí go roghnóidh tú. Le “Bog”, téann sé chuig d\'fhéilire réamhshocraithe ina ionad sin. Le “Foilsigh”, seoltar chuig an bhféilire comhroinnte é, áit a mbeidh sé le feiceáil ag baill uile an fhéilire. Le “Coinnigh ar an bhfón”, ní sheoltar chuig Proton riamh é: ní bheidh sé i Proton Calendar, ar an ngréasán, ar do ghléasanna eile ná i gcúltacaí na haipe seo, agus caillfear é má bhaineann tú an aip seo nó an cuntas seo. Fanann imeachtaí coinnithe ar liosta ar chárta an chuntais seo, áit ar féidir leat iad a bhogadh nó a fhoilsiú fós.</string>
     <string name="info_sync_range_window_body">Cé mhéad lá roimh an lá inniu agus ina dhiaidh atá le sioncronú nuair atá „Raon saincheaptha\" roghnaithe. Taispeánann fuinneoga níos mó níos mó de do fhéilire ach tógann siad níos faide le sioncronú. Níl aon éifeacht aige sa mhód „Gach imeacht\".</string>
     <string name="info_poll_attendee_body">Nuair atá sé ar siúl, déanann an aip athsheiceáil go tréimhsiúil ar imeachtaí a bhfuil freastalaithe acu chun freagraí glac/diúltaigh/sealadach a aimsiú. Ní thuairiscíonn fotha athruithe Proton athruithe RSVP, mar sin teastaíonn glaonna API breise dó seo, ní fiú é a chumasú ach amháin má bhraitheann tú ar fhreagraí na bhfreastalaithe a fheiceáil ar do ghuthán.</string>
     <string name="info_send_invites_body">Nuair a chuireann tú freastalaithe le himeacht ar do ghuthán, seol cuireadh chucu trí ríomhphost. Múchta de réir réamhshocraithe: cuir ar siúl é ach amháin más mian leat go seolfadh an aip ríomhphoist chuig rannpháirtithe thar do cheann.</string>
@@ -324,7 +361,7 @@
     <string name="info_send_cancellations_body">Seol ríomhphost chuig freastalaithe nuair a scriosann tú imeacht ar tugadh cuireadh dóibh chuige, ionas go mbainfidh a bhféilirí é freisin. Múchta de réir réamhshocraithe.</string>
     <string name="info_invite_subject_title_body">Agus ríomhphoist chuiridh á seoladh, cuir teideal an imeachta i líne ábhair an ríomhphoist ionas go n-aithneoidh faighteoirí láithreach é. Múchta de réir réamhshocraithe ar mhaithe le príobháideacht: níl ábhair ríomhphoist criptithe in iompar caighdeánach poist, mar sin bheadh an teideal le feiceáil ag freastalaithe poist ar feadh an bhealaigh.</string>
     <string name="info_background_sync_body">D\'fhéadfadh Android sioncronú cúlra a chur ar sos chun ceallra a choigilt, rud a d\'fhéadfadh moill a chur ar shioncronú uathoibríoch nó é a stopadh. Coinníonn eisiamh na haipe seo ó optamú ceallra na sioncronuithe sceidealta ag rith go hiontaofa. Úsáid an cnaipe chun socruithe ceallra an chórais don aip a oscailt.</string>
-    <string name="info_verbose_logging_body">Gabhann sé sonraí diagnóiseacha breise (staid fhíordheimhnithe, díghlasáil eochracha, gnéithe inmheánacha sioncronaithe) sa log, cabhrach agus tú ag tuairisciú faidhbe. Cuireann an feidhmchlár cóid ghearra in ionad seoltaí ríomhphoist sa log, ach d\'fhéadfadh ainmneacha cuntas agus féilirí a bheith ann, mar sin ná roinn na logaí ach leis an bhforbróir. Fág múchta le haghaidh gnáthúsáide.</string>
+    <string name="info_verbose_logging_body">Gabhann sé sonraí diagnóiseacha breise (staid fhíordheimhnithe, díghlasáil eochracha, gnéithe inmheánacha sioncronaithe) sa log, cabhrach agus tú ag tuairisciú faidhbe. Fad atá sé ar siúl, bíonn ainmneacha do chuid féilirí agus na n-aipeanna a chuireann imeachtaí leo sa log freisin. Cuireann an feidhmchlár cóid ghearra in ionad seoltaí ríomhphoist sa log, ach d\'fhéadfadh ainmneacha cuntas agus féilirí a bheith ann, mar sin ná roinn na logaí ach leis an bhforbróir. Fág múchta le haghaidh gnáthúsáide.</string>
     <string name="info_file_logging_body">Scríobhann sé logchomhad an fheidhmchláir chuig comhad téacs le stampa ama (sync-for-proton-log-….txt) i bhfillteán a roghnaíonn tú. Seachas sin ní choinníonn an feidhmchlár a logchomhad ach sa chuimhne, mar sin cuir seo ar siúl chun fadhb atá deacair a atháirgeadh a ghabháil. Cruthaítear comhad nua gach uair a thosaíonn an feidhmchlár. Cuireann an feidhmchlár cóid ghearra in ionad seoltaí ríomhphoist sa chomhad, ach d\'fhéadfadh ainmneacha cuntas agus féilirí a bheith ann, mar sin ná roinn é ach leis an bhforbróir. Fág múchta é le haghaidh gnáthúsáide.</string>
     <string name="info_timezone_updates_text">Braitheann amanna imeachtaí ar rialacha criosanna ama, agus athraíonn tíortha na rialacha seo ó am go chéile. Coinníonn Android iad i sonraí criosanna ama an ghutháin, a thagann le nuashonruithe córais. Coinníonn guthán nach bhfaigheann iad a thuilleadh, mar shampla le leagan níos sine de Android nó gan nuashonruithe córais Google Play, na seanrialacha, agus d\'fhéadfadh imeachtaí in áiteanna ar athraíodh a rialacha ó shin a bheith le feiceáil ag an am mícheart.\n\nSonraí criosanna ama ar an nguthán seo: leagan %1$s\n\nNuair atá sé múchta (an réamhshocrú), úsáideann an aip sonraí criosanna ama an ghutháin féin agus ní sheolann sí aon rud chuig www.tzurl.org.\n\nNuair atá sé ar siúl, íoslódálann an aip na rialacha reatha do gach crios ama a úsáideann d\'imeachtaí ó www.tzurl.org, seirbhís tríú páirtí, uair amháin ar a mhéad in aghaidh an chreasa ama gach uair a thosaíonn an aip, agus ní úsáideann sí iad ach amháin má tá siad níos nuaí ná rialacha an ghutháin. Feiceann www.tzurl.org ansin do sheoladh IP agus ainmneacha na gcriosanna ama sin, mar shampla Europe/Berlin. Ní sheoltar aon rud eile faoi d\'imeachtaí ná faoi do chuntais. Mura féidir teacht ar www.tzurl.org, úsáidtear sonraí an ghutháin. Ríomhtar imeachtaí athfhillteacha fós le sonraí an ghutháin.\n\nTar éis athraithe, déantar na himeachtaí atá ar an nguthán cheana a sheiceáil agus a cheartú ag an gcéad sioncronú eile.</string>
     <string name="tz_data_version_unknown">anaithnid</string>
@@ -412,6 +449,8 @@
     <string name="backup_unit_days">lá</string>
     <string name="backup_retention_label">Coinnigh an</string>
     <string name="backup_unit_runs">cúltaca is déanaí</string>
+    <string name="backup_when_auto_sync_off_label">Déan cúltaca fiú nuair atá sioncronú uathoibríoch múchta</string>
+    <string name="info_backup_when_auto_sync_off_body">Stopann an lasc “Uath-shioncronú sonraí” in Android an sioncronú cúlra do gach aip, agus leanann na cúltacaí sceidealta í: fad atá sí múchta, scipeáiltear cúltaca sceidealta, agus luann an scáileán seo é sin faoi bhun an chnaipe “Déan cúltaca anois”. Cuir an rogha seo ar siúl chun na cúltacaí sceidealta a dhéanamh mar sin féin. Íoslódálann gach cúltaca do chuid féilirí agus teagmhálaithe go léir ó Proton, rud a d\'fhéadfadh go leor sonraí móibíleacha a úsáid. Oibríonn “Déan cúltaca anois” i gcónaí.</string>
     <string name="backup_section_contents">Cad atá le cúltacáil</string>
     <string name="backup_include_calendars_label">Féilirí (.ics)</string>
     <string name="backup_include_contacts_label">Teagmhálaithe (.vcf)</string>
@@ -434,6 +473,7 @@
     <string name="backup_running">Ag cúltacáil…</string>
     <string name="backup_last_never">Níl aon chúltaca déanta go fóill.</string>
     <string name="backup_last_run">Cúltaca is déanaí: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Cúltaca sceidealta scipeáilte ar %1$s: tá sioncronú uathoibríoch Android múchta</string>
     <string name="backup_decrypt_action">Díchriptigh cúltaca…</string>
     <string name="backup_decrypt_body">Roghnaigh comhad cúltaca criptithe (.gpg) agus cuir isteach a phasfhocal. Sábhálfar an t-ábhar, díchriptithe, i d\'fhillteán cúltaca.</string>
     <string name="backup_decrypting">Ag díchriptiú…</string>
@@ -506,7 +546,7 @@
     <string name="sfp_group_account">Cuntas</string>
     <string name="sfp_group_contacts">Teagmhálaithe</string>
     <string name="sfp_group_calendar">Féilire</string>
-    <string name="sfp_event_loop_subtitle">Cé chomh minic a sheiceáiltear le haghaidh athruithe cianda</string>
+    <string name="sfp_event_loop_subtitle">Cé chomh minic a sheiceáiltear le haghaidh athruithe cianda fad atá sioncronú uathoibríoch Android ar siúl</string>
     <string name="sfp_show_advanced">Taispeáin roghanna ríomhphoist &amp; ardroghanna</string>
     <string name="sfp_hide_advanced">Folaigh roghanna ríomhphoist &amp; ardroghanna</string>
     <string name="sfp_group_email_attendees">Ríomhphost chuig freastalaithe</string>
@@ -517,6 +557,7 @@
     <string name="sfp_hero_subtitle_ok">Tá gach cuntas cumasaithe cothrom le dáta</string>
     <string name="sfp_hero_subtitle_warn">Tá sioncronú nó síniú isteach ag teastáil ó chuntas amháin nó níos mó</string>
     <string name="sfp_sync_all_now">Sioncronaigh gach rud anois</string>
+    <string name="sfp_auto_sync_off">Tá sioncronú uathoibríoch Android múchta: ní shioncronaítear cuntais ach nuair a thapálann tú Sioncronaigh</string>
     <string name="sfp_tile_logs">Log sioncronaithe</string>
     <string name="sfp_tile_backup">Cúltaca</string>
     <string name="sfp_tile_battery">Ceallra</string>
@@ -555,6 +596,10 @@
     <string name="notification_contacts_too_large_summary">Tá na teagmhálaithe seo ar %1$s rómhór do stóráil teagmhálaithe Android. Fanann siad iomlán in Proton:</string>
     <string name="notification_contacts_too_large_outdated">coimeádann an fón seo leagan níos sine</string>
     <string name="notification_contacts_too_large_missing">níl sé ar an bhfón seo</string>
+    <string name="notification_contacts_delete_refused_title">Níor scriosadh roinnt teagmhálaithe in Proton</string>
+    <string name="notification_contacts_delete_refused_summary">Scriosadh na teagmhálaithe seo ar %1$s den fhón seo, ach dhiúltaigh Proton iad a scriosadh. Tá siad fós in Proton agus ar do ghléasanna eile:</string>
+    <string name="notification_events_delete_refused_title">Níor scriosadh roinnt imeachtaí in Proton</string>
+    <string name="notification_events_delete_refused_summary">Scriosadh na himeachtaí seo ar %1$s den fhón seo, ach dhiúltaigh Proton iad a scriosadh. Tá siad fós in Proton agus ar do ghléasanna eile:</string>
     <string name="notification_conflict_title">Athraíodh an t-imeacht in dhá áit</string>
     <string name="notification_conflict_body">Cuireadh “%1$s” in eagar ar an bhfón seo agus i Proton Calendar. Cén leagan ar mhaith leat a choinneáil?</string>
     <string name="notification_conflict_body_shared">Cuireadh “%1$s” in eagar ar an bhfón seo agus ag %2$s i Proton Calendar. Má choinníonn tú do leagan féin, cuirfear a leagan sin in ionad.</string>

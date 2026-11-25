@@ -236,7 +236,17 @@ object ImportManager {
         }
         // The backup carries every account's intervals and fallback switches, skipped ones included,
         // and they were written after provisioning armed anything.
-        if (settingsRestored) SyncScheduling.reconcileAll(context)
+        if (settingsRestored) {
+            SyncScheduling.reconcileAll(context)
+            // And the calendar range and external calendars switch of accounts already on this phone, which only a
+            // calendar sync applies. The provisioned ones get their first syncs below; the background rule decides
+            // whether a request goes out at all.
+            val stayed = AccountManager.get(context).getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
+                .map { it.name }.filter { it !in provisioned }
+            for (name in SyncScheduling.accountsWithRestoredCalendarSettings(payload.settings.keys, stayed)) {
+                SyncScheduling.requestSettingsSync(context, Account(name, ProtonSyncApp.ACCOUNT_TYPE), "restored settings")
+            }
+        }
 
         // Now that settings (intervals, modes…) are in place, kick an initial sync per account. Only
         // while the subscription lets sync run, because the gate drops them otherwise: BackupFlowController
@@ -246,7 +256,7 @@ object ImportManager {
             for (name in provisioned) {
                 val account = Account(name, ProtonSyncApp.ACCOUNT_TYPE)
                 val abAccount = Account(name, ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
-                AccountProvisioner.requestImmediateSync(account, abAccount)
+                AccountProvisioner.requestImmediateSync(context, account, abAccount)
             }
         } else if (provisioned.isNotEmpty()) {
             SyncLog.i(TAG, "Import: first sync of ${provisioned.size} account(s) waits for the subscription; it is requested when the subscription turns active")

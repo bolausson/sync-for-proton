@@ -109,22 +109,6 @@ class SyncPreferencesTest {
     }
 
     @Test
-    fun eventLoopIdKey_formatsCorrectly() {
-        assertEquals(
-            "event_loop_id_user@example.com",
-            SyncPreferences.eventLoopIdKey("user@example.com")
-        )
-    }
-
-    @Test
-    fun calendarSettingsDirtyKey_formatsCorrectly() {
-        assertEquals(
-            "calendar_settings_dirty_user@example.com",
-            SyncPreferences.calendarSettingsDirtyKey("user@example.com")
-        )
-    }
-
-    @Test
     fun defaultPastDays_is180() {
         assertEquals(180L, SyncPreferences.DEFAULT_PAST_DAYS)
     }
@@ -134,8 +118,9 @@ class SyncPreferencesTest {
         assertEquals(365L, SyncPreferences.DEFAULT_FUTURE_DAYS)
     }
 
-    // ---- Fallback / event loop interval keys (v1.3.x) ----
+    // ---- Sync interval and fallback keys (v1.3.x) ----
 
+    /** The sync interval, named after the removed event loop: the key must not change, every settings backup carries it. */
     @Test
     fun eventLoopIntervalKey_formatsCorrectly() {
         assertEquals(

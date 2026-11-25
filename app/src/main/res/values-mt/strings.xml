@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Aqbeż kalendarji abbonati/importati (eż. minn Google)</string>
     <string name="label_expand">Espandi</string>
     <string name="label_display_name">Isem tal-wiri</string>
-    <string name="label_event_loop_interval">Intervall taċ-ċiklu tal-avvenimenti</string>
     <string name="label_fallback_full_sync">Sinkronizzazzjoni sħiħa ta\' riżerva</string>
     <string name="label_notify_on_failure">Avża meta jkun hemm żball</string>
     <string name="label_notify_in_progress">Uri notifika waqt is-sinkronizzazzjoni</string>
@@ -120,7 +119,6 @@
     <string name="dialog_label_sync_reason">Raġuni: %s</string>
     <string name="dialog_title_past_events">Avvenimenti passati</string>
     <string name="dialog_title_future_events">Avvenimenti futuri</string>
-    <string name="dialog_title_event_loop_interval">Intervall taċ-ċiklu tal-avvenimenti</string>
     <string name="dialog_title_contacts_fallback">Sinkronizzazzjoni sħiħa ta\' riżerva tal-kuntatti</string>
     <string name="dialog_title_calendar_fallback">Sinkronizzazzjoni sħiħa ta\' riżerva tal-kalendarju</string>
     <string name="dialog_title_remove_account">Neħħi l-kont</string>
@@ -183,13 +181,17 @@
     <string name="label_sync_queued">Fil-kju għas-sinkronizzazzjoni</string>
     <string name="notification_action_view_details">Ara d-Dettalji</string>
     <string name="error_no_internet">M\'hemmx konnessjoni tal-internet. Is-sinkronizzazzjoni terġa\' tipprova awtomatikament.</string>
+    <string name="error_no_internet_tap_sync">M\'hemmx konnessjoni tal-internet. Agħfas Sinkronizza biex terġa\' tipprova.</string>
     <string name="error_timeout">Ma setgħetx tilħaq is-server. Iċċekkja l-konnessjoni tal-internet tiegħek.</string>
     <string name="error_session_expired">Is-sessjoni tiegħek skadiet. Jekk jogħġbok erġa\' idħol.</string>
     <string name="error_too_many_requests">Wisq talbiet. Is-sinkronizzazzjoni terġa\' tipprova iktar tard.</string>
+    <string name="error_too_many_requests_tap_sync">Wisq talbiet. Agħfas Sinkronizza biex terġa\' tipprova.</string>
     <string name="error_server_error">Żball fis-server Proton. Is-sinkronizzazzjoni terġa\' tipprova awtomatikament.</string>
+    <string name="error_server_error_tap_sync">Żball fis-server Proton. Agħfas Sinkronizza biex terġa\' tipprova.</string>
     <string name="error_request_rejected">It-talba tas-sinkronizzazzjoni ġiet irrifjutata mis-server.</string>
     <string name="error_ssl">Il-konnessjoni sigura falliet. Iċċekkja n-netwerk tiegħek.</string>
     <string name="error_connection_interrupted">Il-konnessjoni ġiet interrotta. Is-sinkronizzazzjoni terġa\' tipprova.</string>
+    <string name="error_connection_interrupted_tap_sync">Il-konnessjoni ġiet interrotta. Agħfas Sinkronizza biex terġa\' tipprova.</string>
     <string name="error_unexpected">Is-sinkronizzazzjoni ltaqgħet ma\' żball mhux mistenni.</string>
     <string name="notification_channel_auth">Awtentikazzjoni</string>
     <string name="notification_channel_auth_description">Notifiki meta jkun meħtieġ li tidħol</string>
@@ -282,16 +284,16 @@
     <string name="label_info">Aktar informazzjoni</string>
     <string name="info_language_body">Tissettja l-lingwa użata għall-iskrins ta\' din l-app stess. „Auto\" issegwi l-lingwa tas-sistema tat-telefon tiegħek. Dan ibiddel biss l-interface tal-app, ma jittraduċix l-avvenimenti tal-kalendarju jew il-kuntatti sinkronizzati tiegħek.</string>
     <string name="info_display_name_body">L-isem muri għal dan il-kont f\'Settings ta\' Android → Kontijiet u fil-pickers tal-apps tal-kalendarju/kuntatti. Hija biss tikketta lokali; il-bidla tagħha ma taffettwax il-kont Proton tiegħek.\n\nNota: Samsung Calendar u Samsung Contacts jinjoraw l-ismijiet tal-kontijiet personalizzati u dejjem juru t-tikketta tagħhom stess (eż. „Proton\"). L-isem li tagħżel jista\' ma jidhirx hemm, dan huwa limitazzjoni ta\' Samsung li ma nistgħux nibdlu. Apps oħra (Google Calendar/Contacts) jurih normalment.</string>
-    <string name="info_event_loop_body">Kemm-il darba l-app tiċċekkja lil Proton fl-isfond għal bidliet remoti fil-kuntatti u l-kalendarju tiegħek. Intervalli iqsar juru l-bidliet aktar malajr iżda jużaw aktar batterija u data. Dan huwa separat mis-sinkronizzazzjoni manwali, li tista\' tagħti bidu għaliha fi kwalunkwe ħin bil-buttuni tas-sinkronizzazzjoni.</string>
+    <string name="info_event_loop_body">Kemm-il darba l-app tiċċekkja lil Proton fl-isfond għal bidliet remoti fil-kuntatti u l-kalendarju tiegħek. Dawn il-verifiki jsiru biss dment li s-sinkronizzazzjoni awtomatika ta\' Android tkun mixgħula; meta tkun mitfija, xejn ma jissinkronizza waħdu. Intervalli iqsar juru l-bidliet aktar malajr iżda jużaw aktar batterija u data. Dan huwa separat mis-sinkronizzazzjoni manwali, li tista\' tagħti bidu għaliha fi kwalunkwe ħin bil-buttuni tas-sinkronizzazzjoni.</string>
     <string name="info_notify_in_progress_body">Turi notifika silenzjuża u kontinwa waqt li tkun għaddejja sinkronizzazzjoni, bi progress dirett (skennjar, tniżżil, dekriptazzjoni). Tinsab fil-qiegħ tal-pannell tan-notifiki u qatt ma tagħmel ħoss. Itfiha jekk tippreferi li s-sinkronizzazzjoni ssir b\'mod inviżibbli.</string>
     <string name="info_sync_contacts_body">Meta mixgħula, il-kuntatti Proton tiegħek jissinkronizzaw f\'żewġ direzzjonijiet mal-kuntatti ta\' Android: il-bidliet fuq iż-żewġ naħat jiġu mgħaqqda.\n\nNota: Samsung Contacts juri l-kuntatti taħt tikketta waħda tal-kont „Proton contacts\" u jaħbi s-sottotitlu tal-email għal kontijiet ta\' partijiet terzi bħal tagħna, limitazzjoni ta\' Samsung ikkowdjata b\'mod fiss li ma nistgħux nibdlu. Google Contacts u l-biċċa l-kbira tal-apps l-oħra jurawhom normalment.</string>
-    <string name="info_fallback_full_sync_body">Kemm-il darba l-app tagħmel verifika mill-ġdid kompluta minflok sinkronizzazzjoni inkrementali mgħaġġla. Sinkronizzazzjoni sħiħa taqbad kull ħaġa li passaġġ inkrementali jista\' jitlef (eż. bidliet li saru offline) bi prezz ta\' aktar ħin u data. Ħalliha fuq il-valur prestabbilit sakemm ma tissuspettax li l-elementi mhumiex jiġu sinkronizzati.</string>
+    <string name="info_fallback_full_sync_body">Kemm-il darba l-app tagħmel verifika mill-ġdid kompluta minflok sinkronizzazzjoni inkrementali mgħaġġla. Il-verifika sħiħa ssir biss dment li s-sinkronizzazzjoni awtomatika ta\' Android tkun mixgħula. Sinkronizzazzjoni sħiħa taqbad kull ħaġa li passaġġ inkrementali jista\' jitlef (eż. bidliet li saru offline) bi prezz ta\' aktar ħin u data. Ħalliha fuq il-valur prestabbilit sakemm ma tissuspettax li l-elementi mhumiex jiġu sinkronizzati.</string>
     <string name="info_notify_on_failure_body">Turi notifika jekk sinkronizzazzjoni tfalli (eż. żball tan-netwerk jew sessjoni skaduta). Ikklikkjaha għal raġuni b\'lingwaġġ sempliċi u link għal-logs. Itfiha jekk ma tridx tiġi avżat dwar fallimenti temporanji.</string>
-    <string name="info_sync_calendar_body">Meta mixgħula, il-kalendarji Proton tiegħek jissinkronizzaw mal-kalendarju ta\' Android, biex l-avvenimenti jidhru f\'Google Calendar, Samsung Calendar u kwalunkwe app oħra tal-kalendarju. F\'żewġ direzzjonijiet: l-editjar li tagħmel fuq it-telefon jittella\' lura fuq Proton għall-kalendarji li huma tiegħek.</string>
+    <string name="info_sync_calendar_body">Meta mixgħula, il-kalendarji Proton tiegħek jissinkronizzaw mal-kalendarju ta\' Android, biex l-avvenimenti jidhru f\'Google Calendar, Samsung Calendar u kwalunkwe app oħra tal-kalendarju. F\'żewġ direzzjonijiet: l-editjar li tagħmel fuq it-telefon jittella\' lura fuq Proton għal kull kalendarju li tista\' teditja, inklużi l-kalendarji li oħrajn jaqsmu miegħek.</string>
     <string name="info_include_external_calendars_body">Proton jista\' jżomm kalendarji abbonati (eż. feed ICS estern) u kalendarji tal-vaganzi. Dawn huma għall-qari biss fuq in-naħa ta\' Proton. Meta mitfija, l-app taqbiżhom u tissinkronizza biss il-kalendarji editabbli tiegħek stess. Ixegħel jekk trid li dawk il-kalendarji għall-qari biss jiġu mirrurjati wkoll fuq it-telefon tiegħek.</string>
     <string name="info_sync_mode_body">„L-avvenimenti kollha“ jissinkronizza l-istorja kollha tal-kalendarju tiegħek u l-avvenimenti futuri kollha, l-aħjar jekk trid kollox fuq it-telefon tiegħek (l-ewwel sinkronizzazzjoni ta\' kalendarju kbir tista\' tieħu diversi minuti). „Firxa personalizzata“ żżomm kalendarji kbar mgħaġġla billi tissinkronizza biss tieqa ta\' jiem madwar illum: l-avvenimenti tagħhom barra t-tieqa ma jitniżżlux, u dawk li diġà jinsabu f\'dan it-telefon jibqgħu, ħlief jekk „Neħħi avvenimenti qodma minn dan it-telefon“ ikun mixgħul għall-kalendarju tagħhom. Il-kalendarji żgħar dejjem jissinkronizzaw sħaħ.</string>
     <string name="label_trim_old_events">Neħħi avvenimenti qodma minn dan it-telefon</string>
-    <string name="info_trim_old_events_body">Għall-kalendarji li tagħżel, l-avvenimenti li spiċċaw aktar minn jum qabel ma tibda l-firxa tiegħek jitneħħew minn dan it-telefon, issa u fis-sinkronizzazzjonijiet ta\' wara. Jibqgħu fil-kont Proton tiegħek u hemmhekk ma jitħassar xejn. Il-kopji ta\' riżerva tal-kalendarji tiegħek stess isiru minn Proton, għalhekk xorta jinkludu dawn l-avvenimenti; ma jsirux kopji ta\' riżerva tal-kalendarji abbonati u ta\' dawk tal-vaganzi. Avveniment rikorrenti jibqa\', bid-dati preċedenti kollha tiegħu, dment li jkompli sal-firxa tiegħek jew m\'għandux data tat-tmiem, għax it-telefon iżomm avveniment rikorrenti bħala entrata waħda. L-avvenimenti li għandhom bidliet li għadhom ma ntbagħtux lil Proton jibqgħu wkoll, u l-istess jgħodd għal dawk li nħolqu jew inbidlu fl-aħħar 7 ijiem, skont il-verżjoni tagħhom fuq dan it-telefon u mhux skont meta dan it-telefon niżżilha. Jistgħu jintgħażlu biss kalendarji kbar wisq biex jissinkronizzaw sħaħ, u l-avvenimenti wara l-firxa tiegħek qatt ma jitneħħew. Biex tirkupra l-avvenimenti mneħħija, agħżel firxa itwal jew „L-avvenimenti kollha“.</string>
+    <string name="info_trim_old_events_body">Għall-kalendarji li tagħżel, l-avvenimenti li spiċċaw aktar minn jum qabel ma tibda l-firxa tiegħek jitneħħew minn dan it-telefon fis-sinkronizzazzjoni li jmiss, u dawk ta\' wara meta jsiru qodma daqshekk. Jibqgħu fil-kont Proton tiegħek u hemmhekk ma jitħassar xejn. Il-kopji ta\' riżerva tal-kalendarji tiegħek stess isiru minn Proton, għalhekk xorta jinkludu dawn l-avvenimenti; ma jsirux kopji ta\' riżerva tal-kalendarji abbonati u ta\' dawk tal-vaganzi. Avveniment rikorrenti jibqa\', bid-dati preċedenti kollha tiegħu, dment li jkompli sal-firxa tiegħek jew m\'għandux data tat-tmiem, għax it-telefon iżomm avveniment rikorrenti bħala entrata waħda. L-avvenimenti li għandhom bidliet li għadhom ma ntbagħtux lil Proton jibqgħu wkoll, u l-istess jgħodd għal dawk li nħolqu jew inbidlu fl-aħħar 7 ijiem, skont il-verżjoni tagħhom fuq dan it-telefon u mhux skont meta dan it-telefon niżżilha. Jistgħu jintgħażlu biss kalendarji kbar wisq biex jissinkronizzaw sħaħ, u l-avvenimenti wara l-firxa tiegħek qatt ma jitneħħew. Biex tirkupra l-avvenimenti mneħħija, agħżel firxa itwal jew „L-avvenimenti kollha“.</string>
     <string name="trim_dialog_title">Neħħi avvenimenti qodma minn dan it-telefon</string>
     <string name="trim_dialog_intro">Agħżel il-kalendarji li trid tnaddaf. L-avvenimenti li spiċċaw qabel %1$s jitneħħew minn dan it-telefon fis-sinkronizzazzjoni li jmiss, u dawk ta\' wara meta jsiru qodma daqshekk. Jibqgħu fil-kont Proton tiegħek. Avveniment rikorrenti li jkompli wara dik id-data jibqa\', bid-dati kollha tiegħu.</string>
     <plurals name="trim_calendar_count">
@@ -317,6 +319,41 @@
     </plurals>
     <string name="trim_dialog_save">Salva</string>
     <string name="trim_read_failed">Il-kalendarji fuq dan it-telefon ma setgħux jinqraw, għalhekk ma nbidel xejn.</string>
+    <string name="label_default_calendar">Kalendarju prestabbilit</string>
+    <string name="info_default_calendar_body">L-avvenimenti ġodda jmorru fil-kalendarju prestabbilit tiegħek fi Proton, u dan it-telefon jimmarkah bħala l-kalendarju ewlieni tal-kont. Jekk tibdlu hawn, jinbidel fi Proton ukoll, għalhekk Proton fuq il-web u l-apps ta\' Proton jużaw il-ġdid, u l-istediniet li twieġeb f\'Proton Mail imorru fih. Il-kalendarju prestabbilit jista\' jkun biss kalendarju attiv tiegħek stess, mhux wieħed kondiviż, abbonat jew tal-vaganzi.</string>
+    <string name="default_calendar_connecting">Qed jikkonnettja ma\' Proton…</string>
+    <string name="default_calendar_changed">Il-kalendarju prestabbilit inbidel</string>
+    <string name="default_calendar_unreachable">Proton ma setax jintlaħaq. Erġa\' pprova fi ftit mumenti.</string>
+    <string name="default_calendar_refused">Proton ma aċċettax il-bidla, għalhekk ma nbidel xejn.</string>
+    <string name="default_calendar_none_own">Dan il-kont m\'għandu l-ebda kalendarju attiv tiegħu stess li jista\' jkun il-kalendarju prestabbilit. Il-kalendarji kondiviżi, abbonati u tal-vaganzi ma jistgħux ikunu l-kalendarju prestabbilit.</string>
+    <string name="default_calendar_incomplete">Mhux il-kalendarji kollha ta\' dan il-kont setgħu jinqraw, għalhekk il-kalendarju prestabbilit tiegħu ma jistax jinbidel hawn.</string>
+    <string name="notification_new_event_hold_title">Avveniment ġdid f\'kalendarju kondiviż</string>
+    <string name="notification_new_event_hold_body">L-app %1$s żiedet “%2$s” fil-kalendarju %3$s. Jekk jintbagħat, il-membri l-oħra ta\' dan il-kalendarju jarawh.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Xi app żiedet “%1$s” fil-kalendarju %2$s. Jekk jintbagħat, il-membri l-oħra ta\' dan il-kalendarju jarawh.</string>
+    <string name="action_new_event_move">Ċaqlaq għal %1$s</string>
+    <string name="action_new_event_publish">Ippubblika</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d avveniment qed jistenna l-għażla tiegħek</item>
+        <item quantity="two">%d avvenimenti qed jistennew l-għażla tiegħek</item>
+        <item quantity="few">%d avvenimenti qed jistennew l-għażla tiegħek</item>
+        <item quantity="many">%d avveniment qed jistennew l-għażla tiegħek</item>
+        <item quantity="other">%d avveniment qed jistennew l-għażla tiegħek</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d avveniment jinżamm biss fuq dan it-telefon</item>
+        <item quantity="two">%d avvenimenti jinżammu biss fuq dan it-telefon</item>
+        <item quantity="few">%d avvenimenti jinżammu biss fuq dan it-telefon</item>
+        <item quantity="many">%d avveniment jinżammu biss fuq dan it-telefon</item>
+        <item quantity="other">%d avveniment jinżammu biss fuq dan it-telefon</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d avveniment aktar qed jistenna l-għażla tiegħek</item>
+        <item quantity="two">%d avvenimenti aktar qed jistennew l-għażla tiegħek</item>
+        <item quantity="few">%d avvenimenti aktar qed jistennew l-għażla tiegħek</item>
+        <item quantity="many">%d avveniment aktar qed jistennew l-għażla tiegħek</item>
+        <item quantity="other">%d avveniment aktar qed jistennew l-għażla tiegħek</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Meta app li mhix app tal-kalendarju żżid avveniment f\'kalendarju li xi ħadd qasmu miegħek, l-avveniment jistenna fuq dan it-telefon sakemm tagħżel. B\'“Ċaqlaq” l-avveniment imur fil-kalendarju prestabbilit tiegħek minflok. B\'“Ippubblika” jintbagħat lill-kalendarju kondiviż, fejn jistgħu jarawh dawk kollha li jaqsmuh. B\'“Żomm fuq it-telefon” qatt ma jintbagħat lil Proton: ma jkunx fi Proton Calendar, fuq il-web, fuq l-apparati l-oħra tiegħek jew fil-kopji ta\' riżerva ta\' din l-app, u jintilef jekk tneħħi din l-app jew dan il-kont. L-avvenimenti miżmuma jibqgħu fil-lista fuq il-karta ta\' dan il-kont, fejn xorta tista\' tċaqlaqhom jew tippubblikahom.</string>
     <string name="info_sync_range_window_body">Kemm-il jum qabel u wara llum għandhom jiġu sinkronizzati meta tkun magħżula „Firxa personalizzata\". Twieqi ikbar juru aktar mill-kalendarju tiegħek iżda jieħdu aktar ħin biex jissinkronizzaw. Ma għandha l-ebda effett fil-mod „L-avvenimenti kollha\".</string>
     <string name="info_poll_attendee_body">Meta mixgħula, l-app tiċċekkja mill-ġdid perjodikament l-avvenimenti li għandhom parteċipanti biex tinduna bit-tweġibiet aċċetta/irrifjuta/proviżorju. Il-feed tal-bidliet ta\' Proton ma jirrappurtax il-bidliet tal-RSVP, għalhekk dan jeħtieġ sejħiet API addizzjonali, jiswa li tixegħlu biss jekk tiddependi milli tara t-tweġibiet tal-parteċipanti fuq it-telefon tiegħek.</string>
     <string name="info_send_invites_body">Meta żżid parteċipanti ma\' avveniment fuq it-telefon tiegħek, ibgħatilhom stedina bl-email. Mitfi b\'mod prestabbilit: ixegħel biss jekk trid li l-app tibgħat emails lill-parteċipanti f\'ismek.</string>
@@ -324,7 +361,7 @@
     <string name="info_send_cancellations_body">Ibgħat email lill-parteċipanti meta tħassar avveniment li huma mistiedna għalih, biex il-kalendarji tagħhom ineħħuh ukoll. Mitfi b\'mod prestabbilit.</string>
     <string name="info_invite_subject_title_body">Meta tibgħat emails ta\' stedina, poġġi t-titlu tal-avveniment fil-linja tas-suġġett tal-email biex ir-riċevituri jagħrfuh minnufih. Mitfi b\'mod prestabbilit għall-privatezza: is-suġġetti tal-email mhumiex kriptati fit-trasport standard tal-posta, għalhekk it-titlu jkun viżibbli għas-servers tal-email tul ir-rotta.</string>
     <string name="info_background_sync_body">Android jista\' jwaqqaf temporanjament is-sinkronizzazzjoni fl-isfond biex jiffranka l-batterija, li tista\' ddewwem jew twaqqaf is-sinkronizzazzjoni awtomatika. L-esklużjoni ta\' din l-app mill-ottimizzazzjoni tal-batterija żżomm is-sinkronizzazzjonijiet skedati jaħdmu b\'mod affidabbli. Uża l-buttuna biex tiftaħ is-settings tal-batterija tas-sistema għall-app.</string>
-    <string name="info_verbose_logging_body">Jaqbad dettalji djanjostiċi addizzjonali (status tal-awtentikazzjoni, qlugħ taċ-ċwievet, partijiet interni tas-sinkronizzazzjoni) fil-log, utli meta tirrapporta problema. L-app tissostitwixxi l-indirizzi tal-email fih b\'kodiċijiet qosra, iżda l-log jista\' jinkludi ismijiet tal-kontijiet u tal-kalendarji, għalhekk aqsam il-logs biss mal-iżviluppatur. Ħalliha mitfija għall-użu normali.</string>
+    <string name="info_verbose_logging_body">Jaqbad dettalji djanjostiċi addizzjonali (status tal-awtentikazzjoni, qlugħ taċ-ċwievet, partijiet interni tas-sinkronizzazzjoni) fil-log, utli meta tirrapporta problema. Meta tkun mixgħula, il-log juri wkoll l-ismijiet tal-kalendarji tiegħek u tal-apps li jżidu avvenimenti fihom. L-app tissostitwixxi l-indirizzi tal-email fil-log b\'kodiċijiet qosra, iżda jista\' jinkludi ismijiet tal-kontijiet u tal-kalendarji, għalhekk aqsam il-logs biss mal-iżviluppatur. Ħalliha mitfija għall-użu normali.</string>
     <string name="info_file_logging_body">Jikteb ir-reġistru tal-app f\'fajl tat-test bit-timestamp (sync-for-proton-log-….txt) f\'folder li tagħżel int. Inkella l-app iżżomm ir-reġistru fil-memorja biss, mela ixgħel dan biex taqbad problema diffiċli biex terġa\' sseħħ. Jinħoloq fajl ġdid kull darba li tibda l-app. L-app tissostitwixxi l-indirizzi tal-email fih b\'kodiċijiet qosra, iżda l-fajl jista\' jkun fih ismijiet tal-kontijiet u tal-kalendarji, mela aqsmu biss mal-iżviluppatur. Ħallih mitfi għall-użu normali.</string>
     <string name="info_timezone_updates_text">Il-ħinijiet tal-avvenimenti jiddependu fuq ir-regoli taż-żoni tal-ħin, u l-pajjiżi jibdlu dawn ir-regoli minn żmien għal żmien. Android iżommhom fid-data taż-żoni tal-ħin tat-telefon, li tasal mal-aġġornamenti tas-sistema. Telefon li ma jibqax jirċevihom, pereżempju b\'verżjoni eqdem ta\' Android jew mingħajr aġġornamenti tas-sistema ta\' Google Play, iżomm ir-regoli l-qodma, u avvenimenti f\'postijiet li r-regoli tagħhom inbidlu minn dakinhar jistgħu jidhru fil-ħin il-ħażin.\n\nData taż-żoni tal-ħin fuq dan it-telefon: verżjoni %1$s\n\nMeta mitfija (l-issettjar awtomatiku), l-app tuża d-data taż-żoni tal-ħin tat-telefon innifsu u ma tibgħat xejn lil www.tzurl.org.\n\nMeta mixgħula, l-app tniżżel ir-regoli attwali għal kull żona tal-ħin li jużaw l-avvenimenti tiegħek minn www.tzurl.org, servizz ta\' parti terza, mhux aktar minn darba għal kull żona tal-ħin kull darba li tibda l-app, u tużahom biss jekk ikunu aktar ġodda minn dawk tat-telefon. Imbagħad www.tzurl.org jara l-indirizz IP tiegħek u l-ismijiet ta\' dawk iż-żoni tal-ħin, pereżempju Europe/Berlin. Ma jintbagħat xejn aktar dwar l-avvenimenti jew il-kontijiet tiegħek. Jekk www.tzurl.org ma jkunx jista\' jintlaħaq, tintuża d-data tat-telefon. L-avvenimenti rikorrenti xorta jiġu kkalkulati bid-data tat-telefon.\n\nWara bidla, l-avvenimenti li diġà jinsabu fuq it-telefon jiġu ċċekkjati u kkoreġuti fis-sinkronizzazzjoni li jmiss.</string>
     <string name="tz_data_version_unknown">mhux magħrufa</string>
@@ -412,6 +449,8 @@
     <string name="backup_unit_days">jiem</string>
     <string name="backup_retention_label">Żomm l-aħħar</string>
     <string name="backup_unit_runs">backups</string>
+    <string name="backup_when_auto_sync_off_label">Ħu backup anke meta s-sinkronizzazzjoni awtomatika tkun mitfija</string>
+    <string name="info_backup_when_auto_sync_off_body">L-iswiċċ “Auto sync data” ta\' Android iwaqqaf is-sinkronizzazzjoni fl-isfond għall-apps kollha, u l-backups skedati jsegwuh: meta jkun mitfi, backup skedat jinqabeż, u dan l-iskrin jgħid hekk taħt “Ħu backup issa”. Ixgħel din l-għażla biex il-backups skedati jsiru xorta waħda. Kull backup iniżżel il-kalendarji u l-kuntatti kollha tiegħek minn Proton, u dan jista\' juża ħafna data mobbli. “Ħu backup issa” dejjem jaħdem.</string>
     <string name="backup_section_contents">X\'għandu jiġi backed up</string>
     <string name="backup_include_calendars_label">Kalendarji (.ics)</string>
     <string name="backup_include_contacts_label">Kuntatti (.vcf)</string>
@@ -434,6 +473,7 @@
     <string name="backup_running">Qed jieħu backup…</string>
     <string name="backup_last_never">Għadu l-ebda backup.</string>
     <string name="backup_last_run">L-aħħar backup: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Backup skedat inqabeż fi %1$s: is-sinkronizzazzjoni awtomatika ta\' Android mitfija</string>
     <string name="backup_decrypt_action">Iddekripta backup…</string>
     <string name="backup_decrypt_body">Agħżel fajl ta\' backup ikkriptat (.gpg) u daħħal il-password tiegħu. Il-kontenut jiġi ssejvjat, dekriptat, fil-folder tal-backup tiegħek.</string>
     <string name="backup_decrypting">Qed jiddekripta…</string>
@@ -505,7 +545,7 @@
     <string name="sfp_group_account">Kont</string>
     <string name="sfp_group_contacts">Kuntatti</string>
     <string name="sfp_group_calendar">Kalendarju</string>
-    <string name="sfp_event_loop_subtitle">Kemm-il darba tfittex bidliet remoti</string>
+    <string name="sfp_event_loop_subtitle">Kemm-il darba tfittex bidliet remoti dment li s-sinkronizzazzjoni awtomatika ta\' Android tkun mixgħula</string>
     <string name="sfp_show_advanced">Uri l-email u l-għażliet avvanzati</string>
     <string name="sfp_hide_advanced">Aħbi l-email u l-għażliet avvanzati</string>
     <string name="sfp_group_email_attendees">Email lill-parteċipanti</string>
@@ -516,6 +556,7 @@
     <string name="sfp_hero_subtitle_ok">Il-kontijiet attivati kollha huma aġġornati</string>
     <string name="sfp_hero_subtitle_warn">Kont wieħed jew aktar jeħtieġ sinkronizzazzjoni jew dħul</string>
     <string name="sfp_sync_all_now">Sinkronizza kollox issa</string>
+    <string name="sfp_auto_sync_off">Is-sinkronizzazzjoni awtomatika ta\' Android mitfija: il-kontijiet jissinkronizzaw biss meta tagħfas Sinkronizza</string>
     <string name="sfp_tile_logs">Log tas-sinkronizzazzjoni</string>
     <string name="sfp_tile_backup">Backup</string>
     <string name="sfp_tile_battery">Batterija</string>
@@ -554,6 +595,10 @@
     <string name="notification_contacts_too_large_summary">Dawn il-kuntatti fuq %1$s huma kbar wisq għall-ħażna tal-kuntatti ta\' Android. Fi Proton jibqgħu sħaħ:</string>
     <string name="notification_contacts_too_large_outdated">dan it-telefon iżomm verżjoni eqdem</string>
     <string name="notification_contacts_too_large_missing">mhux fuq dan it-telefon</string>
+    <string name="notification_contacts_delete_refused_title">Xi kuntatti ma setgħux jitħassru fi Proton</string>
+    <string name="notification_contacts_delete_refused_summary">Dawn il-kuntatti fuq %1$s tħassru minn dan it-telefon, iżda Proton irrifjuta li jħassarhom. Għadhom jeżistu fi Proton u fuq l-apparati l-oħra tiegħek:</string>
+    <string name="notification_events_delete_refused_title">Xi avvenimenti ma setgħux jitħassru fi Proton</string>
+    <string name="notification_events_delete_refused_summary">Dawn l-avvenimenti fuq %1$s tħassru minn dan it-telefon, iżda Proton irrifjuta li jħassarhom. Għadhom jeżistu fi Proton u fuq l-apparati l-oħra tiegħek:</string>
     <string name="notification_conflict_title">L-avveniment inbidel f\'żewġ postijiet</string>
     <string name="notification_conflict_body">“%1$s” ġie editjat fuq dan it-telefon u f\'Proton Calendar. Liema verżjoni tixtieq iżżomm?</string>
     <string name="notification_conflict_body_shared">“%1$s” ġie editjat fuq dan it-telefon u minn %2$s f\'Proton Calendar. Jekk iżżomm il-verżjoni tiegħek, tissostitwixxi tiegħu.</string>

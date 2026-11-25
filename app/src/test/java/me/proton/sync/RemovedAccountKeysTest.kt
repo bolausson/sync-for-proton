@@ -50,6 +50,45 @@ class RemovedAccountKeysTest {
     }
 
     @Test
+    fun thePrimaryCalendarKeysGoWithTheirAccount_andMoveWithARename() {
+        val keys = listOf(
+            SyncPreferences.primaryCalendarLastKey(account),
+            SyncPreferences.debugDefaultCalendarFixtureKey(account),
+        )
+
+        assertEquals(emptyMap<String, String>(), SyncPreferences.keysOfRemovedAccounts(keys, setOf(account)))
+        assertEquals(keys.toSet(), SyncPreferences.keysOfRemovedAccounts(keys, setOf("other@example.com")).keys)
+        // The account name is the suffix, so a rename carries the last decision and the fixture along.
+        assertEquals(
+            SyncPreferences.primaryCalendarLastKey("renamed"),
+            SyncPreferences.renamedAccountKey(SyncPreferences.primaryCalendarLastKey(account), account, "renamed")
+        )
+        assertEquals(
+            SyncPreferences.debugDefaultCalendarFixtureKey("renamed"),
+            SyncPreferences.renamedAccountKey(SyncPreferences.debugDefaultCalendarFixtureKey(account), account, "renamed")
+        )
+    }
+
+    @Test
+    fun theNewEventHoldsGoWithTheirAccount_andMoveWithARename() {
+        // The held new events of shared calendars (NewEventHoldStore): Android ids of this phone, one key per account.
+        val key = SyncPreferences.newEventHoldsKey(account)
+        assertEquals("new_event_holds_$account", key)
+        assertEquals(listOf(account), SyncPreferences.accountNamesOfKey(key))
+        assertEquals(emptyMap<String, String>(), SyncPreferences.keysOfRemovedAccounts(listOf(key), setOf(account)))
+        assertEquals(mapOf(key to account), SyncPreferences.keysOfRemovedAccounts(listOf(key), setOf("other@example.com")))
+        assertEquals(
+            SyncPreferences.newEventHoldsKey("new"),
+            SyncPreferences.renamedAccountKey(SyncPreferences.newEventHoldsKey("old"), "old", "new")
+        )
+        // No other listed prefix begins it or is begun by it, so no existing key is read as one of its.
+        for (prefix in SyncPreferences.ACCOUNT_SCOPED_PREFIXES.filter { it != "new_event_holds_" }) {
+            assertTrue(prefix, !prefix.startsWith("new_event_holds_") && !"new_event_holds_".startsWith(prefix))
+        }
+        assertTrue(SyncPreferences.accountNamesOfKey(SyncPreferences.primaryCalendarLastKey(account)) == listOf(account))
+    }
+
+    @Test
     fun theNameModeOfAnAccountCalledReapply_x_staysWhileThatAccountExists() {
         // Its name mode has the very key of the re-apply flag of an account called <x>.
         val oddName = "reapply_$account"

@@ -155,7 +155,8 @@ class LogAndBackupViewStateTest {
         assertEquals("if (!encryptionAwaitingPassword) {", draw[draw.indexOfFirst { it.startsWith("binding.switchEncrypt.isChecked = ") } - 1])
         val wire = body(src, "private fun wireListeners()")
         val listeners = wire.indices.filter { wire[it].contains("setOnCheckedChangeListener {") }
-        assertEquals(4, listeners.size)
+        // Automatic backups, "Back up even when automatic sync is off", the two contents boxes, encryption.
+        assertEquals(5, listeners.size)
         listeners.forEach { assertEquals("if (drawing) return@setOnCheckedChangeListener", wire[it + 1]) }
         // Set before the dialog opens, cleared by whichever of its two ends runs.
         assertEquals(3, wire.count { it.startsWith("encryptionAwaitingPassword = ") })
@@ -195,7 +196,7 @@ class LogAndBackupViewStateTest {
             inside.containsAll(
                 setOf(
                     "@+id/switch_backup_enabled", "@+id/et_interval_days", "@+id/et_retention", "@+id/check_calendars",
-                    "@+id/check_contacts", "@+id/switch_encrypt",
+                    "@+id/check_contacts", "@+id/switch_encrypt", "@+id/switch_backup_when_auto_sync_off",
                 )
             )
         )

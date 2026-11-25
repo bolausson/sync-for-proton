@@ -20,8 +20,9 @@ import java.time.ZoneId
  * The debug verb `trim <account> check|on|off|interrupt [calendar name part|all]` (SyncSettingsActivity.handleDebugCommand):
  * check logs what "Remove older events from this phone" would take from each calendar, from the phone alone, with the
  * provider's LAST_DATE gaps and the series whose LAST_DATE and own end disagree; on and off set it for the large
- * calendars whose name contains the given part (or all of them), as the dialog's Save does; interrupt is a test fixture
- * (see [interrupt]). Debug builds only.
+ * calendars whose name contains the given part (or all of them), as the dialog's Save does, with its calendar sync
+ * request for calendars it switched on ([afterSave] gets them); interrupt is a test fixture (see [interrupt]). Debug
+ * builds only.
  */
 internal object RangeTrimDebug {
 
@@ -32,7 +33,7 @@ internal object RangeTrimDebug {
         mode: String?,
         namePart: String,
         tag: String,
-        requestCalendarSync: () -> Unit,
+        afterSave: (Set<RangeTrimRunner.Choice>) -> Unit,
     ) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val past = SyncPreferences.getStringOrDefault(prefs, SyncPreferences.calendarPastDaysKey(account.name), "${SyncPreferences.DEFAULT_PAST_DAYS}")
@@ -89,10 +90,9 @@ internal object RangeTrimDebug {
                     return
                 }
                 val picked = targets.mapTo(HashSet()) { it.choice }
-                RangeTrimRunner.setChoices(prefs, account.name, if (mode == "on") enabled + picked else enabled - picked)
-                prefs.edit().putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+                val newlyOn = RangeTrimRunner.saveChoices(prefs, account.name, if (mode == "on") enabled + picked else enabled - picked)
                 SyncLog.i(tag, "trim: removal of older events $mode for ${targets.joinToString { "'${it.displayName}'" }}")
-                if (mode == "on") requestCalendarSync()
+                afterSave(newlyOn)
             }
             "interrupt" -> interrupt(context, account, database, estimates, enabled, namePart, tag)
             else -> SyncLog.w(tag, "trim ignored: give check, on, off or interrupt")

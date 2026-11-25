@@ -40,7 +40,7 @@ object AccountProvisioner {
      *        is the user-visible display name (and the parent Account.name).
      * @param protonUsername the raw Proton login identifier (stored as `proton_username`
      *        user-data and used by `addressBookAccountName`); may differ from the display name.
-     * @param requestInitialSync when true, fire an immediate expedited manual sync for both
+     * @param requestInitialSync when true, fire an immediate manual sync for both
      *        authorities. Sign-in passes true only for an account that already exists (a new
      *        account's first sync waits for the setup chooser). Import passes false: it asks for
      *        the first syncs itself once the restored settings are written, and only while the
@@ -173,13 +173,13 @@ object AccountProvisioner {
         ContentResolver.setSyncAutomatically(account, SyncConstants.AUTHORITY_CALENDAR, applyCalendar)
         SyncUtils.applyPeriodicSync(context, account, SyncConstants.AUTHORITY_CALENDAR, displayName)
 
-        // The event loop and the fallback watchdogs. The subscription observer arms them only at
-        // process start or when the subscription turns active, so a new account (signed in or
-        // restored) had no event loop until the next start of the app.
+        // The fallback watchdogs. The subscription observer arms them only at process start or when
+        // the subscription turns active, so a new account (signed in or restored) had none until the
+        // next start of the app.
         SyncScheduling.scheduleWorkers(context, displayName)
 
         if (requestInitialSync) {
-            requestImmediateSync(account, addressBookAccount)
+            requestImmediateSync(context, account, addressBookAccount)
         }
     }
 
@@ -198,18 +198,16 @@ object AccountProvisioner {
         ContentResolver.setIsSyncable(account, authority, 1)
         ContentResolver.setSyncAutomatically(account, authority, true)
         SyncUtils.applyPeriodicSync(context, account, authority, parentAccountName)
-        ContentResolver.requestSync(account, authority, Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-        })
+        ContentResolver.requestSync(account, authority, SyncScheduling.userSyncExtras(context, parentAccountName))
     }
 
-    /** Fire an expedited manual sync for contacts (AB account) and calendar (main account). */
-    fun requestImmediateSync(account: Account, addressBookAccount: Account) {
-        val syncExtras = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-        }
+    /**
+     * Fire a manual sync for contacts (AB account) and calendar (main account), as the user's own:
+     * not retried in the background while Android's automatic sync is off or the account is on Manual only
+     * (SyncScheduling.userSyncExtras).
+     */
+    fun requestImmediateSync(context: Context, account: Account, addressBookAccount: Account) {
+        val syncExtras = SyncScheduling.userSyncExtras(context, account.name)
         ContentResolver.requestSync(addressBookAccount, SyncConstants.AUTHORITY_CONTACTS, syncExtras)
         ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, syncExtras)
     }

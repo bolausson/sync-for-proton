@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -233,7 +232,7 @@ class LogViewerActivity : AppCompatActivity() {
         // here because the control looks like it might change what gets recorded or sent,
         // and it changes neither.
         binding.infoLogFilter.setOnClickListener {
-            AlertDialog.Builder(this)
+            AppDialogBuilder(this)
                 .setTitle(R.string.label_log_filter_title)
                 .setMessage(R.string.info_log_filter_body)
                 .setPositiveButton(R.string.btn_info_dismiss, null)

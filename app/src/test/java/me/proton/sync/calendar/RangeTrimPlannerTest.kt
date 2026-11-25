@@ -245,6 +245,27 @@ class RangeTrimPlannerTest {
     }
 
     @Test
+    fun `an event that exists only on this phone never goes, long ended or not, dirty or clean`() {
+        // A new event waiting for the user's choice in a shared calendar, one kept on this phone and one never sent:
+        // no Proton id, no mapping. A waiting or kept one stays dirty for good; a clean one (its upload given up) too.
+        val ended = t("2026-02-01T10:00:00Z")
+        val phoneOnly = listOf(
+            row(120, ended, uid = null, syncId = null, dirty = true),
+            row(121, ended, uid = "kept-121@example.test", syncId = null, dirty = true),
+            row(122, ended, uid = null, syncId = null),
+            row(123, ended, uid = null, syncId = null, rrule = "FREQ=DAILY;COUNT=2", duration = "PT1H", end = null, lastDate = ended + 2 * day),
+            // Its exception, cancelled on the phone: no ORIGINAL_SYNC_ID, as the series never reached Proton.
+            row(124, ended + day, uid = null, syncId = null, origTime = ended + day, cancelled = true),
+        )
+        val p = plan(phoneOnly, mappings = emptyList(), allTime = setOf("p80"))
+        assertTrue(p.remove.isEmpty())
+        assertEquals(phoneOnly.size, p.kept.values.sum())
+        // Next to a Proton event of the same calendar that does go, they still stay.
+        val mixed = plan(listOf(past) + phoneOnly, mappings = listOf(map(80)))
+        assertEquals(listOf(listOf(80L)), mixed.remove.map { it.rowIds })
+    }
+
+    @Test
     fun `a group over the row limit stays`() {
         val master = row(100, t("2025-01-06T10:00:00Z"), end = null, uid = "big@x", rrule = "FREQ=DAILY;UNTIL=20260101T100000Z",
             duration = "PT1H", lastDate = t("2026-01-01T11:00:00Z"))

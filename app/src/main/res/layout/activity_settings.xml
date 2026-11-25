@@ -201,6 +201,19 @@
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
 
+                    <!-- Only while Android's own automatic sync switch is off (SyncSettingsActivity.refreshAutoSyncNotice):
+                         then no account syncs by itself, so the line sits above the button that syncs them all, once
+                         for every account. The text_timezone_data_outdated idiom, in the row title's colour. -->
+                    <TextView
+                        android:id="@+id/text_auto_sync_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="@string/sfp_auto_sync_off"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_sub"
+                        android:visibility="gone" />
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_hero_sync_all"
                         style="@style/Widget.SyncForProton.Button.Soft"
@@ -395,6 +408,8 @@
                                 android:id="@+id/value_language"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:maxWidth="140dp"
                                 android:textColor="@color/sfp_text_secondary"
                                 android:textSize="@dimen/sfp_text_row_value" />
                         </LinearLayout>

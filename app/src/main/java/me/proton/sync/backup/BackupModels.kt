@@ -210,6 +210,9 @@ object BackupSettings {
         "data_backup_encryption_enabled" to BOOLEAN,
         "data_backup_retention_count" to STRING,
         "data_backup_reminder_opted_out" to BOOLEAN,
+        // "Back up even when automatic sync is off" (SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF), a switch on the
+        // same screen. Unreadable, it is dropped, so its default (off: scheduled backups follow Android's switch) applies.
+        "data_backup_when_auto_sync_off" to BOOLEAN,
         // The chosen app language, stored by the settings screen when the user picks one.
         "app_language_tag" to STRING,
         // "Update time zones online" (SyncPreferences.KEY_TIMEZONE_UPDATES), a device-wide switch on
@@ -239,7 +242,7 @@ object BackupSettings {
         // Day counts and intervals in seconds: numbers, stored as text by the list pickers.
         "calendar_past_days_" to STRING,
         "calendar_future_days_" to STRING,
-        "event_loop_interval_" to STRING,
+        "event_loop_interval_" to STRING,           // the sync interval, named after the removed event loop
         "fallback_contacts_interval_" to STRING,
         "fallback_contacts_enabled_" to BOOLEAN,
         "fallback_calendar_interval_" to STRING,

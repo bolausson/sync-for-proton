@@ -92,6 +92,14 @@ class ProtonSyncApp : Application() {
             } catch (e: Exception) {
                 SyncLog.w(TAG, "Could not check the event time identity: ${e.message}")
             }
+            // What the removed event loop left behind: its scheduled jobs and its two settings per account, after
+            // asking for the calendar sync a setting changed before the update still waited for. Runs at every
+            // start, and finds nothing after the first.
+            try {
+                SyncScheduling.removeEventLoopLeftovers(this)
+            } catch (e: Exception) {
+                SyncLog.w(TAG, "Could not remove the event loop's leftovers: ${e.message}")
+            }
         }.start()
 
         // Enable relaxed iCal parsing for malformed calendar data
@@ -258,6 +266,40 @@ class ProtonSyncApp : Application() {
         for (protonEventId in EventConflictGuard.heldIds(this, oldParent.name)) {
             SyncNotificationHelper.cancelEventConflict(this, oldParent.name, protonEventId)
         }
+        // And the prompts about new events held in shared calendars, and their summary, for the same reason: their key
+        // moves with the preferences, the Android ids do not change, and the next sync posts them under the new name.
+        val prefsForHolds = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        for (entry in me.proton.sync.calendar.NewEventHoldStore.snapshot(prefsForHolds, oldParent.name)) {
+            SyncNotificationHelper.cancelNewEventHoldPrompt(this, oldParent.name, entry.eventId)
+        }
+        SyncNotificationHelper.cancelNewEventHoldSummary(this, oldParent.name)
+        // And the lasting notice of contact deletions Proton refused, whose id carries the name too, while its counts
+        // move with the preferences. Forgetting what it named makes the next sync post it again under the new name; one
+        // the user dismissed stays dismissed.
+        if (SyncNotificationHelper.isContactDeletionsRefusedShown(this, oldParent.name)) {
+            SyncNotificationHelper.cancelContactDeletionsRefused(this, oldParent.name)
+            me.proton.sync.contacts.ContactDeletionFailures.forgetNoticed(prefsForHolds, oldParent.name)
+        }
+        // The same for the lasting notice of event deletions Proton refused (calendar.EventDeletionFailures).
+        if (SyncNotificationHelper.isEventDeletionsRefusedShown(this, oldParent.name)) {
+            SyncNotificationHelper.cancelEventDeletionsRefused(this, oldParent.name)
+            me.proton.sync.calendar.EventDeletionFailures.forgetNoticed(prefsForHolds, oldParent.name)
+        }
+        // And the older contacts notices, refused new contacts and contacts too large, whose ids carry the name too:
+        // neither comes back by itself, so one showing is marked, and the mark, moving with the preferences, makes the
+        // next sync under the new name post it again (contacts.ContactNoticeReposts). One dismissed stays dismissed.
+        if (SyncNotificationHelper.isContactsRejectedShown(this, oldParent.name)) {
+            SyncNotificationHelper.cancelContactsRejected(this, oldParent.name)
+            me.proton.sync.contacts.ContactNoticeReposts.mark(
+                prefsForHolds, oldParent.name, me.proton.sync.contacts.ContactNoticeReposts.Notice.REJECTED
+            )
+        }
+        if (SyncNotificationHelper.isContactsTooLargeShown(this, oldParent.name)) {
+            SyncNotificationHelper.cancelContactsTooLarge(this, oldParent.name)
+            me.proton.sync.contacts.ContactNoticeReposts.mark(
+                prefsForHolds, oldParent.name, me.proton.sync.contacts.ContactNoticeReposts.Notice.TOO_LARGE
+            )
+        }
         return try {
             val newParent = Account(desired, ACCOUNT_TYPE)
             if (!am.addAccountExplicitly(newParent, null, null)) {
@@ -321,10 +363,8 @@ class ProtonSyncApp : Application() {
 
             am.removeAccountExplicitly(oldParent)
             // Work names derive from the account name, and once renameAccountInPrefs has moved the
-            // keys, forgetRemovedAccounts can no longer find the old name: its event loop and
-            // watchdogs ran for ever against an account that does not exist, and the new name had
-            // none until the next start.
-            EventLoopWorker.scheduleForAccount(this, oldParent.name, -1)
+            // keys, forgetRemovedAccounts can no longer find the old name: its watchdogs ran for ever
+            // against an account that does not exist, and the new name had none until the next start.
             SyncWorker.cancelForAccount(this, oldParent.name, "contacts")
             SyncWorker.cancelForAccount(this, oldParent.name, "calendar")
             SyncScheduling.scheduleWorkers(this, desired)
@@ -355,9 +395,12 @@ class ProtonSyncApp : Application() {
             // Read before the keys go, because the prompts are keyed by account name and event id and
             // there is nothing left to name them by afterwards.
             val strandedPrompts = stale.associateWith { EventConflictGuard.heldIds(this, it) }
+            // The same for the new events held in shared calendars: their key goes with the account's prefixes.
+            val strandedHolds = stale.associateWith { name ->
+                me.proton.sync.calendar.NewEventHoldStore.snapshot(prefs, name).map { it.eventId }
+            }
             edit.apply()
             for (name in stale) {
-                EventLoopWorker.scheduleForAccount(this, name, -1)
                 SyncWorker.cancelForAccount(this, name, "contacts")
                 SyncWorker.cancelForAccount(this, name, "calendar")
                 // Its held server-to-local deletions, and their ongoing prompts, go with it. Not via
@@ -372,6 +415,16 @@ class ProtonSyncApp : Application() {
                 for (protonEventId in strandedPrompts[name].orEmpty()) {
                     SyncNotificationHelper.cancelEventConflict(this, name, protonEventId)
                 }
+                for (eventId in strandedHolds[name].orEmpty()) {
+                    SyncNotificationHelper.cancelNewEventHoldPrompt(this, name, eventId)
+                }
+                SyncNotificationHelper.cancelNewEventHoldSummary(this, name)
+                // And the lasting notice of its refused contact deletions: their counts went with its prefixes.
+                SyncNotificationHelper.cancelContactDeletionsRefused(this, name)
+                // And that of its refused event deletions, and its older contacts notices, whose lists went the same way.
+                SyncNotificationHelper.cancelEventDeletionsRefused(this, name)
+                SyncNotificationHelper.cancelContactsRejected(this, name)
+                SyncNotificationHelper.cancelContactsTooLarge(this, name)
             }
             SyncLog.i(TAG, "Forgot settings and scheduled work for removed account(s): ${stale.joinToString()}")
         } catch (e: Exception) {
@@ -711,10 +764,14 @@ class ProtonSyncApp : Application() {
                     R.string.notification_decrypt_failed_title to R.string.notification_decrypt_failed_message
             }
 
+            // The expanded notification shows the whole message: without a style Android cuts it after two lines, and
+            // with an address in it that cut the instruction off in every language, English included.
+            val message = context.getString(messageRes, accountName)
             val notification = NotificationCompat.Builder(context, CHANNEL_AUTH)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setContentTitle(context.getString(titleRes))
-                .setContentText(context.getString(messageRes, accountName))
+                .setContentText(message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)

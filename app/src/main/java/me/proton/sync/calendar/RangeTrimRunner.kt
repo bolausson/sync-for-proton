@@ -63,6 +63,29 @@ internal object RangeTrimRunner {
     }
 
     /**
+     * An answer of the dialog (or the trim debug verb): [chosen] becomes the calendars of [accountName] that removal is
+     * on for, and the ones it switched on are returned, for the caller's settings sync request. Each of those loses its
+     * daily sweep mark, so its next calendar sync, whatever starts it, sweeps instead of taking the unchanged-skip, and
+     * that sweep's seed removes the older events. Switching one off removes nothing, so no mark goes. Non-suspend and
+     * outside CalendarSyncAdapter.
+     *
+     * Known limit: a calendar sync of the account that is finishing that calendar while the answer is saved (after its
+     * [seedOf] read the choices, before it writes the day's mark) writes the mark back, and the sync asked for after the
+     * answer then takes the unchanged-skip for it. Its older events stay until the next day's sweep or a tap on Sync
+     * now; nothing leaves Proton. Closing it means writing the mark before [seedOf], in CalendarSyncAdapter.
+     */
+    fun saveChoices(prefs: SharedPreferences, accountName: String, chosen: Set<Choice>): Set<Choice> {
+        val newlyOn = chosen - choices(prefs, accountName)
+        setChoices(prefs, accountName, chosen)
+        if (newlyOn.isNotEmpty()) {
+            val e = prefs.edit()
+            for (c in newlyOn) e.remove(SyncPreferences.lastSweepDayKey(accountName, c.protonCalendarId))
+            e.apply()
+        }
+        return newlyOn
+    }
+
+    /**
      * Forget the choices of a Proton calendar whose mapping this phone drops (gone from Proton, or its Android calendar
      * taken over by one re-created under the same name): a calendar this phone maps again later is a new one, and
      * never inherits removal.

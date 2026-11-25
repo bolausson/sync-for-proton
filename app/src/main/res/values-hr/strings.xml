@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Preskoči pretplaćene/uvezene kalendare (npr. iz Google)</string>
     <string name="label_expand">Proširi</string>
     <string name="label_display_name">Prikazni naziv</string>
-    <string name="label_event_loop_interval">Interval petlje događaja</string>
     <string name="label_fallback_full_sync">Zamjenska potpuna sinkronizacija</string>
     <string name="label_notify_on_failure">Obavijesti o pogrešci</string>
     <string name="label_notify_in_progress">Prikaži obavijest tijekom sinkronizacije</string>
@@ -116,7 +115,6 @@
     <string name="dialog_label_sync_reason">Razlog: %s</string>
     <string name="dialog_title_past_events">Prošli događaji</string>
     <string name="dialog_title_future_events">Budući događaji</string>
-    <string name="dialog_title_event_loop_interval">Interval petlje događaja</string>
     <string name="dialog_title_contacts_fallback">Zamjenska potpuna sinkronizacija kontakata</string>
     <string name="dialog_title_calendar_fallback">Zamjenska potpuna sinkronizacija kalendara</string>
     <string name="dialog_title_remove_account">Ukloni račun</string>
@@ -175,13 +173,17 @@
     <string name="notification_sync_failed_title">Sinkronizacija %s nije uspjela</string>
     <string name="notification_action_view_details">Prikaži detalje</string>
     <string name="error_no_internet">Nema internetske veze. Sinkronizacija će se automatski ponoviti.</string>
+    <string name="error_no_internet_tap_sync">Nema internetske veze. Dodirnite Sinkroniziraj za ponovni pokušaj.</string>
     <string name="error_timeout">Nije moguće spojiti se na poslužitelj. Provjerite internetsku vezu.</string>
     <string name="error_session_expired">Vaša sesija je istekla. Prijavite se ponovo.</string>
     <string name="error_too_many_requests">Previše zahtjeva. Sinkronizacija će se ponoviti kasnije.</string>
+    <string name="error_too_many_requests_tap_sync">Previše zahtjeva. Dodirnite Sinkroniziraj za ponovni pokušaj.</string>
     <string name="error_server_error">Pogreška Proton poslužitelja. Sinkronizacija će se automatski ponoviti.</string>
+    <string name="error_server_error_tap_sync">Pogreška Proton poslužitelja. Dodirnite Sinkroniziraj za ponovni pokušaj.</string>
     <string name="error_request_rejected">Zahtjev za sinkronizaciju odbijen od poslužitelja.</string>
     <string name="error_ssl">Sigurna veza nije uspjela. Provjerite svoju mrežu.</string>
     <string name="error_connection_interrupted">Veza je prekinuta. Sinkronizacija će se ponoviti.</string>
+    <string name="error_connection_interrupted_tap_sync">Veza je prekinuta. Dodirnite Sinkroniziraj za ponovni pokušaj.</string>
     <string name="error_unexpected">Sinkronizacija je naišla na neočekivanu pogrešku.</string>
     <string name="notification_channel_auth">Autentifikacija</string>
     <string name="notification_channel_auth_description">Obavijesti o potrebi za prijavom</string>
@@ -272,16 +274,16 @@
     <string name="label_info">Više informacija</string>
     <string name="info_language_body">Postavlja jezik koji se koristi za zaslone same aplikacije. „Auto\" prati jezik sustava vašeg telefona. Ovo mijenja samo sučelje aplikacije, ne prevodi vaše sinkronizirane kalendarske događaje ili kontakte.</string>
     <string name="info_display_name_body">Naziv prikazan za ovaj račun u Android Postavke → Računi te u biralima kalendarskih/kontaktnih aplikacija. To je samo lokalna oznaka; njezina promjena ne utječe na vaš Proton račun.\n\nNapomena: Samsung Calendar i Samsung Contacts zanemaruju prilagođene nazive računa i uvijek prikazuju vlastitu oznaku (npr. „Proton\"). Vaš odabrani naziv možda se neće pojaviti ondje, to je Samsungovo ograničenje koje ne možemo promijeniti. Druge aplikacije (Google Calendar/Contacts) prikazuju ga normalno.</string>
-    <string name="info_event_loop_body">Koliko često aplikacija u pozadini provjerava Proton za udaljene promjene vaših kontakata i kalendara. Kraći intervali brže prikazuju promjene, ali troše više baterije i podataka. Ovo je odvojeno od ručne sinkronizacije, koju možete pokrenuti bilo kada gumbima za sinkronizaciju.</string>
+    <string name="info_event_loop_body">Koliko često aplikacija u pozadini provjerava Proton za udaljene promjene vaših kontakata i kalendara. Te se provjere izvode samo dok je automatska sinkronizacija u Androidu uključena; dok je isključena, ništa se ne sinkronizira samo od sebe. Kraći intervali brže prikazuju promjene, ali troše više baterije i podataka. Ovo je odvojeno od ručne sinkronizacije, koju možete pokrenuti bilo kada gumbima za sinkronizaciju.</string>
     <string name="info_notify_in_progress_body">Prikazuje tihu, trajnu obavijest dok sinkronizacija traje, s napretkom uživo (skeniranje, preuzimanje, dešifriranje). Smještena je na dnu trake obavijesti i nikada se ne oglašava zvukom. Isključite je ako želite da se sinkronizacija odvija nevidljivo.</string>
     <string name="info_sync_contacts_body">Kada je uključeno, vaši Proton kontakti sinkroniziraju se dvosmjerno s Android kontaktima: promjene s obje strane se spajaju.\n\nNapomena: Samsung Contacts prikazuje kontakte pod jednom oznakom računa „Proton contacts\" i skriva podnaslov s e-poštom za račune trećih strana poput našeg, Samsungovo ograničenje ugrađeno u kôd koje ne možemo promijeniti. Google Contacts i većina drugih aplikacija prikazuju ih normalno.</string>
-    <string name="info_fallback_full_sync_body">Koliko često aplikacija provodi potpunu ponovnu provjeru umjesto brze inkrementalne sinkronizacije. Potpuna sinkronizacija hvata sve što bi inkrementalni prolaz mogao propustiti (npr. promjene napravljene izvan mreže) po cijenu više vremena i podataka. Ostavite na zadanom osim ako sumnjate da se stavke ne sinkroniziraju.</string>
+    <string name="info_fallback_full_sync_body">Koliko često aplikacija provodi potpunu ponovnu provjeru umjesto brze inkrementalne sinkronizacije. Ta se provjera izvodi samo dok je automatska sinkronizacija u Androidu uključena. Potpuna sinkronizacija hvata sve što bi inkrementalni prolaz mogao propustiti (npr. promjene napravljene izvan mreže) po cijenu više vremena i podataka. Ostavite na zadanom osim ako sumnjate da se stavke ne sinkroniziraju.</string>
     <string name="info_notify_on_failure_body">Prikazuje obavijest ako sinkronizacija ne uspije (npr. mrežna pogreška ili istekla sesija). Dodirnite je za razlog na razumljivom jeziku i poveznicu na zapise. Isključite je ako ne želite biti obaviješteni o prolaznim pogreškama.</string>
-    <string name="info_sync_calendar_body">Kada je uključeno, vaši Proton kalendari sinkroniziraju se u Android kalendar, pa se događaji pojavljuju u Google Calendar, Samsung Calendar i bilo kojoj drugoj aplikaciji za kalendar. Dvosmjerno: izmjene koje napravite na telefonu prenose se natrag u Proton za kalendare koji su vaši.</string>
+    <string name="info_sync_calendar_body">Kada je uključeno, vaši Proton kalendari sinkroniziraju se u Android kalendar, pa se događaji pojavljuju u Google Calendar, Samsung Calendar i bilo kojoj drugoj aplikaciji za kalendar. Dvosmjerno: izmjene koje napravite na telefonu prenose se natrag u Proton za svaki kalendar koji možete uređivati, uključujući kalendare koje drugi dijele s vama.</string>
     <string name="info_include_external_calendars_body">Proton može sadržavati pretplaćene kalendare (npr. vanjski ICS feed) i kalendare praznika. Oni su samo za čitanje na Protonovoj strani. Kada je isključeno, aplikacija ih preskače i sinkronizira samo vaše vlastite kalendare koji se mogu uređivati. Uključite ako želite da se i ti kalendari samo za čitanje preslikaju na vaš telefon.</string>
     <string name="info_sync_mode_body">„Svi događaji“ sinkronizira cijelu povijest vašeg kalendara i sve buduće događaje, najbolje ako želite sve na svom telefonu (prva sinkronizacija velikog kalendara može potrajati nekoliko minuta). „Prilagođeni raspon“ održava velike kalendare brzima tako što sinkronizira samo prozor dana oko danas: njihovi događaji izvan prozora se ne preuzimaju, a oni koji su već na ovom telefonu ostaju, osim ako je za njihov kalendar uključena opcija „Ukloni starije događaje s ovog telefona“. Mali kalendari uvijek se sinkroniziraju u cijelosti.</string>
     <string name="label_trim_old_events">Ukloni starije događaje s ovog telefona</string>
-    <string name="info_trim_old_events_body">U odabranim kalendarima događaji koji su završili više od jednog dana prije početka vašeg raspona uklanjaju se s ovog telefona, sada i pri kasnijim sinkronizacijama. Ostaju na vašem Proton računu i ondje se ništa ne briše. Sigurnosne kopije vaših vlastitih kalendara izrađuju se iz Protona, pa ih i dalje sadrže; za pretplaćene kalendare i kalendare praznika ne izrađuju se sigurnosne kopije. Ponavljajući događaj ostaje sa svim svojim ranijim datumima dok god seže u raspon ili nema datum završetka, jer telefon čuva ponavljajući događaj kao jedan unos. Ostaju i događaji s promjenama koje još nisu poslane u Proton te događaji stvoreni ili zadnji put promijenjeni u posljednjih 7 dana prema verziji na ovom telefonu, a ne prema tome kada ju je ovaj telefon preuzeo. Mogu se odabrati samo kalendari koji su preveliki da bi se sinkronizirali u cijelosti, a događaji nakon kraja raspona nikad se ne uklanjaju. Da biste vratili uklonjene događaje, odaberite dulji raspon ili „Svi događaji“.</string>
+    <string name="info_trim_old_events_body">U odabranim kalendarima događaji koji su završili više od jednog dana prije početka vašeg raspona uklanjaju se s ovog telefona pri sljedećoj sinkronizaciji, a kasniji kad postanu jednako stari. Ostaju na vašem Proton računu i ondje se ništa ne briše. Sigurnosne kopije vaših vlastitih kalendara izrađuju se iz Protona, pa ih i dalje sadrže; za pretplaćene kalendare i kalendare praznika ne izrađuju se sigurnosne kopije. Ponavljajući događaj ostaje sa svim svojim ranijim datumima dok god seže u raspon ili nema datum završetka, jer telefon čuva ponavljajući događaj kao jedan unos. Ostaju i događaji s promjenama koje još nisu poslane u Proton te događaji stvoreni ili zadnji put promijenjeni u posljednjih 7 dana prema verziji na ovom telefonu, a ne prema tome kada ju je ovaj telefon preuzeo. Mogu se odabrati samo kalendari koji su preveliki da bi se sinkronizirali u cijelosti, a događaji nakon kraja raspona nikad se ne uklanjaju. Da biste vratili uklonjene događaje, odaberite dulji raspon ili „Svi događaji“.</string>
     <string name="trim_dialog_title">Ukloni starije događaje s ovog telefona</string>
     <string name="trim_dialog_intro">Odaberite kalendare koje želite pročistiti. Događaji koji su završili prije %1$s uklonit će se s ovog telefona pri sljedećoj sinkronizaciji, a kasniji kad postanu jednako stari. Ostaju na vašem Proton računu. Ponavljajući događaj koji se nastavlja nakon tog datuma ostaje sa svim svojim datumima.</string>
     <plurals name="trim_calendar_count">
@@ -303,6 +305,35 @@
     </plurals>
     <string name="trim_dialog_save">Spremi</string>
     <string name="trim_read_failed">Kalendare na ovom telefonu nije bilo moguće pročitati, pa ništa nije promijenjeno.</string>
+    <string name="label_default_calendar">Zadani kalendar</string>
+    <string name="info_default_calendar_body">Novi događaji dodaju se u vaš zadani kalendar u Protonu, a ovaj ga telefon označava kao glavni kalendar računa. Ako ga ovdje promijenite, mijenja se i u Protonu, pa Proton na webu, Protonove aplikacije i pozivnice na koje odgovorite u Proton Mailu koriste novi. Zadani može biti samo vaš vlastiti aktivni kalendar, a ne dijeljeni, pretplaćeni ili kalendar praznika.</string>
+    <string name="default_calendar_connecting">Povezivanje s Protonom…</string>
+    <string name="default_calendar_changed">Zadani kalendar promijenjen</string>
+    <string name="default_calendar_unreachable">Proton nije dostupan. Pokušajte ponovno za trenutak.</string>
+    <string name="default_calendar_refused">Proton nije prihvatio promjenu, pa ništa nije promijenjeno.</string>
+    <string name="default_calendar_none_own">Ovaj račun nema vlastitog aktivnog kalendara koji bi mogao biti zadani. Dijeljeni i pretplaćeni kalendari te kalendari praznika ne mogu biti zadani.</string>
+    <string name="default_calendar_incomplete">Nije bilo moguće pročitati sve kalendare ovog računa, pa se njegov zadani kalendar ovdje ne može promijeniti.</string>
+    <string name="notification_new_event_hold_title">Novi događaj u dijeljenom kalendaru</string>
+    <string name="notification_new_event_hold_body">Aplikacija %1$s dodala je događaj „%2$s“ u kalendar %3$s. Vidjeli bi ga i drugi koji imaju pristup ovom kalendaru.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Neka aplikacija dodala je događaj „%1$s“ u kalendar %2$s. Vidjeli bi ga i drugi koji imaju pristup ovom kalendaru.</string>
+    <string name="action_new_event_move">Premjesti u %1$s</string>
+    <string name="action_new_event_publish">Objavi</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d događaj čeka vašu odluku</item>
+        <item quantity="few">%d događaja čekaju vašu odluku</item>
+        <item quantity="other">%d događaja čeka vašu odluku</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d događaj zadržan samo na ovom telefonu</item>
+        <item quantity="few">%d događaja zadržana samo na ovom telefonu</item>
+        <item quantity="other">%d događaja zadržano samo na ovom telefonu</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Još %d događaj čeka vašu odluku</item>
+        <item quantity="few">Još %d događaja čekaju vašu odluku</item>
+        <item quantity="other">Još %d događaja čeka vašu odluku</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Kada aplikacija koja nije aplikacija za kalendar doda događaj u kalendar koji je netko podijelio s vama, događaj čeka na ovom telefonu dok ne odlučite. „Premjesti“ ga umjesto toga stavlja u vaš zadani kalendar. „Objavi“ ga šalje u dijeljeni kalendar, gdje ga mogu vidjeti svi koji imaju pristup tom kalendaru. „Zadrži na telefonu“ ga nikad ne šalje u Proton: neće ga imati ni Proton Calendar, ni Proton na webu, ni vaši drugi uređaji, ni sigurnosne kopije ove aplikacije, a izgubit će se ako uklonite ovu aplikaciju ili ovaj račun. Zadržani događaji ostaju navedeni na kartici ovog računa, gdje ih i dalje možete premjestiti ili objaviti.</string>
     <string name="info_sync_range_window_body">Koliko dana prije i poslije danas sinkronizirati kada je odabrano „Prilagođeni raspon\". Veći prozori prikazuju više vašeg kalendara, ali se dulje sinkroniziraju. Nema učinka u načinu „Svi događaji\".</string>
     <string name="info_poll_attendee_body">Kada je uključeno, aplikacija povremeno ponovno provjerava događaje koji imaju sudionike kako bi otkrila odgovore prihvati/odbij/uvjetno. Protonov feed promjena ne prijavljuje promjene RSVP-a, pa ovo zahtijeva dodatne API pozive, vrijedi ga omogućiti samo ako se oslanjate na prikaz odgovora sudionika na svom telefonu.</string>
     <string name="info_send_invites_body">Kada na svom telefonu dodate sudionike događaju, pošaljite im pozivnicu e-poštom. Isključeno prema zadanim postavkama: uključite samo ako želite da aplikacija šalje e-poštu sudionicima u vaše ime.</string>
@@ -310,7 +341,7 @@
     <string name="info_send_cancellations_body">Pošaljite sudionicima e-poštu kada izbrišete događaj na koji su pozvani, kako bi ga i njihovi kalendari uklonili. Isključeno prema zadanim postavkama.</string>
     <string name="info_invite_subject_title_body">Pri slanju pozivnica e-poštom, stavite naziv događaja u predmet e-pošte kako bi ga primatelji odmah prepoznali. Isključeno prema zadanim postavkama radi privatnosti: predmeti e-pošte nisu šifrirani u standardnom prijenosu pošte, pa bi naslov bio vidljiv poštanskim poslužiteljima na putu.</string>
     <string name="info_background_sync_body">Android može pauzirati pozadinsku sinkronizaciju radi uštede baterije, što može odgoditi ili zaustaviti automatsku sinkronizaciju. Isključivanje ove aplikacije iz optimizacije baterije održava zakazane sinkronizacije pouzdano pokrenutima. Upotrijebite gumb za otvaranje sistemskih postavki baterije za aplikaciju.</string>
-    <string name="info_verbose_logging_body">Bilježi dodatne dijagnostičke detalje (stanje autentifikacije, otključavanje ključeva, unutarnje procese sinkronizacije) u zapis, korisno pri prijavi problema. Aplikacija u njemu zamjenjuje e-adrese kratkim kodovima, ali zapis može uključivati nazive računa i kalendara, stoga zapise dijelite samo s razvojnim programerom. Ostavite isključeno za uobičajenu upotrebu.</string>
+    <string name="info_verbose_logging_body">Bilježi dodatne dijagnostičke detalje (stanje autentifikacije, otključavanje ključeva, unutarnje procese sinkronizacije) u zapis, korisno pri prijavi problema. Dok je uključeno, zapis sadrži i nazive vaših kalendara te aplikacija koje u njih dodaju događaje. Aplikacija u njemu zamjenjuje e-adrese kratkim kodovima, ali zapis može uključivati nazive računa i kalendara, stoga zapise dijelite samo s razvojnim programerom. Ostavite isključeno za uobičajenu upotrebu.</string>
     <string name="info_file_logging_body">Zapisuje zapisnik aplikacije u tekstualnu datoteku s vremenskom oznakom (sync-for-proton-log-….txt) u mapu koju odaberete. Inače aplikacija zapisnik čuva samo u memoriji, pa ovo uključite kako biste zabilježili problem koji je teško ponoviti. Pri svakom pokretanju aplikacije stvara se nova datoteka. Aplikacija u njoj zamjenjuje adrese e-pošte kratkim kodovima, ali datoteka može sadržavati nazive računa i kalendara, pa je dijelite samo s razvijateljem. Za uobičajenu upotrebu ostavite isključeno.</string>
     <string name="info_timezone_updates_text">Vremena događaja ovise o pravilima vremenskih zona, a države ta pravila povremeno mijenjaju. Android ih čuva u podacima o vremenskim zonama telefona, koji stižu s ažuriranjima sustava. Telefon koji ih više ne prima, primjerice sa starijom verzijom Androida ili bez ažuriranja sustava Google Playa, zadržava stara pravila, a događaji na mjestima čija su se pravila od tada promijenila mogu se prikazati u pogrešno vrijeme.\n\nPodaci o vremenskim zonama na ovom telefonu: verzija %1$s\n\nKada je isključeno (zadano), aplikacija koristi vlastite podatke o vremenskim zonama telefona i ništa ne šalje na www.tzurl.org.\n\nKada je uključeno, aplikacija s www.tzurl.org, usluge treće strane, preuzima aktualna pravila za svaku vremensku zonu koju koriste vaši događaji, najviše jednom po vremenskoj zoni pri svakom pokretanju aplikacije, i koristi ih samo ako su novija od podataka telefona. www.tzurl.org tada vidi vašu IP adresu i nazive tih vremenskih zona, primjerice Europe/Berlin. O vašim događajima ili računima ništa se drugo ne šalje. Ako www.tzurl.org nije dostupan, koriste se podaci telefona. Ponavljajući događaji i dalje se izračunavaju iz podataka telefona.\n\nNakon promjene događaji koji su već na telefonu provjeravaju se i ispravljaju pri sljedećoj sinkronizaciji.</string>
     <string name="tz_data_version_unknown">nepoznata</string>
@@ -394,6 +425,8 @@
     <string name="backup_unit_days">dana</string>
     <string name="backup_retention_label">Zadrži posljednjih</string>
     <string name="backup_unit_runs">sigurnosnih kopija</string>
+    <string name="backup_when_auto_sync_off_label">Sigurnosno kopiraj i bez automatske sinkronizacije</string>
+    <string name="info_backup_when_auto_sync_off_body">Prekidač „Automatska sinkronizacija podataka“ u Androidu zaustavlja pozadinsku sinkronizaciju za sve aplikacije, a zakazane sigurnosne kopije ravnaju se prema njemu: dok je isključen, zakazana sigurnosna kopija se preskače, a ovaj zaslon to prikazuje ispod gumba „Sigurnosno kopiraj sada“. Uključite ovo da bi se zakazane sigurnosne kopije ipak izrađivale. Svaka sigurnosna kopija preuzima sve vaše kalendare i kontakte iz Protona, što može potrošiti mnogo mobilnih podataka. Gumb „Sigurnosno kopiraj sada“ uvijek radi.</string>
     <string name="backup_section_contents">Što kopirati</string>
     <string name="backup_include_calendars_label">Kalendari (.ics)</string>
     <string name="backup_include_contacts_label">Kontakti (.vcf)</string>
@@ -416,6 +449,7 @@
     <string name="backup_running">Sigurnosno kopiranje…</string>
     <string name="backup_last_never">Još nema sigurnosne kopije.</string>
     <string name="backup_last_run">Posljednja sigurnosna kopija: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Zakazana sigurnosna kopija preskočena je %1$s: automatska sinkronizacija u Androidu je isključena</string>
     <string name="backup_decrypt_action">Dešifriraj sigurnosnu kopiju…</string>
     <string name="backup_decrypt_body">Odaberite šifriranu datoteku sigurnosne kopije (.gpg) i unesite njezinu lozinku. Sadržaj će se, dešifriran, spremiti u vašu mapu za sigurnosne kopije.</string>
     <string name="backup_decrypting">Dešifriranje…</string>
@@ -478,7 +512,7 @@
     <string name="sfp_group_account">Račun</string>
     <string name="sfp_group_contacts">Kontakti</string>
     <string name="sfp_group_calendar">Kalendar</string>
-    <string name="sfp_event_loop_subtitle">Koliko često provjeravati udaljene promjene</string>
+    <string name="sfp_event_loop_subtitle">Koliko često provjeravati udaljene promjene dok je automatska sinkronizacija u Androidu uključena</string>
     <string name="sfp_show_advanced">Prikaži e-poštu i napredne opcije</string>
     <string name="sfp_hide_advanced">Sakrij e-poštu i napredne opcije</string>
     <string name="sfp_group_email_attendees">E-pošta sudionicima</string>
@@ -489,6 +523,7 @@
     <string name="sfp_hero_subtitle_ok">Svi omogućeni računi su ažurni</string>
     <string name="sfp_hero_subtitle_warn">Jedan ili više računa treba sinkronizaciju ili prijavu</string>
     <string name="sfp_sync_all_now">Sinkroniziraj sve sada</string>
+    <string name="sfp_auto_sync_off">Automatska sinkronizacija u Androidu je isključena: računi se sinkroniziraju samo kad dodirnete Sinkroniziraj</string>
     <string name="sfp_tile_logs">Zapis sinkronizacije</string>
     <string name="sfp_tile_backup">Sigurnosna kopija</string>
     <string name="sfp_tile_battery">Baterija</string>
@@ -527,6 +562,10 @@
     <string name="notification_contacts_too_large_summary">Ovi kontakti na %1$s preveliki su za Androidovu pohranu kontakata. U Protonu ostaju potpuni:</string>
     <string name="notification_contacts_too_large_outdated">ovaj telefon zadržava stariju verziju</string>
     <string name="notification_contacts_too_large_missing">nije na ovom telefonu</string>
+    <string name="notification_contacts_delete_refused_title">Neke kontakte nije bilo moguće izbrisati u Protonu</string>
+    <string name="notification_contacts_delete_refused_summary">Ovi kontakti na %1$s izbrisani su s ovog telefona, ali ih je Proton odbio izbrisati. I dalje postoje u Protonu i na vašim drugim uređajima:</string>
+    <string name="notification_events_delete_refused_title">Neke događaje nije bilo moguće izbrisati u Protonu</string>
+    <string name="notification_events_delete_refused_summary">Ovi događaji na %1$s izbrisani su s ovog telefona, ali ih je Proton odbio izbrisati. I dalje postoje u Protonu i na vašim drugim uređajima:</string>
     <string name="notification_conflict_title">Događaj promijenjen na dva mjesta</string>
     <string name="notification_conflict_body">„%1$s“ uređen je na ovom telefonu i u Proton Calendaru. Koju verziju želite zadržati?</string>
     <string name="notification_conflict_body_shared">„%1$s“ uređen je na ovom telefonu i od strane %2$s u Proton Calendaru. Zadržavanjem svoje verzije zamijenit ćete njegovu.</string>

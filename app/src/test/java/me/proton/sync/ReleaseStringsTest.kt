@@ -8,9 +8,10 @@ import org.junit.Test
 import java.io.File
 
 /**
- * The strings 2.0.2 to 2.0.4 added or reworded exist once in every language, in the main set and in the direct
- * flavour's subscription set, and none of them has an em or en dash. A language without one falls back to English on
- * that screen, which lint reports only as a warning. The keys 2.0.2 and 2.0.4 removed stay removed. The files are read as in
+ * The strings 2.0.2 to 2.0.4 added or reworded, and the ones a later release put on screen, exist once in every language,
+ * in the main set and in the direct flavour's subscription set, and none of them has an em or en dash. A language without
+ * one falls back to English on that screen, which lint reports only as a warning. The keys 2.0.2, 2.0.4 and 2.2.0
+ * removed stay removed. The files are read as in
  * [me.proton.sync.billing.ActiveStatusLineTest]; app/build.gradle.kts declares both sets as test inputs, so an
  * edited translation alone re-runs this test.
  */
@@ -40,6 +41,46 @@ class ReleaseStringsTest {
         "info_file_logging_body",
         "backup_result_done",
         "backup_result_partial",
+        // 2.2.0: the interval row, its info dialog and its picker read "Sync interval".
+        "sync_interval_title",
+        // 2.2.0: the Default calendar row with its dialogs and toasts, a new event held in a shared calendar (its
+        // notification, buttons and info text), and the reworded calendar sync info.
+        "label_default_calendar",
+        "info_default_calendar_body",
+        "default_calendar_connecting",
+        "default_calendar_changed",
+        "default_calendar_unreachable",
+        "default_calendar_refused",
+        "default_calendar_none_own",
+        "default_calendar_incomplete",
+        "notification_new_event_hold_title",
+        "notification_new_event_hold_body",
+        "notification_new_event_hold_body_unknown_app",
+        "action_new_event_move",
+        "action_new_event_publish",
+        "info_new_event_holds_body",
+        "info_sync_calendar_body",
+        // 2.2.0: Android's automatic sync switch (the overview line while it is off, the interval and Fallback full
+        // sync texts, the Backups switch with its info text and skipped line), and the reworded Remove older events
+        // info; info_verbose_logging_body, reworded too, is pinned above.
+        "sfp_auto_sync_off",
+        "sfp_event_loop_subtitle",
+        "info_event_loop_body",
+        "info_fallback_full_sync_body",
+        "backup_when_auto_sync_off_label",
+        "info_backup_when_auto_sync_off_body",
+        "backup_last_skipped_auto_sync_off",
+        "info_trim_old_events_body",
+        // 2.2.0: the four failure texts that say "Tap Sync to try again." while Android retries no failed sync.
+        "error_no_internet_tap_sync",
+        "error_too_many_requests_tap_sync",
+        "error_server_error_tap_sync",
+        "error_connection_interrupted_tap_sync",
+        // 2.2.0: the lasting notices of the contact and event deletions Proton refused three times in a row.
+        "notification_contacts_delete_refused_title",
+        "notification_contacts_delete_refused_summary",
+        "notification_events_delete_refused_title",
+        "notification_events_delete_refused_summary",
     )
 
     private val directKeys = listOf(
@@ -70,6 +111,11 @@ class ReleaseStringsTest {
         "label_subscription_trial", "spp_subscribe_open_checkout", "spp_subscribe_error_transaction",
         // 2.0.4: three counts in one string; a template with three plurals replaces each.
         "backup_result_success", "backup_result_incomplete",
+        // 2.2.0: the event loop is gone; the interval row reads sync_interval_title.
+        "label_event_loop_interval", "dialog_title_event_loop_interval",
+        // 2.2.0, before release: a skipped scheduled backup has a line of its own (backup_last_skipped_auto_sync_off)
+        // instead of a result that took the last backup's place.
+        "backup_result_skipped_auto_sync_off",
     )
 
     /** values plus every values-xx that has a strings.xml: English and the 24 translations. */

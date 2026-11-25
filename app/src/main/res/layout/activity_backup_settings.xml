@@ -147,6 +147,35 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
+        <!-- Back up even when Android's automatic sync is off (off by default): a scheduled backup follows Android's
+             "Auto sync data" switch unless this is on (BackupScheduleWorker.runsScheduled); "Back up now" never
+             reads it. The account card's switch row: label, info icon, switch. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/backup_when_auto_sync_off_label"
+                android:textColor="@color/sfp_text"
+                android:textSize="@dimen/sfp_text_row_title" />
+
+            <ImageView android:id="@+id/info_backup_when_auto_sync_off" style="@style/InfoIcon" />
+
+            <!-- The switch has no text of its own, so TalkBack needs its name here. -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_backup_when_auto_sync_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/backup_when_auto_sync_off_label" />
+        </LinearLayout>
+
         <!-- What to back up -->
         <TextView
             android:layout_width="match_parent"
@@ -242,6 +271,17 @@
             android:text="@string/backup_last_never"
             android:textSize="13sp"
             android:alpha="0.75" />
+
+        <!-- A scheduled backup skipped since the last run because Android's automatic sync is off (BackupResultLines):
+             the result line's own style, shown only while there is such a skip. -->
+        <TextView
+            android:id="@+id/text_backup_skipped"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="13sp"
+            android:alpha="0.75"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"

@@ -7,6 +7,8 @@ internal class FakePrefs : SharedPreferences {
     val values = HashMap<String, Any?>()
     /** Edits written with commit(), the synchronous write, rather than apply(). */
     var commits = 0
+    /** What commit() reports, as Android's does for the disk write only: the change is in memory either way. */
+    var commitResult = true
     override fun getAll(): MutableMap<String, *> = values
     override fun getString(key: String, defValue: String?) = values[key] as? String ?: defValue
     @Suppress("UNCHECKED_CAST")
@@ -30,7 +32,7 @@ internal class FakePrefs : SharedPreferences {
         override fun putBoolean(key: String, value: Boolean) = apply { pending[key] = value }
         override fun remove(key: String) = apply { removed.add(key) }
         override fun clear() = apply { removed.addAll(values.keys) }
-        override fun commit(): Boolean { apply(); commits++; return true }
+        override fun commit(): Boolean { apply(); commits++; return commitResult }
         override fun apply() {
             removed.forEach { values.remove(it) }
             values.putAll(pending)

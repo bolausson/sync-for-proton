@@ -412,11 +412,17 @@ class ExternalReplacementTest {
     }
 
     @Test
-    fun `every re-key marks the moved events before it moves them, and the reuse is 2_0_4's`() {
+    fun `every re-key marks the moved events before it moves them, and the reuse is 2_0_4's but never of a listed calendar's row`() {
         val rekey = src.substringAfter("for (old in supersededMappings) {").substringBefore("calendarSyncDao.deleteByProtonId")
         assertTrue(rekey, rekey.indexOf("RemoteDeletionGuard.markRekeyed(") in 0 until rekey.indexOf("reassignCalendar("))
         assertTrue(rekey, !rekey.contains("if ("))
-        assertTrue(src.contains("val orphanedCalId = existingLocalCalendars[displayName]?.firstOrNull()\n"))
+        // 2.0.4's reuse by name, except that a row another calendar Proton still lists maps to is no longer taken over
+        // (that merged two calendars into one row). A row of a calendar gone from Proton still is, so the re-key above
+        // still happens (CalendarRowClaimsTest pins both).
+        assertTrue(src.contains("val sameNameRows = existingLocalCalendars[displayName]\n"))
+        assertTrue(src.contains(
+            "val orphanedCalId = CalendarRowClaims.reusableRow(sameNameRows, calInfo.id, existingCalMappings.values, allServerCalIds)\n"
+        ))
         assertTrue(!src.contains("takenOverWritable"))
     }
 

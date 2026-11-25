@@ -192,15 +192,39 @@ object SyncPreferences {
     /** Default number of future days to sync for calendar events. */
     const val DEFAULT_FUTURE_DAYS = 365L
 
-    // ---- Event loop settings ----
+    // ---- Primary calendar ----
 
-    /** Key for the stored event loop ID (last processed event ID per account). */
-    fun eventLoopIdKey(accountName: String) =
-        "event_loop_id_$accountName"
+    /**
+     * The account's last primary-calendar decision ([me.proton.sync.calendar.PrimaryCalendarMemory]), so a calendar
+     * sync can log when the choice moved and the calendar-picks debug verb can show it. It is also what the account
+     * card's "Default calendar" row shows, and what a choice made there writes (PrimaryCalendarPicks), always under
+     * that object's per-account lock.
+     *
+     * The account name must stay a *suffix*, as on [contactFilterRulesKey]: an account rename rewrites keys by an
+     * `_<oldName>` token at the end ([renamedAccountKey]). Device-local: a copy of a Proton setting, not in the settings
+     * backup's allowlist, and written again by the first calendar sync after an import.
+     */
+    fun primaryCalendarLastKey(accountName: String) =
+        "primary_calendar_last_$accountName"
 
-    /** Key for the calendar-settings-dirty flag (triggers re-read on next sync). */
-    fun calendarSettingsDirtyKey(accountName: String) =
-        "calendar_settings_dirty_$accountName"
+    /**
+     * Debug builds only: what the next calendar sync takes as Proton's calendar settings instead of asking
+     * (the default-calendar-fixture debug verb): "fail", "null", or "id:<Proton calendar id>". Release builds never
+     * read it. Account name as a suffix, for the same reason as [primaryCalendarLastKey].
+     */
+    fun debugDefaultCalendarFixtureKey(accountName: String) =
+        "debug_default_calendar_fixture_$accountName"
+
+    // ---- New events held in shared calendars ----
+
+    /**
+     * The account's new events that an app which is not a calendar app wrote into a calendar someone else shared with
+     * it, held before they reach Proton: a StringSet, one entry per series (me.proton.sync.calendar.NewEventHoldStore).
+     * Device-local Android ids, so not in the settings backup's allowlist, like [contactFilterKeptLocalKey]. The account
+     * name stays the suffix, so [renamedAccountKey] carries it and an account removal drops it.
+     */
+    fun newEventHoldsKey(accountName: String) =
+        "new_event_holds_$accountName"
 
     // ---- Contact filter rules ----
 
@@ -217,7 +241,7 @@ object SyncPreferences {
     /**
      * Set when the rules change, so the next sync re-evaluates every contact.
      *
-     * Mirrors [calendarSettingsDirtyKey]. On its own a trigger is not enough here: the contacts
+     * On its own a trigger is not enough here: the contacts
      * adapter skips unchanged contacts by comparing timestamps, so the cached verdict stamped into
      * each mapping row also has to be invalidated. This flag is the trigger half.
      */
@@ -256,6 +280,73 @@ object SyncPreferences {
         "contact_create_reasons_$accountName"
 
     /**
+     * Refusal counts for contacts deleted on the phone whose deletion Proton refused ("rawId:n,..."): only the first few
+     * refusals of one deletion fail their sync. See [me.proton.sync.contacts.ContactDeletionFailures]. Local raw contact
+     * ids, so like the create strikes above deliberately not in the backup allowlist.
+     */
+    fun contactDeleteStrikesKey(accountName: String) =
+        "contact_delete_strikes_$accountName"
+
+    /**
+     * The raw contact ids the lasting notice of refused contact deletions named when an upload last settled it
+     * ("rawId,..."), so a deletion refused for good is named once even when the upload of its third refusal stopped
+     * before the notice was settled. See [me.proton.sync.contacts.ContactDeletionFailures]. Local raw contact ids, so
+     * like the counts above deliberately not in the backup allowlist.
+     */
+    fun contactDeleteNoticedKey(accountName: String) =
+        "contact_delete_noticed_$accountName"
+
+    /**
+     * Refusal counts for events deleted on the phone whose deletion Proton refused ("androidEventId:n,..."): only the first
+     * few refusals of one deletion fail their sync. See [me.proton.sync.calendar.EventDeletionFailures]. Android event ids
+     * of this phone, so like the contacts' counts above deliberately not in the backup allowlist.
+     */
+    fun eventDeleteStrikesKey(accountName: String) =
+        "event_delete_strikes_$accountName"
+
+    /**
+     * The Android event ids the lasting notice of refused event deletions named when an upload last settled it
+     * ("androidEventId,..."), as [contactDeleteNoticedKey] keeps the contacts' ones. See
+     * [me.proton.sync.calendar.EventDeletionFailures]. Android event ids of this phone, so not in the backup allowlist.
+     */
+    fun eventDeleteNoticedKey(accountName: String) =
+        "event_delete_noticed_$accountName"
+
+    /**
+     * Refusal counts of the deletion pass ("protonEventId:n,..."): mapped events whose phone rows vanished without a
+     * tombstone, whose deletion Proton refused. The third refusal gives the deletion up and the event comes back. See
+     * [me.proton.sync.calendar.DeletionPassRefusals]. By Proton event id, as the row is gone; about this phone's rows, so
+     * like the counts above deliberately not in the backup allowlist.
+     */
+    fun eventDeletePassStrikesKey(accountName: String) =
+        "event_delete_pass_strikes_$accountName"
+
+    /**
+     * Rejection counts of the deletion pass ("protonEventId:n,..."): deletions Proton answered 200 with their operation
+     * rejected (DeleteOpVerdict.REJECTED), kept apart from the refusals above. The third gives the deletion up and the
+     * event comes back. See [me.proton.sync.calendar.DeletionPassRefusals]. Until 2.2.0 under delete_reject_count_<id>,
+     * which the stale-counter sweep dropped at every sync. By Proton event id, as the row is gone; about this phone's
+     * rows, so not in the backup allowlist.
+     */
+    fun eventDeletePassRejectsKey(accountName: String) =
+        "event_delete_pass_rejects_$accountName"
+
+    /**
+     * Set by an account rename that took the refused-contacts notice (contacts_rejected_<account>) down while it was on
+     * screen: the next upload under the new name posts it again. See [me.proton.sync.contacts.ContactNoticeReposts].
+     * About this phone's notifications, so not in the backup allowlist.
+     */
+    fun contactsRejectedRepostKey(accountName: String) =
+        "contacts_rejected_repost_$accountName"
+
+    /**
+     * The same for the too-large notice (contacts_too_large_<account>): the next download under the new name posts it
+     * again. See [me.proton.sync.contacts.ContactNoticeReposts]. Not in the backup allowlist.
+     */
+    fun contactsTooLargeRepostKey(accountName: String) =
+        "contacts_too_large_repost_$accountName"
+
+    /**
      * Contacts too large to write to this phone, with the modify time they had ("time:kind:protonId").
      * See [me.proton.sync.contacts.ContactDownloadHolds]. About this phone's storage, so not in the
      * backup allowlist.
@@ -263,9 +354,13 @@ object SyncPreferences {
     fun contactDownloadTooLargeKey(accountName: String) =
         "contact_download_too_large_$accountName"
 
-    // ---- Fallback / event loop interval settings (added v1.3.x) ----
+    // ---- Sync interval and fallback settings ----
 
-    /** Key for the event loop polling interval (seconds as String). */
+    /**
+     * The account's sync interval in seconds, as text ("-1" = Manual only): the period of Android's periodic syncs
+     * (SyncUtils.applyPeriodicSync), and what SyncScheduling reads as Manual only. Named after the event loop that first
+     * used it; the key must not change, because every settings backup carries it.
+     */
     fun eventLoopIntervalKey(accountName: String) =
         "event_loop_interval_$accountName"
 
@@ -480,11 +575,33 @@ object SyncPreferences {
     /** How many timestamped runs to keep before pruning the oldest (String). */
     const val KEY_BACKUP_RETENTION = "data_backup_retention_count"
 
-    /** Epoch-millis of the last completed backup run (0/absent = never). */
+    /**
+     * "Back up even when automatic sync is off" (Boolean, device-wide, [DEFAULT_BACKUP_WHEN_AUTO_SYNC_OFF]): a scheduled
+     * backup runs while Android's own automatic sync switch is off too. Off, it follows that switch, as every
+     * background sync does (BackupScheduleWorker). "Back up now" never reads it.
+     */
+    const val KEY_BACKUP_WHEN_AUTO_SYNC_OFF = "data_backup_when_auto_sync_off"
+
+    /** Off: a scheduled backup downloads everything from Proton only while Android's automatic sync is on. */
+    const val DEFAULT_BACKUP_WHEN_AUTO_SYNC_OFF = false
+
+    /**
+     * Epoch-millis of the last backup run that recorded a result (0/absent = never): a backup, a failure, a lost folder
+     * or the emptiness guard's skip. A scheduled backup skipped because Android's automatic sync is off leaves it alone
+     * ([KEY_BACKUP_LAST_SKIP_MS]). Written only by backup.BackupResultLines.
+     */
     const val KEY_BACKUP_LAST_RUN_MS = "data_backup_last_run_ms"
 
-    /** Short human-readable summary of the last run (success/skip/failure + counts). */
+    /** Short human-readable summary of that run (success/skip/failure + counts). */
     const val KEY_BACKUP_LAST_RESULT = "data_backup_last_result"
+
+    /**
+     * Epoch-millis of the last scheduled backup skipped because Android's automatic sync is off, while no run has
+     * recorded a result since (0/absent = none): the Backups screen's second line under "Back up now", shown only while
+     * a scheduled backup would still be skipped (backup.BackupResultLines.skipsNow). The next run that records a result
+     * removes it. Device-wide, and a log rather than a setting, so never in a settings backup.
+     */
+    const val KEY_BACKUP_LAST_SKIP_MS = "data_backup_last_skip_ms"
 
     /** Total item count (events + contacts) of the last successful run — feeds the emptiness guard. */
     const val KEY_BACKUP_LAST_TOTAL = "data_backup_last_total"
@@ -529,7 +646,8 @@ object SyncPreferences {
         KEY_BACKUP_INCLUDE_CALENDARS, KEY_BACKUP_INCLUDE_CONTACTS, KEY_BACKUP_ENCRYPTION_ENABLED,
         KEY_BACKUP_PASSPHRASE_ENC, KEY_BACKUP_RETENTION, KEY_BACKUP_LAST_RUN_MS,
         KEY_BACKUP_LAST_RESULT, KEY_BACKUP_LAST_TOTAL, KEY_BACKUP_REMINDER_SHOWN,
-        KEY_BACKUP_REMINDER_OPTED_OUT, KEY_BACKUP_REMINDER_LAST_SHOWN_MS,
+        KEY_BACKUP_REMINDER_OPTED_OUT, KEY_BACKUP_REMINDER_LAST_SHOWN_MS, KEY_BACKUP_WHEN_AUTO_SYNC_OFF,
+        KEY_BACKUP_LAST_SKIP_MS,
     )
 
     /**
@@ -567,12 +685,15 @@ object SyncPreferences {
      * name had synced before, so with Android's automatic sync off its first sync was never asked for.
      */
     val ACCOUNT_SCOPED_PREFIXES: List<String> = listOf(
-        "event_loop_interval_", "event_loop_id_",
+        "event_loop_interval_",
         "calendar_sync_mode_", "calendar_past_days_", "calendar_future_days_",
-        "calendar_settings_dirty_", "calendar_pending_cancels_", "calendar_trim_past_", "calendar_trim_inflight_",
+        "calendar_pending_cancels_", "calendar_trim_past_", "calendar_trim_inflight_",
+        "primary_calendar_last_", "debug_default_calendar_fixture_", "new_event_holds_",
         "contact_filter_rules_", "contact_filter_dirty_", "contact_filter_kept_local_",
         "contact_create_strikes_", "contact_create_refused_", "contact_create_reasons_",
-        "contact_download_too_large_",
+        "contact_delete_strikes_", "contact_delete_noticed_", "contact_download_too_large_", "event_delete_strikes_",
+        "event_delete_noticed_", "event_delete_pass_strikes_", "event_delete_pass_rejects_",
+        "contacts_rejected_repost_", "contacts_too_large_repost_",
         "conflict_held_", "conflict_local_wins_",
         "display_name_user_chosen_", "display_name_recovery_offered_",
         "fallback_contacts_enabled_", "fallback_contacts_interval_",

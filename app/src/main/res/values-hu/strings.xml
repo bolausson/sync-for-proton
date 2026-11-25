@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Feliratkozott/import\u00e1lt napt\u00e1rak kihagy\u00e1sa (pl. Google)</string>
     <string name="label_expand">Kibont\u00e1s</string>
     <string name="label_display_name">Megjelen\u00edt\u00e9si n\u00e9v</string>
-    <string name="label_event_loop_interval">Esem\u00e9nyhurok id\u0151k\u00f6z</string>
     <string name="label_fallback_full_sync">Tartal\u00e9k teljes szinkroniz\u00e1l\u00e1s</string>
     <string name="label_notify_on_failure">\u00c9rtes\u00edt\u00e9s hiba eset\u00e9n</string>
     <string name="label_notify_in_progress">\u00c9rtes\u00edt\u00e9s megjelen\u00edt\u00e9se szinkroniz\u00e1l\u00e1s k\u00f6zben</string>
@@ -102,7 +101,6 @@
     <string name="dialog_message_display_name">Válasszon új megjelenítési nevet ehhez a fiókhoz. A Beállítások → Fiókok kezelése menüben és a névjegyek \"Fiók\" alcímében jelenik meg.</string>
     <string name="dialog_title_past_events">M\u00faltbeli esem\u00e9nyek</string>
     <string name="dialog_title_future_events">J\u00f6v\u0151beli esem\u00e9nyek</string>
-    <string name="dialog_title_event_loop_interval">Esem\u00e9nyhurok id\u0151k\u00f6z</string>
     <string name="dialog_title_contacts_fallback">N\u00e9vjegyek tartal\u00e9k teljes szinkroniz\u00e1l\u00e1s</string>
     <string name="dialog_title_calendar_fallback">Napt\u00e1r tartal\u00e9k teljes szinkroniz\u00e1l\u00e1s</string>
     <string name="dialog_title_remove_account">Fi\u00f3k elt\u00e1vol\u00edt\u00e1sa</string>
@@ -159,13 +157,17 @@
     <string name="notification_sync_phase_decrypting">visszafejt\u00e9s %1$d/%2$d</string>
     <string name="label_sync_queued">V\u00e1rakozik szinkroniz\u00e1l\u00e1sra</string>
     <string name="error_no_internet">Nincs internetkapcsolat. A szinkroniz\u00e1l\u00e1s automatikusan \u00fajrapr\u00f3b\u00e1lkozik.</string>
+    <string name="error_no_internet_tap_sync">Nincs internetkapcsolat. Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1shoz koppintson egy szinkroniz\u00e1l\u00e1s gombra.</string>
     <string name="error_timeout">A szerver nem \u00e9rhet\u0151 el. Ellen\u0151rizze az internetkapcsolat\u00e1t.</string>
     <string name="error_session_expired">A munkamenet lej\u00e1rt. K\u00e9rj\u00fck, jelentkezzen be \u00fajra.</string>
     <string name="error_too_many_requests">T\u00fal sok k\u00e9r\u00e9s. A szinkroniz\u00e1l\u00e1s k\u00e9s\u0151bb \u00fajrapr\u00f3b\u00e1lkozik.</string>
+    <string name="error_too_many_requests_tap_sync">T\u00fal sok k\u00e9r\u00e9s. Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1shoz koppintson egy szinkroniz\u00e1l\u00e1s gombra.</string>
     <string name="error_server_error">Proton szerverhiba. A szinkroniz\u00e1l\u00e1s automatikusan \u00fajrapr\u00f3b\u00e1lkozik.</string>
+    <string name="error_server_error_tap_sync">Proton szerverhiba. Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1shoz koppintson egy szinkroniz\u00e1l\u00e1s gombra.</string>
     <string name="error_request_rejected">A szinkroniz\u00e1l\u00e1si k\u00e9r\u00e9st a szerver elutas\u00edtotta.</string>
     <string name="error_ssl">A biztons\u00e1gos kapcsolat sikertelen. Ellen\u0151rizze a h\u00e1l\u00f3zatot.</string>
     <string name="error_connection_interrupted">A kapcsolat megszakadt. A szinkroniz\u00e1l\u00e1s \u00fajrapr\u00f3b\u00e1lkozik.</string>
+    <string name="error_connection_interrupted_tap_sync">A kapcsolat megszakadt. Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1shoz koppintson egy szinkroniz\u00e1l\u00e1s gombra.</string>
     <string name="error_unexpected">V\u00e1ratlan hiba t\u00f6rt\u00e9nt a szinkroniz\u00e1l\u00e1s sor\u00e1n.</string>
     <string name="notification_channel_auth">Hiteles\u00edt\u00e9s</string>
     <string name="notification_channel_auth_description">\u00dajrabejelentkez\u00e9si \u00e9rtes\u00edt\u00e9sek</string>
@@ -267,16 +269,16 @@
     <string name="label_info">További információ</string>
     <string name="info_language_body">Beállítja az alkalmazás saját képernyőin használt nyelvet. Az \"Auto\" a telefon rendszernyelvét követi. Ez csak az alkalmazás felületét módosítja, nem fordítja le a szinkronizált naptáreseményeidet vagy névjegyeidet.</string>
     <string name="info_display_name_body">Az ehhez a fiókhoz megjelenített név az Android Beállítások → Fiókok menüben, valamint a naptár-/névjegyalkalmazások választóiban. Ez csak egy helyi címke; a módosítása nem érinti a Proton fiókodat.\n\nMegjegyzés: a Samsung Calendar és a Samsung Contacts figyelmen kívül hagyja az egyéni fióknevet, és mindig a saját címkéjét jeleníti meg (pl. \"Proton\"). Az általad választott név ott esetleg nem jelenik meg, ez egy Samsung-korlátozás, amelyet nem tudunk megváltoztatni. Más alkalmazások (Google Calendar/Contacts) normálisan megjelenítik.</string>
-    <string name="info_event_loop_body">Milyen gyakran ellenőrzi az alkalmazás a Protont a háttérben a névjegyeid és naptárad távoli változásai miatt. A rövidebb időközök gyorsabban felszínre hozzák a változásokat, de több akkumulátort és adatot használnak. Ez független a kézi szinkronizálástól, amelyet bármikor elindíthatsz a szinkronizálás gombokkal.</string>
+    <string name="info_event_loop_body">Milyen gyakran ellenőrzi az alkalmazás a Protont a háttérben a névjegyei és naptára távoli változásai miatt. Ezek az ellenőrzések csak akkor futnak, ha az Android automatikus szinkronizálása be van kapcsolva; amíg ki van kapcsolva, semmi sem szinkronizálódik magától. A rövidebb időközök gyorsabban felszínre hozzák a változásokat, de több akkumulátort és adatot használnak. Ez független a kézi szinkronizálástól, amelyet bármikor elindíthat a szinkronizálás gombokkal.</string>
     <string name="info_notify_in_progress_body">Néma, folyamatos értesítést jelenít meg a szinkronizálás futása közben, élő folyamatjelzéssel (vizsgálat, letöltés, visszafejtés). Az értesítési panel alján helyezkedik el, és soha nem ad ki hangot. Kapcsold ki, ha inkább azt szeretnéd, hogy a szinkronizálás láthatatlanul fusson.</string>
     <string name="info_sync_contacts_body">Bekapcsolva a Proton névjegyeid kétirányúan szinkronizálódnak az Android névjegyeivel: a bármelyik oldalon végzett változások egyesülnek.\n\nMegjegyzés: a Samsung Contacts a névjegyeket egyetlen \"Proton contacts\" fiókcímke alatt jeleníti meg, és elrejti az e-mail alcímet a hozzánk hasonló harmadik féltől származó fiókoknál, ez egy beégetett Samsung-korlátozás, amelyet nem tudunk megváltoztatni. A Google Contacts és a legtöbb más alkalmazás normálisan megjeleníti őket.</string>
-    <string name="info_fallback_full_sync_body">Milyen gyakran végez az alkalmazás teljes újraellenőrzést a gyors növekményes szinkronizálás helyett. A teljes szinkronizálás elkap mindent, amit egy növekményes menet esetleg kihagyna (pl. offline állapotban végzett változásokat) több idő és adat árán. Hagyd az alapértelmezett értéken, hacsak nem gyanítod, hogy egyes elemek nem szinkronizálódnak.</string>
+    <string name="info_fallback_full_sync_body">Milyen gyakran végez az alkalmazás teljes újraellenőrzést a gyors növekményes szinkronizálás helyett. Ez csak akkor fut, ha az Android automatikus szinkronizálása be van kapcsolva. A teljes szinkronizálás elkap mindent, amit egy növekményes menet esetleg kihagyna (pl. offline állapotban végzett változásokat) több idő és adat árán. Hagyja az alapértelmezett értéken, hacsak nem gyanítja, hogy egyes elemek nem szinkronizálódnak.</string>
     <string name="info_notify_on_failure_body">Értesítést jelenít meg, ha egy szinkronizálás sikertelen (pl. hálózati hiba vagy lejárt munkamenet). Koppints rá az egyszerű nyelven megfogalmazott okért és a naplókra mutató hivatkozásért. Kapcsold ki, ha nem szeretnél értesítést kapni az átmeneti hibákról.</string>
-    <string name="info_sync_calendar_body">Bekapcsolva a Proton naptáraid az Android naptárába szinkronizálódnak, így az események megjelennek a Google Calendarban, a Samsung Calendarban és bármely más naptáralkalmazásban. Kétirányú: a telefonon végzett szerkesztések visszatöltődnek a Protonra a tulajdonodban lévő naptárak esetén.</string>
+    <string name="info_sync_calendar_body">Bekapcsolva a Proton-naptárai az Android naptárába szinkronizálódnak, így az események megjelennek a Google Calendarban, a Samsung Calendarban és bármely más naptáralkalmazásban. Kétirányú: a telefonon végzett szerkesztések visszatöltődnek a Protonra minden olyan naptárnál, amelyet szerkeszthet, azoknál is, amelyeket mások osztottak meg Önnel.</string>
     <string name="info_include_external_calendars_body">A Proton tárolhat feliratkozott naptárakat (pl. egy külső ICS-hírcsatornát) és ünnepnaptárakat. Ezek a Proton oldalán csak olvashatók. Kikapcsolva az alkalmazás kihagyja őket, és csak a saját, szerkeszthető naptáraidat szinkronizálja. Kapcsold be, ha azokat a csak olvasható naptárakat is tükrözni szeretnéd a telefonodon.</string>
     <string name="info_sync_mode_body">Az \"Összes esemény\" a teljes naptáradat és az összes jövőbeli eseményt szinkronizálja, a legjobb, ha mindent a telefonodon szeretnél (egy nagy naptár első szinkronizálása több percig is eltarthat). Az \"Egyéni időszak\" csak a mai nap körüli napok ablakát szinkronizálja, hogy a nagy naptárak gyorsak maradjanak: az ablakon kívüli eseményeik nem töltődnek le, a telefonon már meglévő események pedig megmaradnak, hacsak a naptáruknál nincs bekapcsolva a \"Régebbi események eltávolítása erről a telefonról\" beállítás. A kis naptárak mindig teljesen szinkronizálódnak.</string>
     <string name="label_trim_old_events">Régebbi események eltávolítása erről a telefonról</string>
-    <string name="info_trim_old_events_body">A kiválasztott naptárak azon eseményeit, amelyek több mint egy nappal a beállított időszak kezdete előtt értek véget, az alkalmazás eltávolítja erről a telefonról, most és a későbbi szinkronizálásokkor is. A Proton-fiókban megmaradnak, ott semmi sem törlődik. A saját naptárak biztonsági mentései a Protonból készülnek, így azokban továbbra is megvannak; a feliratkozott naptárakról és az ünnepnaptárakról nem készül biztonsági mentés. Az ismétlődő esemény az összes korábbi időpontjával együtt megmarad, amíg átnyúlik a beállított időszakba, vagy nincs befejező dátuma, mert a telefon az ismétlődő eseményt egyetlen bejegyzésként tárolja. A Protonnak még el nem küldött módosításokat tartalmazó események szintén megmaradnak, és azok az események is, amelyeket az elmúlt 7 napban hoztak létre vagy módosítottak utoljára, a telefonon lévő változatuk szerint, nem pedig aszerint, hogy mikor töltötte le a telefon. Csak a teljes szinkronizáláshoz túl nagy naptárak választhatók ki, és az időszak utáni eseményeket az alkalmazás soha nem távolítja el. Az eltávolított események hosszabb időszak vagy az \"Összes esemény\" kiválasztásával hozhatók vissza.</string>
+    <string name="info_trim_old_events_body">A kiválasztott naptárak azon eseményeit, amelyek több mint egy nappal a beállított időszak kezdete előtt értek véget, az alkalmazás a következő szinkronizáláskor eltávolítja erről a telefonról, a későbbieket pedig akkor, amikor ugyanilyen régiek lesznek. A Proton-fiókban megmaradnak, ott semmi sem törlődik. A saját naptárak biztonsági mentései a Protonból készülnek, így azokban továbbra is megvannak; a feliratkozott naptárakról és az ünnepnaptárakról nem készül biztonsági mentés. Az ismétlődő esemény az összes korábbi időpontjával együtt megmarad, amíg átnyúlik a beállított időszakba, vagy nincs befejező dátuma, mert a telefon az ismétlődő eseményt egyetlen bejegyzésként tárolja. A Protonnak még el nem küldött módosításokat tartalmazó események szintén megmaradnak, és azok az események is, amelyeket az elmúlt 7 napban hoztak létre vagy módosítottak utoljára, a telefonon lévő változatuk szerint, nem pedig aszerint, hogy mikor töltötte le a telefon. Csak a teljes szinkronizáláshoz túl nagy naptárak választhatók ki, és az időszak utáni eseményeket az alkalmazás soha nem távolítja el. Az eltávolított események hosszabb időszak vagy az \"Összes esemény\" kiválasztásával hozhatók vissza.</string>
     <string name="trim_dialog_title">Régebbi események eltávolítása erről a telefonról</string>
     <string name="trim_dialog_intro">Válassza ki, mely naptárakat szeretné rendbe tenni. Azokat az eseményeket, amelyek %1$s előtt értek véget, az alkalmazás a következő szinkronizáláskor eltávolítja erről a telefonról, a későbbieket pedig akkor, amikor ugyanilyen régiek lesznek. A Proton-fiókban megmaradnak. Az ezen a dátumon túl is folytatódó ismétlődő esemény az összes időpontjával együtt megmarad.</string>
     <plurals name="trim_calendar_count">
@@ -296,6 +298,32 @@
     </plurals>
     <string name="trim_dialog_save">Mentés</string>
     <string name="trim_read_failed">A telefonon lévő naptárakat nem sikerült beolvasni, ezért semmi sem változott.</string>
+    <string name="label_default_calendar">Alapértelmezett naptár</string>
+    <string name="info_default_calendar_body">Az új események a Protonban beállított alapértelmezett naptárba kerülnek, és ez a telefon a fiók fő naptáraként jelöli meg. Ha itt módosítja, a Protonban is módosul, így a webes Proton, a Proton alkalmazásai és a Proton Mailben megválaszolt meghívók is az újat használják. Alapértelmezett csak saját, aktív naptár lehet, megosztott, feliratkozott vagy ünnepnaptár nem.</string>
+    <string name="default_calendar_connecting">Kapcsolódás a Protonhoz…</string>
+    <string name="default_calendar_changed">Alapértelmezett naptár módosítva</string>
+    <string name="default_calendar_unreachable">A Proton nem érhető el. Próbálja újra egy kis idő múlva.</string>
+    <string name="default_calendar_refused">A Proton nem fogadta el a módosítást, ezért semmi sem változott.</string>
+    <string name="default_calendar_none_own">Ennek a fióknak nincs olyan saját, aktív naptára, amely alapértelmezett lehetne. Megosztott, feliratkozott és ünnepnaptár nem lehet alapértelmezett.</string>
+    <string name="default_calendar_incomplete">Ennek a fióknak nem minden naptárát sikerült beolvasni, ezért az alapértelmezett naptára itt nem módosítható.</string>
+    <string name="notification_new_event_hold_title">Új esemény egy megosztott naptárban</string>
+    <string name="notification_new_event_hold_body">A(z) %1$s alkalmazás felvette a(z) „%2$s” eseményt a(z) %3$s naptárba. Mások is látnák, akik hozzáférnek ehhez a naptárhoz.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Egy alkalmazás felvette a(z) „%1$s” eseményt a(z) %2$s naptárba. Mások is látnák, akik hozzáférnek ehhez a naptárhoz.</string>
+    <string name="action_new_event_move">Áthelyezés ide: %1$s</string>
+    <string name="action_new_event_publish">Közzététel</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d esemény döntésre vár</item>
+        <item quantity="other">%d esemény döntésre vár</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d esemény csak ezen a telefonon megtartva</item>
+        <item quantity="other">%d esemény csak ezen a telefonon megtartva</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">További %d esemény döntésre vár</item>
+        <item quantity="other">További %d esemény döntésre vár</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Ha egy olyan alkalmazás, amely nem naptáralkalmazás, eseményt vesz fel egy Önnel megosztott naptárba, az esemény ezen a telefonon vár, amíg nem dönt. Az „Áthelyezés” a megosztott naptár helyett az alapértelmezett naptárába teszi. A „Közzététel” elküldi a megosztott naptárba, ahol mindenki láthatja, aki hozzáfér. A „Megtartás a telefonon” soha nem küldi el a Protonba: nem lesz meg a Proton Calendarban, a webes Protonban, a többi eszközén és ennek az alkalmazásnak a biztonsági mentéseiben, és elvész, ha eltávolítja ezt az alkalmazást vagy ezt a fiókot. A megtartott események továbbra is ennek a fióknak a kártyáján szerepelnek, ahol később is áthelyezheti vagy közzéteheti őket.</string>
     <string name="info_sync_range_window_body">Hány napot szinkronizáljon a mai nap előtt és után, ha az \"Egyéni időszak\" van kiválasztva. A nagyobb ablakok többet mutatnak a naptáradból, de tovább tart a szinkronizálásuk. Az \"Összes esemény\" módban nincs hatása.</string>
     <string name="info_poll_attendee_body">Bekapcsolva az alkalmazás időnként újraellenőrzi a résztvevőkkel rendelkező eseményeket, hogy észlelje az elfogadás/elutasítás/feltételes válaszokat. A Proton változási hírcsatornája nem jelenti az RSVP-változásokat, így ehhez további API-hívások szükségesek, csak akkor érdemes engedélyezni, ha a résztvevők válaszainak megtekintésére támaszkodsz a telefonodon.</string>
     <string name="info_send_invites_body">Amikor résztvevőket adsz egy eseményhez a telefonodon, küldj nekik meghívót e-mailben. Alapértelmezés szerint kikapcsolva: csak akkor kapcsold be, ha azt szeretnéd, hogy az alkalmazás a nevedben küldjön e-mailt a résztvevőknek.</string>
@@ -303,7 +331,7 @@
     <string name="info_send_cancellations_body">E-mailt küld a résztvevőknek, amikor törölsz egy eseményt, amelyre meg vannak hívva, hogy az ő naptárukból is eltávolítsa azt. Alapértelmezés szerint kikapcsolva.</string>
     <string name="info_invite_subject_title_body">Meghívó e-mailek küldésekor az esemény címét az e-mail tárgysorába helyezi, hogy a címzettek egy pillantással felismerjék. Adatvédelmi okból alapértelmezés szerint kikapcsolva: az e-mailek tárgysorai a szabványos levéltovábbítás során nincsenek titkosítva, így a cím látható lenne az útvonalon lévő levelezőszerverek számára.</string>
     <string name="info_background_sync_body">Az Android felfüggesztheti a háttér-szinkronizálást az akkumulátor kímélése érdekében, ami késleltetheti vagy leállíthatja az automatikus szinkronizálást. Ha kizárod ezt az alkalmazást az akkumulátor-optimalizálásból, az megbízhatóan futtatja az ütemezett szinkronizálásokat. A gombbal nyisd meg az alkalmazás rendszer-akkumulátorbeállításait.</string>
-    <string name="info_verbose_logging_body">További diagnosztikai részleteket rögzít (hitelesítési állapot, kulcsfeloldás, szinkronizálás belső működése) a naplóban, ami hibabejelentéskor hasznos. Az alkalmazás a naplóban az e-mail-címeket rövid kódokra cseréli, de a napló tartalmazhat fiók- és naptárneveket, ezért a naplókat csak a fejlesztővel ossza meg. Normál használat esetén hagyja kikapcsolva.</string>
+    <string name="info_verbose_logging_body">További diagnosztikai részleteket rögzít (hitelesítési állapot, kulcsfeloldás, szinkronizálás belső működése) a naplóban, ami hibabejelentéskor hasznos. Amíg be van kapcsolva, a napló a naptárai és az azokba eseményeket felvevő alkalmazások nevét is tartalmazza. Az alkalmazás a naplóban az e-mail-címeket rövid kódokra cseréli, de a napló tartalmazhat fiók- és naptárneveket, ezért a naplókat csak a fejlesztővel ossza meg. Normál használat esetén hagyja kikapcsolva.</string>
     <string name="info_file_logging_body">Az alkalmazás naplóját időbélyeggel ellátott szövegfájlba (sync-for-proton-log-….txt) írja egy Ön által választott mappában. Egyébként az alkalmazás csak a memóriában tartja a naplót, ezért kapcsolja be ezt egy nehezen reprodukálható hiba rögzítéséhez. Az alkalmazás minden indításakor új fájl jön létre. Az alkalmazás a fájlban az e-mail-címeket rövid kódokra cseréli, de a fájl tartalmazhat fiók- és naptárneveket, ezért csak a fejlesztővel ossza meg. Normál használathoz hagyja kikapcsolva.</string>
     <string name="info_timezone_updates_text">Az események időpontjai az időzóna-szabályoktól függenek, és az országok időről időre módosítják ezeket a szabályokat. Az Android a telefon időzóna-adataiban tárolja őket, amelyek a rendszerfrissítésekkel érkeznek. Az a telefon, amely már nem kapja meg őket, például egy régebbi Android-verzióval vagy Google Play-rendszerfrissítések nélkül, megtartja a régi szabályokat, és azokon a helyeken, ahol azóta megváltoztak a szabályok, az események rossz időpontban jelenhetnek meg.\n\nIdőzóna-adatok ezen a telefonon: %1$s verzió\n\nKikapcsolva (alapértelmezés) az alkalmazás a telefon saját időzóna-adatait használja, és semmit sem küld a www.tzurl.org-nak.\n\nBekapcsolva az alkalmazás a www.tzurl.org nevű külső szolgáltatásból letölti az eseményeid által használt összes időzóna aktuális szabályait, időzónánként legfeljebb egyszer az alkalmazás minden indítása után, és csak akkor használja őket, ha újabbak a telefon adatainál. A www.tzurl.org ekkor látja az IP-címedet és ezeknek az időzónáknak a nevét, például Europe/Berlin. Az eseményeidről és fiókjaidról semmi mást nem küld el. Ha a www.tzurl.org nem érhető el, a telefon adatai érvényesek. Az ismétlődő eseményeket továbbra is a telefon adataival számítja ki.\n\nVáltoztatás után a telefonon már meglévő eseményeket a következő szinkronizáláskor ellenőrzi és kijavítja.</string>
     <string name="tz_data_version_unknown">ismeretlen</string>
@@ -385,6 +413,8 @@
     <string name="backup_unit_days">naponta</string>
     <string name="backup_retention_label">Megőrzendő utolsó</string>
     <string name="backup_unit_runs">mentés</string>
+    <string name="backup_when_auto_sync_off_label">Mentés kikapcsolt automatikus szinkronizálás esetén is</string>
+    <string name="info_backup_when_auto_sync_off_body">Az Android „Adatok automatikus szinkronizálása” kapcsolója minden alkalmazás háttér-szinkronizálását leállítja, és az ütemezett mentések ehhez igazodnak: amíg ki van kapcsolva, az alkalmazás kihagyja az ütemezett mentést, és erről ez a képernyő a „Mentés most” gomb alatt tájékoztat. Kapcsolja be ezt a beállítást, ha az ütemezett mentéseket így is futtatni szeretné. Minden mentés letölti az összes naptárát és névjegyét a Protonból, ami sok mobiladatot fogyaszthat. A „Mentés most” gomb mindig működik.</string>
     <string name="backup_section_contents">Mit mentsen</string>
     <string name="backup_include_calendars_label">Naptárak (.ics)</string>
     <string name="backup_include_contacts_label">Névjegyek (.vcf)</string>
@@ -407,6 +437,7 @@
     <string name="backup_running">Mentés folyamatban…</string>
     <string name="backup_last_never">Még nincs mentés.</string>
     <string name="backup_last_run">Utolsó mentés: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Ütemezett mentés kihagyva (%1$s): az Android automatikus szinkronizálása ki van kapcsolva</string>
     <string name="backup_decrypt_action">Mentés visszafejtése…</string>
     <string name="backup_decrypt_body">Válasszon ki egy titkosított mentésfájlt (.gpg), és adja meg a jelszavát. A tartalom visszafejtve a mentési mappájába kerül.</string>
     <string name="backup_decrypting">Visszafejtés folyamatban…</string>
@@ -464,7 +495,7 @@
     <string name="sfp_group_account">Fiók</string>
     <string name="sfp_group_contacts">Névjegyek</string>
     <string name="sfp_group_calendar">Naptár</string>
-    <string name="sfp_event_loop_subtitle">Milyen gyakran keressen távoli változásokat</string>
+    <string name="sfp_event_loop_subtitle">Milyen gyakran keressen távoli változásokat, amíg az Android automatikus szinkronizálása be van kapcsolva</string>
     <string name="sfp_show_advanced">E-mail és speciális beállítások megjelenítése</string>
     <string name="sfp_hide_advanced">E-mail és speciális beállítások elrejtése</string>
     <string name="sfp_group_email_attendees">E-mail a résztvevőknek</string>
@@ -475,6 +506,7 @@
     <string name="sfp_hero_subtitle_ok">Minden engedélyezett fiók naprakész</string>
     <string name="sfp_hero_subtitle_warn">Egy vagy több fiók szinkronizálást vagy bejelentkezést igényel</string>
     <string name="sfp_sync_all_now">Mindent szinkronizálni most</string>
+    <string name="sfp_auto_sync_off">Az Android automatikus szinkronizálása ki van kapcsolva: a fiókok csak akkor szinkronizálódnak, ha egy szinkronizálás gombra koppint</string>
     <string name="sfp_tile_logs">Szinkronizálási napló</string>
     <string name="sfp_tile_backup">Biztonsági mentés</string>
     <string name="sfp_tile_battery">Akkumulátor</string>
@@ -513,6 +545,10 @@
     <string name="notification_contacts_too_large_summary">Ezek a névjegyek a(z) %1$s fiókon túl nagyok az Android névjegytárához. A Protonban hiánytalanok maradnak:</string>
     <string name="notification_contacts_too_large_outdated">ezen a telefonon egy régebbi változat marad</string>
     <string name="notification_contacts_too_large_missing">nincs ezen a telefonon</string>
+    <string name="notification_contacts_delete_refused_title">Néhány névjegy nem törlődött a Protonban</string>
+    <string name="notification_contacts_delete_refused_summary">Ezek a névjegyek a(z) %1$s fiókon törlődtek erről a telefonról, de a Proton elutasította a törlésüket. Továbbra is megvannak a Protonban és a többi eszközén:</string>
+    <string name="notification_events_delete_refused_title">Néhány esemény nem törlődött a Protonban</string>
+    <string name="notification_events_delete_refused_summary">Ezek az események a(z) %1$s fiókon törlődtek erről a telefonról, de a Proton elutasította a törlésüket. Továbbra is megvannak a Protonban és a többi eszközén:</string>
     <string name="notification_conflict_title">Az esemény két helyen módosult</string>
     <string name="notification_conflict_body">A(z) „%1$s“ módosult ezen a telefonon és a Proton Calendarban is. Melyik változatot szeretné megtartani?</string>
     <string name="notification_conflict_body_shared">A(z) „%1$s“ módosult ezen a telefonon, és %2$s is módosította a Proton Calendarban. Ha a sajátját tartja meg, az övé felülíródik.</string>

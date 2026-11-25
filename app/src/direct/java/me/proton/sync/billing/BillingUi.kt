@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import me.proton.sync.R
+import me.proton.sync.settings.AppDialogBuilder
 import me.proton.sync.SyncLog
 import me.proton.sync.settings.SyncSettingsActivity
 
@@ -156,7 +157,7 @@ object BillingUi {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, activity.resources.getDimension(R.dimen.sfp_text_row_title))
             })
         }
-        return AlertDialog.Builder(activity)
+        return AppDialogBuilder(activity)
             .setView(row)
             .setNegativeButton(R.string.btn_cancel, null)
             .setCancelable(false)
@@ -179,7 +180,7 @@ object BillingUi {
             return
         }
         val labels = items.map { it.first }.toTypedArray()
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.spp_manage_dialog_title)
             .setItems(labels) { _, which ->
                 openUrl(activity, items[which].second)
@@ -252,7 +253,7 @@ object BillingUi {
             addView(status.row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         }
 
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = AppDialogBuilder(activity)
             .setTitle(R.string.spp_subscribe_dialog_title)
             .setMessage(R.string.spp_subscribe_dialog_message)
             .setView(container)

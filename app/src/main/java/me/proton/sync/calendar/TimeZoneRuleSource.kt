@@ -1,7 +1,6 @@
 package me.proton.sync.calendar
 
 import android.accounts.AccountManager
-import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -11,6 +10,7 @@ import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import java.time.ZoneId
 
 /**
@@ -111,22 +111,34 @@ internal object TimeZoneRuleSource {
     val processToken: String = java.util.UUID.randomUUID().toString().replace("-", "").take(8)
 
     /**
-     * Ask for a calendar sync of every Proton account, so a new rule source re-times stored events soon
-     * instead of at the next scheduled sync. Correctness never depends on it: the pass runs at the next sync
-     * whenever it happens. EXPEDITED only: never SYNC_EXTRAS_MANUAL, which would let these automatic requests
-     * through an account's pause after an auth failure (SyncUtils.isSyncPaused) and retry a dead session with
-     * nobody asking, and never EXTRA_USER_SYNC_NOW: the pass clears the cursors of exactly the calendars it needs
-     * downloaded, durably.
+     * Ask for a calendar sync of every Proton account the background rule allows, so a new rule source re-times
+     * stored events soon instead of at the next scheduled sync: an ordinary request through
+     * SyncScheduling.requestBackgroundSync, never manual, never expedited, and without EXTRA_USER_SYNC_NOW (the pass
+     * clears the cursors of exactly the calendars it needs downloaded, durably). So nothing is asked while Android's
+     * automatic sync is off, on Manual only, while an account is paused after an auth failure or while a full re-sync of
+     * its calendar is being prepared (that re-sync's own calendar run follows and re-times; a contacts re-sync holds
+     * nothing here). Correctness never depends on it: the pass runs at the next sync, whatever starts it. While the
+     * account's calendar sync runs the request carries the [SyncConstants.EXTRA_REQUEST_ID] of
+     * SyncScheduling.putRunningSyncId: Android drops a request whose extras equal a running sync's (the sync of an earlier
+     * re-time request carries the same ones, SyncConstants.EXTRA_APP_REQUEST alone), and that sync took its rules before
+     * the change; the requests made while it runs wait as one sync.
      */
     fun requestRetimeSyncs(context: Context, reason: String) {
         try {
             val accounts = AccountManager.get(context).getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
+            var asked = 0
             for (account in accounts) {
-                ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, Bundle().apply {
-                    putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                })
+                val extras = SyncScheduling.putRunningSyncId(Bundle(), account, SyncConstants.AUTHORITY_CALENDAR)
+                val decision = SyncScheduling.requestBackgroundSync(
+                    context, account, SyncConstants.AUTHORITY_CALENDAR, account.name, extras,
+                )
+                if (decision == SyncScheduling.BackgroundRequest.SEND) {
+                    asked++
+                } else {
+                    SyncLog.i(TAG, "No re-time sync for '${account.name}': ${decision.reason("calendar")}; its next sync re-times")
+                }
             }
-            if (accounts.isNotEmpty()) SyncLog.i(TAG, "Calendar sync requested for ${accounts.size} account(s): $reason")
+            if (accounts.isNotEmpty()) SyncLog.i(TAG, "Calendar sync requested for $asked of ${accounts.size} account(s): $reason")
         } catch (e: Exception) {
             SyncLog.w(TAG, "Could not request the re-time sync: ${e.message}")
         }

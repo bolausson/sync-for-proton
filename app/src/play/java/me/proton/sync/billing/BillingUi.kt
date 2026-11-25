@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import com.android.billingclient.api.ProductDetails
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import me.proton.sync.R
+import me.proton.sync.settings.AppDialogBuilder
 import me.proton.sync.SyncLog
 import me.proton.sync.settings.SyncSettingsActivity
 
@@ -156,6 +156,8 @@ object BillingUi {
         CoroutineScope(Dispatchers.IO).launch {
             val details = sm.queryProducts() ?: sm.getCachedProductDetails()
             withContext(Dispatchers.Main) {
+                // Play may answer after the screen has gone (Back while it was asked); a dialog shown then would crash.
+                if (activity.isFinishing || activity.isDestroyed) return@withContext
                 if (details == null) {
                     Toast.makeText(activity, activity.getString(R.string.error_billing_unavailable), Toast.LENGTH_SHORT).show()
                     return@withContext
@@ -229,7 +231,7 @@ object BillingUi {
                     addView(disclosure)
                 }
 
-                val dialog = AlertDialog.Builder(activity)
+                val dialog = AppDialogBuilder(activity)
                     .setTitle(if (allTrial) R.string.dialog_title_choose_plan else R.string.dialog_title_choose_plan_plain)
                     .setView(container)
                     .setNegativeButton(R.string.btn_cancel, null)

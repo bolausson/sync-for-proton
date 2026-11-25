@@ -42,6 +42,9 @@ class BackupSettingsTypeMapTest {
         SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED to BOOLEAN,
         SyncPreferences.KEY_BACKUP_RETENTION to STRING,
         SyncPreferences.KEY_BACKUP_REMINDER_OPTED_OUT to BOOLEAN,
+        // putBoolean in BackupSettingsActivity's switch listener; getBoolean there, in BackupScheduleWorker.runScheduled
+        // and in BackupResultLines.skipsNow.
+        SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF to BOOLEAN,
         SyncPreferences.KEY_APP_LANGUAGE_TAG to STRING,
         SyncPreferences.KEY_TIMEZONE_UPDATES to BOOLEAN,
         SyncPreferences.syncIntervalKey(account, "contacts") to STRING,
@@ -149,6 +152,8 @@ class BackupSettingsTypeMapTest {
         SyncPreferences.KEY_BACKUP_LAST_RUN_MS,
         SyncPreferences.KEY_BACKUP_LAST_RESULT,
         SyncPreferences.KEY_BACKUP_LAST_TOTAL,
+        // When a scheduled backup was last skipped because Android's automatic sync is off: a log, like the three above.
+        SyncPreferences.KEY_BACKUP_LAST_SKIP_MS,
         SyncPreferences.KEY_BACKUP_REMINDER_SHOWN,
         SyncPreferences.KEY_BACKUP_REMINDER_LAST_SHOWN_MS,
         SyncPreferences.lastSyncKey(account, "contacts"),
@@ -159,8 +164,16 @@ class BackupSettingsTypeMapTest {
         // An import writes every account's settings, also of accounts already here: removal must never arrive that way.
         SyncPreferences.calendarTrimPastKey(account),
         SyncPreferences.calendarTrimJournalKey(account),
-        SyncPreferences.eventLoopIdKey(account),
-        SyncPreferences.calendarSettingsDirtyKey(account),
+        // The removed event loop's two settings, as 2.1.0 wrote them: a leftover on a phone never travels either.
+        "event_loop_id_$account",
+        "calendar_settings_dirty_$account",
+        // A copy of Proton's default calendar, which the first calendar sync after an import writes again, and a
+        // debug fixture that must never reach another phone.
+        SyncPreferences.primaryCalendarLastKey(account),
+        SyncPreferences.debugDefaultCalendarFixtureKey(account),
+        // This phone's Android ids of the new events held in shared calendars: meaningless on another phone.
+        SyncPreferences.newEventHoldsKey(account),
+        "new_event_holds_x",
         SyncPreferences.contactFilterKeptLocalKey(account),
         SyncPreferences.contactCreateStrikesKey(account),
         SyncPreferences.contactCreateRefusedKey(account),

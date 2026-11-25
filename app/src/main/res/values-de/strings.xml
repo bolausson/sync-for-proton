@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Abonnierte/importierte Kalender überspringen (z.\u00A0B. von Google)</string>
     <string name="label_expand">Erweitern</string>
     <string name="label_display_name">Anzeigename</string>
-    <string name="label_event_loop_interval">Ereignisschleifenintervall</string>
     <string name="label_fallback_full_sync">Vollständige Ersatzsynchronisierung</string>
     <string name="label_notify_on_failure">Bei Fehler benachrichtigen</string>
     <string name="label_notify_in_progress">Benachrichtigung während der Synchronisierung anzeigen</string>
@@ -114,7 +113,6 @@
     <string name="dialog_label_sync_reason">Grund: %s</string>
     <string name="dialog_title_past_events">Vergangene Termine</string>
     <string name="dialog_title_future_events">Zukünftige Termine</string>
-    <string name="dialog_title_event_loop_interval">Ereignisschleifenintervall</string>
     <string name="dialog_title_contacts_fallback">Kontakte vollständige Ersatzsynchronisierung</string>
     <string name="dialog_title_calendar_fallback">Kalender vollständige Ersatzsynchronisierung</string>
     <string name="dialog_title_remove_account">Konto entfernen</string>
@@ -171,13 +169,17 @@
     <string name="notification_sync_phase_decrypting">Entschlüsseln %1$d/%2$d</string>
     <string name="label_sync_queued">Wartet auf Synchronisierung</string>
     <string name="error_no_internet">Keine Internetverbindung. Die Synchronisierung wird automatisch wiederholt.</string>
+    <string name="error_no_internet_tap_sync">Keine Internetverbindung. Tippen Sie zum Wiederholen auf „Synchronisieren“.</string>
     <string name="error_timeout">Server nicht erreichbar. Überprüfen Sie Ihre Internetverbindung.</string>
     <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.</string>
     <string name="error_too_many_requests">Zu viele Anfragen. Die Synchronisierung wird später wiederholt.</string>
+    <string name="error_too_many_requests_tap_sync">Zu viele Anfragen. Tippen Sie zum Wiederholen auf „Synchronisieren“.</string>
     <string name="error_server_error">Proton-Serverfehler. Die Synchronisierung wird automatisch wiederholt.</string>
+    <string name="error_server_error_tap_sync">Proton-Serverfehler. Tippen Sie zum Wiederholen auf „Synchronisieren“.</string>
     <string name="error_request_rejected">Synchronisierungsanfrage wurde vom Server abgelehnt.</string>
     <string name="error_ssl">Sichere Verbindung fehlgeschlagen. Überprüfen Sie Ihr Netzwerk.</string>
     <string name="error_connection_interrupted">Verbindung wurde unterbrochen. Die Synchronisierung wird wiederholt.</string>
+    <string name="error_connection_interrupted_tap_sync">Verbindung wurde unterbrochen. Tippen Sie zum Wiederholen auf „Synchronisieren“.</string>
     <string name="error_unexpected">Bei der Synchronisierung ist ein unerwarteter Fehler aufgetreten.</string>
     <string name="notification_channel_auth">Authentifizierung</string>
     <string name="notification_channel_auth_description">Benachrichtigungen zur erneuten Anmeldung</string>
@@ -267,16 +269,16 @@
     <string name="label_info">Weitere Informationen</string>
     <string name="info_language_body">Legt die Sprache für die Bildschirme dieser App fest. \"Auto\" folgt der Systemsprache Ihres Telefons. Dies ändert nur die App-Oberfläche, es übersetzt nicht Ihre synchronisierten Kalendertermine oder Kontakte.</string>
     <string name="info_display_name_body">Der Name, der für dieses Konto in den Android-Einstellungen → Konten und in der Konten-Auswahl von Kalender-/Kontakt-Apps angezeigt wird. Es ist nur eine lokale Bezeichnung; eine Änderung wirkt sich nicht auf Ihr Proton-Konto aus.\n\nHinweis: Samsung Calendar und Samsung Contacts ignorieren benutzerdefinierte Kontonamen und zeigen immer ihre eigene Bezeichnung an (z. B. \"Proton\"). Ihr gewählter Name wird dort möglicherweise nicht angezeigt, dies ist eine Einschränkung von Samsung, die wir nicht ändern können. Andere Apps (Google Calendar/Contacts) zeigen ihn normal an.</string>
-    <string name="info_event_loop_body">Wie oft die App im Hintergrund bei Proton auf entfernte Änderungen an Ihren Kontakten und Ihrem Kalender prüft. Kürzere Intervalle zeigen Änderungen schneller an, verbrauchen aber mehr Akku und Daten. Dies ist getrennt von der manuellen Synchronisierung, die Sie jederzeit mit den Sync-Tasten auslösen können.</string>
+    <string name="info_event_loop_body">Wie oft die App im Hintergrund bei Proton auf entfernte Änderungen an Ihren Kontakten und Ihrem Kalender prüft. Diese Prüfungen laufen nur, solange die automatische Synchronisierung von Android aktiviert ist; ist sie deaktiviert, wird nichts von selbst synchronisiert. Kürzere Intervalle zeigen Änderungen schneller an, verbrauchen aber mehr Akku und Daten. Dies ist getrennt von der manuellen Synchronisierung, die Sie jederzeit mit den Sync-Tasten auslösen können.</string>
     <string name="info_notify_in_progress_body">Zeigt eine stille, laufende Benachrichtigung während einer Synchronisierung an, mit Live-Fortschritt (Prüfen, Herunterladen, Entschlüsseln). Sie sitzt unten in der Benachrichtigungsleiste und macht nie ein Geräusch. Schalten Sie sie aus, wenn die Synchronisierung lieber unsichtbar laufen soll.</string>
     <string name="info_sync_contacts_body">Wenn aktiviert, werden Ihre Proton-Kontakte bidirektional mit den Android-Kontakten synchronisiert: Änderungen auf beiden Seiten werden zusammengeführt.\n\nHinweis: Samsung Contacts zeigt Kontakte unter einer einzigen Kontobezeichnung \"Proton contacts\" an und blendet den E-Mail-Untertitel für Drittanbieter-Konten wie unseres aus, eine fest codierte Samsung-Einschränkung, die wir nicht ändern können. Google Contacts und die meisten anderen Apps zeigen sie normal an.</string>
-    <string name="info_fallback_full_sync_body">Wie oft die App eine vollständige Neuprüfung anstelle einer schnellen inkrementellen Synchronisierung durchführt. Eine vollständige Synchronisierung erfasst alles, was ein inkrementeller Durchlauf übersehen könnte (z. B. Änderungen, die offline vorgenommen wurden), auf Kosten von mehr Zeit und Daten. Belassen Sie den Standardwert, es sei denn, Sie vermuten, dass Elemente nicht synchronisiert werden.</string>
+    <string name="info_fallback_full_sync_body">Wie oft die App eine vollständige Neuprüfung anstelle einer schnellen inkrementellen Synchronisierung durchführt. Diese Neuprüfung läuft nur, solange die automatische Synchronisierung von Android aktiviert ist. Eine vollständige Synchronisierung erfasst alles, was ein inkrementeller Durchlauf übersehen könnte (z. B. Änderungen, die offline vorgenommen wurden), auf Kosten von mehr Zeit und Daten. Belassen Sie den Standardwert, es sei denn, Sie vermuten, dass Elemente nicht synchronisiert werden.</string>
     <string name="info_notify_on_failure_body">Zeigt eine Benachrichtigung an, wenn eine Synchronisierung fehlschlägt (z. B. Netzwerkfehler oder abgelaufene Sitzung). Tippen Sie darauf für eine verständliche Begründung und einen Link zu den Protokollen. Schalten Sie sie aus, wenn Sie nicht über vorübergehende Fehler benachrichtigt werden möchten.</string>
-    <string name="info_sync_calendar_body">Wenn aktiviert, werden Ihre Proton-Kalender in den Android-Kalender synchronisiert, sodass Termine in Google Calendar, Samsung Calendar und jeder anderen Kalender-App erscheinen. Bidirektional: Änderungen, die Sie auf dem Telefon vornehmen, werden für Kalender, die Ihnen gehören, zurück zu Proton hochgeladen.</string>
+    <string name="info_sync_calendar_body">Wenn aktiviert, werden Ihre Proton-Kalender in den Android-Kalender synchronisiert, sodass Termine in Google Calendar, Samsung Calendar und jeder anderen Kalender-App erscheinen. Bidirektional: Änderungen, die Sie auf dem Telefon vornehmen, werden für jeden Kalender, den Sie bearbeiten können, zurück zu Proton hochgeladen, auch für Kalender, die andere mit Ihnen teilen.</string>
     <string name="info_include_external_calendars_body">Proton kann abonnierte Kalender (z. B. einen externen ICS-Feed) und Feiertagskalender enthalten. Diese sind auf Protons Seite schreibgeschützt. Wenn deaktiviert, überspringt die App sie und synchronisiert nur Ihre eigenen bearbeitbaren Kalender. Aktivieren Sie diese Option, wenn Sie auch diese schreibgeschützten Kalender auf Ihrem Telefon gespiegelt haben möchten.</string>
     <string name="info_sync_mode_body">\"Alle Termine\" synchronisiert Ihren gesamten Kalenderverlauf und alle zukünftigen Termine, am besten, wenn Sie alles auf Ihrem Telefon haben möchten (die erste Synchronisierung eines großen Kalenders kann mehrere Minuten dauern). \"Benutzerdefinierter Zeitraum\" hält große Kalender schnell, indem nur ein Fenster von Tagen um heute herum synchronisiert wird: Termine dieser Kalender außerhalb des Fensters werden nicht heruntergeladen, und Termine, die bereits auf diesem Telefon sind, bleiben erhalten, es sei denn, \"Ältere Termine von diesem Telefon entfernen\" ist für ihren Kalender aktiviert. Kleine Kalender werden immer vollständig synchronisiert.</string>
     <string name="label_trim_old_events">Ältere Termine von diesem Telefon entfernen</string>
-    <string name="info_trim_old_events_body">In den von Ihnen gewählten Kalendern werden Termine, die mehr als einen Tag vor Beginn Ihres Zeitraums geendet haben, jetzt und bei späteren Synchronisierungen von diesem Telefon entfernt. Die Termine bleiben in Ihrem Proton-Konto erhalten; dort wird nichts gelöscht. Sicherungen Ihrer eigenen Kalender werden aus Proton erstellt und enthalten diese Termine daher weiterhin; abonnierte Kalender und Feiertagskalender werden nicht gesichert. Ein wiederkehrender Termin bleibt mit allen früheren Wiederholungen erhalten, solange er in Ihren Zeitraum hineinreicht oder kein Enddatum hat, denn das Telefon speichert einen wiederkehrenden Termin als einen einzigen Eintrag. Termine mit Änderungen, die noch nicht an Proton gesendet wurden, bleiben ebenfalls erhalten, ebenso Termine, die in den letzten 7 Tagen erstellt oder zuletzt geändert wurden; maßgeblich ist dabei die Version auf diesem Telefon, nicht der Zeitpunkt, zu dem dieses Telefon sie heruntergeladen hat. Wählbar sind nur Kalender, die zu groß sind, um vollständig synchronisiert zu werden, und Termine nach Ihrem Zeitraum werden nie entfernt. Um entfernte Termine zurückzuholen, wählen Sie einen längeren Zeitraum oder \"Alle Termine\".</string>
+    <string name="info_trim_old_events_body">In den von Ihnen gewählten Kalendern werden Termine, die mehr als einen Tag vor Beginn Ihres Zeitraums geendet haben, bei der nächsten Synchronisierung von diesem Telefon entfernt, spätere Termine, sobald sie genauso alt sind. Die Termine bleiben in Ihrem Proton-Konto erhalten; dort wird nichts gelöscht. Sicherungen Ihrer eigenen Kalender werden aus Proton erstellt und enthalten diese Termine daher weiterhin; abonnierte Kalender und Feiertagskalender werden nicht gesichert. Ein wiederkehrender Termin bleibt mit allen früheren Wiederholungen erhalten, solange er in Ihren Zeitraum hineinreicht oder kein Enddatum hat, denn das Telefon speichert einen wiederkehrenden Termin als einen einzigen Eintrag. Termine mit Änderungen, die noch nicht an Proton gesendet wurden, bleiben ebenfalls erhalten, ebenso Termine, die in den letzten 7 Tagen erstellt oder zuletzt geändert wurden; maßgeblich ist dabei die Version auf diesem Telefon, nicht der Zeitpunkt, zu dem dieses Telefon sie heruntergeladen hat. Wählbar sind nur Kalender, die zu groß sind, um vollständig synchronisiert zu werden, und Termine nach Ihrem Zeitraum werden nie entfernt. Um entfernte Termine zurückzuholen, wählen Sie einen längeren Zeitraum oder \"Alle Termine\".</string>
     <string name="trim_dialog_title">Ältere Termine von diesem Telefon entfernen</string>
     <string name="trim_dialog_intro">Wählen Sie die Kalender, die aufgeräumt werden sollen. Termine, die vor dem %1$s geendet haben, werden bei der nächsten Synchronisierung von diesem Telefon entfernt, spätere Termine, sobald sie genauso alt sind. Die Termine bleiben in Ihrem Proton-Konto erhalten. Ein wiederkehrender Termin, der über dieses Datum hinausreicht, bleibt mit allen Wiederholungen erhalten.</string>
     <plurals name="trim_calendar_count">
@@ -296,6 +298,32 @@
     </plurals>
     <string name="trim_dialog_save">Speichern</string>
     <string name="trim_read_failed">Die Kalender auf diesem Telefon konnten nicht gelesen werden, daher wurde nichts geändert.</string>
+    <string name="label_default_calendar">Standardkalender</string>
+    <string name="info_default_calendar_body">Neue Termine werden in Proton in Ihrem Standardkalender angelegt, und dieses Telefon markiert ihn als Hauptkalender des Kontos. Wenn Sie ihn hier ändern, wird er auch in Proton geändert, sodass Proton im Web, Protons Apps und Einladungen, die Sie in Proton Mail beantworten, den neuen verwenden. Nur ein aktiver eigener Kalender kann Standardkalender sein, kein geteilter, abonnierter oder Feiertagskalender.</string>
+    <string name="default_calendar_connecting">Verbindung zu Proton wird hergestellt…</string>
+    <string name="default_calendar_changed">Standardkalender geändert</string>
+    <string name="default_calendar_unreachable">Proton war nicht erreichbar. Versuchen Sie es gleich erneut.</string>
+    <string name="default_calendar_refused">Proton hat die Änderung abgelehnt, daher wurde nichts geändert.</string>
+    <string name="default_calendar_none_own">Dieses Konto hat keinen aktiven eigenen Kalender, der Standardkalender sein kann. Geteilte, abonnierte und Feiertagskalender können nicht Standardkalender sein.</string>
+    <string name="default_calendar_incomplete">Nicht alle Kalender dieses Kontos konnten gelesen werden, daher kann sein Standardkalender hier nicht geändert werden.</string>
+    <string name="notification_new_event_hold_title">Neuer Termin in einem geteilten Kalender</string>
+    <string name="notification_new_event_hold_body">%1$s hat „%2$s“ zum Kalender %3$s hinzugefügt. Andere mit Zugriff auf diesen Kalender würden den Termin sehen.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Eine App hat „%1$s“ zum Kalender %2$s hinzugefügt. Andere mit Zugriff auf diesen Kalender würden den Termin sehen.</string>
+    <string name="action_new_event_move">In %1$s verschieben</string>
+    <string name="action_new_event_publish">Freigeben</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d Termin wartet auf Ihre Entscheidung</item>
+        <item quantity="other">%d Termine warten auf Ihre Entscheidung</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d Termin bleibt nur auf diesem Telefon</item>
+        <item quantity="other">%d Termine bleiben nur auf diesem Telefon</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d weiterer Termin wartet auf Ihre Entscheidung</item>
+        <item quantity="other">%d weitere Termine warten auf Ihre Entscheidung</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Wenn eine App, die keine Kalender-App ist, einen Termin zu einem Kalender hinzufügt, den jemand mit Ihnen geteilt hat, wartet der Termin auf diesem Telefon, bis Sie sich entscheiden. „Verschieben“ legt ihn stattdessen in Ihren Standardkalender. „Freigeben“ sendet ihn an den geteilten Kalender, wo ihn alle sehen können, die Zugriff auf diesen Kalender haben. „Auf Telefon behalten“ sendet ihn nie an Proton: Proton Calendar, Proton im Web, Ihre anderen Geräte und die Sicherungen dieser App erhalten ihn nicht, und er geht verloren, wenn Sie diese App oder dieses Konto entfernen. Behaltene Termine bleiben bei diesem Konto aufgeführt, wo Sie sie weiterhin verschieben oder freigeben können.</string>
     <string name="info_sync_range_window_body">Wie viele Tage vor und nach heute synchronisiert werden, wenn \"Benutzerdefinierter Zeitraum\" ausgewählt ist. Größere Fenster zeigen mehr von Ihrem Kalender, brauchen aber länger zum Synchronisieren. Hat keine Auswirkung im Modus \"Alle Termine\".</string>
     <string name="info_poll_attendee_body">Wenn aktiviert, prüft die App regelmäßig Termine mit Teilnehmern erneut, um Zusagen/Absagen/vorläufige Antworten zu erkennen. Protons Änderungs-Feed meldet keine RSVP-Änderungen, daher sind dafür zusätzliche API-Aufrufe nötig, nur sinnvoll, wenn Sie darauf angewiesen sind, die Antworten der Teilnehmer auf Ihrem Telefon zu sehen.</string>
     <string name="info_send_invites_body">Wenn Sie auf Ihrem Telefon Teilnehmer zu einem Termin hinzufügen, wird ihnen eine Einladung per E-Mail gesendet. Standardmäßig deaktiviert: aktivieren Sie sie nur, wenn die App in Ihrem Namen E-Mails an Teilnehmer senden soll.</string>
@@ -303,7 +331,7 @@
     <string name="info_send_cancellations_body">Teilnehmer per E-Mail benachrichtigen, wenn Sie einen Termin löschen, zu dem sie eingeladen sind, damit ihre Kalender ihn ebenfalls entfernen. Standardmäßig deaktiviert.</string>
     <string name="info_invite_subject_title_body">Beim Senden von Einladungs-E-Mails den Titel des Termins in die Betreffzeile der E-Mail aufnehmen, damit Empfänger ihn auf einen Blick erkennen. Standardmäßig aus Datenschutzgründen deaktiviert: E-Mail-Betreffe sind beim Standard-Mailtransport nicht verschlüsselt, sodass der Titel für die Mailserver entlang der Route sichtbar wäre.</string>
     <string name="info_background_sync_body">Android kann die Hintergrundsynchronisierung pausieren, um Akku zu sparen, was die automatische Synchronisierung verzögern oder stoppen kann. Wenn Sie diese App von der Akkuoptimierung ausschließen, laufen geplante Synchronisierungen zuverlässig weiter. Verwenden Sie die Taste, um die System-Akkueinstellungen für die App zu öffnen.</string>
-    <string name="info_verbose_logging_body">Erfasst zusätzliche Diagnoseinformationen (Authentifizierungsstatus, Schlüsselentsperrung, Synchronisierungsinterna) im Protokoll, hilfreich beim Melden eines Problems. Die App ersetzt darin E-Mail-Adressen durch kurze Codes, das Protokoll kann aber Konto- und Kalendernamen enthalten. Teilen Sie Protokolle daher nur mit dem Entwickler. Für den normalen Gebrauch deaktiviert lassen.</string>
+    <string name="info_verbose_logging_body">Erfasst zusätzliche Diagnoseinformationen (Authentifizierungsstatus, Schlüsselentsperrung, Synchronisierungsinterna) im Protokoll, hilfreich beim Melden eines Problems. Solange die ausführliche Protokollierung aktiviert ist, nennt das Protokoll außerdem Ihre Kalender und die Apps, die dort Termine hinzufügen. Die App ersetzt im Protokoll E-Mail-Adressen durch kurze Codes, es kann aber Konto- und Kalendernamen enthalten. Teilen Sie Protokolle daher nur mit dem Entwickler. Für den normalen Gebrauch deaktiviert lassen.</string>
     <string name="info_file_logging_body">Schreibt das App-Protokoll in eine Textdatei mit Zeitstempel (sync-for-proton-log-….txt) in einem Ordner Ihrer Wahl. Ansonsten hält die App ihr Protokoll nur im Arbeitsspeicher, schalten Sie dies also ein, um ein schwer reproduzierbares Problem festzuhalten. Bei jedem Start der App wird eine neue Datei angelegt. Die App ersetzt darin E-Mail-Adressen durch kurze Codes, die Datei kann aber Konto- und Kalendernamen enthalten. Teilen Sie sie daher nur mit dem Entwickler. Für den normalen Betrieb ausgeschaltet lassen.</string>
     <string name="info_timezone_updates_text">Die Uhrzeiten von Terminen hängen von Zeitzonenregeln ab, und Länder ändern diese Regeln von Zeit zu Zeit. Android speichert sie in den Zeitzonendaten des Telefons, die mit Systemupdates kommen. Ein Telefon, das keine mehr erhält, zum Beispiel mit einer älteren Android-Version oder ohne Google Play-Systemupdates, behält die alten Regeln, und Termine an Orten, deren Regeln sich seitdem geändert haben, können zur falschen Uhrzeit angezeigt werden.\n\nZeitzonendaten auf diesem Telefon: Version %1$s\n\nWenn deaktiviert (Standard), verwendet die App die eigenen Zeitzonendaten des Telefons und sendet nichts an www.tzurl.org.\n\nWenn aktiviert, lädt die App die aktuellen Regeln für jede Zeitzone, die Ihre Termine verwenden, von www.tzurl.org herunter, einem Drittanbieter-Dienst, höchstens einmal pro Zeitzone bei jedem Start der App, und verwendet sie nur, wenn sie neuer sind als die des Telefons. www.tzurl.org sieht dabei Ihre IP-Adresse und die Namen dieser Zeitzonen, zum Beispiel Europe/Berlin. Sonst wird nichts über Ihre Termine oder Konten gesendet. Ist www.tzurl.org nicht erreichbar, werden die Daten des Telefons verwendet. Wiederkehrende Termine werden weiterhin mit den Daten des Telefons berechnet.\n\nNach einer Änderung werden die Termine, die bereits auf dem Telefon sind, bei der nächsten Synchronisierung geprüft und korrigiert.</string>
     <string name="tz_data_version_unknown">unbekannt</string>
@@ -385,6 +413,8 @@
     <string name="backup_unit_days">Tage</string>
     <string name="backup_retention_label">Behalten der letzten</string>
     <string name="backup_unit_runs">Sicherungen</string>
+    <string name="backup_when_auto_sync_off_label">Auch sichern, wenn die automatische Synchronisierung aus ist</string>
+    <string name="info_backup_when_auto_sync_off_body">Der Android-Schalter „Daten automatisch synchronisieren“ stoppt die Hintergrundsynchronisierung aller Apps, und geplante Sicherungen richten sich danach: Solange er ausgeschaltet ist, wird eine geplante Sicherung übersprungen, und dieser Bildschirm weist unter „Jetzt sichern“ darauf hin. Schalten Sie dies ein, um geplante Sicherungen trotzdem auszuführen. Jede Sicherung lädt alle Ihre Kalender und Kontakte von Proton herunter, was viel mobiles Datenvolumen verbrauchen kann. „Jetzt sichern“ funktioniert immer.</string>
     <string name="backup_section_contents">Was gesichert werden soll</string>
     <string name="backup_include_calendars_label">Kalender (.ics)</string>
     <string name="backup_include_contacts_label">Kontakte (.vcf)</string>
@@ -407,6 +437,7 @@
     <string name="backup_running">Sicherung läuft…</string>
     <string name="backup_last_never">Noch keine Sicherung.</string>
     <string name="backup_last_run">Letzte Sicherung: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Geplante Sicherung am %1$s übersprungen: Die automatische Synchronisierung von Android ist aus</string>
     <string name="backup_decrypt_action">Eine Sicherung entschlüsseln…</string>
     <string name="backup_decrypt_body">Wählen Sie eine verschlüsselte Sicherungsdatei (.gpg) und geben Sie deren Passwort ein. Der Inhalt wird entschlüsselt in Ihrem Sicherungsordner gespeichert.</string>
     <string name="backup_decrypting">Entschlüsseln…</string>
@@ -464,7 +495,7 @@
     <string name="sfp_group_account">Konto</string>
     <string name="sfp_group_contacts">Kontakte</string>
     <string name="sfp_group_calendar">Kalender</string>
-    <string name="sfp_event_loop_subtitle">Wie oft nach entfernten Änderungen gesucht wird</string>
+    <string name="sfp_event_loop_subtitle">Wie oft nach entfernten Änderungen gesucht wird, solange Android automatisch synchronisiert</string>
     <string name="sfp_show_advanced">E-Mail- &amp; erweiterte Optionen anzeigen</string>
     <string name="sfp_hide_advanced">E-Mail- &amp; erweiterte Optionen ausblenden</string>
     <string name="sfp_group_email_attendees">E-Mail an Teilnehmer</string>
@@ -475,6 +506,7 @@
     <string name="sfp_hero_subtitle_ok">Alle aktivierten Konten sind auf dem neuesten Stand</string>
     <string name="sfp_hero_subtitle_warn">Ein oder mehrere Konten benötigen eine Synchronisierung oder Anmeldung</string>
     <string name="sfp_sync_all_now">Jetzt alles synchronisieren</string>
+    <string name="sfp_auto_sync_off">Automatische Synchronisierung von Android ist aus: Konten werden nur manuell synchronisiert</string>
     <string name="sfp_tile_logs">Sync-Protokoll</string>
     <string name="sfp_tile_backup">Sicherung</string>
     <string name="sfp_tile_battery">Akku</string>
@@ -513,6 +545,10 @@
     <string name="notification_contacts_too_large_summary">Diese Kontakte in %1$s sind zu groß für den Kontaktspeicher von Android. In Proton bleiben sie vollständig erhalten:</string>
     <string name="notification_contacts_too_large_outdated">dieses Telefon behält eine ältere Version</string>
     <string name="notification_contacts_too_large_missing">nicht auf diesem Telefon</string>
+    <string name="notification_contacts_delete_refused_title">Einige Kontakte konnten in Proton nicht gelöscht werden</string>
+    <string name="notification_contacts_delete_refused_summary">Diese Kontakte in %1$s wurden auf diesem Telefon gelöscht, aber Proton hat das Löschen abgelehnt. Es gibt sie weiterhin in Proton und auf Ihren anderen Geräten:</string>
+    <string name="notification_events_delete_refused_title">Einige Termine konnten in Proton nicht gelöscht werden</string>
+    <string name="notification_events_delete_refused_summary">Diese Termine in %1$s wurden auf diesem Telefon gelöscht, aber Proton hat das Löschen abgelehnt. Es gibt sie weiterhin in Proton und auf Ihren anderen Geräten:</string>
     <string name="notification_conflict_title">Termin an zwei Stellen geändert</string>
     <string name="notification_conflict_body">„%1$s“ wurde auf diesem Telefon und in Proton Calendar bearbeitet. Welche Version möchten Sie behalten?</string>
     <string name="notification_conflict_body_shared">„%1$s“ wurde auf diesem Telefon und von %2$s in Proton Calendar bearbeitet. Wenn Sie Ihre Version behalten, wird dessen Version ersetzt.</string>

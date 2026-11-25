@@ -39,33 +39,44 @@ sealed class SyncTriggerType(val label: String) {
 
     /**
      * The one sync requested when the subscription turns active ([SyncConstants.EXTRA_CATCH_UP]). A label only:
-     * nothing branches on it, so the run behaves as the MANUAL or EXPEDITED request it is.
+     * nothing branches on it, so the run behaves as the MANUAL or ordinary request it is.
      */
     object CatchUpSync : SyncTriggerType("Catch-up sync after activation")
 
+    /**
+     * The calendar sync asked for after a calendar setting changed ([SyncConstants.EXTRA_SETTINGS_CHANGED], set by
+     * SyncScheduling.requestSettingsSync). A label only: nothing branches on it, so the run behaves as the ordinary
+     * request it is.
+     */
+    object SettingsChangeSync : SyncTriggerType("Sync after a settings change")
+
     companion object {
+        /** Determines the trigger type from the sync adapter [extras] Bundle ([from]). */
+        fun fromExtras(extras: Bundle): SyncTriggerType = from { extras.getBoolean(it, false) }
+
         /**
-         * Determines the trigger type from the sync adapter [extras] Bundle.
-         *
-         * Priority order matches the original inline logic:
-         * initialize > forceRemoteToLocal > forceLocalToRemote/upload > userSyncNow > catchUp > scheduledByWorker >
-         * manual > scheduled.
+         * The trigger type from [flag], which reads one boolean extra by its key. Priority order (the original inline
+         * logic's, with the settings change added before the watchdog's flag):
+         * initialize > forceRemoteToLocal > forceLocalToRemote/upload > userSyncNow > catchUp > settingsChanged >
+         * scheduledByWorker > manual > scheduled.
          */
-        fun fromExtras(extras: Bundle): SyncTriggerType {
-            val isManual = extras.getBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false)
-            val isUpload = extras.getBoolean(ContentResolver.SYNC_EXTRAS_UPLOAD, false)
-            val isInitialize = extras.getBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE, false)
-            val isForceRemoteToLocal = extras.getBoolean(SyncConstants.EXTRA_FORCE_REMOTE_TO_LOCAL, false)
-            val isForceLocalToRemote = extras.getBoolean(SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE, false)
-            val isScheduledByWorker = extras.getBoolean(SyncConstants.EXTRA_SCHEDULED_BY_WORKER, false)
-            val isUserSyncNow = extras.getBoolean(SyncConstants.EXTRA_USER_SYNC_NOW, false)
-            val isCatchUp = extras.getBoolean(SyncConstants.EXTRA_CATCH_UP, false)
+        internal fun from(flag: (String) -> Boolean): SyncTriggerType {
+            val isManual = flag(ContentResolver.SYNC_EXTRAS_MANUAL)
+            val isUpload = flag(ContentResolver.SYNC_EXTRAS_UPLOAD)
+            val isInitialize = flag(ContentResolver.SYNC_EXTRAS_INITIALIZE)
+            val isForceRemoteToLocal = flag(SyncConstants.EXTRA_FORCE_REMOTE_TO_LOCAL)
+            val isForceLocalToRemote = flag(SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE)
+            val isScheduledByWorker = flag(SyncConstants.EXTRA_SCHEDULED_BY_WORKER)
+            val isUserSyncNow = flag(SyncConstants.EXTRA_USER_SYNC_NOW)
+            val isCatchUp = flag(SyncConstants.EXTRA_CATCH_UP)
+            val isSettingsChange = flag(SyncConstants.EXTRA_SETTINGS_CHANGED)
             return when {
                 isInitialize -> InitialSync
                 isForceRemoteToLocal -> ManualForceRemoteToLocal
                 isForceLocalToRemote || (isManual && isUpload) -> ManualForceLocalToRemote
                 isUserSyncNow -> UserSyncNow
                 isCatchUp -> CatchUpSync
+                isSettingsChange -> SettingsChangeSync
                 isScheduledByWorker -> ScheduledSync
                 isManual -> ManualSync
                 else -> ScheduledSync

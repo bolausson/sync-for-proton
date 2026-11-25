@@ -32,7 +32,13 @@ class PluralFormsTest {
         "contact_filter_preview_undecided", "contact_filter_preview_server_result", "contact_filter_preview_and_more",
         "contact_filter_preview_unreadable", "remove_synced_calendar_done", "remove_synced_contacts_done",
     )
-    private val added = listOf("label_minutes_format", "backup_count_calendars", "backup_count_events", "backup_count_contacts")
+    private val added = listOf(
+        "label_minutes_format", "backup_count_calendars", "backup_count_events", "backup_count_contacts",
+        // 2.2.0: the account card's rows for new events held in a shared calendar and for the ones kept on the phone.
+        "label_new_event_holds", "label_new_event_kept",
+        // 2.2.0: the summary notification for the held events past the five that get one of their own.
+        "notification_new_event_hold_more",
+    )
     private val removed = listOf("backup_result_success", "backup_result_incomplete")
 
     private val plurals = Regex("<plurals name=\"([^\"]+)\"[^>]*>(.*?)</plurals>", RegexOption.DOT_MATCHES_ALL)

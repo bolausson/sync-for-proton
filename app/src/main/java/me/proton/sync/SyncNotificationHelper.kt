@@ -110,7 +110,7 @@ object SyncNotificationHelper {
 
         val nId = notificationId(accountName, syncType)
         val typeLabel = syncType.replaceFirstChar { it.uppercase() }
-        val friendly = friendlyMessage(context, errorMsg)
+        val friendly = friendlyMessage(context, errorMsg, SyncScheduling.userSyncRetriesFor(context, accountName))
         val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
 
         // Tap notification → SyncSettingsActivity
@@ -136,7 +136,7 @@ object SyncNotificationHelper {
             .setContentTitle(context.getString(R.string.notification_sync_failed_title, typeLabel))
             .setContentText(friendly)
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("$friendly\n$time \u2014 $accountName"))
+                .bigText("$friendly\n$time, $accountName"))
             .setAutoCancel(true)
             .setSilent(true)
             .setContentIntent(settingsPending)
@@ -298,13 +298,46 @@ object SyncNotificationHelper {
     }
 
     /**
-     * One silent notification listing contacts by name with a reason each, opening the settings and
-     * offering the log. Gated on the per-account contacts failure preference. Logs counts only.
+     * Contacts deleted on this phone whose deletion Proton refused three syncs or more (ContactDeletionFailures): they
+     * still exist on Proton and on the user's other devices, and the deletion stays pending. Their refusals no longer
+     * fail a sync, so this notice tells of them instead, until each deletion reaches Proton or is no longer pending:
+     * posted when one joins, brought up to date while shown, withdrawn once none is left. Each contact is named as
+     * [notifyContactsRejected] names it, with nothing else of it; the names appear in the notification only, never in the
+     * log. Same gating.
+     *
+     * @param names the display name, or null, of each contact.
+     */
+    fun notifyContactDeletionsRefused(context: Context, accountName: String, names: List<String?>) =
+        postContactList(
+            context, accountName, names.map { it to null },
+            notificationKey = "contacts_delete_refused_$accountName",
+            title = context.getString(R.string.notification_contacts_delete_refused_title),
+            summary = context.getString(R.string.notification_contacts_delete_refused_summary, accountName),
+            what = "contact(s) whose deletion Proton refused",
+        )
+
+    /** Whether the refused-deletions notification is still on screen (not dismissed by the user). */
+    fun isContactDeletionsRefusedShown(context: Context, accountName: String): Boolean = try {
+        val id = ("contacts_delete_refused_$accountName").hashCode()
+        context.getSystemService(NotificationManager::class.java)?.activeNotifications?.any { it.id == id } == true
+    } catch (e: Exception) {
+        false
+    }
+
+    /** Withdraw the refused-deletions notification once no such deletion is left. */
+    fun cancelContactDeletionsRefused(context: Context, accountName: String) {
+        context.getSystemService(NotificationManager::class.java)?.cancel(("contacts_delete_refused_$accountName").hashCode())
+    }
+
+    /**
+     * One silent notification listing contacts by name, with a reason each where one is given (a null reason lists the
+     * name alone), opening the settings and offering the log. Gated on the per-account contacts failure preference.
+     * Logs counts only.
      */
     private fun postContactList(
         context: Context,
         accountName: String,
-        contacts: List<Pair<String?, String>>,
+        contacts: List<Pair<String?, String?>>,
         notificationKey: String,
         title: String,
         summary: String,
@@ -325,7 +358,9 @@ object SyncNotificationHelper {
         val nId = notificationKey.hashCode()
         val unnamed = context.getString(R.string.notification_contacts_rejected_unnamed)
         val lines = contacts.joinToString("\n") { (name, reason) ->
-            context.getString(R.string.notification_events_rejected_line, name?.takeIf { it.isNotBlank() } ?: unnamed, reason)
+            val shownName = name?.takeIf { it.isNotBlank() } ?: unnamed
+            if (reason == null) "\u2022 $shownName"
+            else context.getString(R.string.notification_events_rejected_line, shownName, reason)
         }
         val settingsIntent = Intent(context, SyncSettingsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -373,6 +408,98 @@ object SyncNotificationHelper {
     /** Withdraw the rejected-contacts notification once no contact is stuck any more. */
     fun cancelContactsRejected(context: Context, accountName: String) {
         context.getSystemService(NotificationManager::class.java)?.cancel(("contacts_rejected_$accountName").hashCode())
+    }
+
+    /** Whether the rejected-contacts notification is still on screen (not dismissed by the user), for an account rename. */
+    fun isContactsRejectedShown(context: Context, accountName: String): Boolean = try {
+        val id = ("contacts_rejected_$accountName").hashCode()
+        context.getSystemService(NotificationManager::class.java)?.activeNotifications?.any { it.id == id } == true
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Events deleted on this phone whose deletion Proton refused three syncs or more (calendar.EventDeletionFailures):
+     * they still exist on Proton and on the user's other devices, and the deletion stays pending, so the event does not
+     * come back here either. Their refusals no longer fail a sync, so this notice tells of them instead, until each
+     * deletion reaches Proton or is no longer pending: posted when one joins, brought up to date while shown, withdrawn
+     * once none is left. Built like [notifyContactDeletionsRefused]; each event is named as [notifyEventsRejected] names
+     * it (its title, or the "(no title)" text), with nothing else of it, and the titles appear in the notification only,
+     * never in the log. Silent, gated on the per-account calendar failure preference like [notifyEventsRejected].
+     *
+     * @param titles the title each event is shown by.
+     */
+    fun notifyEventDeletionsRefused(context: Context, accountName: String, titles: List<String>) {
+        if (titles.isEmpty()) return
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        if (!prefs.getBoolean(SyncPreferences.notifySyncFailureKey("calendar", accountName), true)) {
+            SyncLog.w(
+                TAG,
+                "Found " + titles.size + " event(s) whose deletion Proton refused for " + accountName +
+                    ", but failure notifications are switched off for this account, so nothing was shown."
+            )
+            return
+        }
+        ensureChannel(context)
+
+        val nId = ("events_delete_refused_$accountName").hashCode()
+        val summary = context.getString(R.string.notification_events_delete_refused_summary, accountName)
+        val lines = titles.joinToString("\n") { "\u2022 $it" }
+        val settingsIntent = Intent(context, SyncSettingsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val settingsPending = PendingIntent.getActivity(
+            context, nId, settingsIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val logIntent = Intent(context, LogViewerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        val logPending = PendingIntent.getActivity(
+            context, nId + 1, logIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.stat_notify_error)
+            .setContentTitle(context.getString(R.string.notification_events_delete_refused_title))
+            .setContentText(summary)
+            .setStyle(NotificationCompat.BigTextStyle().bigText("$summary\n$lines"))
+            .setAutoCancel(true)
+            .setSilent(true)
+            .setContentIntent(settingsPending)
+            .addAction(
+                android.R.drawable.ic_menu_info_details,
+                context.getString(R.string.notification_action_view_details),
+                logPending
+            )
+            .build()
+        // Counts only: event titles are event content, which the log never holds (see notifyEventsRejected).
+        val nm = context.getSystemService(NotificationManager::class.java)
+        if (nm == null) {
+            SyncLog.w(TAG, "Found " + titles.size + " event(s) whose deletion Proton refused for " + accountName +
+                ", but this device returned no NotificationManager, so nothing was shown.")
+            return
+        }
+        try {
+            nm.notify(nId, notification)
+            SyncLog.i(TAG, "Told " + accountName + " about " + titles.size + " event(s) whose deletion Proton refused.")
+        } catch (e: SecurityException) {
+            SyncLog.w(TAG, "Could not show the notification about event deletions Proton refused for " + accountName +
+                "; notification permission is not granted, so nothing was shown.", e)
+        }
+    }
+
+    /** Whether the refused event deletions notification is still on screen (not dismissed by the user). */
+    fun isEventDeletionsRefusedShown(context: Context, accountName: String): Boolean = try {
+        val id = ("events_delete_refused_$accountName").hashCode()
+        context.getSystemService(NotificationManager::class.java)?.activeNotifications?.any { it.id == id } == true
+    } catch (e: Exception) {
+        false
+    }
+
+    /** Withdraw the refused event deletions notification once no such deletion is left. */
+    fun cancelEventDeletionsRefused(context: Context, accountName: String) {
+        context.getSystemService(NotificationManager::class.java)?.cancel(("events_delete_refused_$accountName").hashCode())
     }
 
     /**
@@ -809,6 +936,225 @@ object SyncNotificationHelper {
         nm?.cancel(remoteDeletionNotificationId(type, accountName))
     }
 
+    // ===================== New event in a shared calendar =====================
+
+    /** One prompt per held series, keyed on the account and the series' parent row. */
+    fun newEventHoldNotificationId(accountName: String, eventId: Long): Int =
+        ("new_event_hold_${accountName}_$eventId").hashCode()
+
+    /**
+     * Ask what to do with a new event that an app which is not a calendar app wrote into a calendar someone else shared
+     * with [accountName] ([me.proton.sync.calendar.NewEventHoldRules]): Move to the default calendar, Keep on phone,
+     * Publish. One notification per series on purpose, as for a collision: each answer decides where one event goes,
+     * and a grouped answer would be blind. At most NewEventHoldRules.MAX_PROMPTS of them per account, which
+     * NewEventHolds.refreshPrompts alone posts; the waiting series past them share [showNewEventHoldSummary]. Tapping
+     * it opens the decision dialog for that event.
+     *
+     * [alert] only for a series held in this sync run; every other post (the next sync's, one after the screen opened)
+     * is silent, so a prompt swiped away comes back without a sound. Every action asks for the unlock first on
+     * Android 12 and later, where alone Move and Publish are buttons (below that, the notification offers Keep only and
+     * the dialog offers them), and a lock screen that hides content shows the title only. Not gated on any
+     * sync-notification preference, like the deletion prompts: it needs a decision. Returns false when nothing could
+     * be shown (notifications off for the app, the alerts channel switched off, no permission); the caller logs it.
+     */
+    internal fun showNewEventHoldPrompt(
+        context: Context,
+        accountName: String,
+        prompt: me.proton.sync.calendar.NewEventHolds.Prompt,
+        alert: Boolean,
+    ): Boolean {
+        if (!androidx.core.app.NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
+        ensureAlertsChannel(context)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            context.getSystemService(NotificationManager::class.java)
+                ?.getNotificationChannel(CHANNEL_ID_ALERTS)?.importance == NotificationManager.IMPORTANCE_NONE
+        ) return false
+
+        val entry = prompt.entry
+        val nId = newEventHoldNotificationId(accountName, entry.eventId)
+        val title = context.getString(R.string.notification_new_event_hold_title)
+        val body = me.proton.sync.calendar.NewEventHolds.promptText(context, prompt)
+        val target = prompt.moveTarget
+
+        fun action(act: String, requestCode: Int): PendingIntent {
+            val i = Intent(context, me.proton.sync.calendar.NewEventHoldReceiver::class.java).apply {
+                action = act
+                // The Move target is part of the intent's identity, not only an extra: a re-post with a new default
+                // calendar then makes a new PendingIntent instead of rewriting the one a shown notification holds, so a
+                // notification whose update Android dropped still sends the calendar its button names, which answer()
+                // refuses once that is no longer the default.
+                identifier = "${entry.eventId}:${target?.calendarId ?: -1L}"
+                putExtra(me.proton.sync.calendar.NewEventHoldReceiver.EXTRA_ACCOUNT_NAME, accountName)
+                putExtra(me.proton.sync.calendar.NewEventHoldReceiver.EXTRA_EVENT_ID, entry.eventId)
+                putExtra(me.proton.sync.calendar.NewEventHoldReceiver.EXTRA_TARGET_CALENDAR_ID, target?.calendarId ?: -1L)
+                putExtra(me.proton.sync.calendar.NewEventHoldReceiver.EXTRA_NOTIFICATION_ID, nId)
+            }
+            return PendingIntent.getBroadcast(
+                context, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        fun button(icon: Int, label: String, pending: PendingIntent): NotificationCompat.Action =
+            NotificationCompat.Action.Builder(icon, label, pending).setAuthenticationRequired(true).build()
+
+        val tapIntent = Intent(context, SyncSettingsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_ACCOUNT, accountName)
+            putExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_EVENT, entry.eventId)
+        }
+        val tapPending = PendingIntent.getActivity(
+            context, nId, tapIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        // A lock screen that hides sensitive content shows this one: the title only, never the event's.
+        val publicVersion = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle(title)
+            .build()
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setSubText(accountName)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(false)
+            .setOngoing(false)
+            .setOnlyAlertOnce(true)
+            .setSilent(!alert)
+            .setWhen(entry.heldAtMillis)
+            .setShowWhen(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(publicVersion)
+            .setContentIntent(tapPending)
+        // Android asks for the unlock before an action only from Android 12 on; below that a button runs from the lock
+        // screen, so there the notification offers Keep only, and Move and Publish are left to the decision dialog, which
+        // the phone has to be unlocked to open. Publish sends the event to everyone who shares the calendar; Move asks
+        // for the user's own sync, which with "Send invitations" on emails the guests another app wrote into the event.
+        if (target != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.addAction(button(
+                android.R.drawable.ic_menu_revert,
+                context.getString(R.string.action_new_event_move, target.name),
+                action(me.proton.sync.calendar.NewEventHoldReceiver.ACTION_MOVE, nId + 1),
+            ))
+        }
+        builder.addAction(button(
+            android.R.drawable.ic_menu_save,
+            context.getString(R.string.remote_deletion_keep),
+            action(me.proton.sync.calendar.NewEventHoldReceiver.ACTION_KEEP, nId + 2),
+        ))
+        if (prompt.canPublish && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.addAction(button(
+                android.R.drawable.ic_menu_upload,
+                context.getString(R.string.action_new_event_publish),
+                action(me.proton.sync.calendar.NewEventHoldReceiver.ACTION_PUBLISH, nId + 3),
+            ))
+        }
+        return try {
+            context.getSystemService(NotificationManager::class.java)?.notify(nId, builder.build()) ?: return false
+            // The calendar's name only with Verbose logging (LogNames).
+            if (alert) SyncLog.i(TAG, "Told $accountName about new event ${entry.eventId} waiting in calendar ${entry.calendarId}${LogNames.named(prompt.calendarName)}")
+            true
+        } catch (e: SecurityException) {
+            false
+        }
+    }
+
+    /** Take a new-event prompt down. Keyed exactly as [showNewEventHoldPrompt] keys it. */
+    fun cancelNewEventHoldPrompt(context: Context, accountName: String, eventId: Long) {
+        context.getSystemService(NotificationManager::class.java)?.cancel(newEventHoldNotificationId(accountName, eventId))
+    }
+
+    /** Whether that prompt is on screen now. A look that fails answers true, so a failure re-posts nothing. */
+    fun isNewEventHoldPromptShowing(context: Context, accountName: String, eventId: Long): Boolean {
+        val nId = newEventHoldNotificationId(accountName, eventId)
+        return try {
+            val nm = context.getSystemService(NotificationManager::class.java) ?: return true
+            nm.activeNotifications.any { it.id == nId }
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    /** The ids of this app's notifications on screen now, or null when they could not be read. */
+    internal fun activeNotificationIds(context: Context): Set<Int>? = try {
+        context.getSystemService(NotificationManager::class.java)?.activeNotifications?.mapTo(HashSet()) { it.id }
+    } catch (e: Exception) {
+        null
+    }
+
+    /** The one summary of an account's waiting series past the prompts' limit, keyed on the account. */
+    fun newEventHoldSummaryId(accountName: String): Int =
+        ("new_event_hold_more_$accountName").hashCode()
+
+    /**
+     * The one notification for the waiting series of [accountName] that get no prompt of their own, past
+     * NewEventHoldRules.MAX_PROMPTS: "[count] more events waiting for your choice", dated [whenMillis], when the newest
+     * of them was held. Android refuses every new notification of an app that already has 50 up, the app's other
+     * prompts included, so the series past the limit are never one notification each. Tapping it opens the walk
+     * through the account's waiting events, oldest first, as the account card's row does. No buttons: each answer
+     * decides where one event goes. Always silent, since the prompt of a series held in this run carries the alert;
+     * a lock screen that hides sensitive content shows the title only, as for the prompts. Not gated on any
+     * sync-notification preference. Returns false when nothing could be shown (notifications off for the app, the
+     * alerts channel switched off, no permission); the caller logs it.
+     */
+    internal fun showNewEventHoldSummary(context: Context, accountName: String, count: Int, whenMillis: Long): Boolean {
+        if (!androidx.core.app.NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
+        ensureAlertsChannel(context)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            context.getSystemService(NotificationManager::class.java)
+                ?.getNotificationChannel(CHANNEL_ID_ALERTS)?.importance == NotificationManager.IMPORTANCE_NONE
+        ) return false
+
+        val nId = newEventHoldSummaryId(accountName)
+        val title = context.getString(R.string.notification_new_event_hold_title)
+        val body = Plurals.text(context, R.plurals.notification_new_event_hold_more, count, count)
+        val tapIntent = Intent(context, SyncSettingsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            // Its own identity, so no prompt's tap intent can stand in for it, whatever their request codes.
+            identifier = "new_event_hold_walk:$accountName"
+            putExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_ACCOUNT, accountName)
+            putExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_WALK, true)
+        }
+        val tapPending = PendingIntent.getActivity(
+            context, nId, tapIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        // A lock screen that hides sensitive content shows this one: the title only.
+        val publicVersion = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle(title)
+            .build()
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID_ALERTS)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setSubText(accountName)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(false)
+            .setOngoing(false)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setWhen(whenMillis)
+            .setShowWhen(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(publicVersion)
+            .setContentIntent(tapPending)
+            .build()
+        return try {
+            context.getSystemService(NotificationManager::class.java)?.notify(nId, notification) ?: return false
+            true
+        } catch (e: SecurityException) {
+            false
+        }
+    }
+
+    /** Take the summary of [accountName]'s waiting series past the prompts' limit down. */
+    fun cancelNewEventHoldSummary(context: Context, accountName: String) {
+        context.getSystemService(NotificationManager::class.java)?.cancel(newEventHoldSummaryId(accountName))
+    }
+
+    /** Whether that summary is on screen now; a look that fails answers false. For the event-holds debug verb. */
+    fun isNewEventHoldSummaryShowing(context: Context, accountName: String): Boolean =
+        activeNotificationIds(context)?.contains(newEventHoldSummaryId(accountName)) == true
+
     // ===================== Data backup result =====================
 
     private fun ensureBackupChannel(context: Context) {
@@ -920,13 +1266,40 @@ object SyncNotificationHelper {
         }
     }
 
-    fun friendlyMessage(context: Context, rawError: String): String {
+    /**
+     * The reason shown for a failure whose raw message is [rawError]: in the failure notification ([notifyFailure]), the
+     * account card's failure dialog and the scheduled backup's failure notification. [retries] says whether the failed
+     * work is tried again without the user; for a sync, SyncScheduling.userSyncRetriesFor of the account the failure
+     * belongs to. While that says no (Android's automatic sync is off, or the account is on Manual only), Android retries
+     * no failed sync the user started and none it started by itself, so the four texts that say the sync will retry (no
+     * internet, too many requests, a server error, an interrupted connection) give way to their variant that asks for a
+     * tap on Sync (owner, 2026-11-22). A full re-sync, and on Manual only with automatic sync on a sync the app asked for
+     * on its own (the Fallback full sync's), are still retried and show the variant too: the failure record does not say
+     * which run failed. [friendlyMessageRes] is the choice.
+     */
+    fun friendlyMessage(context: Context, rawError: String, retries: Boolean): String =
+        context.getString(friendlyMessageRes(rawError, retries))
+
+    /**
+     * [friendlyMessage]'s text for [rawError] and [retries], as a string resource: the rule without a Context. The network
+     * cause a sync wrote after its failure's text (NetworkCause.describe) decides first, ahead of the words below: the
+     * rest of the text can quote a calendar's name, which may hold any of them.
+     */
+    internal fun friendlyMessageRes(rawError: String, retries: Boolean): Int {
+        when (NetworkCause.carriedBy(rawError)) {
+            NetworkCause.NO_CONNECTION -> return if (retries) R.string.error_no_internet else R.string.error_no_internet_tap_sync
+            NetworkCause.TIMEOUT -> return R.string.error_timeout
+            NetworkCause.INTERRUPTED ->
+                return if (retries) R.string.error_connection_interrupted else R.string.error_connection_interrupted_tap_sync
+            NetworkCause.SECURE_CONNECTION -> return R.string.error_ssl
+            null -> Unit
+        }
         val lower = rawError.lowercase()
         return when {
             lower.contains("unable to resolve host") || lower.contains("unknownhostexception") ->
-                context.getString(R.string.error_no_internet)
+                if (retries) R.string.error_no_internet else R.string.error_no_internet_tap_sync
             lower.contains("timeout") ->
-                context.getString(R.string.error_timeout)
+                R.string.error_timeout
             // Be specific about what counts as an auth error — bare "auth" used to match
             // synthesized messages like "Sync incomplete (io=1, auth=0)" and surface the
             // misleading "session expired" string. We only want true auth signals here.
@@ -934,19 +1307,19 @@ object SyncNotificationHelper {
                 lower.contains("unauthorized") || lower.contains("authentic") ||
                 lower.contains("authexception") || lower.contains("session expired") ||
                 lower.contains("auth failed") || lower.contains("auth required") ->
-                context.getString(R.string.error_session_expired)
+                R.string.error_session_expired
             lower.contains("http 429") ->
-                context.getString(R.string.error_too_many_requests)
+                if (retries) R.string.error_too_many_requests else R.string.error_too_many_requests_tap_sync
             lower.contains("http 5") ->
-                context.getString(R.string.error_server_error)
+                if (retries) R.string.error_server_error else R.string.error_server_error_tap_sync
             lower.contains("http 4") ->
-                context.getString(R.string.error_request_rejected)
+                R.string.error_request_rejected
             lower.contains("ssl") || lower.contains("certificate") ->
-                context.getString(R.string.error_ssl)
+                R.string.error_ssl
             lower.contains("socketexception") || lower.contains("connectionreset") || lower.contains("broken pipe") ->
-                context.getString(R.string.error_connection_interrupted)
+                if (retries) R.string.error_connection_interrupted else R.string.error_connection_interrupted_tap_sync
             else ->
-                context.getString(R.string.error_unexpected)
+                R.string.error_unexpected
         }
     }
 }

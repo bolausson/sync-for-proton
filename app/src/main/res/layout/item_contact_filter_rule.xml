@@ -66,7 +66,7 @@
             android:id="@+id/text_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:maxLines="3"
             android:ellipsize="end"
             android:textColor="@color/sfp_text"
             android:textSize="@dimen/sfp_text_row_title" />
@@ -78,8 +78,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            android:maxLines="2"
-            android:ellipsize="end"
             android:textColor="@color/sfp_text_secondary"
             android:textSize="@dimen/sfp_text_row_sub" />
     </LinearLayout>

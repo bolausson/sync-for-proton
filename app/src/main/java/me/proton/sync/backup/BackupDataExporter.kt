@@ -82,7 +82,7 @@ class BackupDataExporter(
         val accounts = AccountManager.get(context).getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
         if (accounts.isEmpty()) return Result.Failure("no_accounts")
 
-        val calBuilder = CalendarBackupBuilder(apiClient, calendarDecryptor)
+        val calBuilder = CalendarBackupBuilder(apiClient, calendarDecryptor, keyManager::hasAddressKeys)
         val conBuilder = ContactsBackupBuilder(apiClient, contactDecryptor)
 
         // Relative path within the run ("<account>/<file>") → bytes.
@@ -234,8 +234,8 @@ class BackupDataExporter(
         private const val TAG = "BackupExporter"
 
         /**
-         * The one-line outcome the backup screen shows under "Back up now", and the only writer of
-         * the two preferences behind it.
+         * The one-line outcome the backup screen shows under "Back up now", which [record] stores
+         * ([BackupResultLines] holds the keys).
          *
          * It lives here because there are two ways to run a backup and only one of them used to
          * record anything. The scheduled worker recorded every outcome; the manual button recorded
@@ -269,13 +269,19 @@ class BackupDataExporter(
             )
         }
 
-        /** Stamp an outcome, so the screen describes the run that actually happened last. */
-        fun record(context: Context, summary: String) {
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putLong(SyncPreferences.KEY_BACKUP_LAST_RUN_MS, System.currentTimeMillis())
-                .putString(SyncPreferences.KEY_BACKUP_LAST_RESULT, summary)
-                .apply()
-        }
+        /**
+         * Stamp an outcome, so the screen describes the run that actually happened last. Every run records through here,
+         * the scheduled one and "Back up now" alike, so it also takes away the line of a skip before it ([BackupResultLines]).
+         */
+        fun record(context: Context, summary: String) =
+            BackupResultLines.recordRun(PreferenceManager.getDefaultSharedPreferences(context), summary, System.currentTimeMillis())
+
+        /**
+         * A scheduled backup skipped because Android's automatic sync is off (BackupScheduleWorker.runScheduled): a line
+         * of its own under the last run's, which stays as it was, so the screen still says when the last backup was made.
+         */
+        fun recordSkippedAutoSyncOff(context: Context) =
+            BackupResultLines.recordSkip(PreferenceManager.getDefaultSharedPreferences(context), System.currentTimeMillis())
 
         /**
          * What a thrown exception should be called on screen.

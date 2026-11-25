@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 
 /**
  * Handles the **Delete from phone** / **Keep on phone** actions of the server→local deletion
@@ -42,20 +41,26 @@ class RemoteDeletionReceiver : BroadcastReceiver() {
     }
 
     private fun requestSync(context: Context, accountName: String, type: String) {
-        val bundle = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-        }
+        // The answer is stored before this request, so if the sync fails (it is not retried while Android's
+        // automatic sync is off), the next one applies it. answering: the account the request goes to, because Android
+        // drops a request equal to that account's running sync.
         if (type == RemoteDeletionGuard.TYPE_CALENDAR) {
             val account = Account(accountName, ProtonSyncApp.ACCOUNT_TYPE)
+            // While a full re-sync of the account's calendar is being prepared, asked for once its own request is posted.
+            if (FullResyncHold.holdAnswerIfPreparing(accountName)) {
+                SyncLog.i(TAG, "Remote-deletion: the calendar sync for $accountName is asked for once its full re-sync's own request is posted")
+                return
+            }
+            val bundle = SyncScheduling.userSyncExtras(context, accountName, answering = account)
             ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, bundle)
         } else {
             // Contacts sync runs on the linked address-book account.
             val am = AccountManager.get(context)
             val ab = am.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK).firstOrNull {
                 am.getUserData(it, SyncConstants.EXTRA_PARENT_ACCOUNT_NAME) == accountName || it.name == accountName
-            }
-            if (ab != null) ContentResolver.requestSync(ab, SyncConstants.AUTHORITY_CONTACTS, bundle)
+            } ?: return
+            val bundle = SyncScheduling.userSyncExtras(context, accountName, answering = ab)
+            ContentResolver.requestSync(ab, SyncConstants.AUTHORITY_CONTACTS, bundle)
         }
     }
 

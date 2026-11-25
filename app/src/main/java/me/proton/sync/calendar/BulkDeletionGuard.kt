@@ -38,7 +38,10 @@ object BulkDeletionGuard {
      * rather than genuine user intent.
      *
      * @param deletedCount mapped events missing from the local provider for this calendar
-     * @param localCount   events the local provider currently reports for this calendar
+     * @param localCount   mapped events still on the phone for this calendar ([mappedRowsPresent]). Not every row the
+     *                     provider reports: an event that exists only on the phone (held for the user's choice in a
+     *                     shared calendar, kept there, or not sent yet) is not one of Proton's, and counting it switched
+     *                     the whole-calendar rule off for a calendar whose every synced event had vanished.
      * @param totalMappings events we had previously synced for this calendar
      */
     fun isSuspicious(deletedCount: Int, localCount: Int, totalMappings: Int): Boolean {
@@ -46,6 +49,10 @@ object BulkDeletionGuard {
         if (localCount == 0 && totalMappings > 0) return true                 // whole calendar vanished locally
         return deletedCount >= ABS_MIN && deletedCount >= totalMappings * FRACTION
     }
+
+    /** How many of [mappedAndroidIds] (a calendar's mapped rows, each counted once) the provider still has ([existingAndroidIds]). */
+    fun mappedRowsPresent(mappedAndroidIds: Collection<Long>, existingAndroidIds: Set<Long>): Int =
+        mappedAndroidIds.toHashSet().count { it in existingAndroidIds }
 
     private fun prefs(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
 

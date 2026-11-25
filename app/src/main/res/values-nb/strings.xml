@@ -44,7 +44,6 @@
 
     <string name="label_expand">Utvid</string>
     <string name="label_display_name">Visningsnavn</string>
-    <string name="label_event_loop_interval">Hendelsesløkkeintervall</string>
     <string name="label_fallback_full_sync">Reserve full synkronisering</string>
     <string name="label_notify_on_failure">Varsle ved feil</string>
     <string name="label_notify_in_progress">Vis varsel under synkronisering</string>
@@ -107,7 +106,6 @@
     <string name="dialog_message_display_name">Velg et nytt visningsnavn for denne kontoen. Brukes i Innstillinger → Administrer kontoer og i kontaktens \"Konto\"-undertekst.</string>
     <string name="dialog_title_past_events">Tidligere hendelser</string>
     <string name="dialog_title_future_events">Fremtidige hendelser</string>
-    <string name="dialog_title_event_loop_interval">Hendelsesløkkeintervall</string>
     <string name="dialog_title_contacts_fallback">Reserve full synkronisering av kontakter</string>
     <string name="dialog_title_calendar_fallback">Reserve full synkronisering av kalender</string>
     <string name="dialog_title_remove_account">Fjern konto</string>
@@ -165,13 +163,17 @@
     <string name="notification_sync_phase_decrypting">dekrypterer %1$d/%2$d</string>
     <string name="label_sync_queued">Venter på synkronisering</string>
     <string name="error_no_internet">Ingen internettilkobling. Synkronisering prøves igjen automatisk.</string>
+    <string name="error_no_internet_tap_sync">Ingen internettilkobling. Trykk på «Synkroniser» for å prøve igjen.</string>
     <string name="error_timeout">Kunne ikke nå serveren. Sjekk internettilkoblingen din.</string>
     <string name="error_session_expired">Økten din har utløpt. Logg inn igjen.</string>
     <string name="error_too_many_requests">For mange forespørsler. Synkronisering prøves igjen senere.</string>
+    <string name="error_too_many_requests_tap_sync">For mange forespørsler. Trykk på «Synkroniser» for å prøve igjen.</string>
     <string name="error_server_error">Proton-serverfeil. Synkronisering prøves igjen automatisk.</string>
+    <string name="error_server_error_tap_sync">Proton-serverfeil. Trykk på «Synkroniser» for å prøve igjen.</string>
     <string name="error_request_rejected">Synkroniseringsforespørsel ble avvist av serveren.</string>
     <string name="error_ssl">Sikker tilkobling mislyktes. Sjekk nettverket ditt.</string>
     <string name="error_connection_interrupted">Tilkoblingen ble avbrutt. Synkronisering prøves igjen.</string>
+    <string name="error_connection_interrupted_tap_sync">Tilkoblingen ble avbrutt. Trykk på «Synkroniser» for å prøve igjen.</string>
     <string name="error_unexpected">Synkronisering støtte på en uventet feil.</string>
 
     <string name="notification_channel_auth">Autentisering</string>
@@ -282,16 +284,16 @@
     <string name="label_info">Mer informasjon</string>
     <string name="info_language_body">Angir språket som brukes for appens egne skjermer. \"Auto\" følger telefonens systemspråk. Dette endrer bare appgrensesnittet, det oversetter ikke dine synkroniserte kalenderhendelser eller kontakter.</string>
     <string name="info_display_name_body">Navnet som vises for denne kontoen i Android-innstillinger → Kontoer og i kalender-/kontaktappers velgere. Det er bare en lokal etikett; å endre det påvirker ikke Proton-kontoen din.\n\nMerk: Samsung Calendar og Samsung Contacts ignorerer egendefinerte kontonavn og viser alltid sin egen etikett (f.eks. \"Proton\"). Navnet du har valgt, vises kanskje ikke der, dette er en Samsung-begrensning vi ikke kan endre. Andre apper (Google Calendar/Contacts) viser det normalt.</string>
-    <string name="info_event_loop_body">Hvor ofte appen sjekker Proton i bakgrunnen for eksterne endringer av kontaktene og kalenderen din. Kortere intervaller viser endringer raskere, men bruker mer batteri og data. Dette er adskilt fra manuell synkronisering, som du kan utløse når som helst med synkroniseringsknappene.</string>
+    <string name="info_event_loop_body">Hvor ofte appen sjekker Proton i bakgrunnen for eksterne endringer av kontaktene og kalenderen din. Disse sjekkene kjører bare mens Androids automatiske synkronisering er slått på; når den er slått av, synkroniseres ingenting av seg selv. Kortere intervaller viser endringer raskere, men bruker mer batteri og data. Dette er adskilt fra manuell synkronisering, som du kan utløse når som helst med synkroniseringsknappene.</string>
     <string name="info_notify_in_progress_body">Viser et lydløst, pågående varsel mens en synkronisering kjører, med sanntidsforløp (skanner, laster ned, dekrypterer). Det ligger nederst i varslingspanelet og lager aldri lyd. Slå det av hvis du heller vil at synkronisering skal kjøre usynlig.</string>
     <string name="info_sync_contacts_body">Når den er på, synkroniseres Proton-kontaktene dine toveis med Androids kontakter: endringer på begge sider slås sammen.\n\nMerk: Samsung Contacts viser kontakter under én enkelt kontoetikett \"Proton contacts\" og skjuler e-postunderteksten for tredjepartskontoer som vår, en hardkodet Samsung-begrensning vi ikke kan endre. Google Contacts og de fleste andre apper viser dem normalt.</string>
-    <string name="info_fallback_full_sync_body">Hvor ofte appen gjør en fullstendig ny sjekk i stedet for en rask inkrementell synkronisering. En full synkronisering fanger opp alt en inkrementell kjøring kan gå glipp av (f.eks. endringer gjort frakoblet) på bekostning av mer tid og data. La den stå på standardverdien med mindre du mistenker at elementer ikke synkroniseres.</string>
+    <string name="info_fallback_full_sync_body">Hvor ofte appen gjør en fullstendig ny sjekk i stedet for en rask inkrementell synkronisering. Denne sjekken kjører bare mens Androids automatiske synkronisering er slått på. En full synkronisering fanger opp alt en inkrementell kjøring kan gå glipp av (f.eks. endringer gjort frakoblet) på bekostning av mer tid og data. La den stå på standardverdien med mindre du mistenker at elementer ikke synkroniseres.</string>
     <string name="info_notify_on_failure_body">Viser et varsel hvis en synkronisering mislykkes (f.eks. nettverksfeil eller utløpt økt). Trykk på det for en forklaring i klartekst og en lenke til loggene. Slå det av hvis du ikke vil bli varslet om forbigående feil.</string>
-    <string name="info_sync_calendar_body">Når den er på, synkroniseres Proton-kalenderne dine inn i Androids kalender, slik at hendelser vises i Google Calendar, Samsung Calendar og enhver annen kalenderapp. Toveis: endringer du gjør på telefonen, lastes opp tilbake til Proton for kalendere du eier.</string>
+    <string name="info_sync_calendar_body">Når den er på, synkroniseres Proton-kalenderne dine inn i Androids kalender, slik at hendelser vises i Google Calendar, Samsung Calendar og enhver annen kalenderapp. Toveis: endringer du gjør på telefonen, lastes opp tilbake til Proton for alle kalendere du kan redigere, også kalendere som andre deler med deg.</string>
     <string name="info_include_external_calendars_body">Proton kan inneholde abonnerte kalendere (f.eks. en ekstern ICS-strøm) og helligdagskalendere. Disse er skrivebeskyttet på Protons side. Når den er av, hopper appen over dem og synkroniserer bare dine egne redigerbare kalendere. Slå på hvis du også vil at disse skrivebeskyttede kalenderne speiles til telefonen din.</string>
     <string name="info_sync_mode_body">\"Alle hendelser\" synkroniserer hele kalenderhistorikken din og alle fremtidige hendelser, best hvis du vil ha alt på telefonen din (den første synkroniseringen av en stor kalender kan ta flere minutter). \"Egendefinert intervall\" holder store kalendere raske ved å synkronisere bare et vindu av dager rundt i dag. I disse kalenderne lastes hendelser utenfor vinduet ikke ned, og hendelser som allerede er på denne telefonen, blir liggende med mindre \"Fjern eldre hendelser fra denne telefonen\" er slått på for kalenderen de tilhører. Små kalendere synkroniseres alltid i sin helhet.</string>
     <string name="label_trim_old_events">Fjern eldre hendelser fra denne telefonen</string>
-    <string name="info_trim_old_events_body">I kalenderne du velger, fjernes hendelser fra denne telefonen hvis de sluttet mer enn én dag før intervallet ditt starter, både nå og ved senere synkroniseringer. De blir liggende på Proton-kontoen din, og ingenting slettes der. Sikkerhetskopier av dine egne kalendere lages fra Proton, så de inneholder dem fortsatt; abonnerte kalendere og helligdagskalendere sikkerhetskopieres ikke. En gjentakende hendelse blir liggende med alle sine tidligere datoer så lenge den fortsetter inn i intervallet ditt eller ikke har noen sluttdato, fordi telefonen lagrer en gjentakende hendelse som én oppføring. Hendelser med endringer som ennå ikke er sendt til Proton, blir også liggende, og det samme gjør hendelser som er opprettet eller sist endret de siste 7 dagene, bedømt ut fra versjonen på denne telefonen og ikke ut fra når denne telefonen lastet den ned. Bare kalendere som er for store til å synkroniseres i sin helhet, kan velges, og hendelser etter intervallet ditt fjernes aldri. Velg et lengre intervall eller \"Alle hendelser\" for å få tilbake fjernede hendelser.</string>
+    <string name="info_trim_old_events_body">I kalenderne du velger, fjernes hendelser som sluttet mer enn én dag før intervallet ditt starter, fra denne telefonen ved neste synkronisering, og senere hendelser når de blir like gamle. De blir liggende på Proton-kontoen din, og ingenting slettes der. Sikkerhetskopier av dine egne kalendere lages fra Proton, så de inneholder dem fortsatt; abonnerte kalendere og helligdagskalendere sikkerhetskopieres ikke. En gjentakende hendelse blir liggende med alle sine tidligere datoer så lenge den fortsetter inn i intervallet ditt eller ikke har noen sluttdato, fordi telefonen lagrer en gjentakende hendelse som én oppføring. Hendelser med endringer som ennå ikke er sendt til Proton, blir også liggende, og det samme gjør hendelser som er opprettet eller sist endret de siste 7 dagene, bedømt ut fra versjonen på denne telefonen og ikke ut fra når denne telefonen lastet den ned. Bare kalendere som er for store til å synkroniseres i sin helhet, kan velges, og hendelser etter intervallet ditt fjernes aldri. Velg et lengre intervall eller \"Alle hendelser\" for å få tilbake fjernede hendelser.</string>
     <string name="trim_dialog_title">Fjern eldre hendelser fra denne telefonen</string>
     <string name="trim_dialog_intro">Velg kalenderne du vil rydde opp i. Hendelser som sluttet før %1$s, fjernes fra denne telefonen ved neste synkronisering, og senere hendelser når de blir like gamle. De blir liggende på Proton-kontoen din. En gjentakende hendelse som fortsetter etter den datoen, blir liggende med alle sine datoer.</string>
     <plurals name="trim_calendar_count">
@@ -311,6 +313,32 @@
     </plurals>
     <string name="trim_dialog_save">Lagre</string>
     <string name="trim_read_failed">Kalenderne på denne telefonen kunne ikke leses, så ingenting ble endret.</string>
+    <string name="label_default_calendar">Standardkalender</string>
+    <string name="info_default_calendar_body">Nye hendelser havner i standardkalenderen din i Proton, og denne telefonen markerer den som hovedkalender for kontoen. Endrer du den her, endres den også i Proton, slik at Proton på nettet, Protons apper og invitasjoner du svarer på i Proton Mail, bruker den nye. Bare en av dine egne aktive kalendere kan være standardkalender, ikke en delt, abonnert eller helligdagskalender.</string>
+    <string name="default_calendar_connecting">Kobler til Proton…</string>
+    <string name="default_calendar_changed">Standardkalender endret</string>
+    <string name="default_calendar_unreachable">Proton kunne ikke nås. Prøv igjen om litt.</string>
+    <string name="default_calendar_refused">Proton godtok ikke endringen, så ingenting ble endret.</string>
+    <string name="default_calendar_none_own">Denne kontoen har ingen egen aktiv kalender som kan være standardkalender. Delte, abonnerte og helligdagskalendere kan ikke være standardkalender.</string>
+    <string name="default_calendar_incomplete">Ikke alle kalenderne på denne kontoen kunne leses, så standardkalenderen kan ikke endres her.</string>
+    <string name="notification_new_event_hold_title">Ny hendelse i en delt kalender</string>
+    <string name="notification_new_event_hold_body">%1$s har lagt til «%2$s» i %3$s. Andre som har tilgang til denne kalenderen, ville se hendelsen.</string>
+    <string name="notification_new_event_hold_body_unknown_app">En app har lagt til «%1$s» i %2$s. Andre som har tilgang til denne kalenderen, ville se hendelsen.</string>
+    <string name="action_new_event_move">Flytt til %1$s</string>
+    <string name="action_new_event_publish">Frigi</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d hendelse venter på valget ditt</item>
+        <item quantity="other">%d hendelser venter på valget ditt</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d hendelse beholdt bare på denne telefonen</item>
+        <item quantity="other">%d hendelser beholdt bare på denne telefonen</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d hendelse til venter på valget ditt</item>
+        <item quantity="other">%d hendelser til venter på valget ditt</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Når en app som ikke er en kalenderapp, legger til en hendelse i en kalender som noen har delt med deg, venter hendelsen på denne telefonen til du velger. «Flytt» legger den i standardkalenderen din i stedet. «Frigi» sender den til den delte kalenderen, der alle som har tilgang til kalenderen, kan se den. «Behold på telefon» sender den aldri til Proton: Proton Calendar, Proton på nettet, de andre enhetene dine og denne appens sikkerhetskopier får den ikke, og den går tapt hvis du fjerner denne appen eller denne kontoen. Beholdte hendelser vises fortsatt under denne kontoen, der du fremdeles kan flytte eller frigi dem.</string>
     <string name="info_sync_range_window_body">Hvor mange dager før og etter i dag som skal synkroniseres når \"Egendefinert intervall\" er valgt. Større vinduer viser mer av kalenderen din, men tar lengre tid å synkronisere. Har ingen effekt i modusen \"Alle hendelser\".</string>
     <string name="info_poll_attendee_body">Når den er på, sjekker appen jevnlig hendelser som har deltakere på nytt for å oppdage svar med godta/avslå/foreløpig. Protons endringsstrøm rapporterer ikke RSVP-endringer, så dette krever ekstra API-kall, bare verdt å aktivere hvis du er avhengig av å se deltakernes svar på telefonen din.</string>
     <string name="info_send_invites_body">Når du legger til deltakere i en hendelse på telefonen din, send dem en invitasjon på e-post. Av som standard: slå bare på hvis du vil at appen skal sende e-post til deltakere på dine vegne.</string>
@@ -318,7 +346,7 @@
     <string name="info_send_cancellations_body">Send e-post til deltakere når du sletter en hendelse de er invitert til, slik at kalenderne deres også fjerner den. Av som standard.</string>
     <string name="info_invite_subject_title_body">Når invitasjons-e-poster sendes, sett hendelsens tittel i e-postens emnefelt slik at mottakerne kjenner den igjen med én gang. Av som standard av personvernhensyn: e-postemner er ikke kryptert i standard e-posttransport, så tittelen ville vært synlig for e-postservere langs ruten.</string>
     <string name="info_background_sync_body">Android kan sette bakgrunnssynkronisering på pause for å spare batteri, noe som kan forsinke eller stoppe automatisk synkronisering. Å ekskludere denne appen fra batterioptimalisering holder planlagte synkroniseringer i gang pålitelig. Bruk knappen for å åpne systemets batteriinnstillinger for appen.</string>
-    <string name="info_verbose_logging_body">Fanger opp ekstra diagnostikkdetaljer (autentiseringsstatus, nøkkelopplåsing, synkroniseringens interne deler) i loggen, nyttig når du rapporterer et problem. Appen erstatter e-postadresser i den med korte koder, men loggen kan inneholde konto- og kalendernavn, så del kun logger med utvikleren. La den stå av ved normal bruk.</string>
+    <string name="info_verbose_logging_body">Fanger opp ekstra diagnostikkdetaljer (autentiseringsstatus, nøkkelopplåsing, synkroniseringens interne deler) i loggen, nyttig når du rapporterer et problem. Mens detaljert logging er slått på, nevner loggen også kalenderne dine og appene som legger til hendelser i dem. Appen erstatter e-postadresser i den med korte koder, men loggen kan inneholde konto- og kalendernavn, så del kun logger med utvikleren. La den stå av ved normal bruk.</string>
     <string name="info_file_logging_body">Skriver appens logg til en tekstfil med tidsstempel (sync-for-proton-log-….txt) i en mappe du velger. Ellers holder appen loggen bare i minnet, så slå på dette for å fange et problem som er vanskelig å gjenskape. En ny fil opprettes hver gang appen starter. Appen erstatter e-postadresser i den med korte koder, men filen kan inneholde konto- og kalendernavn, så del den kun med utvikleren. La den være av ved vanlig bruk.</string>
     <string name="info_timezone_updates_text">Tidspunktene for hendelser avhenger av tidssoneregler, og land endrer disse reglene fra tid til annen. Android lagrer dem i telefonens tidssonedata, som kommer med systemoppdateringer. En telefon som ikke lenger får dem, for eksempel med en eldre Android-versjon eller uten Google Play-systemoppdateringer, beholder de gamle reglene, og hendelser på steder der reglene har endret seg siden da, kan vises på feil tidspunkt.\n\nTidssonedata på denne telefonen: versjon %1$s\n\nNår den er av (standard), bruker appen telefonens egne tidssonedata og sender ingenting til www.tzurl.org.\n\nNår den er på, henter appen de gjeldende reglene for hver tidssone som hendelsene dine bruker, fra www.tzurl.org, en tredjepartstjeneste, høyst én gang per tidssone hver gang appen starter, og bruker dem bare hvis de er nyere enn telefonens. www.tzurl.org ser da IP-adressen din og navnene på disse tidssonene, for eksempel Europe/Berlin. Ingenting annet om hendelsene eller kontoene dine sendes. Hvis www.tzurl.org ikke kan nås, brukes telefonens data. Gjentakende hendelser beregnes fortsatt med telefonens data.\n\nEtter en endring blir hendelser som allerede er på telefonen, kontrollert og rettet ved neste synkronisering.</string>
     <string name="tz_data_version_unknown">ukjent</string>
@@ -403,6 +431,8 @@
     <string name="backup_unit_days">dag</string>
     <string name="backup_retention_label">Behold de siste</string>
     <string name="backup_unit_runs">sikkerhetskopiene</string>
+    <string name="backup_when_auto_sync_off_label">Sikkerhetskopier også når automatisk synkronisering er slått av</string>
+    <string name="info_backup_when_auto_sync_off_body">Android-innstillingen «Synkroniser appdata automatisk» stopper bakgrunnssynkronisering for alle apper, og planlagte sikkerhetskopier følger den: mens den er slått av, hoppes en planlagt sikkerhetskopi over, og det står på denne skjermen under «Sikkerhetskopier nå». Slå på dette for å kjøre planlagte sikkerhetskopier likevel. Hver sikkerhetskopi laster ned alle kalenderne og kontaktene dine fra Proton, noe som kan bruke mye mobildata. «Sikkerhetskopier nå» virker alltid.</string>
     <string name="backup_section_contents">Hva som skal sikkerhetskopieres</string>
     <string name="backup_include_calendars_label">Kalendere (.ics)</string>
     <string name="backup_include_contacts_label">Kontakter (.vcf)</string>
@@ -425,6 +455,7 @@
     <string name="backup_running">Sikkerhetskopierer…</string>
     <string name="backup_last_never">Ingen sikkerhetskopi ennå.</string>
     <string name="backup_last_run">Siste sikkerhetskopi: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Planlagt sikkerhetskopi hoppet over %1$s: Androids automatiske synkronisering er slått av</string>
     <string name="backup_decrypt_action">Dekrypter en sikkerhetskopi…</string>
     <string name="backup_decrypt_body">Velg en kryptert sikkerhetskopifil (.gpg) og skriv inn passordet til den. Innholdet lagres dekryptert i sikkerhetskopimappen din.</string>
     <string name="backup_decrypting">Dekrypterer…</string>
@@ -483,7 +514,7 @@
     <string name="sfp_group_account">Konto</string>
     <string name="sfp_group_contacts">Kontakter</string>
     <string name="sfp_group_calendar">Kalender</string>
-    <string name="sfp_event_loop_subtitle">Hvor ofte det skal letes etter eksterne endringer</string>
+    <string name="sfp_event_loop_subtitle">Hvor ofte det skal letes etter eksterne endringer mens Android synkroniserer automatisk</string>
     <string name="sfp_show_advanced">Vis e-post og avanserte alternativer</string>
     <string name="sfp_hide_advanced">Skjul e-post og avanserte alternativer</string>
     <string name="sfp_group_email_attendees">E-post til deltakere</string>
@@ -494,6 +525,7 @@
     <string name="sfp_hero_subtitle_ok">Alle aktiverte kontoer er oppdatert</string>
     <string name="sfp_hero_subtitle_warn">Én eller flere kontoer trenger synkronisering eller innlogging</string>
     <string name="sfp_sync_all_now">Synkroniser alt nå</string>
+    <string name="sfp_auto_sync_off">Androids automatiske synkronisering er slått av: kontoer synkroniseres kun manuelt</string>
     <string name="sfp_tile_logs">Synkroniseringslogg</string>
     <string name="sfp_tile_backup">Sikkerhetskopi</string>
     <string name="sfp_tile_battery">Batteri</string>
@@ -532,6 +564,10 @@
     <string name="notification_contacts_too_large_summary">Disse kontaktene på %1$s er for store for kontaktlagringen i Android. I Proton er de fortsatt komplette:</string>
     <string name="notification_contacts_too_large_outdated">denne telefonen beholder en eldre versjon</string>
     <string name="notification_contacts_too_large_missing">ikke på denne telefonen</string>
+    <string name="notification_contacts_delete_refused_title">Noen kontakter kunne ikke slettes i Proton</string>
+    <string name="notification_contacts_delete_refused_summary">Disse kontaktene på %1$s ble slettet på denne telefonen, men Proton avviste slettingen. De finnes fortsatt i Proton og på de andre enhetene dine:</string>
+    <string name="notification_events_delete_refused_title">Noen hendelser kunne ikke slettes i Proton</string>
+    <string name="notification_events_delete_refused_summary">Disse hendelsene på %1$s ble slettet på denne telefonen, men Proton avviste slettingen. De finnes fortsatt i Proton og på de andre enhetene dine:</string>
     <string name="notification_conflict_title">Hendelsen er endret to steder</string>
     <string name="notification_conflict_body">«%1$s» er redigert på denne telefonen og i Proton Calendar. Hvilken versjon vil du beholde?</string>
     <string name="notification_conflict_body_shared">«%1$s» er redigert på denne telefonen og av %2$s i Proton Calendar. Hvis du beholder din versjon, erstattes hans.</string>

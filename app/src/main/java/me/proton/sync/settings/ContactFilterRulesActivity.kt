@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -190,7 +189,7 @@ class ContactFilterRulesActivity : AppCompatActivity() {
             getString(R.string.contact_filters_action_sync),
             getString(R.string.contact_filters_action_exclude),
         )
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.contact_filters_fallthrough)
             .setItems(options) { _, which ->
                 val chosen = if (which == 0) RuleAction.SYNC else RuleAction.EXCLUDE
@@ -246,12 +245,12 @@ class ContactFilterRulesActivity : AppCompatActivity() {
             },
         )
         val labels = templates.map { getString(it.titleRes) }.toTypedArray()
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.contact_filters_templates)
             .setItems(labels) { _, which ->
                 val template = templates[which]
                 val rule = template.build(getString(template.titleRes))
-                AlertDialog.Builder(this)
+                AppDialogBuilder(this)
                     .setTitle(template.titleRes)
                     .setMessage(template.descRes)
                     .setPositiveButton(R.string.contact_filters_add) { _, _ ->

@@ -8,11 +8,12 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.provider.CalendarContract
+import me.proton.sync.FullResyncHold
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 
 /**
@@ -84,14 +85,18 @@ class EventConflictReceiver : BroadcastReceiver() {
 
     private fun requestSync(context: Context, accountName: String) {
         val account = Account(accountName, ProtonSyncApp.ACCOUNT_TYPE)
-        val bundle = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-            // Bypass the calendar-level unchanged-skip. The sync that raised this prompt already
-            // recorded the calendar's latest cursor, so without this the calendar looks unchanged
-            // and gets skipped wholesale, leaving the very event we just resolved unapplied.
-            putBoolean(SyncConstants.EXTRA_USER_SYNC_NOW, true)
+        // While a full re-sync of the account's calendar is being prepared, asked for once its own request is posted
+        // (FullResyncHold), with userSyncNow kept for that request.
+        if (FullResyncHold.holdAnswerIfPreparing(accountName, userSyncNow = true)) {
+            SyncLog.i(TAG, "Collision: the sync for $accountName is asked for once its full re-sync's own request is posted")
+            return
         }
+        // userSyncNow bypasses the calendar-level unchanged-skip. The sync that raised this prompt already
+        // recorded the calendar's latest cursor, so without it the calendar looks unchanged and gets skipped
+        // wholesale, leaving the very event we just resolved unapplied. The answer is stored before this request,
+        // so if the sync fails (it is not retried while Android's automatic sync is off), the next one applies it.
+        // answering: the tap whose sync raised the prompt may still be running, and Android drops a request equal to it.
+        val bundle = SyncScheduling.userSyncExtras(context, accountName, userSyncNow = true, answering = account)
         ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, bundle)
     }
 

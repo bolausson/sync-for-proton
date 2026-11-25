@@ -40,7 +40,22 @@ data class CalendarMember(
     @SerializedName("AddressID") val addressId: String,
     @SerializedName("CalendarID") val calendarId: String,
     @SerializedName("Color") val color: String?,
-    @SerializedName("Display") val display: Int?
+    @SerializedName("Display") val display: Int?,
+    /**
+     * This member's calendar flags (WebClients CALENDAR_FLAGS: ACTIVE 1, UPDATE_PASSPHRASE 2, RESET_NEEDED 4,
+     * INCOMPLETE_SETUP 8, LOST_ACCESS 16, SELF_DISABLED 32, SUPER_OWNER_DISABLED 64). Proton keeps them on the
+     * member, and web's getVisualCalendar copies them from the first own member; [CalendarInfo.flags] is a
+     * calendar-level field the list does not carry. Nullable on purpose: Gson leaves a missing non-null Int at 0,
+     * which reads as "inactive", and web counts a missing value as active (getIsCalendarProbablyActive).
+     */
+    @SerializedName("Flags") val flags: Int? = null,
+    /** This member's sort position for the calendar (lowest first, WebClients sortCalendars). Null when absent. */
+    @SerializedName("Priority") val priority: Int? = null,
+    /**
+     * The member's own name for the calendar, which Proton web shows (getVisualCalendar copies it from the first own
+     * member). Read only as a late fallback of DefaultCalendarChoices.nameOf, which skips a blank one. Null when absent.
+     */
+    @SerializedName("Name") val name: String? = null
 )
 
 data class CalendarEventListResponse(
@@ -242,6 +257,35 @@ data class SyncAttendee(
     @SerializedName("Status") val status: Int,  // 0=NEEDS_ACTION, 1=TENTATIVE, 2=DECLINED, 3=ACCEPTED
     /** An object, not text. Left out (null), as Proton's Android client always does. */
     @SerializedName("Comment") val comment: AttendeeComment? = null
+)
+
+/**
+ * Response of `GET settings/calendar`, the account's calendar settings
+ * (`{"Code":1000,"CalendarUserSettings":{"DefaultCalendarID":"<id>"|null,...}}`; WebClients
+ * getCalendarUserSettings, Proton's Android calendar SettingsApiImpl). Only the default calendar is used, to mark
+ * the phone's primary calendar (PrimaryCalendarChooser). Also the answer of `PUT settings/calendar`, from which
+ * DefaultCalendarService.save reads Code and the echoed DefaultCalendarID.
+ */
+data class CalendarUserSettingsResponse(
+    @SerializedName("Code") val code: Int? = null,
+    @SerializedName("CalendarUserSettings") val settings: CalendarUserSettings? = null
+)
+
+/**
+ * Body of `PUT settings/calendar` as both Proton clients send it to set the default calendar: DefaultCalendarID
+ * alone (Proton takes a partial body). The one field is non-null, so Gson writes exactly `{"DefaultCalendarID":"<id>"}`.
+ */
+data class UpdateCalendarUserSettingsRequest(
+    @SerializedName("DefaultCalendarID") val defaultCalendarId: String
+)
+
+/**
+ * The part of the calendar settings this app reads. [defaultCalendarId] is null when it is not set, which Proton
+ * still sends for old accounts (Proton's Android calendar, CalendarUserSettingsEntity), and when the field is
+ * absent; both clients then fall back to the first own calendar.
+ */
+data class CalendarUserSettings(
+    @SerializedName("DefaultCalendarID") val defaultCalendarId: String? = null
 )
 
 /** Response of `GET calendar/v1/{calendarId}/settings`. */

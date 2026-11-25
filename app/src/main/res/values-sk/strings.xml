@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Preskočiť odoberané/importované kalendáre (napr. z Google)</string>
     <string name="label_expand">Rozbaliť</string>
     <string name="label_display_name">Zobrazované meno</string>
-    <string name="label_event_loop_interval">Interval slučky udalostí</string>
     <string name="label_fallback_full_sync">Záložná úplná synchronizácia</string>
     <string name="label_notify_on_failure">Upozorniť pri zlyhaní</string>
     <string name="label_notify_in_progress">Zobraziť upozornenie počas synchronizácie</string>
@@ -106,7 +105,6 @@
     <string name="dialog_message_display_name">Zvoľte nové zobrazované meno pre tento účet. Používa sa v Nastaveniach → Spravovať účty a ako podtitul \"Účet\" v kontaktoch.</string>
     <string name="dialog_title_past_events">Minulé udalosti</string>
     <string name="dialog_title_future_events">Budúce udalosti</string>
-    <string name="dialog_title_event_loop_interval">Interval slučky udalostí</string>
     <string name="dialog_title_contacts_fallback">Záložná úplná synchronizácia kontaktov</string>
     <string name="dialog_title_calendar_fallback">Záložná úplná synchronizácia kalendára</string>
     <string name="dialog_title_remove_account">Odstrániť účet</string>
@@ -167,13 +165,17 @@
     <string name="label_sync_queued">Čaká na synchronizáciu</string>
     <string name="notification_action_view_details">Zobraziť podrobnosti</string>
     <string name="error_no_internet">Žiadne internetové pripojenie. Synchronizácia sa automaticky zopakuje.</string>
+    <string name="error_no_internet_tap_sync">Žiadne internetové pripojenie. Skúste to znova ťuknutím na „Synchronizovať“.</string>
     <string name="error_timeout">Nepodarilo sa spojiť so serverom. Skontrolujte internetové pripojenie.</string>
     <string name="error_session_expired">Vaša relácia vypršala. Prihláste sa znova.</string>
     <string name="error_too_many_requests">Príliš veľa požiadaviek. Synchronizácia sa zopakuje neskôr.</string>
+    <string name="error_too_many_requests_tap_sync">Príliš veľa požiadaviek. Skúste to znova ťuknutím na „Synchronizovať“.</string>
     <string name="error_server_error">Chyba servera Proton. Synchronizácia sa automaticky zopakuje.</string>
+    <string name="error_server_error_tap_sync">Chyba servera Proton. Skúste to znova ťuknutím na „Synchronizovať“.</string>
     <string name="error_request_rejected">Požiadavka na synchronizáciu bola serverom odmietnutá.</string>
     <string name="error_ssl">Zabezpečené pripojenie zlyhalo. Skontrolujte svoju sieť.</string>
     <string name="error_connection_interrupted">Pripojenie bolo prerušené. Synchronizácia sa zopakuje.</string>
+    <string name="error_connection_interrupted_tap_sync">Pripojenie bolo prerušené. Skúste to znova ťuknutím na „Synchronizovať“.</string>
     <string name="error_unexpected">Pri synchronizácii sa vyskytla neočakávaná chyba.</string>
     <string name="notification_channel_auth">Overenie</string>
     <string name="notification_channel_auth_description">Upozornenia na potrebu prihlásenia</string>
@@ -278,16 +280,16 @@
     <string name="label_info">Viac informácií</string>
     <string name="info_language_body">Nastavuje jazyk používaný pre obrazovky samotnej aplikácie. „Auto\" sa riadi systémovým jazykom vášho telefónu. Toto mení iba rozhranie aplikácie, neprekladá vaše synchronizované kalendárové udalosti ani kontakty.</string>
     <string name="info_display_name_body">Názov zobrazený pre tento účet v Nastavenia Androidu → Účty a vo výberoch kalendárových/kontaktných aplikácií. Je to len lokálny štítok; jeho zmena neovplyvní váš účet Proton.\n\nPoznámka: Samsung Calendar a Samsung Contacts ignorujú vlastné názvy účtov a vždy zobrazujú svoj vlastný štítok (napr. „Proton\"). Vami zvolený názov sa tam nemusí objaviť, je to obmedzenie Samsungu, ktoré nemôžeme zmeniť. Iné aplikácie (Google Calendar/Contacts) ho zobrazujú normálne.</string>
-    <string name="info_event_loop_body">Ako často aplikácia na pozadí kontroluje Proton, či nedošlo k vzdialeným zmenám vašich kontaktov a kalendára. Kratšie intervaly zobrazujú zmeny rýchlejšie, ale spotrebúvajú viac batérie a dát. Toto je oddelené od manuálnej synchronizácie, ktorú môžete kedykoľvek spustiť tlačidlami synchronizácie.</string>
+    <string name="info_event_loop_body">Ako často aplikácia na pozadí kontroluje Proton, či nedošlo k vzdialeným zmenám vašich kontaktov a kalendára. Tieto kontroly prebiehajú iba vtedy, keď je automatická synchronizácia v Androide zapnutá; keď je vypnutá, nič sa samo nesynchronizuje. Kratšie intervaly zobrazujú zmeny rýchlejšie, ale spotrebúvajú viac batérie a dát. Toto je oddelené od manuálnej synchronizácie, ktorú môžete kedykoľvek spustiť tlačidlami synchronizácie.</string>
     <string name="info_notify_in_progress_body">Zobrazuje tiché, trvalé upozornenie počas prebiehajúcej synchronizácie so živým priebehom (skenovanie, sťahovanie, dešifrovanie). Nachádza sa v spodnej časti panela upozornení a nikdy nevydáva zvuk. Vypnite ho, ak chcete, aby synchronizácia prebiehala neviditeľne.</string>
     <string name="info_sync_contacts_body">Keď je zapnuté, vaše kontakty Proton sa obojsmerne synchronizujú s kontaktmi Androidu: zmeny na oboch stranách sa zlúčia.\n\nPoznámka: Samsung Contacts zobrazuje kontakty pod jediným štítkom účtu „Proton contacts\" a skrýva podtitul s e-mailom pre účty tretích strán, ako je ten náš, pevne zakódované obmedzenie Samsungu, ktoré nemôžeme zmeniť. Google Contacts a väčšina ostatných aplikácií ich zobrazuje normálne.</string>
-    <string name="info_fallback_full_sync_body">Ako často aplikácia vykoná úplnú opätovnú kontrolu namiesto rýchlej prírastkovej synchronizácie. Úplná synchronizácia zachytí čokoľvek, čo by prírastkový prechod mohol vynechať (napr. zmeny vykonané offline) za cenu väčšieho času a dát. Ponechajte na predvolenej hodnote, pokiaľ nemáte podozrenie, že sa položky nesynchronizujú.</string>
+    <string name="info_fallback_full_sync_body">Ako často aplikácia vykoná úplnú opätovnú kontrolu namiesto rýchlej prírastkovej synchronizácie. Táto kontrola prebieha iba vtedy, keď je automatická synchronizácia v Androide zapnutá. Úplná synchronizácia zachytí čokoľvek, čo by prírastkový prechod mohol vynechať (napr. zmeny vykonané offline), za cenu dlhšieho trvania a vyššej spotreby dát. Ponechajte na predvolenej hodnote, pokiaľ nemáte podozrenie, že sa položky nesynchronizujú.</string>
     <string name="info_notify_on_failure_body">Zobrazí upozornenie, ak synchronizácia zlyhá (napr. chyba siete alebo vypršaná relácia). Ťuknutím naň získate dôvod v zrozumiteľnom jazyku a odkaz na záznamy. Vypnite ho, ak nechcete byť upozorňovaní na dočasné zlyhania.</string>
-    <string name="info_sync_calendar_body">Keď je zapnuté, vaše kalendáre Proton sa synchronizujú do kalendára Androidu, takže udalosti sa zobrazujú v Google Calendar, Samsung Calendar a akejkoľvek inej kalendárovej aplikácii. Obojsmerne: úpravy, ktoré vykonáte v telefóne, sa nahrajú späť do Proton pre kalendáre, ktoré vlastníte.</string>
+    <string name="info_sync_calendar_body">Keď je zapnuté, vaše kalendáre Proton sa synchronizujú do kalendára Androidu, takže udalosti sa zobrazujú v Google Calendar, Samsung Calendar a akejkoľvek inej kalendárovej aplikácii. Obojsmerne: úpravy, ktoré vykonáte v telefóne, sa nahrajú späť do Protonu pre každý kalendár, ktorý môžete upravovať, vrátane kalendárov, ktoré s vami zdieľajú iní.</string>
     <string name="info_include_external_calendars_body">Proton môže obsahovať odoberané kalendáre (napr. externý ICS kanál) a sviatkové kalendáre. Tie sú na strane Proton iba na čítanie. Keď je vypnuté, aplikácia ich preskočí a synchronizuje iba vaše vlastné upraviteľné kalendáre. Zapnite, ak chcete, aby sa tieto kalendáre iba na čítanie zrkadlili aj do vášho telefónu.</string>
     <string name="info_sync_mode_body">„Všetky udalosti“ synchronizuje celú históriu vášho kalendára a všetky budúce udalosti, najlepšie, ak chcete mať všetko v telefóne (prvá synchronizácia veľkého kalendára môže trvať niekoľko minút). „Vlastný rozsah“ udržiava veľké kalendáre rýchle tým, že synchronizuje iba okno dní okolo dnešného dňa: ich udalosti mimo okna sa nesťahujú a tie, ktoré sú už v tomto telefóne, ostávajú, pokiaľ pre ich kalendár nie je zapnutá možnosť „Odstrániť staršie udalosti z tohto telefónu“. Malé kalendáre sa vždy synchronizujú celé.</string>
     <string name="label_trim_old_events">Odstrániť staršie udalosti z tohto telefónu</string>
-    <string name="info_trim_old_events_body">Vo vybraných kalendároch sa z tohto telefónu odstraňujú udalosti, ktoré sa skončili viac ako deň pred začiatkom vášho rozsahu, a to teraz aj pri ďalších synchronizáciách. Vo vašom účte Proton zostávajú a nič sa tam nemaže. Zálohy vašich vlastných kalendárov sa vytvárajú z Protonu, takže ich stále obsahujú; odoberané a sviatkové kalendáre sa nezálohujú. Opakujúca sa udalosť zostáva so všetkými svojimi skoršími termínmi, kým zasahuje do rozsahu alebo nemá dátum ukončenia, pretože telefón uchováva opakujúcu sa udalosť ako jeden záznam. Zostávajú aj udalosti so zmenami, ktoré ešte neboli odoslané do Protonu, a udalosti vytvorené alebo naposledy zmenené za posledných 7 dní podľa verzie v tomto telefóne, nie podľa toho, kedy ju tento telefón stiahol. Vybrať možno iba kalendáre, ktoré sú príliš veľké na to, aby sa synchronizovali celé, a udalosti po skončení rozsahu sa nikdy neodstraňujú. Ak chcete odstránené udalosti získať späť, zvoľte dlhší rozsah alebo „Všetky udalosti“.</string>
+    <string name="info_trim_old_events_body">Vo vybraných kalendároch sa udalosti, ktoré sa skončili viac ako deň pred začiatkom vášho rozsahu, z tohto telefónu odstránia pri najbližšej synchronizácii a neskoršie, keď budú rovnako staré. Vo vašom účte Proton zostávajú a nič sa tam nemaže. Zálohy vašich vlastných kalendárov sa vytvárajú z Protonu, takže ich stále obsahujú; odoberané a sviatkové kalendáre sa nezálohujú. Opakujúca sa udalosť zostáva so všetkými svojimi skoršími termínmi, kým zasahuje do rozsahu alebo nemá dátum ukončenia, pretože telefón uchováva opakujúcu sa udalosť ako jeden záznam. Zostávajú aj udalosti so zmenami, ktoré ešte neboli odoslané do Protonu, a udalosti vytvorené alebo naposledy zmenené za posledných 7 dní podľa verzie v tomto telefóne, nie podľa toho, kedy ju tento telefón stiahol. Vybrať možno iba kalendáre, ktoré sú príliš veľké na to, aby sa synchronizovali celé, a udalosti po skončení rozsahu sa nikdy neodstraňujú. Ak chcete odstránené udalosti získať späť, zvoľte dlhší rozsah alebo „Všetky udalosti“.</string>
     <string name="trim_dialog_title">Odstrániť staršie udalosti z tohto telefónu</string>
     <string name="trim_dialog_intro">Vyberte kalendáre, ktoré chcete prečistiť. Udalosti, ktoré sa skončili pred %1$s, sa z tohto telefónu odstránia pri najbližšej synchronizácii a neskoršie, keď budú rovnako staré. Vo vašom účte Proton zostanú. Opakujúca sa udalosť, ktorá pokračuje aj po tomto dátume, zostane so všetkými svojimi termínmi.</string>
     <plurals name="trim_calendar_count">
@@ -311,6 +313,38 @@
     </plurals>
     <string name="trim_dialog_save">Uložiť</string>
     <string name="trim_read_failed">Kalendáre v tomto telefóne sa nepodarilo načítať, takže sa nič nezmenilo.</string>
+    <string name="label_default_calendar">Predvolený kalendár</string>
+    <string name="info_default_calendar_body">Nové udalosti sa ukladajú do vášho predvoleného kalendára v Protone a tento telefón ho označuje ako hlavný kalendár účtu. Keď ho tu zmeníte, zmení sa aj v Protone, takže sa nový použije v Protone na webe, v aplikáciách Protonu aj pri pozvánkach, na ktoré odpoviete v Proton Mail. Predvolený môže byť len váš vlastný aktívny kalendár, nie zdieľaný, odoberaný ani sviatkový kalendár.</string>
+    <string name="default_calendar_connecting">Pripája sa k Protonu…</string>
+    <string name="default_calendar_changed">Predvolený kalendár bol zmenený</string>
+    <string name="default_calendar_unreachable">Proton nebol dostupný. Skúste to znova o chvíľu.</string>
+    <string name="default_calendar_refused">Proton zmenu neprijal, takže sa nič nezmenilo.</string>
+    <string name="default_calendar_none_own">Tento účet nemá žiadny vlastný aktívny kalendár, ktorý by mohol byť predvolený. Zdieľané, odoberané a sviatkové kalendáre nemôžu byť predvolené.</string>
+    <string name="default_calendar_incomplete">Nepodarilo sa načítať všetky kalendáre tohto účtu, takže tu nemožno zmeniť jeho predvolený kalendár.</string>
+    <string name="notification_new_event_hold_title">Nová udalosť v zdieľanom kalendári</string>
+    <string name="notification_new_event_hold_body">Aplikácia %1$s pridala udalosť „%2$s“ do kalendára %3$s. Videli by ju ostatní, s ktorými tento kalendár zdieľate.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Niektorá aplikácia pridala udalosť „%1$s“ do kalendára %2$s. Videli by ju ostatní, s ktorými tento kalendár zdieľate.</string>
+    <string name="action_new_event_move">Presunúť do: %1$s</string>
+    <string name="action_new_event_publish">Publikovať</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d udalosť čaká na vaše rozhodnutie</item>
+        <item quantity="few">%d udalosti čakajú na vaše rozhodnutie</item>
+        <item quantity="many">%d udalosti čaká na vaše rozhodnutie</item>
+        <item quantity="other">%d udalostí čaká na vaše rozhodnutie</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d udalosť ponechaná len v tomto telefóne</item>
+        <item quantity="few">%d udalosti ponechané len v tomto telefóne</item>
+        <item quantity="many">%d udalosti ponechanej len v tomto telefóne</item>
+        <item quantity="other">%d udalostí ponechaných len v tomto telefóne</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Ešte %d udalosť čaká na vaše rozhodnutie</item>
+        <item quantity="few">Ešte %d udalosti čakajú na vaše rozhodnutie</item>
+        <item quantity="many">Ešte %d udalosti čaká na vaše rozhodnutie</item>
+        <item quantity="other">Ešte %d udalostí čaká na vaše rozhodnutie</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Keď aplikácia, ktorá nie je kalendárovou aplikáciou, pridá udalosť do kalendára, ktorý s vami niekto zdieľa, udalosť čaká v tomto telefóne, kým sa nerozhodnete. „Presunúť“ ju namiesto toho umiestni do vášho predvoleného kalendára. „Publikovať“ ju odošle do zdieľaného kalendára, kde ju uvidia všetci, ktorí ho zdieľajú. „Ponechať v telefóne“ ju nikdy neodošle do Protonu: nebude k dispozícii v Proton Calendar, na webe, vo vašich ďalších zariadeniach ani v zálohách tejto aplikácie. Ak odstránite túto aplikáciu alebo tento účet, prídete o ňu. Ponechané udalosti zostávajú uvedené na karte tohto účtu, kde ich stále môžete presunúť alebo publikovať.</string>
     <string name="info_sync_range_window_body">Koľko dní pred a po dnešnom dni synchronizovať, keď je vybraný „Vlastný rozsah\". Väčšie okná zobrazujú viac z vášho kalendára, ale synchronizácia trvá dlhšie. V režime „Všetky udalosti\" nemá žiadny účinok.</string>
     <string name="info_poll_attendee_body">Keď je zapnuté, aplikácia pravidelne opätovne kontroluje udalosti, ktoré majú účastníkov, aby zistila odpovede prijať/odmietnuť/predbežne. Kanál zmien Proton nehlási zmeny RSVP, takže toto vyžaduje ďalšie API volania, oplatí sa zapnúť iba vtedy, ak sa spoliehate na zobrazenie odpovedí účastníkov v telefóne.</string>
     <string name="info_send_invites_body">Keď v telefóne pridáte k udalosti účastníkov, odošlite im e-mailom pozvánku. Predvolene vypnuté: zapnite iba vtedy, ak chcete, aby aplikácia posielala e-maily účastníkom vo vašom mene.</string>
@@ -318,7 +352,7 @@
     <string name="info_send_cancellations_body">Odošlite účastníkom e-mail, keď vymažete udalosť, na ktorú sú pozvaní, aby ju ich kalendáre tiež odstránili. Predvolene vypnuté.</string>
     <string name="info_invite_subject_title_body">Pri odosielaní pozývacích e-mailov uveďte názov udalosti do predmetu e-mailu, aby ho príjemcovia na prvý pohľad rozpoznali. Predvolene vypnuté z dôvodu súkromia: predmety e-mailov nie sú v štandardnom poštovom prenose šifrované, takže názov by bol viditeľný pre poštové servery na trase.</string>
     <string name="info_background_sync_body">Android môže pozastaviť synchronizáciu na pozadí kvôli šetreniu batérie, čo môže oneskoriť alebo zastaviť automatickú synchronizáciu. Vylúčenie tejto aplikácie z optimalizácie batérie udržiava naplánované synchronizácie spoľahlivo spustené. Tlačidlom otvorte systémové nastavenia batérie pre aplikáciu.</string>
-    <string name="info_verbose_logging_body">Zachytáva ďalšie diagnostické podrobnosti (stav overenia, odomknutie kľúčov, vnútorné procesy synchronizácie) do záznamu, užitočné pri hlásení problému. Aplikácia v ňom nahrádza e-mailové adresy krátkymi kódmi, záznam však môže obsahovať názvy účtov a kalendárov, preto záznamy zdieľajte iba s vývojárom. Pre bežné používanie ponechajte vypnuté.</string>
+    <string name="info_verbose_logging_body">Zachytáva ďalšie diagnostické podrobnosti (stav overenia, odomknutie kľúčov, vnútorné procesy synchronizácie) do záznamu, užitočné pri hlásení problému. Keď je zapnuté, záznam navyše uvádza názvy vašich kalendárov a aplikácií, ktoré do nich pridávajú udalosti. Aplikácia v ňom nahrádza e-mailové adresy krátkymi kódmi, záznam však môže obsahovať názvy účtov a kalendárov, preto záznamy zdieľajte iba s vývojárom. Pre bežné používanie ponechajte vypnuté.</string>
     <string name="info_file_logging_body">Zapisuje denník aplikácie do textového súboru s časovou pečiatkou (sync-for-proton-log-….txt) v priečinku, ktorý si zvolíte. Inak aplikácia uchováva denník iba v pamäti, preto to zapnite, ak chcete zachytiť ťažko reprodukovateľný problém. Pri každom spustení aplikácie sa vytvorí nový súbor. Aplikácia v ňom nahrádza e-mailové adresy krátkymi kódmi, súbor však môže obsahovať názvy účtov a kalendárov, preto ho zdieľajte iba s vývojárom. Na bežné používanie nechajte vypnuté.</string>
     <string name="info_timezone_updates_text">Časy udalostí závisia od pravidiel časových pásiem a štáty tieto pravidlá z času na čas menia. Android ich uchováva v údajoch o časových pásmach telefónu, ktoré prichádzajú so systémovými aktualizáciami. Telefón, ktorý ich už nedostáva, napríklad so staršou verziou Androidu alebo bez systémových aktualizácií Google Play, si ponechá staré pravidlá a udalosti na miestach, kde sa pravidlá odvtedy zmenili, sa môžu zobraziť v nesprávnom čase.\n\nÚdaje o časových pásmach v tomto telefóne: verzia %1$s\n\nKeď je vypnuté (predvolené), aplikácia používa vlastné údaje o časových pásmach telefónu a na www.tzurl.org nič neodosiela.\n\nKeď je zapnuté, aplikácia sťahuje z www.tzurl.org, služby tretej strany, aktuálne pravidlá každého časového pásma, ktoré používajú vaše udalosti, najviac raz pre každé časové pásmo pri každom spustení aplikácie, a používa ich len vtedy, keď sú novšie ako údaje telefónu. www.tzurl.org pritom vidí vašu IP adresu a názvy týchto časových pásiem, napríklad Europe/Berlin. Nič ďalšie o vašich udalostiach ani účtoch sa neodosiela. Keď www.tzurl.org nie je dostupný, použijú sa údaje telefónu. Opakované udalosti sa naďalej počítajú z údajov telefónu.\n\nPo zmene sa udalosti, ktoré už sú v telefóne, pri ďalšej synchronizácii skontrolujú a opravia.</string>
     <string name="tz_data_version_unknown">neznáma</string>
@@ -404,6 +438,8 @@
     <string name="backup_unit_days">dní</string>
     <string name="backup_retention_label">Ponechať posledných</string>
     <string name="backup_unit_runs">záloh</string>
+    <string name="backup_when_auto_sync_off_label">Zálohovať aj pri vypnutej automatickej synchronizácii</string>
+    <string name="info_backup_when_auto_sync_off_body">Prepínač „Automatická synchronizácia údajov“ v Androide zastavuje synchronizáciu na pozadí pre všetky aplikácie a riadia sa ním aj plánované zálohy: keď je vypnutý, plánovaná záloha sa preskočí a táto obrazovka to uvedie pod tlačidlom „Zálohovať teraz“. Zapnite túto možnosť, ak chcete plánované zálohy spúšťať aj tak. Každá záloha stiahne z Protonu všetky vaše kalendáre a kontakty, čo môže spotrebovať veľa mobilných dát. Tlačidlo „Zálohovať teraz“ funguje vždy.</string>
     <string name="backup_section_contents">Čo zálohovať</string>
     <string name="backup_include_calendars_label">Kalendáre (.ics)</string>
     <string name="backup_include_contacts_label">Kontakty (.vcf)</string>
@@ -426,6 +462,7 @@
     <string name="backup_running">Zálohovanie…</string>
     <string name="backup_last_never">Zatiaľ žiadna záloha.</string>
     <string name="backup_last_run">Posledná záloha: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Plánovaná záloha preskočená %1$s: automatická synchronizácia v Androide je vypnutá</string>
     <string name="backup_decrypt_action">Dešifrovať zálohu…</string>
     <string name="backup_decrypt_body">Vyberte šifrovaný súbor zálohy (.gpg) a zadajte jeho heslo. Obsah sa dešifrovaný uloží do vášho priečinka záloh.</string>
     <string name="backup_decrypting">Dešifrovanie…</string>
@@ -493,7 +530,7 @@
     <string name="sfp_group_account">Účet</string>
     <string name="sfp_group_contacts">Kontakty</string>
     <string name="sfp_group_calendar">Kalendár</string>
-    <string name="sfp_event_loop_subtitle">Ako často kontrolovať vzdialené zmeny</string>
+    <string name="sfp_event_loop_subtitle">Ako často kontrolovať vzdialené zmeny, keď je automatická synchronizácia v Androide zapnutá</string>
     <string name="sfp_show_advanced">Zobraziť e-mail a rozšírené možnosti</string>
     <string name="sfp_hide_advanced">Skryť e-mail a rozšírené možnosti</string>
     <string name="sfp_group_email_attendees">E-mail účastníkom</string>
@@ -504,6 +541,7 @@
     <string name="sfp_hero_subtitle_ok">Všetky zapnuté účty sú aktuálne</string>
     <string name="sfp_hero_subtitle_warn">Jeden alebo viac účtov vyžaduje synchronizáciu alebo prihlásenie</string>
     <string name="sfp_sync_all_now">Synchronizovať všetko teraz</string>
+    <string name="sfp_auto_sync_off">Automatická synchronizácia v Androide je vypnutá: účty sa synchronizujú iba manuálne</string>
     <string name="sfp_tile_logs">Záznam synchronizácie</string>
     <string name="sfp_tile_backup">Záloha</string>
     <string name="sfp_tile_battery">Batéria</string>
@@ -542,6 +580,10 @@
     <string name="notification_contacts_too_large_summary">Tieto kontakty v %1$s sú príliš veľké pre úložisko kontaktov Androidu. V Protone zostávajú úplné:</string>
     <string name="notification_contacts_too_large_outdated">tento telefón si ponecháva staršiu verziu</string>
     <string name="notification_contacts_too_large_missing">nie je v tomto telefóne</string>
+    <string name="notification_contacts_delete_refused_title">Niektoré kontakty sa nepodarilo odstrániť v Protone</string>
+    <string name="notification_contacts_delete_refused_summary">Tieto kontakty v %1$s boli odstránené v tomto telefóne, ale Proton ich odmietol odstrániť. Stále existujú v Protone a vo vašich ďalších zariadeniach:</string>
+    <string name="notification_events_delete_refused_title">Niektoré udalosti sa nepodarilo odstrániť v Protone</string>
+    <string name="notification_events_delete_refused_summary">Tieto udalosti v %1$s boli odstránené v tomto telefóne, ale Proton ich odmietol odstrániť. Stále existujú v Protone a vo vašich ďalších zariadeniach:</string>
     <string name="notification_conflict_title">Udalosť zmenená na dvoch miestach</string>
     <string name="notification_conflict_body">„%1$s“ bola upravená v tomto telefóne aj v Proton Calendar. Ktorú verziu chcete zachovať?</string>
     <string name="notification_conflict_body_shared">„%1$s“ bola upravená v tomto telefóne a používateľom %2$s v Proton Calendar. Zachovaním vašej verzie nahradíte jeho verziu.</string>

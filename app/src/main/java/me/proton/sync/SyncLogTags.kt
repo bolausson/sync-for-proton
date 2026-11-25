@@ -22,7 +22,6 @@ object SyncLogTags {
         "CalendarSync",
         "ContactsSync",
         "SyncWorker",
-        "EventLoop",
         "ConflictResolver",
         "ConflictGuard",
         "EventConflict",

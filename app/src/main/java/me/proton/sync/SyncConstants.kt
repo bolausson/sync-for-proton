@@ -16,12 +16,12 @@ object SyncConstants {
     /** Extra: full Local→Remote re-sync requested by user (long-press in settings). */
     const val EXTRA_FORCE_LOCAL_TO_REMOTE = "forceLocalToRemote"
 
-    /** Extra: sync triggered by WorkManager periodic watchdog (not user-initiated). */
+    /** Extra: sync requested by the Fallback full sync watchdog (SyncWorker), not by the user. */
     const val EXTRA_SCHEDULED_BY_WORKER = "scheduledByWorker"
 
     /**
      * Set ONLY by the explicit user-facing "Sync now" buttons in settings. Distinguishes a
-     * genuine user tap from other MANUAL+EXPEDITED requests (re-auth completion, deletion
+     * genuine user tap from other MANUAL requests (re-auth completion, deletion
      * receivers, provisioning) so the calendar unchanged-skip bypass fires only for the tap
      * the user actually made.
      */
@@ -32,6 +32,38 @@ object SyncConstants {
      * catch-up instead of looking like an ordinary periodic sync. Changes nothing the adapters do.
      */
     const val EXTRA_CATCH_UP = "catchUp"
+
+    /**
+     * Set only by SyncScheduling.requestSettingsSync, on the calendar sync asked for after a calendar setting changed,
+     * so its run logs as one. A label like [EXTRA_CATCH_UP]: changes nothing the adapters do.
+     */
+    const val EXTRA_SETTINGS_CHANGED = "settingsChanged"
+
+    /**
+     * A Long, new on every SyncScheduling.requestSettingsSync request, so Android never takes the request for a
+     * duplicate of a running settings sync (it drops a request whose extras equal a running sync's, and that sync read
+     * the older values). Read by nothing.
+     */
+    const val EXTRA_SETTINGS_CHANGE_ID = "settingsChangeId"
+
+    /**
+     * A Long on a request Android must not take for a duplicate of a running sync with the same extras (it drops such a
+     * request while that sync runs, and that sync began before the reason for the request): an answer in one of the
+     * app's notifications (SyncScheduling.userSyncExtras with answering) and the re-time request
+     * (TimeZoneRuleSource.requestRetimeSyncs). Put while the account's sync of that type runs: the start time of the
+     * newest sync running (SyncScheduling.putRunningSyncId, which also says when it is a new one instead), so the
+     * requests made while one sync runs share it and wait as one sync. Read by nothing.
+     */
+    const val EXTRA_REQUEST_ID = "requestId"
+
+    /**
+     * Set on every sync request this app makes, put where SyncScheduling builds them (manualExtras for the user's syncs
+     * and the full re-syncs, requestBackgroundSync, catchUpExtras), so that a run can tell the app's own request from
+     * one Android starts by itself: when its automatic sync or a type's switch is turned on, or from a periodic sync
+     * that "Manual only" removed. On "Manual only" such a run ends at its start (SyncScheduling.endsUnaskedRun). Android
+     * keeps it when it retries such a request. Read by nothing else.
+     */
+    const val EXTRA_APP_REQUEST = "appRequest"
 
     /**
      * How many consecutive syncs of ONE calendar may re-check because the model-event counter
@@ -162,7 +194,8 @@ object SyncConstants {
 
     /**
      * The schedule of an account whose interval was never chosen (event_loop_interval_<account> unset),
-     * as SyncUtils.applyPeriodicSync and the catch-up sync read it. Never armed directly.
+     * as SyncUtils.applyPeriodicSync and SyncScheduling (the catch-up sync, the Manual only check) read it.
+     * Never armed directly.
      */
     const val DEFAULT_INITIAL_PERIODIC_SYNC_SECONDS = 3600L
 

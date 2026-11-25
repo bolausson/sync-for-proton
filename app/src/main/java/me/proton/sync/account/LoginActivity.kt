@@ -26,9 +26,11 @@ import me.proton.sync.databinding.ActivityLoginBinding
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 import me.proton.sync.R
 import me.proton.sync.api.AuthInterceptor
+import me.proton.sync.settings.AppDialogBuilder
 import me.proton.sync.settings.SyncSettingsActivity
 import javax.inject.Inject
 import kotlinx.coroutines.*
@@ -511,7 +513,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val message = getString(R.string.dialog_message_account_name)
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_account_name))
             .setMessage(
                 if (takenName == null) message
@@ -613,7 +615,7 @@ class LoginActivity : AppCompatActivity() {
         val labels = arrayOf(getString(R.string.sync_contacts), getString(R.string.sync_calendar))
         val picked = booleanArrayOf(false, false)
         val syncAllowed = subscriptionManager.isSyncAllowed()
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.setup_choose_title)
             .setMultiChoiceItems(labels, picked) { _, which, isChecked -> picked[which] = isChecked }
             .setCancelable(false)
@@ -692,11 +694,9 @@ class LoginActivity : AppCompatActivity() {
 
         SyncLog.i("LoginActivity", "Re-authentication complete, keys unlocked")
 
-        // Trigger sync
-        val syncExtras = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-        }
+        // Trigger sync, as the user's own: with Android's automatic sync off it still runs, and is not retried
+        // in the background if it fails
+        val syncExtras = SyncScheduling.userSyncExtras(this, existingAccountName)
         val abAccount = Account(SyncUtils.addressBookAccountName(accountManager, account), ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
         ContentResolver.requestSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, syncExtras)
         ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, syncExtras)

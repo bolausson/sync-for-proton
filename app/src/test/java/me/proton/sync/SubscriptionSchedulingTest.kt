@@ -147,15 +147,15 @@ class SubscriptionSchedulingTest {
                 SyncScheduling.catchUpRequest(-1L, false, masterSyncOn = master, everSynced = false, paused = false),
             )
         }
-        assertEquals("the shortest interval catches up too", SyncScheduling.CatchUp.EXPEDITED, SyncScheduling.catchUpRequest(900L, true, masterSyncOn = true, everSynced = true, paused = false))
+        assertEquals("the shortest interval catches up too", SyncScheduling.CatchUp.ORDINARY, SyncScheduling.catchUpRequest(900L, true, masterSyncOn = true, everSynced = true, paused = false))
     }
 
     @Test
-    fun `with Android's automatic sync on, the catch-up is expedited and never manual`() {
+    fun `with Android's automatic sync on, the catch-up is an ordinary request, never manual or expedited`() {
         fun on(everSynced: Boolean, paused: Boolean) = SyncScheduling.catchUpRequest(3600L, true, masterSyncOn = true, everSynced = everSynced, paused = paused)
-        assertEquals(SyncScheduling.CatchUp.EXPEDITED, on(everSynced = true, paused = false))
-        assertEquals("a first sync needs no MANUAL while Android runs automatic syncs", SyncScheduling.CatchUp.EXPEDITED, on(everSynced = false, paused = false))
-        assertEquals("a paused account is left to the adapter's own pause check", SyncScheduling.CatchUp.EXPEDITED, on(everSynced = false, paused = true))
+        assertEquals(SyncScheduling.CatchUp.ORDINARY, on(everSynced = true, paused = false))
+        assertEquals("a first sync needs no MANUAL while Android runs automatic syncs", SyncScheduling.CatchUp.ORDINARY, on(everSynced = false, paused = false))
+        assertEquals("a paused account is left to the adapter's own pause check", SyncScheduling.CatchUp.ORDINARY, on(everSynced = false, paused = true))
         assertEquals(SyncScheduling.CatchUp.NONE, SyncScheduling.catchUpRequest(-1L, true, masterSyncOn = true, everSynced = true, paused = false))
         assertEquals(SyncScheduling.CatchUp.NONE, SyncScheduling.catchUpRequest(3600L, false, masterSyncOn = true, everSynced = false, paused = false))
     }
@@ -174,6 +174,25 @@ class SubscriptionSchedulingTest {
         assertEquals("Manual only promises no sync the user did not start", SyncScheduling.CatchUp.NONE, off(interval = -1L, everSynced = true))
         assertEquals("but its dropped first sync is owed", SyncScheduling.CatchUp.MANUAL, off(interval = -1L, everSynced = false))
         assertEquals("a switched-off type never syncs", SyncScheduling.CatchUp.NONE, off(switchedOn = false, everSynced = false))
+    }
+
+    @Test
+    fun `with Android's automatic sync off, a type whose first sync ran and failed is not asked again`() {
+        // The gate dropped nothing there: the sync ran. With automatic sync off the app syncs nothing by itself, so it
+        // waits for automatic sync or a tap. A first sync the gate dropped records neither time and is still owed.
+        assertEquals(
+            SyncScheduling.CatchUp.NONE,
+            SyncScheduling.catchUpRequest(3600L, true, masterSyncOn = false, everSynced = false, paused = false, everAttempted = true),
+        )
+        assertEquals(
+            SyncScheduling.CatchUp.MANUAL,
+            SyncScheduling.catchUpRequest(3600L, true, masterSyncOn = false, everSynced = false, paused = false, everAttempted = false),
+        )
+        assertEquals(
+            "with automatic sync on it is an ordinary catch-up, ran before or not",
+            SyncScheduling.CatchUp.ORDINARY,
+            SyncScheduling.catchUpRequest(3600L, true, masterSyncOn = true, everSynced = false, paused = false, everAttempted = true),
+        )
     }
 
     @Test

@@ -78,6 +78,34 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/sfp_text_secondary"
                     android:textSize="@dimen/sfp_text_row_sub" />
+
+                <!-- New events waiting for the user's choice (NewEventHoldStore): seen on the collapsed card. The
+                     warning colour is the glyph's; the text keeps the row title's colour, which meets WCAG AA in both
+                     themes where sfp_warn (2.76:1 on white) does not at this size. -->
+                <LinearLayout
+                    android:id="@+id/account_holds_row"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_sfp_warn"
+                        android:importantForAccessibility="no"
+                        app:tint="@color/sfp_warn" />
+
+                    <TextView
+                        android:id="@+id/account_holds_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_sub" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Sync state indicator (28dp reserved; spinner / queued glyph) -->
@@ -175,6 +203,8 @@
                         android:id="@+id/value_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:maxWidth="140dp"
                         android:textColor="@color/sfp_text_secondary"
                         android:textSize="@dimen/sfp_text_row_value" />
                 </LinearLayout>
@@ -182,7 +212,7 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp"
                     android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
 
-                <!-- Check interval -->
+                <!-- Sync interval -->
                 <LinearLayout
                     android:id="@+id/row_event_loop"
                     android:layout_width="match_parent"
@@ -211,7 +241,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:text="@string/label_event_loop_interval"
+                                android:text="@string/sync_interval_title"
                                 android:textColor="@color/sfp_text"
                                 android:textSize="@dimen/sfp_text_row_title" />
 
@@ -398,6 +428,8 @@
                         android:id="@+id/value_contact_filters"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:maxWidth="140dp"
                         android:layout_marginStart="8dp"
                         android:textColor="@color/sfp_text_secondary"
                         android:textSize="@dimen/sfp_text_row_value" />
@@ -435,6 +467,8 @@
                         android:id="@+id/value_name_mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:maxWidth="140dp"
                         android:layout_marginStart="8dp"
                         android:textColor="@color/sfp_text_secondary"
                         android:textSize="@dimen/sfp_text_row_value" />
@@ -575,6 +609,135 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp"
                     android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
 
+                <!-- New events an app wrote into a calendar someone shared with the user, waiting for the user's
+                     choice: the row walks them one decision dialog at a time (NewEventHoldDialog). Shown only while
+                     any wait. The warning glyph marks it; the label keeps the row title's colour for contrast. -->
+                <LinearLayout
+                    android:id="@+id/row_new_event_holds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_sfp_warn"
+                        android:importantForAccessibility="no"
+                        app:tint="@color/sfp_warn" />
+
+                    <TextView
+                        android:id="@+id/label_new_event_holds"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_new_event_holds" style="@style/InfoIcon" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/hairline_new_event_holds"
+                    android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h"
+                    android:visibility="gone" />
+
+                <!-- The events the user kept on this phone, never sent to Proton: the row walks them, where they can
+                     still be moved or published. -->
+                <LinearLayout
+                    android:id="@+id/row_new_event_kept"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/label_new_event_kept"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/sfp_text"
+                        android:textSize="@dimen/sfp_text_row_title" />
+
+                    <ImageView android:id="@+id/info_new_event_kept" style="@style/InfoIcon" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/hairline_new_event_kept"
+                    android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h"
+                    android:visibility="gone" />
+
+                <!-- Default calendar: Proton's default calendar for this account, which the phone marks as its main
+                     calendar (IS_PRIMARY). The row opens DefaultCalendarPicker, which changes it in Proton. The name line
+                     is the stored decision and stays hidden until one is known. It wraps under the label, as the Sync
+                     calendar row's sub line does, so a long name never squeezes a translated label. The row has no
+                     control to give it height, so minHeight keeps the touch target at 48dp at small font sizes too. -->
+                <LinearLayout
+                    android:id="@+id/row_default_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/sfp_row_pad_h"
+                    android:paddingVertical="@dimen/sfp_row_pad_v">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_default_calendar"
+                                android:textColor="@color/sfp_text"
+                                android:textSize="@dimen/sfp_text_row_title" />
+
+                            <ImageView android:id="@+id/info_default_calendar" style="@style/InfoIcon" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/value_default_calendar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/sfp_text_secondary"
+                            android:textSize="@dimen/sfp_text_row_sub"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sfp_hairline" android:layout_marginStart="@dimen/sfp_row_pad_h" />
+
                 <!-- Include external calendars -->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -700,6 +863,8 @@
                             android:id="@+id/value_past_events"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxWidth="140dp"
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>
@@ -730,6 +895,8 @@
                             android:id="@+id/value_future_events"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxWidth="140dp"
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>
@@ -761,6 +928,8 @@
                             android:id="@+id/value_trim_old_events"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxWidth="140dp"
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>
@@ -1026,6 +1195,8 @@
                             android:id="@+id/value_contacts_fallback"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxWidth="140dp"
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>
@@ -1060,6 +1231,8 @@
                             android:id="@+id/value_calendar_fallback"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:maxWidth="140dp"
                             android:textColor="@color/sfp_text_secondary"
                             android:textSize="@dimen/sfp_text_row_value" />
                     </LinearLayout>

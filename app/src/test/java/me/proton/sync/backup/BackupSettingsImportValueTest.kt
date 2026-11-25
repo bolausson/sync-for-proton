@@ -23,6 +23,7 @@ class BackupSettingsImportValueTest {
         SyncPreferences.KEY_BACKUP_INCLUDE_CONTACTS,
         SyncPreferences.KEY_BACKUP_ENCRYPTION_ENABLED,
         SyncPreferences.KEY_BACKUP_REMINDER_OPTED_OUT,
+        SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF,
     )
 
     @Test

@@ -374,7 +374,7 @@ class SubscriptionManager @Inject constructor(
         }
     }
 
-    // The store first, then the flow. The gate (SubscriptionGate, the sync preflight, the event loop) reads
+    // The store first, then the flow. The gate (SubscriptionGate, the sync preflight, the background sync rule) reads
     // the stored state, and the scheduling observer acts as soon as the flow emits: emitting first let it
     // arm schedules and request syncs that the gate, still reading the old state, then declined.
     // Synchronized because there are two writers (onPurchasesUpdated on the main thread, refreshState on

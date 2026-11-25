@@ -44,7 +44,6 @@
 
     <string name="label_expand">Uitvouwen</string>
     <string name="label_display_name">Weergavenaam</string>
-    <string name="label_event_loop_interval">Interval voor controle op wijzigingen</string>
     <string name="label_fallback_full_sync">Volledige synchronisatie als terugval</string>
     <string name="label_notify_on_failure">Melding bij fout</string>
     <string name="label_notify_in_progress">Melding tonen tijdens synchronisatie</string>
@@ -119,7 +118,6 @@
     <string name="dialog_label_sync_reason">Reden: %s</string>
     <string name="dialog_title_past_events">Afgelopen gebeurtenissen</string>
     <string name="dialog_title_future_events">Toekomstige gebeurtenissen</string>
-    <string name="dialog_title_event_loop_interval">Interval voor controle op wijzigingen</string>
     <string name="dialog_title_contacts_fallback">Volledige synchronisatie contacten als terugval</string>
     <string name="dialog_title_calendar_fallback">Volledige synchronisatie agenda als terugval</string>
     <string name="dialog_title_remove_account">Account verwijderen</string>
@@ -177,13 +175,17 @@
     <string name="notification_sync_phase_decrypting">ontsleutelen %1$d/%2$d</string>
     <string name="label_sync_queued">In wachtrij voor synchronisatie</string>
     <string name="error_no_internet">Geen internetverbinding. Synchronisatie wordt automatisch opnieuw geprobeerd.</string>
+    <string name="error_no_internet_tap_sync">Geen internetverbinding. Tik op “Synchroniseren” om opnieuw te proberen.</string>
     <string name="error_timeout">Kan de server niet bereiken. Controleer uw internetverbinding.</string>
     <string name="error_session_expired">Uw sessie is verlopen. Meld u opnieuw aan.</string>
     <string name="error_too_many_requests">Te veel verzoeken. Synchronisatie wordt later opnieuw geprobeerd.</string>
+    <string name="error_too_many_requests_tap_sync">Te veel verzoeken. Tik op “Synchroniseren” om opnieuw te proberen.</string>
     <string name="error_server_error">Proton-serverfout. Synchronisatie wordt automatisch opnieuw geprobeerd.</string>
+    <string name="error_server_error_tap_sync">Proton-serverfout. Tik op “Synchroniseren” om opnieuw te proberen.</string>
     <string name="error_request_rejected">Synchronisatieverzoek is afgewezen door de server.</string>
     <string name="error_ssl">Beveiligde verbinding mislukt. Controleer uw netwerk.</string>
     <string name="error_connection_interrupted">Verbinding is onderbroken. Synchronisatie wordt opnieuw geprobeerd.</string>
+    <string name="error_connection_interrupted_tap_sync">Verbinding is onderbroken. Tik op “Synchroniseren” om opnieuw te proberen.</string>
     <string name="error_unexpected">Synchronisatie heeft een onverwachte fout aangetroffen.</string>
 
     <string name="notification_channel_auth">Verificatie</string>
@@ -281,16 +283,16 @@
     <string name="label_info">Meer informatie</string>
     <string name="info_language_body">Stelt de taal in die wordt gebruikt voor de eigen schermen van deze app. \"Auto\" volgt de systeemtaal van uw telefoon. Dit verandert alleen de app-interface, het vertaalt niet uw gesynchroniseerde agenda-afspraken of contacten.</string>
     <string name="info_display_name_body">De naam die voor dit account wordt getoond in Android-instellingen → Accounts en in de accountkiezers van agenda-/contactapps. Het is alleen een lokaal label; het wijzigen ervan heeft geen invloed op uw Proton-account.\n\nLet op: Samsung Calendar en Samsung Contacts negeren aangepaste accountnamen en tonen altijd hun eigen label (bijv. \"Proton\"). De naam die u hebt gekozen verschijnt daar mogelijk niet, dit is een Samsung-beperking die we niet kunnen wijzigen. Andere apps (Google Calendar/Contacts) tonen hem normaal.</string>
-    <string name="info_event_loop_body">Hoe vaak de app op de achtergrond Proton controleert op externe wijzigingen aan uw contacten en agenda. Kortere intervallen tonen wijzigingen sneller maar gebruiken meer batterij en data. Dit staat los van handmatige synchronisatie, die u op elk moment kunt starten met de synchronisatieknoppen.</string>
+    <string name="info_event_loop_body">Hoe vaak de app op de achtergrond Proton controleert op externe wijzigingen aan uw contacten en agenda. Deze controles worden alleen uitgevoerd zolang de automatische synchronisatie van Android is ingeschakeld; is die uitgeschakeld, dan wordt er niets vanzelf gesynchroniseerd. Kortere intervallen tonen wijzigingen sneller maar gebruiken meer batterij en data. Dit staat los van handmatige synchronisatie, die u op elk moment kunt starten met de synchronisatieknoppen.</string>
     <string name="info_notify_in_progress_body">Toont een stille, doorlopende melding terwijl een synchronisatie loopt, met live voortgang (scannen, downloaden, ontsleutelen). Hij staat onderaan het meldingenpaneel en maakt nooit geluid. Schakel hem uit als u liever hebt dat de synchronisatie onzichtbaar verloopt.</string>
     <string name="info_sync_contacts_body">Wanneer ingeschakeld, synchroniseren uw Proton-contacten in twee richtingen met de contacten van Android: wijzigingen aan beide kanten worden samengevoegd.\n\nLet op: Samsung Contacts toont contacten onder één accountlabel \"Proton contacts\" en verbergt de e-mailondertitel voor accounts van derden zoals het onze, een hard ingebouwde Samsung-beperking die we niet kunnen wijzigen. Google Contacts en de meeste andere apps tonen ze normaal.</string>
-    <string name="info_fallback_full_sync_body">Hoe vaak de app een volledige hercontrole doet in plaats van een snelle incrementele synchronisatie. Een volledige synchronisatie vangt alles op wat een incrementele doorloop zou kunnen missen (bijv. wijzigingen die offline zijn gemaakt) ten koste van meer tijd en data. Laat op de standaardwaarde staan tenzij u vermoedt dat items niet synchroniseren.</string>
+    <string name="info_fallback_full_sync_body">Hoe vaak de app een volledige hercontrole doet in plaats van een snelle incrementele synchronisatie. Deze hercontrole wordt alleen uitgevoerd zolang de automatische synchronisatie van Android is ingeschakeld. Een volledige synchronisatie vangt alles op wat een incrementele doorloop zou kunnen missen (bijv. wijzigingen die offline zijn gemaakt) ten koste van meer tijd en data. Laat op de standaardwaarde staan tenzij u vermoedt dat items niet synchroniseren.</string>
     <string name="info_notify_on_failure_body">Toont een melding als een synchronisatie mislukt (bijv. netwerkfout of verlopen sessie). Tik erop voor een uitleg in gewone taal en een link naar de logboeken. Schakel hem uit als u niet gewaarschuwd wilt worden over tijdelijke fouten.</string>
-    <string name="info_sync_calendar_body">Wanneer ingeschakeld, synchroniseren uw Proton-agenda\'s naar de agenda van Android, zodat afspraken verschijnen in Google Calendar, Samsung Calendar en elke andere agenda-app. In twee richtingen: bewerkingen die u op de telefoon maakt, worden teruggeüpload naar Proton voor agenda\'s die u bezit.</string>
+    <string name="info_sync_calendar_body">Wanneer ingeschakeld, synchroniseren uw Proton-agenda\'s naar de agenda van Android, zodat afspraken verschijnen in Google Calendar, Samsung Calendar en elke andere agenda-app. In twee richtingen: bewerkingen die u op de telefoon maakt, worden teruggeüpload naar Proton voor elke agenda die u kunt bewerken, ook agenda\'s die anderen met u delen.</string>
     <string name="info_include_external_calendars_body">Proton kan geabonneerde agenda\'s (bijv. een externe ICS-feed) en feestdagenagenda\'s bevatten. Deze zijn alleen-lezen aan de kant van Proton. Wanneer uitgeschakeld, slaat de app ze over en synchroniseert alleen uw eigen bewerkbare agenda\'s. Schakel in als u wilt dat die alleen-lezen agenda\'s ook op uw telefoon worden weerspiegeld.</string>
     <string name="info_sync_mode_body">\"Alle gebeurtenissen\" synchroniseert uw volledige agendageschiedenis en alle toekomstige afspraken, het beste als u alles op uw telefoon wilt (de eerste synchronisatie van een grote agenda kan enkele minuten duren). \"Aangepast bereik\" houdt grote agenda\'s snel door alleen een venster van dagen rond vandaag te synchroniseren: hun afspraken buiten het venster worden niet gedownload, en afspraken die al op deze telefoon staan, blijven bewaard, tenzij \"Oudere gebeurtenissen van deze telefoon verwijderen\" voor hun agenda is ingeschakeld. Kleine agenda\'s worden altijd volledig gesynchroniseerd.</string>
     <string name="label_trim_old_events">Oudere gebeurtenissen van deze telefoon verwijderen</string>
-    <string name="info_trim_old_events_body">In de agenda\'s die u kiest, worden gebeurtenissen die meer dan een dag voor het begin van uw bereik zijn geëindigd, nu en bij latere synchronisaties van deze telefoon verwijderd. Ze blijven in uw Proton-account staan en daar wordt niets gewist. Back-ups van uw eigen agenda\'s worden vanuit Proton gemaakt, dus daarin staan ze nog; van geabonneerde agenda\'s en feestdagenagenda\'s wordt geen back-up gemaakt. Een terugkerende gebeurtenis blijft met alle eerdere datums staan zolang die tot in uw bereik doorloopt of geen einddatum heeft, omdat de telefoon een terugkerende gebeurtenis als één item bewaart. Gebeurtenissen met wijzigingen die nog niet naar Proton zijn verzonden, blijven ook staan, net als gebeurtenissen die in de afgelopen 7 dagen zijn aangemaakt of voor het laatst zijn gewijzigd; daarbij is de versie op deze telefoon bepalend, niet het moment waarop deze telefoon die versie heeft gedownload. Alleen agenda\'s die te groot zijn om volledig te synchroniseren, kunnen worden gekozen, en gebeurtenissen na uw bereik worden nooit verwijderd. Om verwijderde gebeurtenissen terug te krijgen, kiest u een langer bereik of \"Alle gebeurtenissen\".</string>
+    <string name="info_trim_old_events_body">In de agenda\'s die u kiest, worden gebeurtenissen die meer dan een dag voor het begin van uw bereik zijn geëindigd, bij de volgende synchronisatie van deze telefoon verwijderd, en latere zodra ze even oud zijn. Ze blijven in uw Proton-account staan en daar wordt niets gewist. Back-ups van uw eigen agenda\'s worden vanuit Proton gemaakt, dus daarin staan ze nog; van geabonneerde agenda\'s en feestdagenagenda\'s wordt geen back-up gemaakt. Een terugkerende gebeurtenis blijft met alle eerdere datums staan zolang die tot in uw bereik doorloopt of geen einddatum heeft, omdat de telefoon een terugkerende gebeurtenis als één item bewaart. Gebeurtenissen met wijzigingen die nog niet naar Proton zijn verzonden, blijven ook staan, net als gebeurtenissen die in de afgelopen 7 dagen zijn aangemaakt of voor het laatst zijn gewijzigd; daarbij is de versie op deze telefoon bepalend, niet het moment waarop deze telefoon die versie heeft gedownload. Alleen agenda\'s die te groot zijn om volledig te synchroniseren, kunnen worden gekozen, en gebeurtenissen na uw bereik worden nooit verwijderd. Om verwijderde gebeurtenissen terug te krijgen, kiest u een langer bereik of \"Alle gebeurtenissen\".</string>
     <string name="trim_dialog_title">Oudere gebeurtenissen van deze telefoon verwijderen</string>
     <string name="trim_dialog_intro">Kies de agenda\'s die u wilt opschonen. Gebeurtenissen die vóór %1$s zijn geëindigd, worden bij de volgende synchronisatie van deze telefoon verwijderd, en latere zodra ze even oud zijn. Ze blijven in uw Proton-account staan. Een terugkerende gebeurtenis die na die datum doorloopt, blijft met alle datums staan.</string>
     <plurals name="trim_calendar_count">
@@ -310,6 +312,32 @@
     </plurals>
     <string name="trim_dialog_save">Opslaan</string>
     <string name="trim_read_failed">De agenda\'s op deze telefoon konden niet worden gelezen, dus er is niets gewijzigd.</string>
+    <string name="label_default_calendar">Standaardagenda</string>
+    <string name="info_default_calendar_body">Nieuwe gebeurtenissen komen in Proton in uw standaardagenda terecht, en deze telefoon markeert die als hoofdagenda van het account. Wijzigt u deze hier, dan wordt die ook in Proton gewijzigd, zodat Proton op het web, de apps van Proton en uitnodigingen die u in Proton Mail beantwoordt, de nieuwe gebruiken. Alleen een actieve eigen agenda kan de standaardagenda zijn, geen gedeelde, geabonneerde of feestdagenagenda.</string>
+    <string name="default_calendar_connecting">Verbinding maken met Proton…</string>
+    <string name="default_calendar_changed">Standaardagenda gewijzigd</string>
+    <string name="default_calendar_unreachable">Proton was niet bereikbaar. Probeer het zo meteen opnieuw.</string>
+    <string name="default_calendar_refused">Proton heeft de wijziging geweigerd, dus er is niets gewijzigd.</string>
+    <string name="default_calendar_none_own">Dit account heeft geen eigen actieve agenda die de standaardagenda kan zijn. Gedeelde, geabonneerde en feestdagenagenda\'s kunnen niet de standaardagenda zijn.</string>
+    <string name="default_calendar_incomplete">Niet alle agenda\'s van dit account konden worden gelezen, dus de standaardagenda kan hier niet worden gewijzigd.</string>
+    <string name="notification_new_event_hold_title">Nieuwe gebeurtenis in een gedeelde agenda</string>
+    <string name="notification_new_event_hold_body">%1$s heeft “%2$s” toegevoegd aan %3$s. Anderen met toegang tot deze agenda zouden de gebeurtenis zien.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Een app heeft “%1$s” toegevoegd aan %2$s. Anderen met toegang tot deze agenda zouden de gebeurtenis zien.</string>
+    <string name="action_new_event_move">Naar %1$s verplaatsen</string>
+    <string name="action_new_event_publish">Vrijgeven</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d gebeurtenis wacht op uw keuze</item>
+        <item quantity="other">%d gebeurtenissen wachten op uw keuze</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d gebeurtenis alleen op deze telefoon bewaard</item>
+        <item quantity="other">%d gebeurtenissen alleen op deze telefoon bewaard</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Nog %d gebeurtenis wacht op uw keuze</item>
+        <item quantity="other">Nog %d gebeurtenissen wachten op uw keuze</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Wanneer een app die geen agenda-app is, een gebeurtenis toevoegt aan een agenda die iemand met u heeft gedeeld, wacht de gebeurtenis op deze telefoon tot u een keuze maakt. “Verplaatsen” zet hem in plaats daarvan in uw standaardagenda. “Vrijgeven” stuurt hem naar de gedeelde agenda, waar iedereen met toegang tot die agenda hem kan zien. “Op telefoon houden” stuurt hem nooit naar Proton: Proton Calendar, Proton op het web, uw andere apparaten en de back-ups van deze app krijgen hem niet, en hij gaat verloren als u deze app of dit account verwijdert. Bewaarde gebeurtenissen blijven bij dit account in de lijst staan, waar u ze nog steeds kunt verplaatsen of vrijgeven.</string>
     <string name="info_sync_range_window_body">Hoeveel dagen voor en na vandaag synchroniseren wanneer \"Aangepast bereik\" is geselecteerd. Grotere vensters tonen meer van uw agenda maar duren langer om te synchroniseren. Heeft geen effect in de modus \"Alle gebeurtenissen\".</string>
     <string name="info_poll_attendee_body">Wanneer ingeschakeld, controleert de app periodiek afspraken met deelnemers opnieuw om accepteer-/weiger-/voorlopige reacties te detecteren. De wijzigingenfeed van Proton meldt geen RSVP-wijzigingen, dus dit vereist extra API-aanroepen, alleen de moeite waard om in te schakelen als u afhankelijk bent van het zien van de reacties van deelnemers op uw telefoon.</string>
     <string name="info_send_invites_body">Wanneer u deelnemers toevoegt aan een afspraak op uw telefoon, hun een uitnodiging e-mailen. Standaard uit: schakel alleen in als u wilt dat de app namens u e-mails naar deelnemers stuurt.</string>
@@ -317,7 +345,7 @@
     <string name="info_send_cancellations_body">Deelnemers e-mailen wanneer u een afspraak verwijdert waarvoor ze zijn uitgenodigd, zodat hun agenda\'s deze ook verwijderen. Standaard uit.</string>
     <string name="info_invite_subject_title_body">Bij het verzenden van uitnodigings-e-mails de titel van de afspraak in de onderwerpregel van de e-mail zetten zodat ontvangers hem in één oogopslag herkennen. Standaard uit vanwege privacy: e-mailonderwerpen worden niet versleuteld bij standaard e-mailtransport, dus de titel zou zichtbaar zijn voor de mailservers onderweg.</string>
     <string name="info_background_sync_body">Android kan achtergrondsynchronisatie pauzeren om batterij te besparen, wat automatische synchronisatie kan vertragen of stoppen. Door deze app uit te sluiten van batterijoptimalisatie blijven geplande synchronisaties betrouwbaar lopen. Gebruik de knop om de batterij-instellingen van het systeem voor de app te openen.</string>
-    <string name="info_verbose_logging_body">Legt extra diagnostische details vast (authenticatiestatus, sleutelontgrendeling, interne synchronisatiegegevens) in het logboek, handig bij het melden van een probleem. De app vervangt e-mailadressen daarin door korte codes, maar het logboek kan account- en agendanamen bevatten, dus deel logboeken alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
+    <string name="info_verbose_logging_body">Legt extra diagnostische details vast (authenticatiestatus, sleutelontgrendeling, interne synchronisatiegegevens) in het logboek, handig bij het melden van een probleem. Zolang uitgebreide logboekregistratie is ingeschakeld, vermeldt het logboek ook uw agenda\'s en de apps die er gebeurtenissen aan toevoegen. De app vervangt e-mailadressen in het logboek door korte codes, maar het kan account- en agendanamen bevatten, dus deel logboeken alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
     <string name="info_file_logging_body">Schrijft het app-logboek naar een tekstbestand met tijdstempel (sync-for-proton-log-….txt) in een map die u kiest. Verder bewaart de app het logboek alleen in het geheugen, dus zet dit aan om een moeilijk reproduceerbaar probleem vast te leggen. Bij elke start van de app wordt een nieuw bestand aangemaakt. De app vervangt e-mailadressen daarin door korte codes, maar het bestand kan account- en agendanamen bevatten, dus deel het alleen met de ontwikkelaar. Laat uit voor normaal gebruik.</string>
     <string name="info_timezone_updates_text">De tijden van afspraken hangen af van tijdzoneregels, en landen veranderen die regels af en toe. Android bewaart ze in de tijdzonegegevens van de telefoon, die met systeemupdates binnenkomen. Een telefoon die ze niet meer krijgt, bijvoorbeeld met een oudere Android-versie of zonder Google Play-systeemupdates, houdt de oude regels, en afspraken op plekken waar de regels sindsdien zijn veranderd, kunnen op de verkeerde tijd worden getoond.\n\nTijdzonegegevens op deze telefoon: versie %1$s\n\nWanneer uitgeschakeld (standaard), gebruikt de app de eigen tijdzonegegevens van de telefoon en wordt er niets naar www.tzurl.org verzonden.\n\nWanneer ingeschakeld, downloadt de app de actuele regels voor elke tijdzone die uw afspraken gebruiken van www.tzurl.org, een dienst van derden, hoogstens één keer per tijdzone telkens wanneer de app start, en gebruikt ze alleen als ze nieuwer zijn dan die van de telefoon. www.tzurl.org ziet dan uw IP-adres en de namen van die tijdzones, bijvoorbeeld Europe/Berlin. Verder wordt er niets over uw afspraken of accounts verzonden. Als www.tzurl.org niet bereikbaar is, worden de gegevens van de telefoon gebruikt. Terugkerende afspraken worden nog steeds met de gegevens van de telefoon berekend.\n\nNa een wijziging worden afspraken die al op de telefoon staan bij de volgende synchronisatie gecontroleerd en gecorrigeerd.</string>
     <string name="tz_data_version_unknown">onbekend</string>
@@ -400,6 +428,8 @@
     <string name="backup_unit_days">dagen</string>
     <string name="backup_retention_label">Bewaar de laatste</string>
     <string name="backup_unit_runs">back-ups</string>
+    <string name="backup_when_auto_sync_off_label">Ook back-uppen als de automatische synchronisatie uitstaat</string>
+    <string name="info_backup_when_auto_sync_off_body">De Android-schakelaar “App-gegevens automatisch synchroniseren” stopt de achtergrondsynchronisatie voor alle apps, en geplande back-ups volgen die: zolang hij uitstaat, wordt een geplande back-up overgeslagen en meldt dit scherm dat onder “Nu back-uppen”. Zet dit aan om geplande back-ups toch uit te voeren. Elke back-up downloadt al uw agenda\'s en contacten van Proton, wat veel mobiele data kan verbruiken. “Nu back-uppen” werkt altijd.</string>
     <string name="backup_section_contents">Wat back-uppen</string>
     <string name="backup_include_calendars_label">Agenda\'s (.ics)</string>
     <string name="backup_include_contacts_label">Contacten (.vcf)</string>
@@ -422,6 +452,7 @@
     <string name="backup_running">Bezig met back-uppen…</string>
     <string name="backup_last_never">Nog geen back-up.</string>
     <string name="backup_last_run">Laatste back-up: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Geplande back-up op %1$s overgeslagen: de automatische synchronisatie van Android staat uit</string>
     <string name="backup_decrypt_action">Een back-up ontsleutelen…</string>
     <string name="backup_decrypt_body">Kies een versleuteld back-upbestand (.gpg) en voer het wachtwoord ervan in. De inhoud wordt ontsleuteld opgeslagen in uw back-upmap.</string>
     <string name="backup_decrypting">Bezig met ontsleutelen…</string>
@@ -479,7 +510,7 @@
     <string name="sfp_group_account">Account</string>
     <string name="sfp_group_contacts">Contacten</string>
     <string name="sfp_group_calendar">Agenda</string>
-    <string name="sfp_event_loop_subtitle">Hoe vaak op externe wijzigingen wordt gecontroleerd</string>
+    <string name="sfp_event_loop_subtitle">Hoe vaak op externe wijzigingen wordt gecontroleerd zolang Android automatisch synchroniseert</string>
     <string name="sfp_show_advanced">E-mail- &amp; geavanceerde opties tonen</string>
     <string name="sfp_hide_advanced">E-mail- &amp; geavanceerde opties verbergen</string>
     <string name="sfp_group_email_attendees">E-mail naar deelnemers</string>
@@ -490,6 +521,7 @@
     <string name="sfp_hero_subtitle_ok">Alle ingeschakelde accounts zijn bijgewerkt</string>
     <string name="sfp_hero_subtitle_warn">Een of meer accounts hebben een synchronisatie of aanmelding nodig</string>
     <string name="sfp_sync_all_now">Alles nu synchroniseren</string>
+    <string name="sfp_auto_sync_off">Automatische synchronisatie van Android staat uit: er wordt alleen handmatig gesynchroniseerd</string>
     <string name="sfp_tile_logs">Synchronisatielogboek</string>
     <string name="sfp_tile_backup">Back-up</string>
     <string name="sfp_tile_battery">Batterij</string>
@@ -528,6 +560,10 @@
     <string name="notification_contacts_too_large_summary">Deze contacten op %1$s zijn te groot voor de contactopslag van Android. In Proton blijven ze volledig:</string>
     <string name="notification_contacts_too_large_outdated">deze telefoon houdt een oudere versie</string>
     <string name="notification_contacts_too_large_missing">niet op deze telefoon</string>
+    <string name="notification_contacts_delete_refused_title">Sommige contacten konden niet in Proton worden verwijderd</string>
+    <string name="notification_contacts_delete_refused_summary">Deze contacten op %1$s zijn op deze telefoon verwijderd, maar Proton heeft het verwijderen geweigerd. Ze staan nog steeds in Proton en op uw andere apparaten:</string>
+    <string name="notification_events_delete_refused_title">Sommige gebeurtenissen konden niet in Proton worden verwijderd</string>
+    <string name="notification_events_delete_refused_summary">Deze gebeurtenissen op %1$s zijn op deze telefoon verwijderd, maar Proton heeft het verwijderen geweigerd. Ze staan nog steeds in Proton en op uw andere apparaten:</string>
     <string name="notification_conflict_title">Afspraak op twee plekken gewijzigd</string>
     <string name="notification_conflict_body">“%1$s” is op deze telefoon en in Proton Calendar bewerkt. Welke versie wilt u behouden?</string>
     <string name="notification_conflict_body_shared">“%1$s” is op deze telefoon bewerkt en door %2$s in Proton Calendar. Als u uw versie behoudt, vervangt u die van hem.</string>

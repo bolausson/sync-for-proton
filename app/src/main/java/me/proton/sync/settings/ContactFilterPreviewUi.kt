@@ -69,7 +69,7 @@ internal object ContactFilterPreviewUi {
         ruleSet: FilterRuleSet,
         confirm: (() -> Unit)? = null,
     ) {
-        val progress = AlertDialog.Builder(activity)
+        val progress = AppDialogBuilder(activity)
             .setTitle(R.string.contact_filter_preview_title)
             .setMessage(R.string.contact_filter_preview_reading)
             .setNegativeButton(R.string.btn_cancel, null)
@@ -182,7 +182,7 @@ internal object ContactFilterPreviewUi {
         confirm: (() -> Unit)?,
         expanded: Boolean = false,
     ) {
-        val builder = AlertDialog.Builder(activity)
+        val builder = AppDialogBuilder(activity)
             .setTitle(R.string.contact_filter_preview_title)
             .setMessage(message(activity, outcome, expanded))
         if (confirm == null) {

@@ -365,6 +365,7 @@ class BackupSettingsTypedImportTest {
         for ((key, type) in BackupSettings.EXACT_KEYS) putSample(e, key, type, key)
         for ((prefix, type) in BackupSettings.PREFIXES) putSample(e, prefix + account, type, prefix)
         e.putLong(SyncPreferences.KEY_SUBSCRIPTION_EXPIRY, 1L).putInt(SyncPreferences.KEY_BACKUP_LAST_TOTAL, 3)
+            .putLong(SyncPreferences.KEY_BACKUP_LAST_SKIP_MS, 2L)
         e.apply()
 
         // ExportManager.gatherSettings, the file, and ImportManager's reading of it.

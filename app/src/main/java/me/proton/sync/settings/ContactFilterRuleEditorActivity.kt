@@ -282,7 +282,7 @@ class ContactFilterRuleEditorActivity : AppCompatActivity() {
         root.addView(negateBox)
         showRelevantControls()
 
-        val builder = AlertDialog.Builder(this)
+        val builder = AppDialogBuilder(this)
             .setView(ScrollView(this).apply { addView(root) })
             .setPositiveButton(R.string.contact_filter_save, null)
             .setNegativeButton(R.string.btn_cancel, null)
@@ -350,7 +350,7 @@ class ContactFilterRuleEditorActivity : AppCompatActivity() {
         val choices = VCardContactView.PICKER_FIELDS
         val labels = choices.map { label(it) }.toTypedArray()
         val checked = choices.map { it in selection }.toBooleanArray()
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.contact_filter_condition_fields)
             .setMultiChoiceItems(labels, checked) { _, which, isChecked ->
                 if (isChecked) selection.add(choices[which]) else selection.remove(choices[which])
@@ -451,7 +451,7 @@ class ContactFilterRuleEditorActivity : AppCompatActivity() {
     }
 
     private fun confirmDelete() {
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setMessage(R.string.contact_filter_delete_confirm)
             .setPositiveButton(R.string.contact_filters_delete) { _, _ ->
                 val set = ContactFilterStore.load(this, accountName)

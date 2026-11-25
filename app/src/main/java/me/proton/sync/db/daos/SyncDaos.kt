@@ -76,6 +76,10 @@ interface CalendarEventSyncDao {
     @Query("SELECT * FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id = :androidId")
     suspend fun getByAndroidId(accountName: String, androidId: Long): CalendarEventSyncEntity?
 
+    /** Every mapping that names one of the local rows [androidIds] (at most a few hundred per call: SQLite's variable limit). */
+    @Query("SELECT * FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id IN (:androidIds)")
+    suspend fun getByAndroidIds(accountName: String, androidIds: List<Long>): List<CalendarEventSyncEntity>
+
     /** Every Proton id whose mapping names the local row [androidId] (normally one; never trust that it is). */
     @Query("SELECT proton_event_id FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id = :androidId")
     suspend fun protonIdsOfRow(accountName: String, androidId: Long): List<String>
@@ -129,6 +133,10 @@ interface CalendarEventSyncDao {
     /** The local rows this app downloaded from Proton, so a removal can spare everything else. */
     @Query("SELECT android_event_id FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id IS NOT NULL")
     suspend fun androidEventIdsByAccount(accountName: String): List<Long>
+
+    /** The Proton calendars this account's event mappings with a local row name, each once. */
+    @Query("SELECT DISTINCT proton_calendar_id FROM calendar_event_sync WHERE account_name = :accountName AND android_event_id IS NOT NULL")
+    suspend fun mappedCalendarIdsByAccount(accountName: String): List<String>
 
     /**
      * Where [protonIds] claim to live on this phone. `android_event_id IS NOT NULL` on purpose: a

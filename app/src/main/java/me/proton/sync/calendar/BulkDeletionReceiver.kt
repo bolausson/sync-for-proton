@@ -6,10 +6,11 @@ import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import me.proton.sync.FullResyncHold
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
+import me.proton.sync.SyncScheduling
 
 /**
  * Handles the **Keep on Proton** / **Delete on Proton** actions from the bulk-deletion
@@ -36,12 +37,12 @@ class BulkDeletionReceiver : BroadcastReceiver() {
                 // reads + clears them. (Do NOT clear() here — that would drop the ids the scoped
                 // restore needs.)
                 BulkDeletionGuard.requestRestore(context, accountName)
-                requestCalendarSync(account)
+                requestCalendarSync(context, account)
             }
             ACTION_DELETE -> {
                 SyncLog.i(TAG, "Bulk-deletion: user chose DELETE for $accountName - confirming deletions on Proton")
                 BulkDeletionGuard.setApproved(context, accountName)
-                requestCalendarSync(account)
+                requestCalendarSync(context, account)
             }
             else -> return
         }
@@ -49,12 +50,18 @@ class BulkDeletionReceiver : BroadcastReceiver() {
         context.getSystemService(NotificationManager::class.java)?.cancel(nId)
     }
 
-    private fun requestCalendarSync(account: Account) {
-        val bundle = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
+    /**
+     * As the user's own sync (the decision is stored first, so the next sync applies it if this one fails), answering on
+     * [account]: Android drops a request equal to its running sync's. While a full re-sync of the account's calendar is
+     * being prepared, asked for once the re-sync's own request is posted (FullResyncHold).
+     */
+    private fun requestCalendarSync(context: Context, account: Account) {
+        if (FullResyncHold.holdAnswerIfPreparing(account.name)) {
+            SyncLog.i(TAG, "Bulk-deletion: the sync for ${account.name} is asked for once its full re-sync's own request is posted")
+            return
         }
-        ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, bundle)
+        val extras = SyncScheduling.userSyncExtras(context, account.name, answering = account)
+        ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, extras)
     }
 
     companion object {

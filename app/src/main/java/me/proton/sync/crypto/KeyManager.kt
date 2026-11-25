@@ -153,7 +153,10 @@ class KeyManager @javax.inject.Inject constructor(
      */
     private val calendarKeySelection = CalendarKeySelection()
 
-    /** Keys already in an account ring, so re-authentication does not append duplicates. */
+    /**
+     * Keys already in an account ring, so re-authentication does not append duplicates. A key is marked once it is in,
+     * never before ([addKeyToGoRing]).
+     */
     private val goRingKeysAdded = java.util.Collections.newSetFromMap(
         java.util.concurrent.ConcurrentHashMap<String, Boolean>()
     )
@@ -182,7 +185,12 @@ class KeyManager @javax.inject.Inject constructor(
     private fun addKeyToGoRing(accountName: String, armoredKey: String, passphrase: String, kind: String) {
         try {
             synchronized(goKeyRings) {
-                if (!goRingKeysAdded.add("$accountName:${armoredKey.hashCode()}")) {
+                // Marked once the key is in, never before (2.2.0). A mark set first stayed when the add failed: an
+                // address key that would not open with a stale mailbox password (a password changed elsewhere) was then
+                // skipped for the rest of the process, even by a sign-in with the new password, and the next sync asked
+                // the user to sign in again (AddressKeysLocked). A key that failed is tried again by the next unlock.
+                val mark = "$accountName:${armoredKey.hashCode()}"
+                if (mark in goRingKeysAdded) {
                     SyncLog.d(TAG, "GOPGP-RING $kind key already in the ring for $accountName, not re-adding")
                     return
                 }
@@ -190,6 +198,7 @@ class KeyManager @javax.inject.Inject constructor(
                 if (existing == null) {
                     val ring = bridge.Bridge.newKeyRing(armoredKey, passphrase)
                     goKeyRings[accountName] = ring
+                    goRingKeysAdded.add(mark)
                     SyncLog.i(
                         TAG,
                         "GOPGP-RING $accountName created from $kind key " +
@@ -197,6 +206,7 @@ class KeyManager @javax.inject.Inject constructor(
                     )
                 } else {
                     existing.addKey(armoredKey, passphrase)
+                    goRingKeysAdded.add(mark)
                     // Log every add. A silent success here is what let two missing key kinds
                     // (address, and calendar on a warm cache) masquerade as GopenPGP failures.
                     SyncLog.i(
@@ -303,7 +313,14 @@ class KeyManager @javax.inject.Inject constructor(
                 // account looks like (a v4 and a v6 key sharing one addressEmail).
                 val ringKey = "$accountName:${addressKey.addressEmail?.lowercase()}:${addressKey.privateKey.hashCode()}"
                 if (goAddressSigningRingsAdded.add(ringKey)) {
-                    val signingRing = bridge.Bridge.newKeyRing(addressKey.privateKey, passphrase)
+                    val signingRing = try {
+                        bridge.Bridge.newKeyRing(addressKey.privateKey, passphrase)
+                    } catch (e: Throwable) {
+                        // Not built, so not marked (2.2.0, as in addKeyToGoRing): the next unlock builds it, after a
+                        // sign-in with a new password say. Claimed first all the same, so two passes at once build it once.
+                        goAddressSigningRingsAdded.remove(ringKey)
+                        throw e
+                    }
                     addressKey.addressEmail?.let { email ->
                         // Replace, never close: the displaced ring may still be aliased by the
                         // account-level slot below or by an earlier key for the same address.

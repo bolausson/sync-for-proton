@@ -49,59 +49,73 @@ internal class RangeTrimDialog(private val activity: AppCompatActivity, private 
 
     /**
      * Show it for [account]; [offer] when the range was just narrowed. [onSaved] gets the calendars this answer
-     * switched on, for the sync that removes their events. Logs what it showed, or why nothing. [press] (the debug verb
-     * trim_dialog only) presses that button of the shown dialog, DialogInterface.BUTTON_POSITIVE or BUTTON_NEGATIVE,
-     * through its own handler.
+     * switched on; [onNotShown] runs on every way out without the dialog (nothing to offer or list, the calendars
+     * unreadable, the screen gone, a load cancelled with it). Both feed the caller's settings sync request: a narrowed
+     * range's waits for the answer. Logs what it showed, or why nothing. [press] (the debug verb trim_dialog only)
+     * presses that button of the shown dialog, DialogInterface.BUTTON_POSITIVE or BUTTON_NEGATIVE, through its own
+     * handler.
      */
-    fun show(account: Account, offer: Boolean, press: Int? = null, onSaved: (newlyOn: Set<Choice>) -> Unit) {
+    fun show(
+        account: Account,
+        offer: Boolean,
+        press: Int? = null,
+        onNotShown: () -> Unit = {},
+        onSaved: (newlyOn: Set<Choice>) -> Unit,
+    ) {
         activity.lifecycleScope.launch {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-            val past = days(prefs, SyncPreferences.calendarPastDaysKey(account.name), SyncPreferences.DEFAULT_PAST_DAYS)
-            val future = days(prefs, SyncPreferences.calendarFutureDaysKey(account.name), SyncPreferences.DEFAULT_FUTURE_DAYS)
-            val loaded = withContext(Dispatchers.IO) { load(account, past, future) }
-            if (activity.isFinishing || activity.isDestroyed) return@launch
-            if (loaded == null) {
-                SyncLog.w(TAG, "Remove older events: the calendars of '${account.name}' could not be read; nothing shown")
-                if (!offer) Toast.makeText(activity, R.string.trim_read_failed, Toast.LENGTH_LONG).show()
-                return@launch
-            }
-            val choices = RangeTrimRunner.choices(prefs, account.name)
-            if (loaded.estimates.isEmpty()) {
-                // No calendar of the account is mapped: not synced yet, or a forced resync dropped the mappings.
-                SyncLog.i(TAG, "Remove older events: '${account.name}' has no synced calendar yet" + if (offer) "; no offer" else "")
-                if (!offer) {
-                    AlertDialog.Builder(activity)
+            var shown = false
+            try {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+                val past = days(prefs, SyncPreferences.calendarPastDaysKey(account.name), SyncPreferences.DEFAULT_PAST_DAYS)
+                val future = days(prefs, SyncPreferences.calendarFutureDaysKey(account.name), SyncPreferences.DEFAULT_FUTURE_DAYS)
+                val loaded = withContext(Dispatchers.IO) { load(account, past, future) }
+                if (activity.isFinishing || activity.isDestroyed) return@launch
+                if (loaded == null) {
+                    SyncLog.w(TAG, "Remove older events: the calendars of '${account.name}' could not be read; nothing shown")
+                    if (!offer) Toast.makeText(activity, R.string.trim_read_failed, Toast.LENGTH_LONG).show()
+                    return@launch
+                }
+                val choices = RangeTrimRunner.choices(prefs, account.name)
+                if (loaded.estimates.isEmpty()) {
+                    // No calendar of the account is mapped: not synced yet, or a forced resync dropped the mappings.
+                    SyncLog.i(TAG, "Remove older events: '${account.name}' has no synced calendar yet" + if (offer) "; no offer" else "")
+                    if (!offer) {
+                        AppDialogBuilder(activity)
+                            .setTitle(R.string.trim_dialog_title)
+                            .setMessage(R.string.trim_not_synced_yet)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show()
+                    }
+                    return@launch
+                }
+                // The large calendars, and any it is on for, so that it can always be switched off again; not one the sync
+                // skips (external calendars while they are off).
+                val listed = RangeTrimDryRun.listed(loaded.estimates, choices)
+                if (offer && !RangeTrimDryRun.offerWanted(listed)) {
+                    SyncLog.i(TAG, "Remove older events: no offer for '${account.name}', no large calendar would lose an event")
+                    return@launch
+                }
+                if (listed.isEmpty()) {
+                    // A large calendar left out because the sync skips it is not "too small": the notes say why instead.
+                    val leftOut = RangeTrimDryRun.leftOut(loaded.estimates, choices)
+                    val notSynced = RangeTrimDryRun.LeftOut.NOT_SYNCED in leftOut
+                    SyncLog.i(TAG, "Remove older events: no large calendar in '${account.name}'" +
+                        if (notSynced) " that syncs (external calendars are off)" else "")
+                    AppDialogBuilder(activity)
                         .setTitle(R.string.trim_dialog_title)
-                        .setMessage(R.string.trim_not_synced_yet)
+                        .setMessage(if (notSynced) notes(leftOut) else activity.getString(R.string.trim_no_large_calendars))
                         .setPositiveButton(android.R.string.ok, null)
                         .show()
+                    return@launch
                 }
-                return@launch
+                val dialog = present(account, offer, loaded, listed, choices, prefs, onSaved)
+                shown = true
+                SyncLog.i(TAG, "Remove older events: dialog shown for '${account.name}' with ${listed.size} calendar(s)" +
+                    if (offer) " (offered when the range narrowed)" else "")
+                if (press != null) dialog.getButton(press)?.performClick()
+            } finally {
+                if (!shown) onNotShown()
             }
-            // The large calendars, and any it is on for, so that it can always be switched off again; not one the sync
-            // skips (external calendars while they are off).
-            val listed = RangeTrimDryRun.listed(loaded.estimates, choices)
-            if (offer && !RangeTrimDryRun.offerWanted(listed)) {
-                SyncLog.i(TAG, "Remove older events: no offer for '${account.name}', no large calendar would lose an event")
-                return@launch
-            }
-            if (listed.isEmpty()) {
-                // A large calendar left out because the sync skips it is not "too small": the notes say why instead.
-                val leftOut = RangeTrimDryRun.leftOut(loaded.estimates, choices)
-                val notSynced = RangeTrimDryRun.LeftOut.NOT_SYNCED in leftOut
-                SyncLog.i(TAG, "Remove older events: no large calendar in '${account.name}'" +
-                    if (notSynced) " that syncs (external calendars are off)" else "")
-                AlertDialog.Builder(activity)
-                    .setTitle(R.string.trim_dialog_title)
-                    .setMessage(if (notSynced) notes(leftOut) else activity.getString(R.string.trim_no_large_calendars))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
-                return@launch
-            }
-            val dialog = present(account, offer, loaded, listed, choices, prefs, onSaved)
-            SyncLog.i(TAG, "Remove older events: dialog shown for '${account.name}' with ${listed.size} calendar(s)" +
-                if (offer) " (offered when the range narrowed)" else "")
-            if (press != null) dialog.getButton(press)?.performClick()
         }
     }
 
@@ -203,9 +217,7 @@ internal class RangeTrimDialog(private val activity: AppCompatActivity, private 
             }
         }
         fun save(chosen: Set<Choice>, how: String) {
-            RangeTrimRunner.setChoices(prefs, account.name, chosen)
-            prefs.edit().putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
-            val newlyOn = chosen - choices
+            val newlyOn = RangeTrimRunner.saveChoices(prefs, account.name, chosen)
             SyncLog.i(
                 "UserAction",
                 "Remove older events for '${account.name}' ($how): on for ${boxes.keys.count { it in chosen }} of ${boxes.size} " +
@@ -217,7 +229,7 @@ internal class RangeTrimDialog(private val activity: AppCompatActivity, private 
         // Calendars it is on for that the dialog did not list (not synced on this phone now, or skipped by the sync)
         // keep their choice: a choice names its Proton calendar too, so it never passes to another calendar.
         val unlisted = choices - boxes.keys
-        val builder = AlertDialog.Builder(activity)
+        val builder = AppDialogBuilder(activity)
             .setTitle(R.string.trim_dialog_title)
             .setView(view)
             .setPositiveButton(if (offer) R.string.remove_synced_remove else R.string.trim_dialog_save) { _, _ ->

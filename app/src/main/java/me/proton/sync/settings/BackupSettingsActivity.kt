@@ -1,5 +1,6 @@
 package me.proton.sync.settings
 
+import android.content.ContentResolver
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -25,6 +26,7 @@ import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
 import me.proton.sync.backup.BackupArchiveCrypto
 import me.proton.sync.backup.BackupDataExporter
+import me.proton.sync.backup.BackupResultLines
 import me.proton.sync.backup.BackupScheduleWorker
 import me.proton.sync.backup.SafBackupStorage
 import me.proton.sync.crypto.SecureStorage
@@ -37,8 +39,9 @@ import java.util.Locale
  * Settings for the local data-backup feature (calendars + contacts → .ics/.vcf, optionally
  * gpg-encrypted, into a SAF-chosen folder). Reads/writes the `KEY_BACKUP_*` prefs and
  * (re)schedules [BackupScheduleWorker]. Manual "Back up now" runs [BackupDataExporter]
- * directly so it works even when scheduled backups are off; the in-app "Decrypt a backup"
- * action reverses an encrypted run for users without desktop `gpg`.
+ * directly so it works even when scheduled backups are off, and whatever Android's automatic sync switch and
+ * "Back up even when automatic sync is off" say (that switch is for the scheduled runs only); the in-app "Decrypt a
+ * backup" action reverses an encrypted run for users without desktop `gpg`.
  */
 class BackupSettingsActivity : AppCompatActivity() {
 
@@ -86,6 +89,15 @@ class BackupSettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         drawFromPrefs(fresh = false)
+        // Android's own automatic sync switch, changed while this screen is in front (the quick settings tile, for one):
+        // the skip line under "Back up now" follows at once. Android fires this on a binder thread for any sync setting.
+        if (autoSyncObserverHandle == null) {
+            autoSyncObserverHandle = ContentResolver.addStatusChangeListener(
+                ContentResolver.SYNC_OBSERVER_TYPE_SETTINGS
+            ) {
+                runOnUiThread { if (!isFinishing && !isDestroyed) refreshUi() }
+            }
+        }
         refreshUi()
     }
 
@@ -101,6 +113,12 @@ class BackupSettingsActivity : AppCompatActivity() {
 
     /** True while [drawFromPrefs] sets the controls, so their listeners store nothing. */
     private var drawing = false
+
+    /**
+     * The SYNC_OBSERVER_TYPE_SETTINGS listener that keeps the skip line ([refreshUi]) in step with Android's automatic
+     * sync switch while the screen is in front; null when unregistered (onPause).
+     */
+    private var autoSyncObserverHandle: Any? = null
 
     /**
      * True while the encryption switch's own "Set password" dialog is open: the switch shows on there and nothing is
@@ -122,6 +140,9 @@ class BackupSettingsActivity : AppCompatActivity() {
         drawing = true
         try {
             binding.switchBackupEnabled.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_ENABLED, false)
+            binding.switchBackupWhenAutoSyncOff.isChecked = prefs.getBoolean(
+                SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF, SyncPreferences.DEFAULT_BACKUP_WHEN_AUTO_SYNC_OFF
+            )
             binding.checkCalendars.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CALENDARS, true)
             binding.checkContacts.isChecked = prefs.getBoolean(SyncPreferences.KEY_BACKUP_INCLUDE_CONTACTS, true)
             if (!encryptionAwaitingPassword) {
@@ -169,6 +190,24 @@ class BackupSettingsActivity : AppCompatActivity() {
             }
             prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_ENABLED, checked).apply()
             BackupScheduleWorker.reschedule(this)
+            // The skip line shows only while scheduled backups are on (BackupResultLines.skipsNow).
+            refreshUi()
+        }
+
+        // Read by each scheduled run itself (BackupScheduleWorker.runScheduled), so the schedule stays as it is. It also
+        // decides whether the skip line shows (BackupResultLines.skipsNow), so the lines are drawn again.
+        binding.switchBackupWhenAutoSyncOff.setOnCheckedChangeListener { _, checked ->
+            if (drawing) return@setOnCheckedChangeListener
+            prefs.edit().putBoolean(SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF, checked).apply()
+            refreshUi()
+        }
+        // The settings screen's bindInfo idiom: the row's label as the title, its explanation as the body.
+        binding.infoBackupWhenAutoSyncOff.setOnClickListener {
+            AppDialogBuilder(this)
+                .setTitle(R.string.backup_when_auto_sync_off_label)
+                .setMessage(R.string.info_backup_when_auto_sync_off_body)
+                .setPositiveButton(R.string.btn_info_dismiss, null)
+                .show()
         }
 
         binding.checkCalendars.setOnCheckedChangeListener { _, c ->
@@ -221,6 +260,10 @@ class BackupSettingsActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         saveIntervalAndRetention()
+        autoSyncObserverHandle?.let {
+            try { ContentResolver.removeStatusChangeListener(it) } catch (_: Throwable) {}
+        }
+        autoSyncObserverHandle = null
     }
 
     private fun saveIntervalAndRetention() {
@@ -255,18 +298,19 @@ class BackupSettingsActivity : AppCompatActivity() {
         binding.textPassphraseStatus.text =
             getString(if (hasPassphrase()) R.string.backup_passphrase_set else R.string.backup_passphrase_not_set)
 
-        val lastMs = prefs.getLong(SyncPreferences.KEY_BACKUP_LAST_RUN_MS, 0L)
-        binding.textLastBackup.text = if (lastMs <= 0L) {
-            getString(R.string.backup_last_never)
-        } else {
-            val when_ = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(lastMs))
-            val summary = prefs.getString(SyncPreferences.KEY_BACKUP_LAST_RESULT, "") ?: ""
-            getString(R.string.backup_last_run, when_, summary)
-        }
+        // The last run's line and, after a scheduled backup skipped because Android's automatic sync is off, the skip's
+        // own line under it: a skip never takes the last backup's date away (BackupResultLines). The skip line says the
+        // switch "is off", so it shows only while a scheduled backup would still be skipped; unreadable, the switch
+        // counts as on and the line stays hidden, as the settings screen's automatic sync line does.
+        val masterSyncOn = try { ContentResolver.getMasterSyncAutomatically() } catch (_: Exception) { true }
+        val (last, skipped) = BackupResultLines.of(prefs, masterSyncOn)
+        binding.textLastBackup.text = last.text(this)
+        binding.textBackupSkipped.text = skipped?.text(this).orEmpty()
+        binding.textBackupSkipped.visibility = if (skipped == null) View.GONE else View.VISIBLE
     }
 
     private fun promptChooseFolderFirst() {
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_data_title)
             .setMessage(R.string.backup_need_folder_body)
             .setPositiveButton(R.string.backup_choose_folder) { _, _ -> pickFolderLauncher.launch(null) }
@@ -295,7 +339,7 @@ class BackupSettingsActivity : AppCompatActivity() {
         container.addView(passLayout); container.addView(confirmLayout); container.addView(warn)
 
         var committed = false
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AppDialogBuilder(this)
             .setTitle(R.string.backup_set_passphrase)
             .setView(container)
             .setPositiveButton(R.string.backup_btn_save, null)
@@ -334,6 +378,8 @@ class BackupSettingsActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             )
             hint = getString(hintRes)
+            // Material's default is one line, which cut the "(min. 8 characters)" of the hint in several languages.
+            setHintMaxLines(4)
             isErrorEnabled = true
             endIconMode = com.google.android.material.textfield.TextInputLayout.END_ICON_PASSWORD_TOGGLE
         }
@@ -367,14 +413,14 @@ class BackupSettingsActivity : AppCompatActivity() {
             setPadding(pad, (8 * d).toInt(), pad, 0)
             addView(inputLayout)
         }
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_test_passphrase_title)
             .setMessage(R.string.backup_test_passphrase_body)
             .setView(container)
             .setPositiveButton(R.string.backup_btn_test) { _, _ ->
                 val correct = verifyBackupPassphrase(input.text?.toString() ?: "", storedEnc)
                 input.setText("")
-                AlertDialog.Builder(this)
+                AppDialogBuilder(this)
                     .setMessage(if (correct) R.string.backup_test_passphrase_correct else R.string.backup_test_passphrase_wrong)
                     .setPositiveButton(R.string.btn_info_dismiss, null)
                     .show()
@@ -427,7 +473,7 @@ class BackupSettingsActivity : AppCompatActivity() {
                 progress.dismiss()
                 when (outcome) {
                     is BackupDataExporter.Outcome.Ran -> showBackupResultDialog(outcome.result)
-                    is BackupDataExporter.Outcome.Threw -> AlertDialog.Builder(this@BackupSettingsActivity)
+                    is BackupDataExporter.Outcome.Threw -> AppDialogBuilder(this@BackupSettingsActivity)
                         .setTitle(R.string.backup_data_title)
                         .setMessage(summary)
                         .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -446,7 +492,7 @@ class BackupSettingsActivity : AppCompatActivity() {
             BackupDataExporter.Result.NoFolder -> getString(R.string.backup_folder_none)
             is BackupDataExporter.Result.Failure -> getString(R.string.backup_result_failed, result.reason)
         }
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_data_title)
             .setMessage(msg)
             .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -465,7 +511,7 @@ class BackupSettingsActivity : AppCompatActivity() {
             setPadding(pad, (8 * d).toInt(), pad, 0)
             addView(inputLayout)
         }
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_decrypt_action)
             .setMessage(R.string.backup_decrypt_body)
             .setView(container)
@@ -513,7 +559,7 @@ class BackupSettingsActivity : AppCompatActivity() {
                     else getString(R.string.backup_decrypt_failed)
                 }
             )
-            AlertDialog.Builder(this@BackupSettingsActivity)
+            AppDialogBuilder(this@BackupSettingsActivity)
                 .setTitle(R.string.backup_decrypt_action)
                 .setMessage(msg)
                 .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -538,7 +584,7 @@ class BackupSettingsActivity : AppCompatActivity() {
                 textSize = 15f
             })
         }
-        return AlertDialog.Builder(this).setView(row).setCancelable(false).create()
+        return AppDialogBuilder(this).setView(row).setCancelable(false).create()
     }
 
     companion object {

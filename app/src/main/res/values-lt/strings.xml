@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Praleisti prenumeruojamus/importuotus kalendorius (pvz., iš Google)</string>
     <string name="label_expand">Išskleisti</string>
     <string name="label_display_name">Rodomas vardas</string>
-    <string name="label_event_loop_interval">Įvykių ciklo intervalas</string>
     <string name="label_fallback_full_sync">Atsarginė pilna sinchronizacija</string>
     <string name="label_notify_on_failure">Pranešti apie klaidas</string>
     <string name="label_notify_in_progress">Rodyti pranešimą sinchronizavimo metu</string>
@@ -118,7 +117,6 @@
     <string name="dialog_label_sync_reason">Priežastis: %s</string>
     <string name="dialog_title_past_events">Praeities įvykiai</string>
     <string name="dialog_title_future_events">Ateities įvykiai</string>
-    <string name="dialog_title_event_loop_interval">Įvykių ciklo intervalas</string>
     <string name="dialog_title_contacts_fallback">Kontaktų atsarginė pilna sinchronizacija</string>
     <string name="dialog_title_calendar_fallback">Kalendoriaus atsarginė pilna sinchronizacija</string>
     <string name="dialog_title_remove_account">Pašalinti paskyrą</string>
@@ -179,13 +177,17 @@
     <string name="notification_sync_failed_title">%s sinchronizavimas nepavyko</string>
     <string name="notification_action_view_details">Peržiūrėti informaciją</string>
     <string name="error_no_internet">Nėra interneto ryšio. Sinchronizavimas bus automatiškai pakartotas.</string>
+    <string name="error_no_internet_tap_sync">Nėra interneto ryšio. Bakstelėkite „Sinchronizuoti“, kad bandytumėte dar kartą.</string>
     <string name="error_timeout">Nepavyko pasiekti serverio. Patikrinkite interneto ryšį.</string>
     <string name="error_session_expired">Jūsų sesija pasibaigė. Prisijunkite iš naujo.</string>
     <string name="error_too_many_requests">Per daug užklausų. Sinchronizavimas bus pakartotas vėliau.</string>
+    <string name="error_too_many_requests_tap_sync">Per daug užklausų. Bakstelėkite „Sinchronizuoti“, kad bandytumėte dar kartą.</string>
     <string name="error_server_error">Proton serverio klaida. Sinchronizavimas bus automatiškai pakartotas.</string>
+    <string name="error_server_error_tap_sync">Proton serverio klaida. Bakstelėkite „Sinchronizuoti“, kad bandytumėte dar kartą.</string>
     <string name="error_request_rejected">Sinchronizavimo užklausą serveris atmetė.</string>
     <string name="error_ssl">Saugus prisijungimas nepavyko. Patikrinkite savo tinklą.</string>
     <string name="error_connection_interrupted">Ryšys buvo nutrauktas. Sinchronizavimas bus pakartotas.</string>
+    <string name="error_connection_interrupted_tap_sync">Ryšys buvo nutrauktas. Bakstelėkite „Sinchronizuoti“, kad bandytumėte dar kartą.</string>
     <string name="error_unexpected">Sinchronizavimo metu įvyko netikėta klaida.</string>
     <string name="notification_channel_auth">Autentifikavimas</string>
     <string name="notification_channel_auth_description">Pranešimai apie reikalingą prisijungimą</string>
@@ -277,16 +279,16 @@
     <string name="label_info">Daugiau informacijos</string>
     <string name="info_language_body">Nustato kalbą, naudojamą pačios programėlės ekranams. „Auto\" seka jūsų telefono sistemos kalba. Tai keičia tik programėlės sąsają, neišverčia jūsų sinchronizuotų kalendoriaus įvykių ar kontaktų.</string>
     <string name="info_display_name_body">Šiai paskyrai rodomas pavadinimas skiltyje Android nustatymai → Paskyros ir kalendoriaus / kontaktų programėlių parinkikliuose. Tai tik vietinė etiketė; jos keitimas neturi įtakos jūsų Proton paskyrai.\n\nPastaba: Samsung Calendar ir Samsung Contacts ignoruoja pasirinktinius paskyrų pavadinimus ir visada rodo savo etiketę (pvz., „Proton\"). Jūsų pasirinktas pavadinimas ten gali nepasirodyti, tai Samsung apribojimas, kurio negalime pakeisti. Kitos programėlės (Google Calendar / Contacts) jį rodo įprastai.</string>
-    <string name="info_event_loop_body">Kaip dažnai programėlė fone tikrina Proton dėl nuotolinių jūsų kontaktų ir kalendoriaus pakeitimų. Trumpesni intervalai greičiau parodo pakeitimus, bet naudoja daugiau baterijos ir duomenų. Tai atskira nuo rankinio sinchronizavimo, kurį galite paleisti bet kada sinchronizavimo mygtukais.</string>
+    <string name="info_event_loop_body">Kaip dažnai programėlė fone tikrina Proton dėl nuotolinių jūsų kontaktų ir kalendoriaus pakeitimų. Šie patikrinimai vyksta tik tada, kai įjungtas Android automatinis sinchronizavimas; kai jis išjungtas, savaime nieko nesinchronizuojama. Trumpesni intervalai greičiau parodo pakeitimus, bet naudoja daugiau baterijos ir duomenų. Tai atskira nuo rankinio sinchronizavimo, kurį galite paleisti bet kada sinchronizavimo mygtukais.</string>
     <string name="info_notify_in_progress_body">Rodo tylų, tęstinį pranešimą vykstant sinchronizavimui su tiesiogine eiga (skenavimas, atsisiuntimas, iššifravimas). Jis yra pranešimų skydelio apačioje ir niekada neskleidžia garso. Išjunkite jį, jei norite, kad sinchronizavimas vyktų nematomai.</string>
     <string name="info_sync_contacts_body">Kai įjungta, jūsų Proton kontaktai sinchronizuojami dviem kryptimis su Android kontaktais: abiejų pusių pakeitimai sujungiami.\n\nPastaba: Samsung Contacts rodo kontaktus po viena „Proton contacts\" paskyros etikete ir slepia el. pašto paantraštę trečiųjų šalių paskyroms, kaip mūsiškė, į kodą įrašytas Samsung apribojimas, kurio negalime pakeisti. Google Contacts ir dauguma kitų programėlių juos rodo įprastai.</string>
-    <string name="info_fallback_full_sync_body">Kaip dažnai programėlė atlieka visišką pakartotinį patikrinimą vietoj greito prieaugio sinchronizavimo. Pilna sinchronizacija pagauna viską, ką prieaugio praėjimas galėjo praleisti (pvz., pakeitimus, atliktus neprisijungus), bet sunaudoja daugiau laiko ir duomenų. Palikite numatytąją reikšmę, nebent įtariate, kad elementai nesinchronizuojami.</string>
+    <string name="info_fallback_full_sync_body">Kaip dažnai programėlė atlieka visišką pakartotinį patikrinimą vietoj greito prieaugio sinchronizavimo. Šis patikrinimas vyksta tik tada, kai įjungtas Android automatinis sinchronizavimas. Pilna sinchronizacija pagauna viską, ką prieaugio praėjimas galėjo praleisti (pvz., pakeitimus, atliktus neprisijungus), bet sunaudoja daugiau laiko ir duomenų. Palikite numatytąją reikšmę, nebent įtariate, kad elementai nesinchronizuojami.</string>
     <string name="info_notify_on_failure_body">Rodo pranešimą, jei sinchronizavimas nepavyksta (pvz., tinklo klaida arba pasibaigusi sesija). Bakstelėkite jį, kad gautumėte priežastį paprasta kalba ir nuorodą į žurnalus. Išjunkite jį, jei nenorite gauti įspėjimų apie laikinas klaidas.</string>
-    <string name="info_sync_calendar_body">Kai įjungta, jūsų Proton kalendoriai sinchronizuojami į Android kalendorių, todėl įvykiai rodomi Google Calendar, Samsung Calendar ir bet kurioje kitoje kalendoriaus programėlėje. Dviem kryptimis: telefone atlikti pakeitimai įkeliami atgal į Proton kalendoriams, kurie priklauso jums.</string>
+    <string name="info_sync_calendar_body">Kai įjungta, jūsų Proton kalendoriai sinchronizuojami į Android kalendorių, todėl įvykiai rodomi Google Calendar, Samsung Calendar ir bet kurioje kitoje kalendoriaus programėlėje. Dviem kryptimis: telefone atlikti pakeitimai įkeliami atgal į Proton kiekvienam kalendoriui, kurį galite redaguoti, įskaitant kalendorius, kuriuos kiti bendrina su jumis.</string>
     <string name="info_include_external_calendars_body">Proton gali talpinti prenumeruojamus kalendorius (pvz., išorinį ICS srautą) ir švenčių kalendorius. Proton pusėje jie skirti tik skaityti. Kai išjungta, programėlė juos praleidžia ir sinchronizuoja tik jūsų pačių redaguojamus kalendorius. Įjunkite, jei norite, kad šie tik skaitymui skirti kalendoriai taip pat būtų atspindėti jūsų telefone.</string>
     <string name="info_sync_mode_body">„Visi įvykiai“ sinchronizuoja visą jūsų kalendoriaus istoriją ir visus būsimus įvykius, geriausia, jei norite turėti viską savo telefone (pirmasis didelio kalendoriaus sinchronizavimas gali užtrukti kelias minutes). „Pasirinktinis intervalas“ sinchronizuoja tik dienų langą aplink šiandien, kad dideli kalendoriai išliktų greiti: jų įvykiai už lango ribų neatsisiunčiami, o šiame telefone jau esantys įvykiai lieka, nebent jų kalendoriui įjungta parinktis „Pašalinti senesnius įvykius iš šio telefono“. Maži kalendoriai visada sinchronizuojami visa apimtimi.</string>
     <string name="label_trim_old_events">Pašalinti senesnius įvykius iš šio telefono</string>
-    <string name="info_trim_old_events_body">Jūsų pasirinktų kalendorių įvykiai, pasibaigę daugiau nei dieną prieš jūsų intervalo pradžią, pašalinami iš šio telefono dabar ir vėlesnių sinchronizavimų metu. Jie lieka jūsų Proton paskyroje, o ten nieko neištrinama. Jūsų pačių kalendorių atsarginės kopijos daromos iš Proton, todėl jose šie įvykiai vis dar yra; prenumeruojamų kalendorių ir švenčių kalendorių atsarginės kopijos nedaromos. Pasikartojantis įvykis lieka su visomis savo ankstesnėmis datomis, kol jis tęsiasi jūsų intervale arba neturi pabaigos datos, nes telefonas pasikartojantį įvykį saugo kaip vieną įrašą. Taip pat paliekami įvykiai, kurių pakeitimai dar neišsiųsti į Proton, ir įvykiai, kurie buvo sukurti ar paskutinį kartą pakeisti per pastarąsias 7 dienas, sprendžiant pagal šiame telefone esančią versiją, o ne pagal tai, kada telefonas ją atsisiuntė. Pasirinkti galima tik kalendorius, kurie per dideli, kad būtų sinchronizuojami visa apimtimi, o įvykiai po jūsų intervalo pabaigos niekada nepašalinami. Norėdami susigrąžinti pašalintus įvykius, pasirinkite ilgesnį intervalą arba „Visi įvykiai“.</string>
+    <string name="info_trim_old_events_body">Jūsų pasirinktų kalendorių įvykiai, pasibaigę daugiau nei dieną prieš jūsų intervalo pradžią, iš šio telefono pašalinami kito sinchronizavimo metu, o vėlesni, kai taps tokie pat seni. Jie lieka jūsų Proton paskyroje, o ten nieko neištrinama. Jūsų pačių kalendorių atsarginės kopijos daromos iš Proton, todėl jose šie įvykiai vis dar yra; prenumeruojamų kalendorių ir švenčių kalendorių atsarginės kopijos nedaromos. Pasikartojantis įvykis lieka su visomis savo ankstesnėmis datomis, kol jis tęsiasi jūsų intervale arba neturi pabaigos datos, nes telefonas pasikartojantį įvykį saugo kaip vieną įrašą. Taip pat paliekami įvykiai, kurių pakeitimai dar neišsiųsti į Proton, ir įvykiai, kurie buvo sukurti ar paskutinį kartą pakeisti per pastarąsias 7 dienas, sprendžiant pagal šiame telefone esančią versiją, o ne pagal tai, kada telefonas ją atsisiuntė. Pasirinkti galima tik kalendorius, kurie per dideli, kad būtų sinchronizuojami visa apimtimi, o įvykiai po jūsų intervalo pabaigos niekada nepašalinami. Norėdami susigrąžinti pašalintus įvykius, pasirinkite ilgesnį intervalą arba „Visi įvykiai“.</string>
     <string name="trim_dialog_title">Pašalinti senesnius įvykius iš šio telefono</string>
     <string name="trim_dialog_intro">Pasirinkite kalendorius, kuriuos norite sutvarkyti. Įvykiai, pasibaigę prieš %1$s, iš šio telefono pašalinami kito sinchronizavimo metu, o vėlesni, kai taps tokie pat seni. Jie lieka jūsų Proton paskyroje. Pasikartojantis įvykis, kuris tęsiasi po šios datos, lieka su visomis savo datomis.</string>
     <plurals name="trim_calendar_count">
@@ -310,6 +312,38 @@
     </plurals>
     <string name="trim_dialog_save">Įrašyti</string>
     <string name="trim_read_failed">Nepavyko nuskaityti šio telefono kalendorių, todėl nieko nepakeista.</string>
+    <string name="label_default_calendar">Numatytasis kalendorius</string>
+    <string name="info_default_calendar_body">Nauji įvykiai patenka į jūsų numatytąjį Proton kalendorių, o šis telefonas jį pažymi kaip paskyros pagrindinį kalendorių. Pakeitus jį čia, jis pasikeičia ir Proton, todėl naująjį naudoja Proton žiniatinklio versija, Proton programėlės ir kvietimai, į kuriuos atsakote per Proton Mail. Numatytuoju gali būti tik aktyvus jūsų pačių kalendorius, o ne bendrinamas, prenumeruojamas ar švenčių kalendorius.</string>
+    <string name="default_calendar_connecting">Jungiamasi prie Proton…</string>
+    <string name="default_calendar_changed">Numatytasis kalendorius pakeistas</string>
+    <string name="default_calendar_unreachable">Nepavyko pasiekti Proton. Bandykite dar kartą po akimirkos.</string>
+    <string name="default_calendar_refused">Proton nepriėmė pakeitimo, todėl nieko nepakeista.</string>
+    <string name="default_calendar_none_own">Ši paskyra neturi savo aktyvaus kalendoriaus, kuris galėtų būti numatytasis. Bendrinami, prenumeruojami ir švenčių kalendoriai negali būti numatytieji.</string>
+    <string name="default_calendar_incomplete">Nepavyko nuskaityti visų šios paskyros kalendorių, todėl jos numatytojo kalendoriaus čia pakeisti negalima.</string>
+    <string name="notification_new_event_hold_title">Naujas įvykis bendrinamame kalendoriuje</string>
+    <string name="notification_new_event_hold_body">Programėlė %1$s įtraukė įvykį „%2$s“ į kalendorių %3$s. Jį matytų ir kiti, turintys prieigą prie šio kalendoriaus.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Kita programėlė įtraukė įvykį „%1$s“ į kalendorių %2$s. Jį matytų ir kiti, turintys prieigą prie šio kalendoriaus.</string>
+    <string name="action_new_event_move">Perkelti į %1$s</string>
+    <string name="action_new_event_publish">Paskelbti</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d įvykis laukia jūsų sprendimo</item>
+        <item quantity="few">%d įvykiai laukia jūsų sprendimo</item>
+        <item quantity="many">%d įvykio laukia jūsų sprendimo</item>
+        <item quantity="other">%d įvykių laukia jūsų sprendimo</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d įvykis paliktas tik šiame telefone</item>
+        <item quantity="few">%d įvykiai palikti tik šiame telefone</item>
+        <item quantity="many">%d įvykio palikta tik šiame telefone</item>
+        <item quantity="other">%d įvykių palikta tik šiame telefone</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Dar %d įvykis laukia jūsų sprendimo</item>
+        <item quantity="few">Dar %d įvykiai laukia jūsų sprendimo</item>
+        <item quantity="many">Dar %d įvykio laukia jūsų sprendimo</item>
+        <item quantity="other">Dar %d įvykių laukia jūsų sprendimo</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Kai programėlė, kuri nėra kalendoriaus programėlė, įtraukia įvykį į kalendorių, kurį su jumis bendrina kažkas kitas, įvykis laukia šiame telefone, kol nuspręsite. „Perkelti“ vietoj to įdeda jį į jūsų numatytąjį kalendorių. „Paskelbti“ išsiunčia jį į bendrinamą kalendorių, kur jį gali matyti visi, turintys prieigą prie šio kalendoriaus. „Palikti telefone“ niekada nesiunčia jo į Proton: jo neturės nei Proton Calendar, nei Proton žiniatinklio versija, nei kiti jūsų įrenginiai, nei šios programėlės atsarginės kopijos, ir jis bus prarastas, jei pašalinsite šią programėlę arba šią paskyrą. Telefone palikti įvykiai ir toliau rodomi šios paskyros kortelėje, kur vis dar galite juos perkelti arba paskelbti.</string>
     <string name="info_sync_range_window_body">Kiek dienų prieš ir po šiandien sinchronizuoti, kai pasirinktas „Pasirinktinis intervalas\". Didesni langai rodo daugiau jūsų kalendoriaus, bet sinchronizuojasi ilgiau. Režime „Visi įvykiai\" neturi poveikio.</string>
     <string name="info_poll_attendee_body">Kai įjungta, programėlė periodiškai iš naujo tikrina įvykius, kurie turi dalyvių, kad aptiktų atsakymus priimti / atmesti / preliminariai. Proton pakeitimų srautas nepraneša apie RSVP pakeitimus, todėl tam reikia papildomų API užklausų, verta įjungti tik tuo atveju, jei pasitikite dalyvių atsakymų matymu savo telefone.</string>
     <string name="info_send_invites_body">Kai savo telefone pridedate dalyvių prie įvykio, išsiųskite jiems kvietimą el. paštu. Pagal numatytuosius nustatymus išjungta: įjunkite tik tuo atveju, jei norite, kad programėlė jūsų vardu siųstų el. laiškus dalyviams.</string>
@@ -317,7 +351,7 @@
     <string name="info_send_cancellations_body">Išsiųskite dalyviams el. laišką, kai ištrinate įvykį, į kurį jie pakviesti, kad jį pašalintų ir jų kalendoriai. Pagal numatytuosius nustatymus išjungta.</string>
     <string name="info_invite_subject_title_body">Siųsdami kvietimo el. laiškus, įrašykite įvykio pavadinimą į el. laiško temos eilutę, kad gavėjai jį iškart atpažintų. Pagal numatytuosius nustatymus išjungta dėl privatumo: el. laiškų temos standartiniame pašto perdavime nėra šifruojamos, todėl pavadinimas būtų matomas pašto serveriams maršrute.</string>
     <string name="info_background_sync_body">Android gali pristabdyti foninį sinchronizavimą, kad taupytų bateriją, o tai gali atidėti arba sustabdyti automatinį sinchronizavimą. Šios programėlės pašalinimas iš baterijos optimizavimo užtikrina patikimą suplanuotų sinchronizavimų veikimą. Naudokite mygtuką, kad atidarytumėte programėlės sistemos baterijos nustatymus.</string>
-    <string name="info_verbose_logging_body">Į žurnalą fiksuoja papildomas diagnostines detales (autentifikavimo būseną, raktų atrakinimą, sinchronizavimo vidinę veiklą), naudinga pranešant apie problemą. Programa el. pašto adresus žurnale pakeičia trumpais kodais, tačiau jame gali būti paskyrų ir kalendorių pavadinimų, todėl žurnalais dalykitės tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
+    <string name="info_verbose_logging_body">Į žurnalą fiksuoja papildomas diagnostines detales (autentifikavimo būseną, raktų atrakinimą, sinchronizavimo vidinę veiklą), naudinga pranešant apie problemą. Kol ši parinktis įjungta, žurnale taip pat nurodomi jūsų kalendorių ir į juos įvykius įtraukiančių programėlių pavadinimai. Programa el. pašto adresus žurnale pakeičia trumpais kodais, tačiau jame gali būti paskyrų ir kalendorių pavadinimų, todėl žurnalais dalykitės tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
     <string name="info_file_logging_body">Įrašo programos žurnalą į tekstinį failą su laiko žyma (sync-for-proton-log-….txt) jūsų pasirinktame aplanke. Kitaip programa žurnalą laiko tik atmintyje, todėl įjunkite tai, kad užfiksuotumėte sunkiai atkuriamą problemą. Kiekvieną kartą paleidus programą sukuriamas naujas failas. Programa el. pašto adresus faile pakeičia trumpais kodais, tačiau jame gali būti paskyrų ir kalendorių pavadinimų, todėl bendrinkite jį tik su kūrėju. Įprastam naudojimui palikite išjungtą.</string>
     <string name="info_timezone_updates_text">Įvykių laikas priklauso nuo laiko juostų taisyklių, o šalys jas retkarčiais keičia. Android jas saugo telefono laiko juostų duomenyse, kurie gaunami su sistemos naujiniais. Telefonas, kuris jų nebegauna, pavyzdžiui, su senesne Android versija arba be „Google Play“ sistemos naujinių, išlaiko senas taisykles, o įvykiai vietose, kurių taisyklės nuo to laiko pasikeitė, gali būti rodomi netinkamu laiku.\n\nLaiko juostų duomenys šiame telefone: versija %1$s\n\nKai išjungta (numatytoji), programėlė naudoja paties telefono laiko juostų duomenis ir į www.tzurl.org nieko nesiunčia.\n\nKai įjungta, programėlė iš www.tzurl.org, trečiosios šalies paslaugos, atsisiunčia dabartines kiekvienos jūsų įvykiuose naudojamos laiko juostos taisykles, ne daugiau kaip kartą kiekvienai laiko juostai kiekvieną kartą paleidus programėlę, ir naudoja jas tik tada, jei jos naujesnės už telefono duomenis. www.tzurl.org tada mato jūsų IP adresą ir šių laiko juostų pavadinimus, pavyzdžiui, Europe/Berlin. Jokia kita informacija apie jūsų įvykius ar paskyras nesiunčiama. Jei www.tzurl.org nepasiekiama, naudojami telefono duomenys. Pasikartojantys įvykiai ir toliau skaičiuojami pagal telefono duomenis.\n\nPo pakeitimo telefone jau esantys įvykiai patikrinami ir pataisomi kito sinchronizavimo metu.</string>
     <string name="tz_data_version_unknown">nežinoma</string>
@@ -403,6 +437,8 @@
     <string name="backup_unit_days">dienas</string>
     <string name="backup_retention_label">Saugoti paskutines</string>
     <string name="backup_unit_runs">atsarginių kopijų</string>
+    <string name="backup_when_auto_sync_off_label">Atsarginės kopijos ir be automatinio sinchronizavimo</string>
+    <string name="info_backup_when_auto_sync_off_body">Android jungiklis „Automatiškai sinchronizuoti duomenis“ sustabdo visų programėlių foninį sinchronizavimą, o suplanuotos atsarginės kopijos jo paiso: kol jis išjungtas, suplanuota atsarginė kopija praleidžiama ir šiame ekrane tai nurodoma po mygtuku „Kurti atsarginę kopiją dabar“. Įjunkite šią parinktį, kad suplanuotos atsarginės kopijos vis tiek būtų kuriamos. Kuriant kiekvieną atsarginę kopiją iš Proton atsisiunčiami visi jūsų kalendoriai ir kontaktai, todėl gali būti sunaudota daug mobiliųjų duomenų. Mygtukas „Kurti atsarginę kopiją dabar“ veikia visada.</string>
     <string name="backup_section_contents">Ką įtraukti į atsarginę kopiją</string>
     <string name="backup_include_calendars_label">Kalendoriai (.ics)</string>
     <string name="backup_include_contacts_label">Kontaktai (.vcf)</string>
@@ -425,6 +461,7 @@
     <string name="backup_running">Kuriama atsarginė kopija…</string>
     <string name="backup_last_never">Atsarginės kopijos dar nėra.</string>
     <string name="backup_last_run">Paskutinė atsarginė kopija: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Suplanuota atsarginė kopija praleista %1$s: Android automatinis sinchronizavimas išjungtas</string>
     <string name="backup_decrypt_action">Iššifruoti atsarginę kopiją…</string>
     <string name="backup_decrypt_body">Pasirinkite šifruotą atsarginės kopijos failą (.gpg) ir įveskite jo slaptažodį. Turinys bus iššifruotas ir įrašytas į jūsų atsarginių kopijų aplanką.</string>
     <string name="backup_decrypting">Iššifruojama…</string>
@@ -492,7 +529,7 @@
     <string name="sfp_group_account">Paskyra</string>
     <string name="sfp_group_contacts">Kontaktai</string>
     <string name="sfp_group_calendar">Kalendorius</string>
-    <string name="sfp_event_loop_subtitle">Kaip dažnai tikrinti nuotolinius pakeitimus</string>
+    <string name="sfp_event_loop_subtitle">Kaip dažnai tikrinti nuotolinius pakeitimus, kai įjungtas Android automatinis sinchronizavimas</string>
     <string name="sfp_show_advanced">Rodyti el. pašto ir išplėstines parinktis</string>
     <string name="sfp_hide_advanced">Slėpti el. pašto ir išplėstines parinktis</string>
     <string name="sfp_group_email_attendees">El. paštas dalyviams</string>
@@ -503,6 +540,7 @@
     <string name="sfp_hero_subtitle_ok">Visos įjungtos paskyros yra atnaujintos</string>
     <string name="sfp_hero_subtitle_warn">Vienai ar daugiau paskyrų reikia sinchronizavimo arba prisijungimo</string>
     <string name="sfp_sync_all_now">Sinchronizuoti viską dabar</string>
+    <string name="sfp_auto_sync_off">Android automatinis sinchronizavimas išjungtas: paskyros sinchronizuojamos tik bakstelėjus „Sinchronizuoti“</string>
     <string name="sfp_tile_logs">Sinchronizavimo žurnalas</string>
     <string name="sfp_tile_backup">Atsarginė kopija</string>
     <string name="sfp_tile_battery">Baterija</string>
@@ -541,6 +579,10 @@
     <string name="notification_contacts_too_large_summary">Šie kontaktai paskyroje %1$s per dideli „Android“ kontaktų saugyklai. „Proton“ jie lieka išsamūs:</string>
     <string name="notification_contacts_too_large_outdated">šiame telefone lieka senesnė versija</string>
     <string name="notification_contacts_too_large_missing">nėra šiame telefone</string>
+    <string name="notification_contacts_delete_refused_title">Kai kurių kontaktų nepavyko ištrinti „Proton“</string>
+    <string name="notification_contacts_delete_refused_summary">Šie kontaktai paskyroje %1$s buvo ištrinti iš šio telefono, bet „Proton“ atsisakė juos ištrinti. Jie vis dar yra „Proton“ ir kituose jūsų įrenginiuose:</string>
+    <string name="notification_events_delete_refused_title">Kai kurių įvykių nepavyko ištrinti „Proton“</string>
+    <string name="notification_events_delete_refused_summary">Šie įvykiai paskyroje %1$s buvo ištrinti iš šio telefono, bet „Proton“ atsisakė juos ištrinti. Jie vis dar yra „Proton“ ir kituose jūsų įrenginiuose:</string>
     <string name="notification_conflict_title">Įvykis pakeistas dviejose vietose</string>
     <string name="notification_conflict_body">„%1$s“ buvo redaguotas šiame telefone ir Proton Calendar. Kurią versiją norite išsaugoti?</string>
     <string name="notification_conflict_body_shared">„%1$s“ buvo redaguotas šiame telefone ir naudotojo %2$s Proton Calendar. Išsaugoję savo versiją, pakeisite jo versiją.</string>

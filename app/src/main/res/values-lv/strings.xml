@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Izlaist abonētos/importētos kalendārus (piem., no Google)</string>
     <string name="label_expand">Izvērst</string>
     <string name="label_display_name">Parādāmais vārds</string>
-    <string name="label_event_loop_interval">Notikumu cikla intervāls</string>
     <string name="label_fallback_full_sync">Rezerves pilna sinhronizācija</string>
     <string name="label_notify_on_failure">Paziņot par kļūmēm</string>
     <string name="label_notify_in_progress">Rādīt paziņojumu sinhronizācijas laikā</string>
@@ -116,7 +115,6 @@
     <string name="dialog_label_sync_reason">Iemesls: %s</string>
     <string name="dialog_title_past_events">Pagātnes notikumi</string>
     <string name="dialog_title_future_events">Nākotnes notikumi</string>
-    <string name="dialog_title_event_loop_interval">Notikumu cikla intervāls</string>
     <string name="dialog_title_contacts_fallback">Kontaktu rezerves pilna sinhronizācija</string>
     <string name="dialog_title_calendar_fallback">Kalendāra rezerves pilna sinhronizācija</string>
     <string name="dialog_title_remove_account">Noņemt kontu</string>
@@ -175,13 +173,17 @@
     <string name="label_sync_queued">Gaida sinhronizāciju</string>
     <string name="notification_action_view_details">Skatīt detaļas</string>
     <string name="error_no_internet">Nav interneta savienojuma. Sinhronizācija tiks automātiski atkārtota.</string>
+    <string name="error_no_internet_tap_sync">Nav interneta savienojuma. Mēģiniet vēlreiz ar pogu Sinhronizēt.</string>
     <string name="error_timeout">Nevar sasniegt serveri. Pārbaudiet interneta savienojumu.</string>
     <string name="error_session_expired">Jūsu sesija ir beigusies. Lūdzu, pierakstieties vēlreiz.</string>
     <string name="error_too_many_requests">Pārāk daudz pieprasījumu. Sinhronizācija tiks atkārtota vēlāk.</string>
+    <string name="error_too_many_requests_tap_sync">Pārāk daudz pieprasījumu. Mēģiniet vēlreiz ar pogu Sinhronizēt.</string>
     <string name="error_server_error">Proton servera kļūda. Sinhronizācija tiks automātiski atkārtota.</string>
+    <string name="error_server_error_tap_sync">Proton servera kļūda. Mēģiniet vēlreiz ar pogu Sinhronizēt.</string>
     <string name="error_request_rejected">Sinhronizācijas pieprasījumu serveris noraidīja.</string>
     <string name="error_ssl">Droša savienojuma izveide neizdevās. Pārbaudiet savu tīklu.</string>
     <string name="error_connection_interrupted">Savienojums tika pārtraukts. Sinhronizācija tiks atkārtota.</string>
+    <string name="error_connection_interrupted_tap_sync">Savienojums tika pārtraukts. Mēģiniet vēlreiz ar pogu Sinhronizēt.</string>
     <string name="error_unexpected">Sinhronizācijas laikā radās neparedzēta kļūda.</string>
     <string name="notification_channel_auth">Autentifikācija</string>
     <string name="notification_channel_auth_description">Paziņojumi par nepieciešamo pierakstīšanos</string>
@@ -272,16 +274,16 @@
     <string name="label_info">Vairāk informācijas</string>
     <string name="info_language_body">Iestata valodu, ko izmanto šīs lietotnes ekrāniem. „Auto\" seko jūsu tālruņa sistēmas valodai. Tas maina tikai lietotnes saskarni, tas netulko jūsu sinhronizētos kalendāra notikumus vai kontaktus.</string>
     <string name="info_display_name_body">Šim kontam parādītais nosaukums sadaļā Android iestatījumi → Konti un kalendāra/kontaktu lietotņu atlasītājos. Tā ir tikai lokāla etiķete; tās maiņa neietekmē jūsu Proton kontu.\n\nPiezīme: Samsung Calendar un Samsung Contacts ignorē pielāgotus kontu nosaukumus un vienmēr rāda savu etiķeti (piem., „Proton\"). Jūsu izvēlētais nosaukums tur var neparādīties, tas ir Samsung ierobežojums, ko mēs nevaram mainīt. Citas lietotnes (Google Calendar/Contacts) to rāda parasti.</string>
-    <string name="info_event_loop_body">Cik bieži lietotne fonā pārbauda Proton, vai nav attālu izmaiņu jūsu kontaktos un kalendārā. Īsāki intervāli ātrāk parāda izmaiņas, bet patērē vairāk akumulatora un datu. Tas ir atsevišķi no manuālās sinhronizācijas, ko varat sākt jebkurā laikā ar sinhronizācijas pogām.</string>
+    <string name="info_event_loop_body">Cik bieži lietotne fonā pārbauda Proton, vai nav attālu izmaiņu jūsu kontaktos un kalendārā. Šīs pārbaudes notiek tikai, kamēr Android automātiskā sinhronizācija ir ieslēgta; kad tā ir izslēgta, nekas nesinhronizējas pats no sevis. Īsāki intervāli ātrāk parāda izmaiņas, bet patērē vairāk akumulatora un datu. Tas ir atsevišķi no manuālās sinhronizācijas, ko varat sākt jebkurā laikā ar sinhronizācijas pogām.</string>
     <string name="info_notify_in_progress_body">Rāda klusu, nepārtrauktu paziņojumu sinhronizācijas laikā ar tiešo gaitu (skenēšana, lejupielāde, atšifrēšana). Tas atrodas paziņojumu joslas apakšā un nekad neizdod skaņu. Izslēdziet to, ja vēlaties, lai sinhronizācija notiktu neredzami.</string>
     <string name="info_sync_contacts_body">Kad ieslēgts, jūsu Proton kontakti sinhronizējas divvirzienu režīmā ar Android kontaktiem: izmaiņas abās pusēs tiek apvienotas.\n\nPiezīme: Samsung Contacts rāda kontaktus zem vienas „Proton contacts\" konta etiķetes un slēpj e-pasta apakšvirsrakstu trešo pušu kontiem, piemēram, mūsējam, Samsung kodā iebūvēts ierobežojums, ko mēs nevaram mainīt. Google Contacts un lielākā daļa citu lietotņu tos rāda parasti.</string>
-    <string name="info_fallback_full_sync_body">Cik bieži lietotne veic pilnu atkārtotu pārbaudi ātras inkrementālas sinhronizācijas vietā. Pilna sinhronizācija notver visu, ko inkrementāla pāreja varētu palaist garām (piem., bezsaistē veiktas izmaiņas), par cenu vairāk laika un datu. Atstājiet noklusējuma vērtībā, ja vien jums nav aizdomu, ka vienumi netiek sinhronizēti.</string>
+    <string name="info_fallback_full_sync_body">Cik bieži lietotne veic pilnu atkārtotu pārbaudi ātras inkrementālas sinhronizācijas vietā. Tā tiek veikta tikai, kamēr Android automātiskā sinhronizācija ir ieslēgta. Pilna sinhronizācija notver visu, ko inkrementāla pāreja varētu palaist garām (piem., bezsaistē veiktas izmaiņas), par cenu vairāk laika un datu. Atstājiet noklusējuma vērtībā, ja vien jums nav aizdomu, ka vienumi netiek sinhronizēti.</string>
     <string name="info_notify_on_failure_body">Rāda paziņojumu, ja sinhronizācija neizdodas (piem., tīkla kļūda vai beigusies sesija). Pieskarieties tam, lai iegūtu iemeslu vienkāršā valodā un saiti uz žurnāliem. Izslēdziet to, ja nevēlaties saņemt brīdinājumus par īslaicīgām kļūmēm.</string>
-    <string name="info_sync_calendar_body">Kad ieslēgts, jūsu Proton kalendāri sinhronizējas Android kalendārā, tāpēc notikumi parādās Google Calendar, Samsung Calendar un jebkurā citā kalendāra lietotnē. Divvirzienu: tālrunī veiktās izmaiņas tiek augšupielādētas atpakaļ Proton tiem kalendāriem, kas pieder jums.</string>
+    <string name="info_sync_calendar_body">Kad ieslēgts, jūsu Proton kalendāri sinhronizējas Android kalendārā, tāpēc notikumi parādās Google Calendar, Samsung Calendar un jebkurā citā kalendāra lietotnē. Divvirzienu: tālrunī veiktās izmaiņas tiek augšupielādētas atpakaļ uz Proton visiem kalendāriem, kurus varat rediģēt, arī tiem, ko citi koplieto ar jums.</string>
     <string name="info_include_external_calendars_body">Proton var saturēt abonētus kalendārus (piem., ārēju ICS plūsmu) un svētku kalendārus. Tie ir tikai lasāmi Proton pusē. Kad izslēgts, lietotne tos izlaiž un sinhronizē tikai jūsu pašu rediģējamos kalendārus. Ieslēdziet, ja vēlaties, lai arī šie tikai lasāmie kalendāri tiktu atspoguļoti jūsu tālrunī.</string>
     <string name="info_sync_mode_body">„Visi notikumi“ sinhronizē visu jūsu kalendāra vēsturi un visus turpmākos notikumus, vislabāk, ja vēlaties visu savā tālrunī (liela kalendāra pirmā sinhronizācija var aizņemt vairākas minūtes). „Pielāgots diapazons“ saglabā lielus kalendārus ātrus, sinhronizējot tikai dienu logu ap šodienu: to notikumi ārpus loga netiek lejupielādēti, un šajā tālrunī jau esošie notikumi paliek, ja vien to kalendāram nav ieslēgts iestatījums „Noņemt vecākos notikumus no šī tālruņa“. Mazie kalendāri vienmēr tiek sinhronizēti pilnībā.</string>
     <string name="label_trim_old_events">Noņemt vecākos notikumus no šī tālruņa</string>
-    <string name="info_trim_old_events_body">Jūsu izvēlēto kalendāru notikumi, kas beidzās vairāk nekā dienu pirms jūsu diapazona sākuma, tiek noņemti no šī tālruņa gan tagad, gan turpmākajās sinhronizācijās. Tie paliek jūsu Proton kontā, un tur nekas netiek dzēsts. Jūsu pašu kalendāru dublējumi tiek veidoti no Proton datiem, tāpēc šie notikumi tajos joprojām ir; abonētie kalendāri un svētku kalendāri netiek dublēti. Atkārtots notikums paliek ar visiem saviem iepriekšējiem datumiem, kamēr tas turpinās jūsu diapazonā vai tam nav beigu datuma, jo tālrunis glabā atkārtotu notikumu kā vienu ierakstu. Paliek arī notikumi ar izmaiņām, kas vēl nav nosūtītas uz Proton, un notikumi, kas ir izveidoti vai pēdējoreiz mainīti pēdējo 7 dienu laikā, spriežot pēc šajā tālrunī esošās versijas, nevis pēc tā, kad tālrunis to lejupielādēja. Var izvēlēties tikai kalendārus, kas ir pārāk lieli, lai tos sinhronizētu pilnībā, un notikumi pēc jūsu diapazona nekad netiek noņemti. Lai atgūtu noņemtos notikumus, izvēlieties garāku diapazonu vai „Visi notikumi“.</string>
+    <string name="info_trim_old_events_body">Jūsu izvēlēto kalendāru notikumi, kas beidzās vairāk nekā dienu pirms jūsu diapazona sākuma, tiek noņemti no šī tālruņa nākamajā sinhronizācijā, bet vēlākie, kad tie kļūs tikpat veci. Tie paliek jūsu Proton kontā, un tur nekas netiek dzēsts. Jūsu pašu kalendāru dublējumi tiek veidoti no Proton datiem, tāpēc šie notikumi tajos joprojām ir; abonētie kalendāri un svētku kalendāri netiek dublēti. Atkārtots notikums paliek ar visiem saviem iepriekšējiem datumiem, kamēr tas turpinās jūsu diapazonā vai tam nav beigu datuma, jo tālrunis glabā atkārtotu notikumu kā vienu ierakstu. Paliek arī notikumi ar izmaiņām, kas vēl nav nosūtītas uz Proton, un notikumi, kas ir izveidoti vai pēdējoreiz mainīti pēdējo 7 dienu laikā, spriežot pēc šajā tālrunī esošās versijas, nevis pēc tā, kad tālrunis to lejupielādēja. Var izvēlēties tikai kalendārus, kas ir pārāk lieli, lai tos sinhronizētu pilnībā, un notikumi pēc jūsu diapazona nekad netiek noņemti. Lai atgūtu noņemtos notikumus, izvēlieties garāku diapazonu vai „Visi notikumi“.</string>
     <string name="trim_dialog_title">Noņemt vecākos notikumus no šī tālruņa</string>
     <string name="trim_dialog_intro">Izvēlieties kalendārus, kurus vēlaties sakārtot. Notikumi, kas beidzās pirms %1$s, tiek noņemti no šī tālruņa nākamajā sinhronizācijā, bet vēlākie, kad tie kļūs tikpat veci. Tie paliek jūsu Proton kontā. Atkārtots notikums, kas turpinās pēc šī datuma, paliek ar visiem saviem datumiem.</string>
     <plurals name="trim_calendar_count">
@@ -303,6 +305,35 @@
     </plurals>
     <string name="trim_dialog_save">Saglabāt</string>
     <string name="trim_read_failed">Neizdevās nolasīt šī tālruņa kalendārus, tāpēc nekas netika mainīts.</string>
+    <string name="label_default_calendar">Noklusējuma kalendārs</string>
+    <string name="info_default_calendar_body">Pakalpojumā Proton jauni notikumi nonāk jūsu noklusējuma kalendārā, un šis tālrunis atzīmē to kā konta galveno kalendāru. Ja to maināt šeit, tas mainās arī pakalpojumā Proton, tāpēc Proton tīmekļa versija, Proton lietotnes un ielūgumi, uz kuriem atbildat pakalpojumā Proton Mail, izmanto jauno kalendāru. Par noklusējuma kalendāru var būt tikai jūsu pašu aktīvs kalendārs, nevis koplietots, abonēts vai svētku kalendārs.</string>
+    <string name="default_calendar_connecting">Notiek savienošanās ar Proton…</string>
+    <string name="default_calendar_changed">Noklusējuma kalendārs nomainīts</string>
+    <string name="default_calendar_unreachable">Neizdevās sasniegt Proton. Pēc brīža mēģiniet vēlreiz.</string>
+    <string name="default_calendar_refused">Proton nepieņēma izmaiņas, tāpēc nekas netika mainīts.</string>
+    <string name="default_calendar_none_own">Šim kontam nav neviena sava aktīva kalendāra, kas varētu būt par noklusējuma kalendāru. Koplietotie, abonētie un svētku kalendāri nevar būt par noklusējuma kalendāru.</string>
+    <string name="default_calendar_incomplete">Ne visus šī konta kalendārus izdevās nolasīt, tāpēc tā noklusējuma kalendāru šeit nevar mainīt.</string>
+    <string name="notification_new_event_hold_title">Jauns notikums koplietotā kalendārā</string>
+    <string name="notification_new_event_hold_body">%1$s pievienoja notikumu „%2$s“ kalendārā %3$s. Citi, kam ir piekļuve šim kalendāram, to redzētu.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Kāda lietotne pievienoja notikumu „%1$s“ kalendārā %2$s. Citi, kam ir piekļuve šim kalendāram, to redzētu.</string>
+    <string name="action_new_event_move">Pārvietot uz %1$s</string>
+    <string name="action_new_event_publish">Publicēt</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="zero">%d notikumi gaida jūsu izvēli</item>
+        <item quantity="one">%d notikums gaida jūsu izvēli</item>
+        <item quantity="other">%d notikumi gaida jūsu izvēli</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="zero">%d notikumi paturēti tikai šajā tālrunī</item>
+        <item quantity="one">%d notikums paturēts tikai šajā tālrunī</item>
+        <item quantity="other">%d notikumi paturēti tikai šajā tālrunī</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="zero">Vēl %d notikumi gaida jūsu izvēli</item>
+        <item quantity="one">Vēl %d notikums gaida jūsu izvēli</item>
+        <item quantity="other">Vēl %d notikumi gaida jūsu izvēli</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Kad lietotne, kas nav kalendāra lietotne, pievieno notikumu kalendārā, kuru kāds ir koplietojis ar jums, notikums gaida šajā tālrunī, līdz izdarīsiet izvēli. „Pārvietot“ to tā vietā ievieto jūsu noklusējuma kalendārā. „Publicēt“ to nosūta uz koplietoto kalendāru, kur to var redzēt visi, kam ir piekļuve šim kalendāram. „Paturēt tālrunī“ to nekad nenosūta uz Proton: tas nebūs ne lietotnē Proton Calendar, ne tīmeklī, ne jūsu citās ierīcēs, ne šīs lietotnes dublējumos, un tas tiks zaudēts, ja noņemsiet šo lietotni vai šo kontu. Paturētie notikumi paliek redzami šī konta kartītē, kur tos joprojām varat pārvietot vai publicēt.</string>
     <string name="info_sync_range_window_body">Cik dienas pirms un pēc šodienas sinhronizēt, kad ir atlasīts „Pielāgots diapazons\". Lielāki logi rāda vairāk no jūsu kalendāra, bet sinhronizācija aizņem ilgāku laiku. Režīmā „Visi notikumi\" tam nav ietekmes.</string>
     <string name="info_poll_attendee_body">Kad ieslēgts, lietotne periodiski atkārtoti pārbauda notikumus, kuriem ir dalībnieki, lai atklātu atbildes pieņemt/noraidīt/provizoriski. Proton izmaiņu plūsma neziņo par RSVP izmaiņām, tāpēc tam nepieciešami papildu API izsaukumi, to vērts iespējot tikai tad, ja paļaujaties uz dalībnieku atbilžu redzēšanu savā tālrunī.</string>
     <string name="info_send_invites_body">Kad savā tālrunī pievienojat notikumam dalībniekus, nosūtiet viņiem ielūgumu pa e-pastu. Pēc noklusējuma izslēgts: ieslēdziet tikai tad, ja vēlaties, lai lietotne jūsu vārdā sūtītu e-pastus dalībniekiem.</string>
@@ -310,7 +341,7 @@
     <string name="info_send_cancellations_body">Nosūtiet dalībniekiem e-pastu, kad dzēšat notikumu, uz kuru viņi ir uzaicināti, lai arī viņu kalendāri to noņemtu. Pēc noklusējuma izslēgts.</string>
     <string name="info_invite_subject_title_body">Sūtot ielūgumu e-pastus, ievietojiet notikuma nosaukumu e-pasta tēmas rindā, lai saņēmēji to uzreiz atpazītu. Pēc noklusējuma izslēgts privātuma dēļ: e-pasta tēmas nav šifrētas standarta pasta pārsūtīšanā, tāpēc nosaukums būtu redzams pasta serveriem maršrutā.</string>
     <string name="info_background_sync_body">Android var apturēt fona sinhronizāciju, lai taupītu akumulatoru, kas var aizkavēt vai apturēt automātisko sinhronizāciju. Šīs lietotnes izslēgšana no akumulatora optimizācijas nodrošina, ka plānotās sinhronizācijas darbojas uzticami. Izmantojiet pogu, lai atvērtu lietotnes sistēmas akumulatora iestatījumus.</string>
-    <string name="info_verbose_logging_body">Tver papildu diagnostikas informāciju (autentifikācijas stāvoklis, atslēgu atbloķēšana, sinhronizācijas iekšējie procesi) žurnālā, noder, ziņojot par problēmu. Lietotne e-pasta adreses tajā aizstāj ar īsiem kodiem, taču tas var ietvert kontu un kalendāru nosaukumus, tāpēc žurnālus kopīgojiet tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
+    <string name="info_verbose_logging_body">Tver papildu diagnostikas informāciju (autentifikācijas stāvoklis, atslēgu atbloķēšana, sinhronizācijas iekšējie procesi) žurnālā, noder, ziņojot par problēmu. Kamēr šis iestatījums ir ieslēgts, žurnālā ir arī jūsu kalendāru un to lietotņu nosaukumi, kas tajos pievieno notikumus. Lietotne e-pasta adreses žurnālā aizstāj ar īsiem kodiem, taču tas var ietvert kontu un kalendāru nosaukumus, tāpēc žurnālus kopīgojiet tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
     <string name="info_file_logging_body">Ieraksta lietotnes žurnālu teksta failā ar laika zīmogu (sync-for-proton-log-….txt) jūsu izvēlētā mapē. Citādi lietotne žurnālu glabā tikai atmiņā, tāpēc ieslēdziet to, lai fiksētu grūti atkārtojamu problēmu. Katrā lietotnes palaišanas reizē tiek izveidots jauns fails. Lietotne e-pasta adreses tajā aizstāj ar īsiem kodiem, taču tas var saturēt kontu un kalendāru nosaukumus, tāpēc kopīgojiet to tikai ar izstrādātāju. Parastai lietošanai atstājiet izslēgtu.</string>
     <string name="info_timezone_updates_text">Notikumu laiki ir atkarīgi no laika joslu noteikumiem, un valstis šos noteikumus laiku pa laikam maina. Android tos glabā tālruņa laika joslu datos, kas tiek saņemti ar sistēmas atjauninājumiem. Tālrunis, kas tos vairs nesaņem, piemēram, ar vecāku Android versiju vai bez Google Play sistēmas atjauninājumiem, saglabā vecos noteikumus, un notikumi vietās, kur noteikumi kopš tā laika ir mainījušies, var tikt parādīti nepareizā laikā.\n\nLaika joslu dati šajā tālrunī: versija %1$s\n\nKad izslēgts (noklusējums), lietotne izmanto paša tālruņa laika joslu datus un uz www.tzurl.org neko nesūta.\n\nKad ieslēgts, lietotne lejupielādē katras jūsu notikumos izmantotās laika joslas aktuālos noteikumus no www.tzurl.org, trešās puses pakalpojuma, ne vairāk kā vienu reizi katrai laika joslai pēc katras lietotnes palaišanas, un izmanto tos tikai tad, ja tie ir jaunāki par tālruņa datiem. www.tzurl.org tad redz jūsu IP adresi un šo laika joslu nosaukumus, piemēram, Europe/Berlin. Nekas cits par jūsu notikumiem vai kontiem netiek nosūtīts. Ja www.tzurl.org nav sasniedzams, tiek izmantoti tālruņa dati. Periodiskie notikumi joprojām tiek aprēķināti ar tālruņa datiem.\n\nPēc izmaiņām tālrunī jau esošie notikumi nākamajā sinhronizācijā tiek pārbaudīti un izlaboti.</string>
     <string name="tz_data_version_unknown">nezināma</string>
@@ -394,6 +425,8 @@
     <string name="backup_unit_days">dienām</string>
     <string name="backup_retention_label">Paturēt pēdējos</string>
     <string name="backup_unit_runs">dublējumus</string>
+    <string name="backup_when_auto_sync_off_label">Dublēt arī tad, kad automātiskā sinhronizācija ir izslēgta</string>
+    <string name="info_backup_when_auto_sync_off_body">Android slēdzis „Automātiski sinhronizēt datus“ aptur fona sinhronizāciju visām lietotnēm, un plānotā dublēšana tam seko: kamēr tas ir izslēgts, plānotā dublēšana tiek izlaista, un šajā ekrānā par to ir norāde zem „Dublēt tagad“. Ieslēdziet šo iestatījumu, lai plānotā dublēšana notiktu tik un tā. Katrā dublēšanas reizē no Proton tiek lejupielādēti visi jūsu kalendāri un kontakti, kas var patērēt daudz mobilo datu. „Dublēt tagad“ darbojas vienmēr.</string>
     <string name="backup_section_contents">Ko dublēt</string>
     <string name="backup_include_calendars_label">Kalendārus (.ics)</string>
     <string name="backup_include_contacts_label">Kontaktus (.vcf)</string>
@@ -416,6 +449,7 @@
     <string name="backup_running">Dublē…</string>
     <string name="backup_last_never">Vēl nav neviena dublējuma.</string>
     <string name="backup_last_run">Pēdējais dublējums: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Plānotā dublēšana izlaista %1$s: Android automātiskā sinhronizācija ir izslēgta</string>
     <string name="backup_decrypt_action">Atšifrēt dublējumu…</string>
     <string name="backup_decrypt_body">Izvēlieties šifrētu dublējuma failu (.gpg) un ievadiet tā paroli. Saturs tiks saglabāts atšifrēts jūsu dublējumu mapē.</string>
     <string name="backup_decrypting">Atšifrē…</string>
@@ -478,7 +512,7 @@
     <string name="sfp_group_account">Konts</string>
     <string name="sfp_group_contacts">Kontakti</string>
     <string name="sfp_group_calendar">Kalendārs</string>
-    <string name="sfp_event_loop_subtitle">Cik bieži pārbaudīt attālās izmaiņas</string>
+    <string name="sfp_event_loop_subtitle">Cik bieži pārbaudīt attālās izmaiņas, kamēr Android automātiskā sinhronizācija ir ieslēgta</string>
     <string name="sfp_show_advanced">Rādīt e-pasta un papildu opcijas</string>
     <string name="sfp_hide_advanced">Slēpt e-pasta un papildu opcijas</string>
     <string name="sfp_group_email_attendees">E-pasts dalībniekiem</string>
@@ -489,6 +523,7 @@
     <string name="sfp_hero_subtitle_ok">Visi iespējotie konti ir atjaunināti</string>
     <string name="sfp_hero_subtitle_warn">Vienam vai vairākiem kontiem nepieciešama sinhronizācija vai pierakstīšanās</string>
     <string name="sfp_sync_all_now">Sinhronizēt visu tagad</string>
+    <string name="sfp_auto_sync_off">Android automātiskā sinhronizācija ir izslēgta: konti tiek sinhronizēti tikai ar pogu Sinhronizēt</string>
     <string name="sfp_tile_logs">Sinhronizācijas žurnāls</string>
     <string name="sfp_tile_backup">Dublējums</string>
     <string name="sfp_tile_battery">Akumulators</string>
@@ -527,6 +562,10 @@
     <string name="notification_contacts_too_large_summary">Šie kontakti kontā %1$s ir pārāk lieli Android kontaktu krātuvei. Proton tie paliek pilnīgi:</string>
     <string name="notification_contacts_too_large_outdated">šajā tālrunī paliek vecāka versija</string>
     <string name="notification_contacts_too_large_missing">nav šajā tālrunī</string>
+    <string name="notification_contacts_delete_refused_title">Dažus kontaktus neizdevās izdzēst no Proton</string>
+    <string name="notification_contacts_delete_refused_summary">Šie kontakti kontā %1$s tika izdzēsti šajā tālrunī, bet Proton atteicās tos izdzēst. Tie joprojām pastāv Proton un jūsu citās ierīcēs:</string>
+    <string name="notification_events_delete_refused_title">Dažus notikumus neizdevās izdzēst no Proton</string>
+    <string name="notification_events_delete_refused_summary">Šie notikumi kontā %1$s tika izdzēsti šajā tālrunī, bet Proton atteicās tos izdzēst. Tie joprojām pastāv Proton un jūsu citās ierīcēs:</string>
     <string name="notification_conflict_title">Notikums mainīts divās vietās</string>
     <string name="notification_conflict_body">“%1$s” tika rediģēts šajā tālrunī un Proton Calendar. Kuru versiju vēlaties saglabāt?</string>
     <string name="notification_conflict_body_shared">“%1$s” tika rediģēts šajā tālrunī, un lietotājs %2$s to rediģēja Proton Calendar. Saglabājot savu versiju, tiks aizstāta viņa versija.</string>

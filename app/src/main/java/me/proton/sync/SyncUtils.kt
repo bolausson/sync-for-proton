@@ -218,6 +218,73 @@ object SyncUtils {
         keysLoadedAt.remove(accountName)
     }
 
+    /**
+     * Why a read of an account's addresses failed ([doEnsureKeysUnlocked]): Proton's HTTP status [httpCode] where it
+     * answered, else the exception [cause] the read threw. The sync goes on without the address keys when the user key
+     * unlocks, and a calendar with keys is then skipped, with this as its cause (calendar.AddressKeysMissing).
+     */
+    class AddressReadFailure(val httpCode: Int?, val cause: Throwable?)
+
+    /** The last failed read of each account's addresses in this process, until one succeeds ([recordAddressRead]). */
+    private val addressReadFailures = ConcurrentHashMap<String, AddressReadFailure>()
+
+    /** [doEnsureKeysUnlocked]'s record of a read of [accountName]'s addresses: its [failure], or null when it succeeded. */
+    internal fun recordAddressRead(accountName: String, failure: AddressReadFailure?) {
+        if (failure == null) {
+            addressReadFailures.remove(accountName)
+        } else {
+            addressReadFailures[accountName] = failure
+            // A failed read says nothing about the keys: what an earlier read found no longer stands (AddressKeysLocked).
+            addressKeyReads.remove(accountName)
+        }
+    }
+
+    /** Why the last read of [accountName]'s addresses failed, or null when it succeeded or none failed in this process. */
+    fun addressReadFailure(accountName: String): AddressReadFailure? = addressReadFailures[accountName]
+
+    /** What the last SUCCESSFUL read of each account's addresses left it with, until a read fails (AddressKeysLocked). */
+    private val addressKeyReads = ConcurrentHashMap<String, AddressKeysLocked.Read>()
+
+    /**
+     * [doEnsureKeysUnlocked]'s record of a read of [accountName]'s addresses that succeeded, after their keys were unlocked
+     * ([addressKeys], every key of every address). Asks KeyManager which keys it can read only when none loaded.
+     */
+    private fun recordAddressKeys(
+        accountName: String,
+        addressKeys: List<me.proton.sync.api.models.UserKey>,
+        keyManager: KeyManager,
+        tag: String
+    ) {
+        val loaded = keyManager.hasAddressKeys(accountName)
+        val active = addressKeys.filter { it.active == 1 }
+        val readable = if (loaded || active.isEmpty()) active.size else active.count { keyManager.canParseKey(it.privateKey) }
+        val state = AddressKeysLocked.state(active.size, readable, loaded)
+        recordAddressKeysRead(accountName, AddressKeysLocked.Read(state, active.size))
+        if (state != AddressKeysLocked.State.LOADED) {
+            SyncLog.w(tag, "No address key of $accountName loaded although its addresses were read: $state (${active.size} active, $readable readable)")
+        }
+    }
+
+    /** Keep [read] as what the last successful read of [accountName]'s addresses left it with ([recordAddressKeys]). */
+    internal fun recordAddressKeysRead(accountName: String, read: AddressKeysLocked.Read) {
+        addressKeyReads[accountName] = read
+    }
+
+    /** What the last successful read of [accountName]'s addresses left it with, or null when the last read failed or none was made. */
+    internal fun addressKeysRead(accountName: String): AddressKeysLocked.Read? = addressKeyReads[accountName]
+
+    /**
+     * Why the account must sign in again because the stored mailbox password opens none of its address keys
+     * (AddressKeysLocked.signsInAgain), or null when it need not; [anyAddressKeyLoaded] is KeyManager.hasAddressKeys now.
+     * Read by [runSyncPreflight] right after [ensureKeysUnlocked]: no address key loaded means that call read the
+     * addresses itself (the cached ring is never fresh without one), so the record is this run's.
+     */
+    internal fun addressKeysLockedOut(accountName: String, anyAddressKeyLoaded: Boolean): String? {
+        val read = addressKeyReads[accountName]
+        if (!AddressKeysLocked.signsInAgain(read, anyAddressKeyLoaded)) return null
+        return AddressKeysLocked.message(accountName, read?.activeKeys ?: 0)
+    }
+
     private fun keyCacheIsFresh(accountName: String, keyManager: KeyManager): Boolean {
         if (!keyManager.isKeyUnlocked(accountName) || !keyManager.hasAddressKeys(accountName)) return false
         val loadedAt = keysLoadedAt[accountName] ?: return false
@@ -284,6 +351,7 @@ object SyncUtils {
                     try {
                         val addressesResponse = apiClient.getAddresses(account.name)
                         if (addressesResponse.isSuccessful) {
+                            recordAddressRead(account.name, null)
                             val allAddressKeys = addressesResponse.body()?.addresses?.flatMap { addr ->
                                 (addr.keys ?: emptyList()).onEach { it.addressEmail = addr.email }
                             } ?: emptyList()
@@ -291,12 +359,16 @@ object SyncUtils {
                                 keyManager.unlockAddressKeysWithMailboxPassword(account.name, mbPassword.toCharArray(), allAddressKeys)
                                 addressKeysRefreshed = true
                             }
+                            // What the read left the account with, for the sign-in-again rule (AddressKeysLocked).
+                            recordAddressKeys(account.name, allAddressKeys, keyManager, tag)
                         } else {
                             // Silent until 2.0.2.
                             SyncLog.w(tag, "Address keys not refreshed: HTTP ${addressesResponse.code()}${addressesResponse.protonErrorSuffix()}")
+                            recordAddressRead(account.name, AddressReadFailure(addressesResponse.code(), null))
                         }
                     } catch (e: Exception) {
                         SyncLog.w(tag, "Failed to re-unlock address keys: ${e.message}")
+                        recordAddressRead(account.name, AddressReadFailure(null, e))
                     }
                 }
                 // Verify what we promised — guards against silent partial unlocks.
@@ -502,6 +574,13 @@ object SyncUtils {
         // here as a re-auth-required case.
         try {
             ensureKeysUnlocked(parentAccount, session, keyManager, apiClient, tag)
+            // The same case for the address keys (2.2.0, owner 2026-11-23): the addresses were read, Proton marks keys of
+            // them active, and the stored mailbox password opens none (a password changed elsewhere). Every sync skipped
+            // the calendars and said "unexpected error"; the user is led to sign in again instead. Never for a read that
+            // failed, which keeps the skip with its status or network cause, nor while any address key is loaded.
+            addressKeysLockedOut(parentAccount.name, keyManager.hasAddressKeys(parentAccount.name))?.let {
+                throw KeysNotUnlockedException(parentAccount.name, it)
+            }
         } catch (e: KeysNotUnlockedException) {
             SyncLog.w(tag, "$syncTypeLabel sync aborted for ${parentAccount.name}: ${e.message}")
             sessionManager.clearKeyMaterial(parentAccount.name)
@@ -565,8 +644,12 @@ object SyncUtils {
         // run can't bleed into a later success.
         val swallowed = consumeSwallowedFailure(syncType, parentAccountName)
         val syncFailed = err != null || syncResult.hasError()
+        // The reason shown: the thrown error's, else the first one the run recorded. A thrown error's text carries its
+        // network cause as a recorded one does (NetworkCause.describe): its message alone ("Connection reset", "Failed to
+        // connect to ...") was read as an unexpected error.
+        val reason = NetworkCause.describe(err?.message, err) ?: swallowed
         if (syncFailed) {
-            val errMsg = err?.message ?: swallowed ?: "Sync incomplete"
+            val errMsg = reason ?: "Sync incomplete"
             prefs.edit()
                 .putLong(SyncPreferences.lastSyncFailedKey(parentAccountName, syncType), now)
                 .putString(SyncPreferences.lastSyncErrorMsgKey(syncType, parentAccountName), errMsg)
@@ -582,7 +665,7 @@ object SyncUtils {
         // exactly like a healthy one, two lines under the error that aborted it. Anyone reading
         // their own debug report saw a completed sync and no reason to look further.
         if (syncFailed) {
-            SyncLog.w(tag, "$syncTypeLabel sync FAILED for $parentAccountName: ${err?.message ?: swallowed ?: "no reason recorded"}")
+            SyncLog.w(tag, "$syncTypeLabel sync FAILED for $parentAccountName: ${reason ?: "no reason recorded"}")
         } else {
             SyncLog.i(tag, "$syncTypeLabel sync completed for $parentAccountName")
         }
@@ -604,6 +687,9 @@ object SyncUtils {
     // separate even when both ran for the same account in one sync cycle.
 
     private val swallowedFailures = ConcurrentHashMap<String, String>()
+
+    /** What a run noted that is no failure of its own ([recordSwallowedNote]), keyed like [swallowedFailures]. */
+    private val swallowedNotes = ConcurrentHashMap<String, String>()
 
     /**
      * The single writer of a ContentResolver periodic sync, and the only one that knows the rule.
@@ -657,15 +743,41 @@ object SyncUtils {
     internal fun periodicSyncWanted(enabled: Boolean, seconds: Long, syncAllowed: Boolean): Boolean =
         syncAllowed && enabled && seconds > 0
 
-    /** Record the first swallowed (counted-but-not-thrown) exception message for this sync run. */
-    fun recordSwallowedFailure(syncType: String, accountName: String, message: String?) {
-        if (message.isNullOrBlank()) return
-        swallowedFailures.putIfAbsent("$syncType:$accountName", message)
+    /**
+     * Record the first swallowed (counted-but-not-thrown) failure for this sync run: [message], with the network cause of
+     * [cause] after it when it has one (NetworkCause.describe), which is what the failure notification then names. Pass
+     * the exception whenever the failure came from one: a message of the sync's own words ("could not be opened") says
+     * nothing about the network on its own.
+     */
+    fun recordSwallowedFailure(syncType: String, accountName: String, message: String?, cause: Throwable? = null) {
+        val text = NetworkCause.describe(message, cause)
+        if (text.isNullOrBlank()) return
+        swallowedFailures.putIfAbsent("$syncType:$accountName", text)
     }
 
-    /** Drain and return the first swallowed message, or null if none was recorded. */
-    fun consumeSwallowedFailure(syncType: String, accountName: String): String? =
-        swallowedFailures.remove("$syncType:$accountName")
+    /**
+     * Record a note about this sync run that is no failure of its own: [message], with the network cause of [cause] as
+     * [recordSwallowedFailure] writes it. It is named only when the run failed and recorded no failure: a failure recorded
+     * before or after it wins, so a note never stands in for why a run failed. For an external calendar synced without
+     * the keys Proton did not give (CalendarSyncAdapter.prepareCalendarJob), which fails nothing: recorded as a failure,
+     * it came first in the run and took the place of every failure recorded after it, a listing's HTTP status or a
+     * network cause, so the user read an unexpected error.
+     */
+    fun recordSwallowedNote(syncType: String, accountName: String, message: String?, cause: Throwable? = null) {
+        val text = NetworkCause.describe(message, cause)
+        if (text.isNullOrBlank()) return
+        swallowedNotes.putIfAbsent("$syncType:$accountName", text)
+    }
+
+    /**
+     * Drain and return the first swallowed failure, else the first note ([recordSwallowedNote]), or null if neither was
+     * recorded. Both are drained either way, so neither can bleed into a later run.
+     */
+    fun consumeSwallowedFailure(syncType: String, accountName: String): String? {
+        val key = "$syncType:$accountName"
+        val note = swallowedNotes.remove(key)
+        return swallowedFailures.remove(key) ?: note
+    }
 
     /**
      * Acquires a per-account sync lock, runs [block], then releases.

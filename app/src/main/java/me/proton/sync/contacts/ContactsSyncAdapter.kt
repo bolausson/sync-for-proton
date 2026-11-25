@@ -10,6 +10,7 @@ import android.provider.ContactsContract
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncTriggerType
 import me.proton.sync.SyncUtils
 import androidx.core.app.NotificationCompat
@@ -259,6 +260,12 @@ class ContactsSyncAdapter(
         // started first. Falls back to the address-book account name if no parent.
         val parentForNotif = AccountManager.get(context)
             .getUserData(account, SyncConstants.EXTRA_PARENT_ACCOUNT_NAME) ?: account.name
+        // Android's retry of a manual sync the retry rule no longer allows, or a manual background request an older
+        // version left queued: ended here, before the ongoing notification, with no result, so nothing retries it.
+        if (SyncScheduling.endsStaleManualRun(context, parentForNotif, extras, "Contacts", TAG)) return
+        // On Manual only, a sync Android started by itself (its automatic sync or this type's switch turned on): ended
+        // the same way. The app's own requests, and Android's upload after an edit, go on.
+        if (SyncScheduling.endsUnaskedRun(context, parentForNotif, extras, "Contacts", TAG)) return
         SyncNotificationHelper.showOngoing(context, parentForNotif, "contacts")
         try {
             SyncUtils.withSyncLock("contacts", account.name, TAG) {
@@ -1329,6 +1336,9 @@ class ContactsSyncAdapter(
             DeleteContactsRequest(ids = listOf(mapping.protonContactId))
         )
         if (response.isSuccessful) {
+            ContactDeletionFailures.forget(
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(context), parentAccountName, rawContactId
+            )
             contactSyncDao.deleteByProtonId(parentAccountName, mapping.protonContactId)
             provider.delete(
                 SyncUtils.asCallerSyncAdapter(
@@ -1344,8 +1354,101 @@ class ContactsSyncAdapter(
                 TAG,
                 "Could not delete contact ${mapping.protonContactId} on Proton: HTTP ${response.code()}${response.protonErrorSuffix()}; it stays pending"
             )
+            // The run then reported success until 2.2.0. Now it fails with the text the status gives, for a refusal of
+            // the deletion itself on its first few syncs only (reportDeletionNotSent).
+            reportDeletionNotSent(parentAccountName, syncResult, rawContactId, response.code(), null)
         }
     }
+
+    /**
+     * A contact deleted on the phone whose deletion did not reach Proton: Proton answered [httpCode], or the request
+     * threw [cause] (and [httpCode] is null). It stays pending either way, as before. The run fails with the reason where
+     * ContactDeletionFailures says so: every time for a request the network broke or a status about the connection or
+     * the session, and on its first few syncs only for a refusal of the deletion itself, which is still sent again at
+     * every sync but fails no further run. Off the suspend functions that call it, for the ART limits.
+     */
+    private fun reportDeletionNotSent(
+        parentAccountName: String,
+        syncResult: SyncResult,
+        rawContactId: Long,
+        httpCode: Int?,
+        cause: Throwable?
+    ) {
+        val refusals = if (httpCode != null && ContactDeletionFailures.isRefusal(httpCode)) {
+            ContactDeletionFailures.recordRefusal(
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(context), parentAccountName, rawContactId
+            )
+        } else 0
+        if (ContactDeletionFailures.failsRun(httpCode, cause, refusals)) {
+            syncResult.stats.numIoExceptions++
+            SyncUtils.recordSwallowedFailure("contacts", parentAccountName, ContactDeletionFailures.reason(httpCode), cause)
+        } else if (refusals > 0) {
+            SyncLog.w(
+                TAG,
+                "Proton refused the deletion of contact $rawContactId $refusals times (HTTP $httpCode); it stays pending, " +
+                    "and no longer fails the sync after ${ContactDeletionFailures.MAX_REPORTED_REFUSALS}"
+            )
+        }
+    }
+
+    /**
+     * Forget the refusals of deletions no longer pending: a deleted row that is not among this run's dirty contacts
+     * ([dirtyContacts]) is gone, or nobody sends it any more. Its count must not go on to a row a cleared contacts
+     * storage gives the same id.
+     */
+    private fun pruneDeletionRefusals(parentAccountName: String, dirtyContacts: List<DirtyContact>) {
+        val pending = HashSet<Long>()
+        for (dc in dirtyContacts) if (dc.deleted == 1) pending.add(dc.rawContactId)
+        ContactDeletionFailures.retain(
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(context), parentAccountName
+        ) { it in pending }
+    }
+
+    /**
+     * The lasting notice of contacts deleted on this phone whose deletion Proton refused for good (its third refusal and
+     * on): posted when one joined since an upload last settled it, naming each contact as the rejected-contacts notice
+     * does, brought up to date while still shown when one left, and withdrawn once none is left
+     * (ContactDeletionFailures.notice). What it names is kept at the end, so an upload that stopped between a third
+     * refusal and this step leaves the next one to post it. The deletions stay pending. Names appear in the
+     * notification only, never in the log.
+     */
+    private fun noticeRefusedDeletions(parentAccountName: String, provider: ContentProviderClient) {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+        val now = ContactDeletionFailures.refusedForGood(prefs, parentAccountName)
+        val notice = ContactDeletionFailures.notice(ContactDeletionFailures.noticedIds(prefs, parentAccountName), now) {
+            SyncNotificationHelper.isContactDeletionsRefusedShown(context, parentAccountName)
+        }
+        if (notice == ContactDeletionFailures.Notice.CANCEL) {
+            SyncNotificationHelper.cancelContactDeletionsRefused(context, parentAccountName)
+        } else if (notice == ContactDeletionFailures.Notice.POST) {
+            SyncNotificationHelper.notifyContactDeletionsRefused(
+                context, parentAccountName, now.sorted().map { deletedContactNameOf(provider, it) }
+            )
+        }
+        ContactDeletionFailures.rememberNoticed(prefs, parentAccountName, now)
+    }
+
+    /**
+     * The name of a contact deleted on this phone, for the user-facing notification only; never logged. Its name row
+     * first, as [displayNameOf] reads it for the rejected-contacts notice. The contacts provider may no longer show the
+     * rows of a contact deleted on the phone there, so then the name kept on the deleted raw contact itself, and only
+     * where it came from the contact's name (DisplayNameSources.STRUCTURED_NAME), never an address, a number or a
+     * company the phone shows in its place: nothing of the contact beyond what that notice names.
+     */
+    private fun deletedContactNameOf(provider: ContentProviderClient, rawContactId: Long): String? =
+        displayNameOf(provider, rawContactId) ?: try {
+            provider.query(
+                ContentUris.withAppendedId(ContactsContract.RawContacts.CONTENT_URI, rawContactId),
+                arrayOf(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY, ContactsContract.RawContacts.DISPLAY_NAME_SOURCE),
+                null, null, null
+            )?.use { c ->
+                val fromName = c.moveToFirst() && !c.isNull(1) &&
+                    c.getInt(1) == ContactsContract.DisplayNameSources.STRUCTURED_NAME
+                if (fromName) c.getString(0) else null
+            }
+        } catch (e: Exception) {
+            null
+        }
 
     /**
      * Build the card of a contact changed on the phone and send it to Proton, as an update or as part of
@@ -2175,6 +2278,8 @@ class ContactsSyncAdapter(
                         // does. Clearing the flag here lost it: the contact was gone from the phone,
                         // still on Proton, and the tombstone was invisible to every later upload.
                         SyncLog.e(TAG, "Failed to send the deletion of contact $rawContactId; retrying next sync", e)
+                        // The run says so when the network is why, with the network's text (2.2.0).
+                        reportDeletionNotSent(parentAccountName, syncResult, rawContactId, null, e)
                     } else if (mapping == null) {
                         // A contact created on the phone. Clearing its flag here handed it to the orphan
                         // sweep, which deleted the only copy on the next sync.
@@ -2189,6 +2294,13 @@ class ContactsSyncAdapter(
                                 refusedCreates
                             )
                         }
+                    } else if (me.proton.sync.NetworkCause.of(e) != null) {
+                        // An edit of a contact Proton has, which the connection did not carry (the update's PUT threw).
+                        // It stays pending, as a deletion does, and fails the run with its cause, as a batch of new
+                        // contacts does. Clearing the flag here lost the edit: later syncs took the contact for unchanged.
+                        SyncLog.w(TAG, "Could not send the edit of contact $rawContactId to Proton (${e.javaClass.simpleName}); it stays pending for the next sync")
+                        syncResult.stats.numIoExceptions++
+                        SyncUtils.recordSwallowedFailure("contacts", parentAccountName, "Could not send an edited contact to Proton", e)
                     } else {
                         SyncLog.e(TAG, "Failed to process dirty contact $rawContactId, clearing dirty flag", e)
                         SyncUtils.clearContactDirtyFlag(provider, account, rawContactId, TAG, onlyIfNotDeleted = true)
@@ -2208,6 +2320,8 @@ class ContactsSyncAdapter(
         }
 
         deleteUnmappedTombstones(account, provider, orphanedDeletedIds)
+        pruneDeletionRefusals(parentAccountName, dirtyContacts)
+        noticeRefusedDeletions(parentAccountName, provider)
     }
 
     /** One dirty raw contact, as read for upload. */
@@ -2261,18 +2375,21 @@ class ContactsSyncAdapter(
         // Every refusal, not only the third: a contact that cannot reach Proton exists nowhere else, and
         // the user should know from the first failed attempt, with the name and the reason. The list is
         // everything still stuck, so a new refusal cannot replace the notice about an earlier one; it
-        // is posted only when something failed in this run, and withdrawn once nothing is stuck.
-        val stillStuck = ContactUploadRefusals.tracked(
-            androidx.preference.PreferenceManager.getDefaultSharedPreferences(context), parentAccountName
-        )
-        if (refusedCreates.isNotEmpty() && stillStuck.isNotEmpty()) {
+        // is posted only when something failed in this run, and withdrawn once nothing is stuck. Also
+        // posted again after an account rename took it down while it showed (ContactNoticeReposts).
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+        val stillStuck = ContactUploadRefusals.tracked(prefs, parentAccountName)
+        val repost = ContactNoticeReposts.isMarked(prefs, parentAccountName, ContactNoticeReposts.Notice.REJECTED)
+        val notice = ContactNoticeReposts.refusedCreates(refusedCreates.isNotEmpty(), stillStuck.isNotEmpty(), repost)
+        if (notice == ContactDeletionFailures.Notice.POST) {
             SyncNotificationHelper.notifyContactsRejected(
                 context, parentAccountName,
                 stillStuck.map { (rawId, reason) -> displayNameOf(provider, rawId) to reason }
             )
-        } else if (stillStuck.isEmpty()) {
+        } else if (notice == ContactDeletionFailures.Notice.CANCEL) {
             SyncNotificationHelper.cancelContactsRejected(context, parentAccountName)
         }
+        if (repost) ContactNoticeReposts.clear(prefs, parentAccountName, ContactNoticeReposts.Notice.REJECTED)
     }
 
     /** Remove the local tombstones of contacts Proton never knew, which nothing else would clean up. */
@@ -2332,6 +2449,9 @@ class ContactsSyncAdapter(
         } catch (e: Exception) {
             SyncLog.w(TAG, "Could not reach Proton to create ${creates.size} contact(s) (${e.javaClass.simpleName}); they stay pending for the next sync")
             syncResult.stats.numIoExceptions++
+            // Counted with no reason, the run's failure read "Sync incomplete", an unexpected error, also when the
+            // network was why. With the exception its cause is named (NetworkCause); no contact's content is in it.
+            SyncUtils.recordSwallowedFailure("contacts", parentAccountName, "Could not send ${creates.size} new contact(s) to Proton", e)
             return
         }
 
@@ -2639,8 +2759,9 @@ class ContactsSyncAdapter(
     /**
      * Forget holds for contacts gone from Proton, then tell the user about the rest: a notification
      * naming every contact still too large, posted when this sync held a new one and brought up to date
-     * while still shown when the list changed, withdrawn once none is left. Names come from Proton's
-     * contact list and appear in the notification only.
+     * while still shown when the list changed, withdrawn once none is left. Posted again after an account
+     * rename took it down while it showed (ContactNoticeReposts). Names come from Proton's contact list and
+     * appear in the notification only.
      */
     private fun reportTooLargeContacts(
         parentAccountName: String,
@@ -2652,24 +2773,24 @@ class ContactsSyncAdapter(
         val metaById = allContacts.associateBy { it.id }
         ContactDownloadHolds.retain(prefs, parentAccountName) { it in metaById }
         val holds = ContactDownloadHolds.all(prefs, parentAccountName)
-        if (holds.isEmpty()) {
+        val repost = ContactNoticeReposts.isMarked(prefs, parentAccountName, ContactNoticeReposts.Notice.TOO_LARGE)
+        val notice = ContactNoticeReposts.tooLarge(holds.isNotEmpty(), newlyHeld.isNotEmpty(), holds.keys != heldAtStart, repost) {
+            SyncNotificationHelper.isContactsTooLargeShown(context, parentAccountName)
+        }
+        if (notice == ContactDeletionFailures.Notice.CANCEL) {
             SyncNotificationHelper.cancelContactsTooLarge(context, parentAccountName)
-            return
+        } else if (notice == ContactDeletionFailures.Notice.POST) {
+            SyncNotificationHelper.notifyContactsTooLarge(
+                context, parentAccountName,
+                holds.values.map { hold ->
+                    metaById[hold.protonId]?.name to context.getString(
+                        if (hold.onPhone) me.proton.sync.R.string.notification_contacts_too_large_outdated
+                        else me.proton.sync.R.string.notification_contacts_too_large_missing
+                    )
+                }
+            )
         }
-        if (newlyHeld.isEmpty() &&
-            (holds.keys == heldAtStart || !SyncNotificationHelper.isContactsTooLargeShown(context, parentAccountName))
-        ) {
-            return
-        }
-        SyncNotificationHelper.notifyContactsTooLarge(
-            context, parentAccountName,
-            holds.values.map { hold ->
-                metaById[hold.protonId]?.name to context.getString(
-                    if (hold.onPhone) me.proton.sync.R.string.notification_contacts_too_large_outdated
-                    else me.proton.sync.R.string.notification_contacts_too_large_missing
-                )
-            }
-        )
+        if (repost) ContactNoticeReposts.clear(prefs, parentAccountName, ContactNoticeReposts.Notice.TOO_LARGE)
     }
 
     /** A raw contact's display name for the user-facing notification only; never logged. */

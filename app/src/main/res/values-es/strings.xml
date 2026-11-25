@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">Omitir calendarios suscritos/importados (p. ej. de Google)</string>
     <string name="label_expand">Expandir</string>
     <string name="label_display_name">Nombre para mostrar</string>
-    <string name="label_event_loop_interval">Intervalo del bucle de eventos</string>
     <string name="label_fallback_full_sync">Sincronización completa de respaldo</string>
     <string name="label_notify_on_failure">Notificar en caso de error</string>
     <string name="label_notify_in_progress">Mostrar notificación durante la sincronización</string>
@@ -116,7 +115,6 @@
     <string name="dialog_label_sync_reason">Motivo: %s</string>
     <string name="dialog_title_past_events">Eventos pasados</string>
     <string name="dialog_title_future_events">Eventos futuros</string>
-    <string name="dialog_title_event_loop_interval">Intervalo del bucle de eventos</string>
     <string name="dialog_title_contacts_fallback">Sincronización completa de respaldo de contactos</string>
     <string name="dialog_title_calendar_fallback">Sincronización completa de respaldo del calendario</string>
     <string name="dialog_title_remove_account">Eliminar cuenta</string>
@@ -175,13 +173,17 @@
     <string name="notification_sync_phase_decrypting">descifrando %1$d/%2$d</string>
     <string name="label_sync_queued">En cola para sincronizar</string>
     <string name="error_no_internet">Sin conexión a Internet. La sincronización se reintentará automáticamente.</string>
+    <string name="error_no_internet_tap_sync">Sin conexión a Internet. Toque Sincronizar para intentarlo de nuevo.</string>
     <string name="error_timeout">No se pudo contactar con el servidor. Compruebe su conexión a Internet.</string>
     <string name="error_session_expired">Su sesión ha expirado. Inicie sesión de nuevo.</string>
     <string name="error_too_many_requests">Demasiadas solicitudes. La sincronización se reintentará más tarde.</string>
+    <string name="error_too_many_requests_tap_sync">Demasiadas solicitudes. Toque Sincronizar para intentarlo de nuevo.</string>
     <string name="error_server_error">Error del servidor Proton. La sincronización se reintentará automáticamente.</string>
+    <string name="error_server_error_tap_sync">Error del servidor Proton. Toque Sincronizar para intentarlo de nuevo.</string>
     <string name="error_request_rejected">La solicitud de sincronización fue rechazada por el servidor.</string>
     <string name="error_ssl">La conexión segura ha fallado. Compruebe su red.</string>
     <string name="error_connection_interrupted">La conexión se interrumpió. La sincronización se reintentará.</string>
+    <string name="error_connection_interrupted_tap_sync">La conexión se interrumpió. Toque Sincronizar para intentarlo de nuevo.</string>
     <string name="error_unexpected">La sincronización encontró un error inesperado.</string>
     <string name="notification_channel_auth">Autenticación</string>
     <string name="notification_channel_auth_description">Notificaciones de inicio de sesión requerido</string>
@@ -272,16 +274,16 @@
     <string name="label_info">Más información</string>
     <string name="info_language_body">Establece el idioma utilizado para las pantallas propias de esta aplicación. \"Auto\" sigue el idioma del sistema de su teléfono. Esto solo cambia la interfaz de la aplicación, no traduce sus eventos de calendario ni contactos sincronizados.</string>
     <string name="info_display_name_body">El nombre que se muestra para esta cuenta en Ajustes de Android → Cuentas y en los selectores de las aplicaciones de calendario/contactos. Es solo una etiqueta local; cambiarlo no afecta a su cuenta de Proton.\n\nNota: Samsung Calendar y Samsung Contacts ignoran los nombres de cuenta personalizados y siempre muestran su propia etiqueta (p. ej. \"Proton\"). Es posible que el nombre que eligió no aparezca allí, es una limitación de Samsung que no podemos cambiar. Otras aplicaciones (Google Calendar/Contacts) lo muestran con normalidad.</string>
-    <string name="info_event_loop_body">Con qué frecuencia la aplicación consulta Proton en segundo plano en busca de cambios remotos en sus contactos y calendario. Los intervalos más cortos muestran los cambios más rápido pero consumen más batería y datos. Esto es independiente de la sincronización manual, que puede activar en cualquier momento con los botones de sincronización.</string>
+    <string name="info_event_loop_body">Con qué frecuencia la aplicación consulta Proton en segundo plano en busca de cambios remotos en sus contactos y calendario. Estas consultas solo se realizan mientras la sincronización automática de Android está activada; cuando está desactivada, nada se sincroniza por sí solo. Los intervalos más cortos muestran los cambios más rápido pero consumen más batería y datos. Esto es independiente de la sincronización manual, que puede activar en cualquier momento con los botones de sincronización.</string>
     <string name="info_notify_in_progress_body">Muestra una notificación silenciosa y continua mientras se ejecuta una sincronización, con progreso en vivo (análisis, descarga, descifrado). Se sitúa en la parte inferior del panel de notificaciones y nunca emite sonido. Desactívela si prefiere que la sincronización se ejecute de forma invisible.</string>
     <string name="info_sync_contacts_body">Cuando está activado, sus contactos de Proton se sincronizan en ambos sentidos con los contactos de Android: los cambios en cualquiera de los dos lados se fusionan.\n\nNota: Samsung Contacts muestra los contactos bajo una única etiqueta de cuenta \"Proton contacts\" y oculta el subtítulo de correo electrónico para las cuentas de terceros como la nuestra, una limitación de Samsung codificada de forma fija que no podemos cambiar. Google Contacts y la mayoría de las demás aplicaciones los muestran con normalidad.</string>
-    <string name="info_fallback_full_sync_body">Con qué frecuencia la aplicación realiza una revisión completa en lugar de una sincronización incremental rápida. Una sincronización completa detecta cualquier cosa que un pase incremental pudiera pasar por alto (p. ej. cambios hechos sin conexión) a costa de más tiempo y datos. Deje el valor predeterminado a menos que sospeche que algunos elementos no se están sincronizando.</string>
+    <string name="info_fallback_full_sync_body">Con qué frecuencia la aplicación realiza una revisión completa en lugar de una sincronización incremental rápida. Esta revisión solo se realiza mientras la sincronización automática de Android está activada. Una sincronización completa detecta cualquier cosa que un pase incremental pudiera pasar por alto (p. ej. cambios hechos sin conexión) a costa de más tiempo y datos. Deje el valor predeterminado a menos que sospeche que algunos elementos no se están sincronizando.</string>
     <string name="info_notify_on_failure_body">Muestra una notificación si una sincronización falla (p. ej. error de red o sesión caducada). Tóquela para ver una explicación en lenguaje sencillo y un enlace a los registros. Desactívela si no desea que se le avise de fallos transitorios.</string>
-    <string name="info_sync_calendar_body">Cuando está activado, sus calendarios de Proton se sincronizan con el calendario de Android, de modo que los eventos aparecen en Google Calendar, Samsung Calendar y cualquier otra aplicación de calendario. En ambos sentidos: las ediciones que haga en el teléfono se cargan de vuelta a Proton para los calendarios de su propiedad.</string>
+    <string name="info_sync_calendar_body">Cuando está activado, sus calendarios de Proton se sincronizan con el calendario de Android, de modo que los eventos aparecen en Google Calendar, Samsung Calendar y cualquier otra aplicación de calendario. En ambos sentidos: las ediciones que haga en el teléfono se suben a Proton en todos los calendarios que puede editar, incluidos los que otras personas comparten con usted.</string>
     <string name="info_include_external_calendars_body">Proton puede contener calendarios suscritos (p. ej. un feed ICS externo) y calendarios de festivos. Estos son de solo lectura en el lado de Proton. Cuando está desactivado, la aplicación los omite y solo sincroniza sus propios calendarios editables. Actívelo si también desea que esos calendarios de solo lectura se reflejen en su teléfono.</string>
     <string name="info_sync_mode_body">\"Todos los eventos\" sincroniza todo el historial de su calendario y todos los eventos futuros, lo mejor si quiere tenerlo todo en su teléfono (la primera sincronización de un calendario grande puede tardar varios minutos). \"Rango personalizado\" mantiene rápidos los calendarios grandes al sincronizar solo una ventana de días alrededor de hoy: los eventos de esos calendarios que quedan fuera de la ventana no se descargan, y los que ya están en este teléfono se conservan, salvo que \"Eliminar eventos antiguos de este teléfono\" esté activado para su calendario. Los calendarios pequeños siempre se sincronizan por completo.</string>
     <string name="label_trim_old_events">Eliminar eventos antiguos de este teléfono</string>
-    <string name="info_trim_old_events_body">En los calendarios que elija, los eventos que terminaron más de un día antes del inicio de su rango se eliminan de este teléfono, ahora y en las siguientes sincronizaciones. Permanecen en su cuenta de Proton y allí no se borra nada. Las copias de seguridad de sus propios calendarios se hacen desde Proton, así que siguen conteniéndolos; los calendarios suscritos y los de festivos no se incluyen en las copias de seguridad. Un evento recurrente se conserva, con todas sus fechas anteriores, mientras se extienda hasta su rango o no tenga fecha de finalización, porque el teléfono guarda un evento recurrente como una sola entrada. También se conservan los eventos con cambios aún no enviados a Proton, así como aquellos que se crearon o se modificaron por última vez en los últimos 7 días, según la versión en este teléfono y no según la fecha en que este teléfono la descargó. Solo se pueden elegir los calendarios demasiado grandes para sincronizarse por completo, y los eventos posteriores a su rango nunca se eliminan. Para recuperar los eventos eliminados, elija un rango más amplio o \"Todos los eventos\".</string>
+    <string name="info_trim_old_events_body">En los calendarios que elija, los eventos que terminaron más de un día antes del inicio de su rango se eliminan de este teléfono en la próxima sincronización, y los posteriores cuando tengan esa misma antigüedad. Permanecen en su cuenta de Proton y allí no se borra nada. Las copias de seguridad de sus propios calendarios se hacen desde Proton, así que siguen conteniéndolos; los calendarios suscritos y los de festivos no se incluyen en las copias de seguridad. Un evento recurrente se conserva, con todas sus fechas anteriores, mientras se extienda hasta su rango o no tenga fecha de finalización, porque el teléfono guarda un evento recurrente como una sola entrada. También se conservan los eventos con cambios aún no enviados a Proton, así como aquellos que se crearon o se modificaron por última vez en los últimos 7 días, según la versión en este teléfono y no según la fecha en que este teléfono la descargó. Solo se pueden elegir los calendarios demasiado grandes para sincronizarse por completo, y los eventos posteriores a su rango nunca se eliminan. Para recuperar los eventos eliminados, elija un rango más amplio o \"Todos los eventos\".</string>
     <string name="trim_dialog_title">Eliminar eventos antiguos de este teléfono</string>
     <string name="trim_dialog_intro">Elija los calendarios que desea limpiar. Los eventos que terminaron antes del %1$s se eliminan de este teléfono en la próxima sincronización, y los posteriores cuando tengan esa misma antigüedad. Permanecen en su cuenta de Proton. Un evento recurrente que continúa después de esa fecha se conserva, con todas sus fechas.</string>
     <plurals name="trim_calendar_count">
@@ -303,6 +305,35 @@
     </plurals>
     <string name="trim_dialog_save">Guardar</string>
     <string name="trim_read_failed">No se pudieron leer los calendarios de este teléfono, así que no se ha cambiado nada.</string>
+    <string name="label_default_calendar">Calendario por defecto</string>
+    <string name="info_default_calendar_body">En Proton, los eventos nuevos van a su calendario por defecto, y este teléfono lo marca como calendario principal de la cuenta. Si lo cambia aquí, también cambia en Proton, así que Proton en la web, las aplicaciones de Proton y las invitaciones a las que responde en Proton Mail usan el nuevo. Solo uno de sus propios calendarios activos puede ser el calendario por defecto, no uno compartido, suscrito o de festivos.</string>
+    <string name="default_calendar_connecting">Conectando con Proton…</string>
+    <string name="default_calendar_changed">Calendario por defecto cambiado</string>
+    <string name="default_calendar_unreachable">No se pudo contactar con Proton. Inténtelo de nuevo en un momento.</string>
+    <string name="default_calendar_refused">Proton no aceptó el cambio, así que no se ha cambiado nada.</string>
+    <string name="default_calendar_none_own">Esta cuenta no tiene ningún calendario activo propio que pueda ser el calendario por defecto. Los calendarios compartidos, suscritos y de festivos no pueden ser el calendario por defecto.</string>
+    <string name="default_calendar_incomplete">No se pudieron leer todos los calendarios de esta cuenta, así que su calendario por defecto no se puede cambiar aquí.</string>
+    <string name="notification_new_event_hold_title">Nuevo evento en un calendario compartido</string>
+    <string name="notification_new_event_hold_body">%1$s añadió «%2$s» a %3$s. Las demás personas que comparten este calendario lo verían.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Una aplicación añadió «%1$s» a %2$s. Las demás personas que comparten este calendario lo verían.</string>
+    <string name="action_new_event_move">Mover a %1$s</string>
+    <string name="action_new_event_publish">Publicar</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d evento pendiente de su decisión</item>
+        <item quantity="many">%d de eventos pendientes de su decisión</item>
+        <item quantity="other">%d eventos pendientes de su decisión</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d evento conservado solo en este teléfono</item>
+        <item quantity="many">%d de eventos conservados solo en este teléfono</item>
+        <item quantity="other">%d eventos conservados solo en este teléfono</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d evento más pendiente de su decisión</item>
+        <item quantity="many">%d de eventos más pendientes de su decisión</item>
+        <item quantity="other">%d eventos más pendientes de su decisión</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Cuando una aplicación que no es de calendario añade un evento a un calendario que alguien ha compartido con usted, el evento queda en espera en este teléfono hasta que usted decida. «Mover» lo coloca en su calendario por defecto en lugar del compartido. «Publicar» lo envía al calendario compartido, donde todas las personas que lo comparten pueden verlo. «Conservar en el teléfono» nunca lo envía a Proton: Proton Calendar, la web, sus otros dispositivos y las copias de seguridad de esta aplicación no lo tendrán, y se perderá si elimina esta aplicación o esta cuenta. Los eventos conservados siguen apareciendo en la tarjeta de esta cuenta, donde aún puede moverlos o publicarlos.</string>
     <string name="info_sync_range_window_body">Cuántos días antes y después de hoy sincronizar cuando se selecciona \"Rango personalizado\". Las ventanas más grandes muestran más de su calendario pero tardan más en sincronizarse. No tiene efecto en el modo \"Todos los eventos\".</string>
     <string name="info_poll_attendee_body">Cuando está activado, la aplicación revisa periódicamente los eventos que tienen asistentes para detectar respuestas de aceptar/rechazar/provisional. El feed de cambios de Proton no informa de los cambios de RSVP, por lo que esto requiere llamadas API adicionales, solo merece la pena activarlo si depende de ver las respuestas de los asistentes en su teléfono.</string>
     <string name="info_send_invites_body">Cuando añade asistentes a un evento en su teléfono, enviarles una invitación por correo electrónico. Desactivado de forma predeterminada: actívelo solo si desea que la aplicación envíe correos a los participantes en su nombre.</string>
@@ -310,7 +341,7 @@
     <string name="info_send_cancellations_body">Enviar un correo a los asistentes cuando elimine un evento al que están invitados, para que sus calendarios también lo eliminen. Desactivado de forma predeterminada.</string>
     <string name="info_invite_subject_title_body">Al enviar correos de invitación, poner el título del evento en el asunto del correo para que los destinatarios lo reconozcan de un vistazo. Desactivado de forma predeterminada por privacidad: los asuntos de los correos no se cifran en el transporte de correo estándar, por lo que el título sería visible para los servidores de correo a lo largo de la ruta.</string>
     <string name="info_background_sync_body">Android puede pausar la sincronización en segundo plano para ahorrar batería, lo que puede retrasar o detener la sincronización automática. Excluir esta aplicación de la optimización de batería mantiene las sincronizaciones programadas funcionando de forma fiable. Use el botón para abrir los ajustes de batería del sistema para la aplicación.</string>
-    <string name="info_verbose_logging_body">Captura detalles de diagnóstico adicionales (estado de autenticación, desbloqueo de claves, internos de sincronización) en el registro, útil al informar de un problema. La aplicación sustituye en él las direcciones de correo por códigos cortos, pero el registro puede incluir nombres de cuentas y de calendarios, por lo que solo debe compartir los registros con el desarrollador. Déjelo desactivado para el uso normal.</string>
+    <string name="info_verbose_logging_body">Captura detalles de diagnóstico adicionales (estado de autenticación, desbloqueo de claves, internos de sincronización) en el registro, útil al informar de un problema. Mientras esta opción está activada, el registro también incluye los nombres de sus calendarios y de las aplicaciones que les añaden eventos. La aplicación sustituye en el registro las direcciones de correo por códigos cortos, pero este puede incluir nombres de cuentas y de calendarios, por lo que solo debe compartir los registros con el desarrollador. Déjelo desactivado para el uso normal.</string>
     <string name="info_file_logging_body">Escribe el registro de la aplicación en un archivo de texto con marca de tiempo (sync-for-proton-log-….txt) en una carpeta que usted elija. Por lo demás, la aplicación mantiene el registro solo en memoria, así que active esto para capturar un problema difícil de reproducir. Se crea un archivo nuevo cada vez que se inicia la aplicación. La aplicación sustituye en él las direcciones de correo por códigos cortos, pero el archivo puede contener nombres de cuentas y de calendarios, así que compártalo solo con el desarrollador. Déjelo desactivado para un uso normal.</string>
     <string name="info_timezone_updates_text">Las horas de los eventos dependen de las reglas de las zonas horarias, y los países cambian estas reglas de vez en cuando. Android las guarda en los datos de zonas horarias del teléfono, que llegan con las actualizaciones del sistema. Un teléfono que ya no las recibe, por ejemplo con una versión antigua de Android o sin actualizaciones del sistema de Google Play, conserva las reglas antiguas, y los eventos en lugares cuyas reglas han cambiado desde entonces pueden mostrarse a una hora incorrecta.\n\nDatos de zonas horarias de este teléfono: versión %1$s\n\nCuando está desactivado (predeterminado), la aplicación usa los datos de zonas horarias del propio teléfono y no envía nada a www.tzurl.org.\n\nCuando está activado, la aplicación descarga de www.tzurl.org, un servicio de terceros, las reglas actuales de cada zona horaria que usan sus eventos, como máximo una vez por zona horaria cada vez que se inicia la aplicación, y solo las usa si son más recientes que las del teléfono. www.tzurl.org ve entonces su dirección IP y los nombres de esas zonas horarias, por ejemplo Europe/Berlin. No se envía nada más sobre sus eventos o cuentas. Si no se puede acceder a www.tzurl.org, se usan los datos del teléfono. Los eventos periódicos se siguen calculando con los datos del teléfono.\n\nTras un cambio, los eventos que ya están en el teléfono se revisan y se corrigen en la siguiente sincronización.</string>
     <string name="tz_data_version_unknown">desconocida</string>
@@ -394,6 +425,8 @@
     <string name="backup_unit_days">días</string>
     <string name="backup_retention_label">Conservar las últimas</string>
     <string name="backup_unit_runs">copias</string>
+    <string name="backup_when_auto_sync_off_label">Hacer copia incluso sin sincronización automática</string>
+    <string name="info_backup_when_auto_sync_off_body">Cuando está desactivado, el ajuste «Sincronización automática de datos» de Android detiene la sincronización en segundo plano de todas las aplicaciones, y las copias de seguridad programadas dependen de él: entonces se omiten, y esta pantalla lo indica debajo de «Hacer copia ahora». Active esta opción para hacerlas de todos modos. Cada copia de seguridad descarga de Proton todos sus calendarios y contactos, lo que puede consumir muchos datos móviles. «Hacer copia ahora» funciona siempre.</string>
     <string name="backup_section_contents">Qué incluir en la copia</string>
     <string name="backup_include_calendars_label">Calendarios (.ics)</string>
     <string name="backup_include_contacts_label">Contactos (.vcf)</string>
@@ -416,6 +449,7 @@
     <string name="backup_running">Haciendo copia de seguridad…</string>
     <string name="backup_last_never">Aún no hay ninguna copia de seguridad.</string>
     <string name="backup_last_run">Última copia: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Copia programada omitida el %1$s: la sincronización automática de Android está desactivada</string>
     <string name="backup_decrypt_action">Descifrar una copia de seguridad…</string>
     <string name="backup_decrypt_body">Elija un archivo de copia de seguridad cifrado (.gpg) e introduzca su contraseña. El contenido se guardará, descifrado, en su carpeta de copias de seguridad.</string>
     <string name="backup_decrypting">Descifrando…</string>
@@ -477,7 +511,7 @@
     <string name="sfp_group_account">Cuenta</string>
     <string name="sfp_group_contacts">Contactos</string>
     <string name="sfp_group_calendar">Calendario</string>
-    <string name="sfp_event_loop_subtitle">Con qué frecuencia buscar cambios remotos</string>
+    <string name="sfp_event_loop_subtitle">Con qué frecuencia buscar cambios remotos mientras la sincronización automática de Android está activada</string>
     <string name="sfp_show_advanced">Mostrar correo y opciones avanzadas</string>
     <string name="sfp_hide_advanced">Ocultar correo y opciones avanzadas</string>
     <string name="sfp_group_email_attendees">Correo a los asistentes</string>
@@ -488,6 +522,7 @@
     <string name="sfp_hero_subtitle_ok">Todas las cuentas activadas están al día</string>
     <string name="sfp_hero_subtitle_warn">Una o más cuentas necesitan sincronizarse o iniciar sesión</string>
     <string name="sfp_sync_all_now">Sincronizar todo ahora</string>
+    <string name="sfp_auto_sync_off">Sincronización automática de Android desactivada: las cuentas solo se sincronizan al tocar Sincronizar</string>
     <string name="sfp_tile_logs">Registro de sincronización</string>
     <string name="sfp_tile_backup">Copia de seguridad</string>
     <string name="sfp_tile_battery">Batería</string>
@@ -526,6 +561,10 @@
     <string name="notification_contacts_too_large_summary">Estos contactos de %1$s son demasiado grandes para el almacenamiento de contactos de Android. En Proton siguen completos:</string>
     <string name="notification_contacts_too_large_outdated">este teléfono conserva una versión anterior</string>
     <string name="notification_contacts_too_large_missing">no está en este teléfono</string>
+    <string name="notification_contacts_delete_refused_title">Algunos contactos no se eliminaron en Proton</string>
+    <string name="notification_contacts_delete_refused_summary">Estos contactos en %1$s se eliminaron en este teléfono, pero Proton se negó a eliminarlos. Siguen existiendo en Proton y en sus otros dispositivos:</string>
+    <string name="notification_events_delete_refused_title">Algunos eventos no se eliminaron en Proton</string>
+    <string name="notification_events_delete_refused_summary">Estos eventos en %1$s se eliminaron en este teléfono, pero Proton se negó a eliminarlos. Siguen existiendo en Proton y en sus otros dispositivos:</string>
     <string name="notification_conflict_title">Evento modificado en dos lugares</string>
     <string name="notification_conflict_body">«%1$s» se modificó en este teléfono y en Proton Calendar. ¿Qué versión quiere conservar?</string>
     <string name="notification_conflict_body_shared">«%1$s» se modificó en este teléfono y %2$s lo modificó en Proton Calendar. Si conserva su versión, reemplazará la de esa persona.</string>

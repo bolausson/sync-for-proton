@@ -144,7 +144,7 @@ class RangeTrimRunnerTest {
     @Test
     fun `the settings screen redraws the removal row whenever what it counts changes`() {
         val src = java.io.File("src/main/java/me/proton/sync/settings/SyncSettingsActivity.kt").readText().replace("\r\n", "\n")
-        val listener = src.substringAfter("private val trimRowListener =").substringBefore("\n    }\n")
+        val listener = src.substringAfter("private val cardRowListener =").substringBefore("\n    }\n")
         for (key in listOf("SyncPreferences.calendarTrimPastKey(name)", "SyncPreferences.includeExternalCalendarsKey(name)",
             "key.endsWith(\"_external\") && key.startsWith(SyncPreferences.lastSyncRangeKey(name, \"\"))")) {
             assertEquals(key, true, listener.contains(key))
@@ -153,9 +153,9 @@ class RangeTrimRunnerTest {
         val resume = src.substringAfter("override fun onResume() {").substringBefore("\n    }\n")
         val pause = src.substringAfter("override fun onPause() {").substringBefore("\n    }\n")
         // Registered before the cards read their values, so no change in between goes unseen.
-        val register = resume.indexOf("registerOnSharedPreferenceChangeListener(trimRowListener)")
+        val register = resume.indexOf("registerOnSharedPreferenceChangeListener(cardRowListener)")
         assertEquals(true, register >= 0 && register < resume.indexOf("buildAccountCards()"))
-        assertEquals(true, pause.contains("unregisterOnSharedPreferenceChangeListener(trimRowListener)"))
+        assertEquals(true, pause.contains("unregisterOnSharedPreferenceChangeListener(cardRowListener)"))
         // The calendar mappings it counts, which no preference reports: redrawn when the account's calendar sync ends.
         val indicators = src.substringAfter("private fun refreshSyncIndicators() {").substringBefore("\n    }\n")
         assertEquals(true, indicators.contains("if (calendarActive) calendarSyncSeen.add(handle.parentAccount.name)\n" +
@@ -178,6 +178,35 @@ class RangeTrimRunnerTest {
         for (key in listOf(".remove(SyncPreferences.calendarTrimPastKey(account.name))", ".remove(SyncPreferences.calendarTrimJournalKey(account.name))")) {
             assertEquals(key, true, body.indexOf(key) > mappings)
         }
+    }
+
+    @Test
+    fun `switching removal on forgets that calendar's daily sweep mark, so its next sync, whatever starts it, sweeps`() {
+        // Without the mark the next calendar sync takes no unchanged-skip for it, and that sweep's seed removes the older
+        // events: the dialog's Save no longer starts a Sync now of its own (2.2.0), so with automatic sync off they go
+        // at the next sync, as the dialog says.
+        val p = prefs()
+        val other = "b@example.org"
+        val workMark = SyncPreferences.lastSweepDayKey(acct, "work==")
+        val homeMark = SyncPreferences.lastSweepDayKey(acct, "home==")
+        val otherMark = SyncPreferences.lastSweepDayKey(other, "home==")
+        for (key in listOf(workMark, homeMark, otherMark)) p.values[key] = "2026-11-14"
+        RangeTrimRunner.setChoices(p, acct, setOf(Choice(21, "work==")))
+
+        val newlyOn = RangeTrimRunner.saveChoices(p, acct, setOf(Choice(21, "work=="), Choice(22, "home==")))
+
+        assertEquals(setOf(Choice(22, "home==")), newlyOn)
+        assertEquals(setOf(Choice(21, "work=="), Choice(22, "home==")), RangeTrimRunner.choices(p, acct))
+        assertNull("the calendar switched on sweeps at its next sync", p.values[homeMark])
+        assertEquals("one already on keeps its mark", "2026-11-14", p.values[workMark])
+        assertEquals("another account's mark of the same Proton calendar stays", "2026-11-14", p.values[otherMark])
+
+        // Switching one off removes nothing, so nothing needs a sweep.
+        val off = RangeTrimRunner.saveChoices(p, acct, setOf(Choice(22, "home==")))
+        assertEquals(emptySet<Choice>(), off)
+        assertEquals(setOf(Choice(22, "home==")), RangeTrimRunner.choices(p, acct))
+        assertEquals("2026-11-14", p.values[workMark])
+        assertEquals("2026-11-14", p.values[otherMark])
     }
 
     @Test

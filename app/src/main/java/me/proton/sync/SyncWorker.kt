@@ -2,7 +2,6 @@ package me.proton.sync
 
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.content.ContentResolver
 import android.content.Context
 import android.os.Bundle
 import me.proton.sync.SyncLog
@@ -11,67 +10,20 @@ import androidx.work.*
 import java.util.concurrent.TimeUnit
 
 /**
- * WorkManager-based periodic sync watchdog.
+ * The optional "Fallback full sync": a WorkManager job per account and type that asks Android, at the fallback
+ * interval, for one ordinary sync request ([runOnce]), which Android runs only while its automatic sync is on. It is
+ * skipped with a log line while that is off, the account is paused after a sign-in problem, the subscription is
+ * inactive, the type is switched off or a full re-sync of that type of the account is being prepared. "Manual only"
+ * does not stop it: it has its own interval.
  *
- * Android's addPeriodicSync is unreliable — the OS can defer or skip syncs entirely,
- * especially on Samsung devices with aggressive battery optimization.
- *
- * WorkManager provides more reliable periodic execution because:
- * - Work survives process death (persisted in SQLite)
- * - Work survives device reboot
- * - WorkManager negotiates with the OS for execution windows
- * - It respects Doze mode but fires when the maintenance window opens
- *
- * This worker triggers ContentResolver.requestSync for a specific account,
- * which invokes our existing SyncAdapters.
+ * WorkManager, because Android's own periodic sync can be deferred or skipped for a long time, especially on Samsung
+ * devices with aggressive battery optimization, while WorkManager work survives process death and reboots and runs
+ * when Doze opens its maintenance window.
  */
 class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
-        val accountName = inputData.getString(KEY_ACCOUNT_NAME)
-        val syncType = inputData.getString(KEY_SYNC_TYPE) ?: "both"
-
-        SyncLog.i(TAG, "WorkManager sync watchdog triggered for $accountName ($syncType)")
-
-        val accountManager = AccountManager.get(applicationContext)
-
-        if (syncType == "contacts" || syncType == "both") {
-            // Match on the parent-account user-data link. The address-book account's name mirrors
-            // the parent's, but one made by an older version keeps another name until the start-up
-            // migration renames it.
-            val abAccount = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK)
-                .firstOrNull {
-                    accountName == null ||
-                        accountManager.getUserData(it, SyncConstants.EXTRA_PARENT_ACCOUNT_NAME) == accountName ||
-                        it.name == accountName // also an ab-account without the parent link
-                }
-            if (abAccount != null && ContentResolver.getSyncAutomatically(abAccount, SyncConstants.AUTHORITY_CONTACTS)) {
-                val bundle = Bundle().apply {
-                    // Use MANUAL+EXPEDITED to bypass Android's sync scheduling delays,
-                    // but mark as scheduled so logging can distinguish from user-initiated syncs.
-                    putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                    putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                    putBoolean(SyncConstants.EXTRA_SCHEDULED_BY_WORKER, true)
-                }
-                ContentResolver.requestSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, bundle)
-                SyncLog.i(TAG, "Requested contacts sync for ${abAccount.name}")
-            }
-        }
-
-        if (syncType == "calendar" || syncType == "both") {
-            val mainAccount = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
-                .firstOrNull { accountName == null || it.name == accountName }
-            if (mainAccount != null && ContentResolver.getSyncAutomatically(mainAccount, SyncConstants.AUTHORITY_CALENDAR)) {
-                val bundle = Bundle().apply {
-                    putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                    putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                    putBoolean(SyncConstants.EXTRA_SCHEDULED_BY_WORKER, true)
-                }
-                ContentResolver.requestSync(mainAccount, SyncConstants.AUTHORITY_CALENDAR, bundle)
-                SyncLog.i(TAG, "Requested calendar sync for ${mainAccount.name}")
-            }
-        }
-
+        runOnce(applicationContext, inputData.getString(KEY_ACCOUNT_NAME), inputData.getString(KEY_SYNC_TYPE) ?: "both")
         return Result.success()
     }
 
@@ -83,6 +35,57 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
         private const val MIN_INTERVAL_MINUTES = 15L
 
         /**
+         * One Fallback full sync of [accountName] (the first account when null) for [syncType], "contacts", "calendar"
+         * or "both": per type, one ordinary sync request through SyncScheduling.requestBackgroundSync, marked
+         * [SyncConstants.EXTRA_SCHEDULED_BY_WORKER] and neither manual nor expedited, or a line saying why not. The
+         * job's body, and the watchdog debug verb's.
+         */
+        internal fun runOnce(context: Context, accountName: String?, syncType: String) {
+            val am = AccountManager.get(context)
+            val parent = am.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE).firstOrNull { accountName == null || it.name == accountName }
+            if (parent == null) {
+                SyncLog.i(TAG, "Fallback full sync for '${accountName ?: "the first account"}': no such account, nothing requested")
+                return
+            }
+            fun request(account: Account?, authority: String, type: String) {
+                if (account == null) {
+                    SyncLog.i(TAG, "Fallback full sync for '${parent.name}' ($type): skipped, the account has no address book")
+                    return
+                }
+                val extras = Bundle().apply { putBoolean(SyncConstants.EXTRA_SCHEDULED_BY_WORKER, true) }
+                val decision = SyncScheduling.requestBackgroundSync(
+                    context, account, authority, parent.name, extras, manualOnlyApplies = false,
+                )
+                if (decision == SyncScheduling.BackgroundRequest.SEND) {
+                    SyncLog.i(TAG, "Fallback full sync for '${parent.name}' ($type): sync requested")
+                } else {
+                    SyncLog.i(TAG, "Fallback full sync for '${parent.name}' ($type): skipped, ${decision.reason(type)}")
+                }
+            }
+            if (syncType == "contacts" || syncType == "both") {
+                val ab = SyncScheduling.linkedAddressBook(am, parent, am.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK))
+                request(ab, SyncConstants.AUTHORITY_CONTACTS, "contacts")
+            }
+            if (syncType == "calendar" || syncType == "both") {
+                request(parent, SyncConstants.AUTHORITY_CALENDAR, "calendar")
+            }
+        }
+
+        /**
+         * The stored interval in SECONDS, as the schedulers' MINUTES.
+         *
+         * Exists as a named function because doing it inline is what caused the bug: `seconds / 60`
+         * truncates the -1 "manual" sentinel to 0, which is not negative, so a guard of `< 0` let it
+         * through to be clamped up to the minimum interval. Every caller goes through here now, and
+         * the unit test exercises THIS function rather than a copy of it.
+         */
+        internal fun intervalMinutesFor(storedSeconds: Long): Long =
+            if (storedSeconds < 0) -1L else storedSeconds / 60
+
+        /** Whether an interval in minutes should result in scheduled work at all. */
+        internal fun schedulesWork(intervalMinutes: Long): Boolean = intervalMinutes > 0
+
+        /**
          * Schedule per-account, per-type periodic sync watchdog.
          * Interval is user's chosen sync interval + 1 minute as a fallback safety net.
          */
@@ -92,8 +95,8 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
             syncType: String, // "contacts" or "calendar"
             userIntervalMinutes: Long
         ) {
-            // <= 0, not < 0: see the note in EventLoopWorker. A divided sentinel must not arm a job.
-            if (userIntervalMinutes <= 0) {
+            // Zero is off too, not only a negative value: see intervalMinutesFor. A divided sentinel must not arm a job.
+            if (!schedulesWork(userIntervalMinutes)) {
                 // Manual only — cancel the watchdog
                 cancelForAccount(context, accountName, syncType)
                 return
@@ -177,7 +180,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
                 val contactsInterval = prefs.getString(
                     SyncPreferences.fallbackContactsIntervalKey(accountName), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
                 )?.toLongOrNull() ?: 43200L
-                scheduleForAccount(context, accountName, "contacts", contactsInterval / 60)
+                scheduleForAccount(context, accountName, "contacts", intervalMinutesFor(contactsInterval))
             } else {
                 scheduleForAccount(context, accountName, "contacts", -1)
             }
@@ -187,7 +190,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
                 val calendarInterval = prefs.getString(
                     SyncPreferences.fallbackCalendarIntervalKey(accountName), SyncPreferences.DEFAULT_FALLBACK_INTERVAL_SECONDS
                 )?.toLongOrNull() ?: 43200L
-                scheduleForAccount(context, accountName, "calendar", calendarInterval / 60)
+                scheduleForAccount(context, accountName, "calendar", intervalMinutesFor(calendarInterval))
             } else {
                 scheduleForAccount(context, accountName, "calendar", -1)
             }

@@ -38,7 +38,7 @@
     <string name="error_login_proton_refused">Proton could not complete the sign-in. Please try again in a moment.</string>
     <!-- %1$s is the name of the error type, for example IllegalStateException; keep it untranslated -->
     <string name="error_login_unexpected">Sign-in failed because of an unexpected error (%1$s). Please try again.</string>
-    <string name="version_label" translatable="false">v2.1.0</string>
+    <string name="version_label" translatable="false">v2.2.0</string>
 
     <!-- Legal footer (settings, just above the brand/version line) -->
     <string name="link_privacy_policy">Privacy Policy</string>
@@ -54,7 +54,10 @@
     <string name="sfp_group_account">Account</string>
     <string name="sfp_group_contacts">Contacts</string>
     <string name="sfp_group_calendar">Calendar</string>
-    <string name="sfp_event_loop_subtitle">How often to look for remote changes</string>
+    <!-- The grey line under "Sync interval" on each account card. Reworded in 2.2.0: the interval applies only while
+         Android's own automatic sync switch ("Auto sync data" in Android's account settings) is on. May wrap to two
+         short lines; plain, neutral register. -->
+    <string name="sfp_event_loop_subtitle">How often to look for remote changes while Android\'s automatic sync is on</string>
     <string name="sfp_show_advanced">Show email &amp; advanced options</string>
     <string name="sfp_hide_advanced">Hide email &amp; advanced options</string>
     <string name="sfp_group_email_attendees">Email to attendees</string>
@@ -67,6 +70,11 @@
     <string name="sfp_hero_subtitle_ok">All enabled accounts are up to date</string>
     <string name="sfp_hero_subtitle_warn">One or more accounts need a sync or sign-in</string>
     <string name="sfp_sync_all_now">Sync all now</string>
+    <!-- One line in the overview's status card, just above "Sync all now", shown only while Android's own automatic
+         sync switch ("Auto sync data" in Android's account settings) is off: then no account syncs by itself. "Sync"
+         is the app's sync buttons. About this short (it wraps to two lines at most); the status card's calm, plain
+         register. -->
+    <string name="sfp_auto_sync_off">Android\'s automatic sync is off: accounts sync only when you tap Sync</string>
     <string name="sfp_tile_logs">Sync log</string>
     <string name="sfp_tile_backup">Backup</string>
     <string name="sfp_tile_battery">Battery</string>
@@ -109,7 +117,6 @@
     <!-- Layout: settings_account_card.xml -->
     <string name="label_expand">Expand</string>
     <string name="label_display_name">Display name</string>
-    <string name="label_event_loop_interval">Event loop interval</string>
     <string name="label_fallback_full_sync">Fallback full sync</string>
     <string name="label_notify_on_failure">Notify on failure</string>
     <string name="btn_sync_contacts">Sync contacts</string>
@@ -185,7 +192,6 @@
     <string name="dialog_label_sync_reason">Reason: %s</string>
     <string name="dialog_title_past_events">Past events</string>
     <string name="dialog_title_future_events">Future events</string>
-    <string name="dialog_title_event_loop_interval">Event loop interval</string>
     <string name="dialog_title_contacts_fallback">Contacts fallback full sync</string>
     <string name="dialog_title_calendar_fallback">Calendar fallback full sync</string>
     <string name="dialog_title_remove_account">Remove account</string>
@@ -246,6 +252,24 @@
     <string name="notification_contacts_too_large_summary">These contacts on %1$s are too large for Android\'s contact storage. They remain complete on Proton:</string>
     <string name="notification_contacts_too_large_outdated">this phone keeps an older version</string>
     <string name="notification_contacts_too_large_missing">not on this phone</string>
+    <!-- Title of a notification about contacts the user deleted on this phone whose deletion Proton refused at three
+         syncs. They still exist on Proton and on the user's other devices; the phone keeps asking Proton to delete them
+         at every sync. The notification goes away by itself once each deletion reaches Proton. -->
+    <string name="notification_contacts_delete_refused_title">Some contacts could not be deleted on Proton</string>
+    <!-- Text of that notification, above a list of the contacts' names, one per line. %1$s is the Proton account (an
+         email address) the contacts belong to, as in "These new contacts on %1$s could not be saved to Proton". "them"
+         and "They" mean these contacts, the ones listed below. -->
+    <string name="notification_contacts_delete_refused_summary">These contacts on %1$s were deleted on this phone, but Proton refused to delete them. They still exist on Proton and on your other devices:</string>
+    <!-- Title of a notification about calendar events the user deleted on this phone whose deletion Proton refused at
+         three syncs. They still exist on Proton and on the user's other devices; the phone keeps asking Proton to delete
+         them at every sync, and they do not come back to this phone. The notification goes away by itself once each
+         deletion reaches Proton. The calendar counterpart of notification_contacts_delete_refused_title. -->
+    <string name="notification_events_delete_refused_title">Some events could not be deleted on Proton</string>
+    <!-- Text of that notification, above a list of the events' titles, one per line. %1$s is the Proton account (an
+         email address) the events belong to, as in "These events on %1$s were rejected by Proton and skipped". "them"
+         and "They" mean these events, the ones listed below. Do not say that the events come back to this phone: they
+         stay deleted here. -->
+    <string name="notification_events_delete_refused_summary">These events on %1$s were deleted on this phone, but Proton refused to delete them. They still exist on Proton and on your other devices:</string>
     <string name="notification_events_rejected_line" translatable="false">• %1$s: %2$s</string>
     <string name="notification_channel_sync_progress">Sync in progress</string>
     <string name="notification_channel_sync_progress_description">Silent ongoing notification while sync is running</string>
@@ -326,13 +350,30 @@
     <string name="label_sync_queued">Queued for sync</string>
     <string name="label_notify_in_progress">Show notification while syncing</string>
     <string name="error_no_internet">No internet connection. Sync will retry automatically.</string>
+    <!-- Shown instead of error_no_internet, in the sync failure notification and in the account card's failure dialog,
+         while a failed sync the user started is not tried again by itself: Android's own automatic sync switch
+         ("Auto sync data") is off, or the account's sync interval is Manual only. The first sentence is
+         error_no_internet's own. "Sync" is the app's sync buttons, as in sfp_auto_sync_off. Short, plain register. -->
+    <string name="error_no_internet_tap_sync">No internet connection. Tap Sync to try again.</string>
     <string name="error_timeout">Could not reach the server. Check your internet connection.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_too_many_requests">Too many requests. Sync will retry later.</string>
+    <!-- Shown instead of error_too_many_requests (Proton answered that too many requests came in a short time), in the
+         same places and the same state as error_no_internet_tap_sync. The first sentence is error_too_many_requests'
+         own; "Sync" is the app's sync buttons. Short, plain register. -->
+    <string name="error_too_many_requests_tap_sync">Too many requests. Tap Sync to try again.</string>
     <string name="error_server_error">Proton server error. Sync will retry automatically.</string>
+    <!-- Shown instead of error_server_error (Proton's servers answered with an error), in the same places and the same
+         state as error_no_internet_tap_sync. The first sentence is error_server_error's own; "Sync" is the app's sync
+         buttons. Short, plain register. -->
+    <string name="error_server_error_tap_sync">Proton server error. Tap Sync to try again.</string>
     <string name="error_request_rejected">Sync request was rejected by the server.</string>
     <string name="error_ssl">Secure connection failed. Check your network.</string>
     <string name="error_connection_interrupted">Connection was interrupted. Sync will retry.</string>
+    <!-- Shown instead of error_connection_interrupted (the connection broke off during the sync), in the same places
+         and the same state as error_no_internet_tap_sync. The first sentence is error_connection_interrupted's own;
+         "Sync" is the app's sync buttons. Short, plain register. -->
+    <string name="error_connection_interrupted_tap_sync">Connection was interrupted. Tap Sync to try again.</string>
     <string name="error_unexpected">Sync encountered an unexpected error.</string>
 
     <!-- ProtonSyncApp.kt -->
@@ -371,16 +412,23 @@
     <string name="label_info">More information</string>
     <string name="info_language_body">Sets the language used for this app\'s own screens. \"Auto\" follows your phone\'s system language. This only changes the app interface, it does not translate your synced calendar events or contacts.</string>
     <string name="info_display_name_body">The name shown for this account in Android Settings → Accounts and in calendar/contact app pickers. It\'s only a local label; changing it does not affect your Proton account.\n\nNote: Samsung Calendar and Samsung Contacts ignore custom account names and always show their own label (e.g. \"Proton\"). Your chosen name may not appear there, this is a Samsung limitation we can\'t change. Other apps (Google Calendar/Contacts) show it normally.</string>
-    <string name="info_event_loop_body">How often the app checks Proton in the background for remote changes to your contacts and calendar. Shorter intervals surface changes faster but use more battery and data. This is separate from manual sync, which you can trigger any time with the sync buttons.</string>
+    <!-- Behind the (i) of "Sync interval". Reworded in 2.2.0: the background checks run only while Android's own
+         automatic sync switch is on ("automatic sync" as in sfp_auto_sync_off). Info dialog body, neutral register. -->
+    <string name="info_event_loop_body">How often the app checks Proton in the background for remote changes to your contacts and calendar. These checks run only while Android\'s automatic sync is on; while it is off, nothing syncs by itself. Shorter intervals surface changes faster but use more battery and data. This is separate from manual sync, which you can trigger any time with the sync buttons.</string>
     <string name="info_notify_in_progress_body">Shows a silent, ongoing notification while a sync runs, with live progress (scanning, downloading, decrypting). It sits at the bottom of the notification shade and never makes a sound. Turn it off if you\'d rather sync run invisibly.</string>
     <string name="info_sync_contacts_body">When on, your Proton contacts sync two-way with Android\'s contacts: changes on either side are merged.\n\nNote: Samsung Contacts shows contacts under a single \"Proton contacts\" account label and hides the email subtitle for third-party accounts like ours, a hard-coded Samsung limitation we can\'t change. Google Contacts and most other apps display them normally.</string>
-    <string name="info_fallback_full_sync_body">How often the app does a complete re-check instead of a fast incremental sync. A full sync catches anything an incremental pass might miss (e.g. changes made while offline) at the cost of more time and data. Leave at the default unless you suspect items aren\'t syncing.</string>
+    <!-- Behind the (i) of both "Fallback full sync" rows. Reworded in 2.2.0: the re-check runs only while Android's own
+         automatic sync switch is on ("automatic sync" as in sfp_auto_sync_off). Info dialog body, neutral register. -->
+    <string name="info_fallback_full_sync_body">How often the app does a complete re-check instead of a fast incremental sync. It runs only while Android\'s automatic sync is on. A full sync catches anything an incremental pass might miss (e.g. changes made while offline) at the cost of more time and data. Leave at the default unless you suspect items aren\'t syncing.</string>
     <string name="info_notify_on_failure_body">Shows a notification if a sync fails (e.g. network error or expired session). Tap it for a plain-language reason and a link to the logs. Turn it off if you don\'t want to be alerted about transient failures.</string>
-    <string name="info_sync_calendar_body">When on, your Proton calendars sync into Android\'s calendar, so events appear in Google Calendar, Samsung Calendar and any other calendar app. Two-way: edits you make on the phone upload back to Proton for calendars you own.</string>
+    <string name="info_sync_calendar_body">When on, your Proton calendars sync into Android\'s calendar, so events appear in Google Calendar, Samsung Calendar and any other calendar app. Two-way: edits you make on the phone upload back to Proton for every calendar you can edit, including calendars others share with you.</string>
     <string name="info_include_external_calendars_body">Proton can hold subscribed calendars (e.g. an external ICS feed) and holiday calendars. These are read-only on Proton\'s side. When off, the app skips them and syncs only your own editable calendars. Turn on if you also want those read-only calendars mirrored to your phone.</string>
     <string name="info_sync_mode_body">\"All events\" syncs your entire calendar history and all future events, best if you want everything on your phone (the first sync of a large calendar can take several minutes). \"Custom range\" keeps large calendars fast by syncing only a window of days around today: their events outside the window aren\'t downloaded, and events already on this phone stay unless \"Remove older events from this phone\" is on for their calendar. Small calendars always sync whole.</string>
     <string name="label_trim_old_events">Remove older events from this phone</string>
-    <string name="info_trim_old_events_body">For the calendars you choose, events that ended more than a day before your range starts are removed from this phone, now and at later syncs. They stay in your Proton account and nothing is deleted there. Backups of your own calendars are made from Proton, so they still have them; subscribed and holiday calendars are not backed up. A repeating event stays, with all its earlier dates, while it continues into your range or has no end date, because the phone keeps a repeating event as one entry. Events with changes not yet sent to Proton also stay, and so do events created or last changed in the last 7 days, going by the version on this phone, not by when this phone downloaded it. Only calendars too large to sync whole can be chosen, and events after your range are never removed. To get removed events back, choose a longer range or \"All events\".</string>
+    <!-- Behind the info icon of label_trim_old_events. "At the next sync, and later ones once they are as old" as in
+         trim_dialog_intro: nothing is removed at once; with Android's automatic sync off, the next sync is one the user
+         starts. Info dialog body, neutral register. -->
+    <string name="info_trim_old_events_body">For the calendars you choose, events that ended more than a day before your range starts are removed from this phone at the next sync, and later ones once they are as old. They stay in your Proton account and nothing is deleted there. Backups of your own calendars are made from Proton, so they still have them; subscribed and holiday calendars are not backed up. A repeating event stays, with all its earlier dates, while it continues into your range or has no end date, because the phone keeps a repeating event as one entry. Events with changes not yet sent to Proton also stay, and so do events created or last changed in the last 7 days, going by the version on this phone, not by when this phone downloaded it. Only calendars too large to sync whole can be chosen, and events after your range are never removed. To get removed events back, choose a longer range or \"All events\".</string>
     <string name="trim_dialog_title">Remove older events from this phone</string>
     <string name="trim_dialog_intro">Choose the calendars to tidy up. Events that ended before %1$s are removed from this phone at the next sync, and later ones once they are as old. They stay in your Proton account. A repeating event that continues after that date stays, with all its dates.</string>
     <plurals name="trim_calendar_count">
@@ -400,6 +448,70 @@
     </plurals>
     <string name="trim_dialog_save">Save</string>
     <string name="trim_read_failed">The calendars on this phone could not be read, so nothing was changed.</string>
+    <!-- The "Default calendar" row on each account card, its (i), and the dialogs and toasts of its list.
+         label_default_calendar: the row's label, also the title of the list and of its dialogs. Use the term Proton's
+         own apps use in your language for the default calendar (German Proton: "Standardkalender"). Sentence case.
+         info_default_calendar_body: "main calendar" is Android's primary calendar, said plainly; Proton and Proton Mail
+         are brand names, never translated; "shared" means a calendar someone else shared with the user.
+         default_calendar_connecting: keep the single ellipsis character, as in name_repair_scanning.
+         default_calendar_changed: short; the row shows the calendar's name, so the toast does not repeat it.
+         default_calendar_unreachable: the change may or may not have arrived, so never say that nothing changed.
+         default_calendar_unreachable and default_calendar_refused are toasts, which Android 12 and later cut after two
+         lines: keep them about this short.
+         default_calendar_none_own: "its own" is the Proton account the card belongs to.
+         default_calendar_incomplete: dialog message (with OK) when Proton answered, but some of the account's
+         calendars could not be told apart as its own (for example a key of one of its addresses did not unlock), so no
+         list is shown rather than an incomplete one. It must not blame the connection. -->
+    <string name="label_default_calendar">Default calendar</string>
+    <string name="info_default_calendar_body">New events go to your default calendar in Proton, and this phone marks it as the account\'s main calendar. Changing it here changes it in Proton as well, so Proton on the web, Proton\'s apps and invitations you answer in Proton Mail use the new one. Only an active calendar of your own can be the default, not a shared, subscribed or holiday calendar.</string>
+    <string name="default_calendar_connecting">Connecting to Proton…</string>
+    <string name="default_calendar_changed">Default calendar changed</string>
+    <string name="default_calendar_unreachable">Proton could not be reached. Try again in a moment.</string>
+    <string name="default_calendar_refused">Proton did not accept the change, so nothing was changed.</string>
+    <string name="default_calendar_none_own">This account has no active calendar of its own that can be the default. Shared, subscribed and holiday calendars cannot be the default.</string>
+    <string name="default_calendar_incomplete">Not all of this account\'s calendars could be read, so its default calendar cannot be changed here.</string>
+    <!-- A new event that an app which is not a calendar app wrote into a calendar someone else shared with the user:
+         it waits on this phone until the user chooses (the notification, its decision dialog, the account card's rows).
+         A "shared calendar" is one another Proton user shared with the user.
+         notification_new_event_hold_title: the notification's and the one-event dialog's title, also the title of the
+         info dialog behind both card rows' info icons.
+         notification_new_event_hold_body: %1$s = the package name Android recorded for the app that wrote the event, for
+         example com.example.booking, shown as is; %2$s = the event title; %3$s = the calendar's name. "Would see": the
+         event has NOT been sent yet. Use the locale's quotation marks instead of the English ones.
+         notification_new_event_hold_body_unknown_app: when Android recorded no app; %1$s = the event title, %2$s = the
+         calendar's name.
+         action_new_event_move: %1$s = the user's default calendar, where the event goes instead of the shared one. The
+         first notification button and the dialog's main button: keep it short, three buttons share one line.
+         action_new_event_publish: sends the event to the shared calendar, so that its members see it; NOT "make public
+         on the internet". Very short: the third notification button.
+         label_new_event_holds: the account card's header line (with a warning sign), the Calendar section row that
+         opens the dialogs one by one, and the title of those dialogs.
+         label_new_event_kept: the Calendar section row listing the events the user kept on this phone, and the title of
+         their dialogs.
+         info_new_event_holds_body: behind both rows' info icons and below the event in the dialog; the one place that
+         says what Keep on phone costs. "Keep on phone" is remote_deletion_keep, the button's own text. -->
+    <string name="notification_new_event_hold_title">New event in a shared calendar</string>
+    <string name="notification_new_event_hold_body">%1$s added “%2$s” to %3$s. Others who share this calendar would see it.</string>
+    <string name="notification_new_event_hold_body_unknown_app">An app added “%1$s” to %2$s. Others who share this calendar would see it.</string>
+    <string name="action_new_event_move">Move to %1$s</string>
+    <string name="action_new_event_publish">Publish</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d event waiting for your choice</item>
+        <item quantity="other">%d events waiting for your choice</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d event kept only on this phone</item>
+        <item quantity="other">%d events kept only on this phone</item>
+    </plurals>
+    <!-- notification_new_event_hold_more: the text of ONE notification (titled notification_new_event_hold_title) that
+         stands for the waiting events past the five that get a notification of their own; tapping it opens the
+         decision dialogs one by one. %d = how many more, never fewer than 1. "More" means beyond those five
+         notifications. One line, worded like label_new_event_holds. -->
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">%d more event waiting for your choice</item>
+        <item quantity="other">%d more events waiting for your choice</item>
+    </plurals>
+    <string name="info_new_event_holds_body">When an app that is not a calendar app adds an event to a calendar someone shared with you, the event waits on this phone until you choose. Move puts it in your default calendar instead. Publish sends it to the shared calendar, where everyone who shares it can see it. Keep on phone never sends it to Proton: Proton Calendar, the web, your other devices and this app\'s backups will not have it, and it is lost if you remove this app or this account. Kept events stay listed on this account\'s card, where you can still move or publish them.</string>
     <string name="info_sync_range_window_body">How many days before and after today to sync when \"Custom range\" is selected. Larger windows show more of your calendar but take longer to sync. Has no effect in \"All events\" mode.</string>
     <string name="info_poll_attendee_body">When on, the app periodically re-checks events that have attendees to detect accept/decline/tentative responses. Proton\'s change feed doesn\'t report RSVP changes, so this needs extra API calls, only worth enabling if you rely on seeing attendees\' responses on your phone.</string>
     <string name="info_send_invites_body">When you add attendees to an event on your phone, email them an invitation. Off by default: turn on only if you want the app to email participants on your behalf.</string>
@@ -407,7 +519,10 @@
     <string name="info_send_cancellations_body">Email attendees when you delete an event they\'re invited to, so their calendars remove it too. Off by default.</string>
     <string name="info_invite_subject_title_body">When sending invitation emails, put the event\'s title in the email subject line so recipients recognize it at a glance. Off by default for privacy: email subjects aren\'t encrypted in standard mail transport, so the title would be visible to mail servers along the route.</string>
     <string name="info_background_sync_body">Android may pause background sync to save battery, which can delay or stop automatic syncing. Excluding this app from battery optimization keeps scheduled syncs running reliably. Use the button to open the system battery settings for the app.</string>
-    <string name="info_verbose_logging_body">Captures extra diagnostic detail (auth state, key unlock, sync internals) in the log, helpful when reporting a problem. The app replaces email addresses in it with short codes, but it may include account and calendar names, so only share logs with the developer. Leave off for normal use.</string>
+    <!-- Behind the info icon of the Verbose logging switch. "While it is on": while the switch is on, the log also names
+         the user's calendars and the apps (other apps on the phone) that add events to them. Info dialog body, neutral
+         register. -->
+    <string name="info_verbose_logging_body">Captures extra diagnostic detail (auth state, key unlock, sync internals) in the log, helpful when reporting a problem. While it is on, the log also names your calendars and the apps that add events to them. The app replaces email addresses in the log with short codes, but it may include account and calendar names, so only share logs with the developer. Leave off for normal use.</string>
     <string name="info_file_logging_body">Writes the app log to a timestamped text file (sync-for-proton-log-….txt) in a folder you choose. The app otherwise keeps its log in memory only, so turn this on to capture a problem that is hard to reproduce. A new file is created each time the app starts. The app replaces email addresses in it with short codes, but it may include account and calendar names, so only share it with the developer. Leave off for normal use.</string>
     <string name="info_timezone_updates_text">Event times depend on time zone rules, and countries change these rules from time to time. Android keeps them in the phone\'s time zone data, which arrives with system updates. A phone that no longer gets them, for example an older Android version or a phone without Google Play system updates, keeps the old rules, and events in places whose rules have changed since then can show at the wrong time.\n\nTime zone data on this phone: version %1$s\n\nWhen off (the default), the app uses the phone\'s own time zone data and sends nothing to www.tzurl.org.\n\nWhen on, the app downloads the current rules for each time zone your events use from www.tzurl.org, a third-party service, at most once per time zone each time the app starts, and uses them only if they are newer than the phone\'s own. www.tzurl.org then sees your IP address and the names of those time zones, for example Europe/Berlin. Nothing else about your events or accounts is sent. If www.tzurl.org cannot be reached, the phone\'s own data is used. Repeating events are still calculated from the phone\'s own data.\n\nAfter a change, events already on the phone are checked and corrected at the next sync.</string>
     <string name="tz_data_version_unknown">unknown</string>
@@ -505,7 +620,7 @@
         <item>custom</item>
     </string-array>
 
-    <!-- Event loop interval options (min 15m per WorkManager) -->
+    <!-- Sync interval options (Android's periodic sync; JobScheduler's minimum is 15 minutes) -->
     <string-array name="sync_interval_entries">
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -593,6 +708,15 @@
     <string name="backup_retention_label">Keep the last</string>
     <string name="backup_unit_runs">backups</string>
     <string name="backup_default_retention" translatable="false">14</string>
+    <!-- The switch in the Schedule section of the Data backups screen, off by default: scheduled backups then follow
+         Android's own automatic sync switch ("automatic sync" as in sfp_auto_sync_off).
+         backup_when_auto_sync_off_label: the switch's label, also the title of its info dialog. Keep it short: it shares
+         one line with the info icon and the switch. Sentence case.
+         info_backup_when_auto_sync_off_body: behind the switch's info icon. "Auto sync data" is the name of Android's
+         switch in its account settings: use the name Android shows in your language if you know it, else translate it
+         plainly. "Back up now" is backup_run_now, the button's own text. Info dialog body, neutral register. -->
+    <string name="backup_when_auto_sync_off_label">Back up even when automatic sync is off</string>
+    <string name="info_backup_when_auto_sync_off_body">Android\'s \"Auto sync data\" switch stops background syncing for all apps, and scheduled backups follow it: while it is off, a scheduled backup is skipped, and this screen says so under \"Back up now\". Turn this on to run scheduled backups anyway. Each backup downloads all your calendars and contacts from Proton, which can use a lot of mobile data. \"Back up now\" always works.</string>
 
     <string name="backup_section_contents">What to back up</string>
     <string name="backup_include_calendars_label">Calendars (.ics)</string>
@@ -618,6 +742,11 @@
     <string name="backup_running">Backing up…</string>
     <string name="backup_last_never">No backup yet.</string>
     <string name="backup_last_run">Last backup: %1$s, %2$s</string>
+    <!-- A second line under backup_last_run after a scheduled backup was skipped because Android's own automatic sync
+         switch is off ("automatic sync" as in sfp_auto_sync_off). Shown only while that switch is still off, so "is
+         off" is the present state; the next backup removes it. %1$s is the date and time of the skip, written like
+         backup_last_run's date (2026-11-22 03:00). Short, plain register. -->
+    <string name="backup_last_skipped_auto_sync_off">Scheduled backup skipped on %1$s: Android\'s automatic sync is off</string>
 
     <string name="backup_decrypt_action">Decrypt a backup…</string>
     <string name="backup_decrypt_body">Pick an encrypted backup file (.gpg) and enter its password. The contents will be saved, decrypted, into your backup folder.</string>

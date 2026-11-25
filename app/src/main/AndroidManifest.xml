@@ -33,6 +33,28 @@
          play flavor manifest only (src/play/AndroidManifest.xml), so the direct
          build carries no Play-billing permission. -->
 
+    <!-- Package visibility: the calendar apps' new-event screens (ACTION_INSERT for both event MIME types) and
+         nothing else, so CalendarEditors can tell an event saved in a calendar app's editor from one another app
+         wrote straight into a calendar shared with the user. INSERT only: EDIT would also let viewers and widgets
+         through. A content: intent also matches a filter that names only the type. No path attributes: they are
+         not allowed here. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.INSERT" />
+            <data
+                android:scheme="content"
+                android:host="com.android.calendar"
+                android:mimeType="vnd.android.cursor.dir/event" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.INSERT" />
+            <data
+                android:scheme="content"
+                android:host="com.android.calendar"
+                android:mimeType="vnd.android.cursor.item/event" />
+        </intent>
+    </queries>
+
     <application
         android:name=".ProtonSyncApp"
         android:allowBackup="false"
@@ -113,6 +135,11 @@
         <!-- Event collision prompt actions (Keep Proton's / Keep mine) -->
         <receiver
             android:name=".calendar.EventConflictReceiver"
+            android:exported="false" />
+
+        <!-- New event in a shared calendar prompt actions (Move to the default calendar / Keep on phone / Publish) -->
+        <receiver
+            android:name=".calendar.NewEventHoldReceiver"
             android:exported="false" />
 
         <!-- Login activity -->

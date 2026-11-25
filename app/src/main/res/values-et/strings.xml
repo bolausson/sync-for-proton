@@ -42,7 +42,6 @@
     <string name="exclude_external_calendars_summary">J\u00e4ta vahele tellitud/imporditud kalendrid (nt Google)</string>
     <string name="label_expand">Laienda</string>
     <string name="label_display_name">Kuvatav nimi</string>
-    <string name="label_event_loop_interval">S\u00fcndmusets\u00fckli intervall</string>
     <string name="label_fallback_full_sync">Varukoopia t\u00e4iss\u00fcnkroonimine</string>
     <string name="label_notify_on_failure">T\u00f5rke korral teavita</string>
     <string name="label_notify_in_progress">N\u00e4ita s\u00fcnkroonimise ajal teavitust</string>
@@ -114,7 +113,6 @@
     <string name="dialog_label_sync_reason">P\u00f5hjus: %s</string>
     <string name="dialog_title_past_events">Varasemad s\u00fcndmused</string>
     <string name="dialog_title_future_events">Tulevased s\u00fcndmused</string>
-    <string name="dialog_title_event_loop_interval">S\u00fcndmusets\u00fckli intervall</string>
     <string name="dialog_title_contacts_fallback">Kontaktide varukoopia t\u00e4iss\u00fcnkroonimine</string>
     <string name="dialog_title_calendar_fallback">Kalendri varukoopia t\u00e4iss\u00fcnkroonimine</string>
     <string name="dialog_title_remove_account">Eemalda konto</string>
@@ -171,13 +169,17 @@
     <string name="notification_sync_failed_title">%s s\u00fcnkroonimine eba\u00f5nnestus</string>
     <string name="notification_action_view_details">Vaata \u00fcksikasjad</string>
     <string name="error_no_internet">Internetiuhendus puudub. S\u00fcnkroonimine proovitakse automaatselt uuesti.</string>
+    <string name="error_no_internet_tap_sync">Internetiuhendus puudub. Puudutage nuppu S\u00fcnkrooni, et uuesti proovida.</string>
     <string name="error_timeout">Serveriga ei \u00f5nnestunud \u00fchendust luua. Kontrollige internetiuhendust.</string>
     <string name="error_session_expired">Teie seanss on aegunud. Palun logige uuesti sisse.</string>
     <string name="error_too_many_requests">Liiga palju p\u00e4ringuid. S\u00fcnkroonimine proovitakse hiljem uuesti.</string>
+    <string name="error_too_many_requests_tap_sync">Liiga palju p\u00e4ringuid. Puudutage nuppu S\u00fcnkrooni, et uuesti proovida.</string>
     <string name="error_server_error">Proton serveri viga. S\u00fcnkroonimine proovitakse automaatselt uuesti.</string>
+    <string name="error_server_error_tap_sync">Proton serveri viga. Puudutage nuppu S\u00fcnkrooni, et uuesti proovida.</string>
     <string name="error_request_rejected">S\u00fcnkroonimise p\u00e4ring l\u00fckati serveri poolt tagasi.</string>
     <string name="error_ssl">Turvaline \u00fchendus eba\u00f5nnestus. Kontrollige oma v\u00f5rku.</string>
     <string name="error_connection_interrupted">\u00dchendus katkes. S\u00fcnkroonimine proovitakse uuesti.</string>
+    <string name="error_connection_interrupted_tap_sync">\u00dchendus katkes. Puudutage nuppu S\u00fcnkrooni, et uuesti proovida.</string>
     <string name="error_unexpected">S\u00fcnkroonimisel ilmnes ootamatu viga.</string>
     <string name="notification_channel_auth">Autentimine</string>
     <string name="notification_channel_auth_description">Sisselogimise n\u00f5ude teavitused</string>
@@ -267,16 +269,16 @@
     <string name="label_info">Lisateave</string>
     <string name="info_language_body">Määrab keele, mida kasutatakse selle rakenduse enda ekraanidel. „Auto\" järgib teie telefoni süsteemikeelt. See muudab ainult rakenduse liidest, see ei tõlgi teie sünkroonitud kalendrisündmusi ega kontakte.</string>
     <string name="info_display_name_body">Selle konto jaoks kuvatav nimi rakenduses Androidi seaded → Kontod ning kalendri-/kontaktirakenduste valijates. See on ainult kohalik silt; selle muutmine ei mõjuta teie Proton kontot.\n\nMärkus: Samsung Calendar ja Samsung Contacts eiravad kohandatud kontonimesid ja kuvavad alati oma silti (nt „Proton\"). Teie valitud nimi ei pruugi seal ilmuda, see on Samsungi piirang, mida me ei saa muuta. Teised rakendused (Google Calendar/Contacts) kuvavad seda tavapäraselt.</string>
-    <string name="info_event_loop_body">Kui sageli rakendus taustal Protonist teie kontaktide ja kalendri kaugmuudatusi kontrollib. Lühemad intervallid näitavad muudatusi kiiremini, kuid kasutavad rohkem akut ja andmeid. See on eraldi käsitsi sünkroonimisest, mille saate sünkroonimisnuppudega igal ajal käivitada.</string>
+    <string name="info_event_loop_body">Kui sageli rakendus taustal Protonist teie kontaktide ja kalendri kaugmuudatusi kontrollib. Need kontrollid toimuvad ainult siis, kui Androidi automaatne sünkroonimine on sisse lülitatud; kui see on välja lülitatud, ei sünkroonita midagi iseenesest. Lühemad intervallid näitavad muudatusi kiiremini, kuid kasutavad rohkem akut ja andmeid. See on eraldi käsitsi sünkroonimisest, mille saate sünkroonimisnuppudega igal ajal käivitada.</string>
     <string name="info_notify_in_progress_body">Näitab sünkroonimise ajal vaikset püsivat teavitust koos reaalajas edenemisega (skannimine, allalaadimine, dekrüpteerimine). See asub teavituspaani allosas ega tee kunagi heli. Lülitage see välja, kui eelistate, et sünkroonimine toimuks nähtamatult.</string>
     <string name="info_sync_contacts_body">Kui sisse lülitatud, sünkroonitakse teie Proton kontaktid kahesuunaliselt Androidi kontaktidega: mõlema poole muudatused liidetakse.\n\nMärkus: Samsung Contacts kuvab kontaktid ühe „Proton contacts\" kontosildi all ja peidab e-posti alapealkirja kolmandate osapoolte kontode puhul, nagu meie oma, Samsungi koodi sisse kirjutatud piirang, mida me ei saa muuta. Google Contacts ja enamik teisi rakendusi kuvavad neid tavapäraselt.</string>
-    <string name="info_fallback_full_sync_body">Kui sageli rakendus teeb täieliku uuesti kontrolli kiire inkrementaalse sünkroonimise asemel. Täissünkroonimine püüab kinni kõik, mille inkrementaalne käik võib vahele jätta (nt võrguühenduseta tehtud muudatused), rohkema aja ja andmete hinnaga. Jätke vaikeväärtusele, kui te ei kahtlusta, et elemendid ei sünkroonita.</string>
+    <string name="info_fallback_full_sync_body">Kui sageli rakendus teeb täieliku uuesti kontrolli kiire inkrementaalse sünkroonimise asemel. See toimub ainult siis, kui Androidi automaatne sünkroonimine on sisse lülitatud. Täissünkroonimine püüab kinni kõik, mille inkrementaalne käik võib vahele jätta (nt võrguühenduseta tehtud muudatused), rohkema aja ja andmete hinnaga. Jätke vaikeväärtusele, kui te ei kahtlusta, et elemendid ei sünkroonita.</string>
     <string name="info_notify_on_failure_body">Näitab teavitust, kui sünkroonimine ebaõnnestub (nt võrguviga või aegunud seanss). Puudutage seda lihtsas keeles põhjuse ja logide lingi saamiseks. Lülitage see välja, kui te ei soovi, et teid teavitataks ajutistest tõrgetest.</string>
-    <string name="info_sync_calendar_body">Kui sisse lülitatud, sünkroonitakse teie Proton kalendrid Androidi kalendrisse, nii et sündmused ilmuvad rakendustes Google Calendar, Samsung Calendar ja kõigis muudes kalendrirakendustes. Kahesuunaline: telefonis tehtud muudatused laaditakse tagasi Protonisse teile kuuluvate kalendrite jaoks.</string>
+    <string name="info_sync_calendar_body">Kui sisse lülitatud, sünkroonitakse teie Proton kalendrid Androidi kalendrisse, nii et sündmused ilmuvad rakendustes Google Calendar, Samsung Calendar ja kõigis muudes kalendrirakendustes. Kahesuunaline: telefonis tehtud muudatused laaditakse tagasi Protonisse kõigi kalendrite jaoks, mida saate muuta, ka nende jaoks, mida teised on teiega jaganud.</string>
     <string name="info_include_external_calendars_body">Proton võib sisaldada tellitud kalendreid (nt väline ICS voog) ja pühade kalendreid. Need on Protoni poolel ainult lugemiseks. Kui välja lülitatud, jätab rakendus need vahele ja sünkroonib ainult teie enda muudetavad kalendrid. Lülitage sisse, kui soovite, et need ainult loetavad kalendrid peegelduksid samuti teie telefoni.</string>
     <string name="info_sync_mode_body">„Kõik sündmused“ sünkroonib teie kogu kalendriajaloo ja kõik tulevased sündmused, parim, kui soovite kõike oma telefonis (suure kalendri esimene sünkroonimine võib võtta mitu minutit). „Kohandatud vahemik“ hoiab suured kalendrid kiirena, sünkroonides ainult tänase ümber oleva päevade akna: nende aknast väljas olevaid sündmusi alla ei laadita ja selles telefonis juba olevad sündmused jäävad alles, kui nende kalendri jaoks pole valik „Eemalda vanemad sündmused sellest telefonist“ sisse lülitatud. Väikesed kalendrid sünkroonitakse alati tervikuna.</string>
     <string name="label_trim_old_events">Eemalda vanemad sündmused sellest telefonist</string>
-    <string name="info_trim_old_events_body">Teie valitud kalendrite sündmused, mis lõppesid rohkem kui päev enne teie vahemiku algust, eemaldatakse sellest telefonist nii kohe kui ka hilisematel sünkroonimistel. Need jäävad teie Protoni kontole ja seal ei kustutata midagi. Teie enda kalendrite varukoopiad tehakse Protonist, seega on need sündmused neis endiselt olemas; tellitud kalendreid ja pühade kalendreid ei varundata. Korduv sündmus jääb koos kõigi oma varasemate kuupäevadega alles seni, kuni see ulatub teie vahemikku või sellel pole lõppkuupäeva, sest telefon hoiab korduvat sündmust ühe kirjena. Alles jäävad ka sündmused, mille muudatusi pole veel Protonisse saadetud, ning sündmused, mis on viimase 7 päeva jooksul loodud või viimati muudetud, otsustades selles telefonis oleva versiooni järgi, mitte selle järgi, millal telefon selle alla laadis. Valida saab ainult kalendreid, mis on tervikuna sünkroonimiseks liiga suured, ja teie vahemikust hilisemaid sündmusi ei eemaldata kunagi. Eemaldatud sündmuste tagasisaamiseks valige pikem vahemik või „Kõik sündmused“.</string>
+    <string name="info_trim_old_events_body">Teie valitud kalendrite sündmused, mis lõppesid rohkem kui päev enne teie vahemiku algust, eemaldatakse sellest telefonist järgmisel sünkroonimisel ja hilisemad siis, kui need on sama vanaks saanud. Need jäävad teie Protoni kontole ja seal ei kustutata midagi. Teie enda kalendrite varukoopiad tehakse Protonist, seega on need sündmused neis endiselt olemas; tellitud kalendreid ja pühade kalendreid ei varundata. Korduv sündmus jääb koos kõigi oma varasemate kuupäevadega alles seni, kuni see ulatub teie vahemikku või sellel pole lõppkuupäeva, sest telefon hoiab korduvat sündmust ühe kirjena. Alles jäävad ka sündmused, mille muudatusi pole veel Protonisse saadetud, ning sündmused, mis on viimase 7 päeva jooksul loodud või viimati muudetud, otsustades selles telefonis oleva versiooni järgi, mitte selle järgi, millal telefon selle alla laadis. Valida saab ainult kalendreid, mis on tervikuna sünkroonimiseks liiga suured, ja teie vahemikust hilisemaid sündmusi ei eemaldata kunagi. Eemaldatud sündmuste tagasisaamiseks valige pikem vahemik või „Kõik sündmused“.</string>
     <string name="trim_dialog_title">Eemalda vanemad sündmused sellest telefonist</string>
     <string name="trim_dialog_intro">Valige kalendrid, mida soovite korrastada. Sündmused, mis lõppesid enne %1$s, eemaldatakse sellest telefonist järgmisel sünkroonimisel ja hilisemad siis, kui need on sama vanaks saanud. Need jäävad teie Protoni kontole. Korduv sündmus, mis jätkub pärast seda kuupäeva, jääb alles koos kõigi oma kuupäevadega.</string>
     <plurals name="trim_calendar_count">
@@ -296,6 +298,32 @@
     </plurals>
     <string name="trim_dialog_save">Salvesta</string>
     <string name="trim_read_failed">Selle telefoni kalendreid ei õnnestunud lugeda, seega midagi ei muudetud.</string>
+    <string name="label_default_calendar">Vaikekalender</string>
+    <string name="info_default_calendar_body">Uued sündmused lähevad Protonis teie vaikekalendrisse, mille see telefon märgib konto põhikalendriks. Kui muudate vaikekalendrit siin, muutub see ka Protonis, nii et Protoni veebiversioon, Protoni rakendused ja kutsed, millele vastate Proton Mailis, kasutavad uut kalendrit. Vaikekalendriks saab olla ainult teie enda aktiivne kalender, mitte jagatud, tellitud ega pühade kalender.</string>
+    <string name="default_calendar_connecting">Ühenduse loomine Protoniga…</string>
+    <string name="default_calendar_changed">Vaikekalender muudetud</string>
+    <string name="default_calendar_unreachable">Protoniga ei saadud ühendust. Proovige mõne hetke pärast uuesti.</string>
+    <string name="default_calendar_refused">Proton ei võtnud muudatust vastu, seega midagi ei muudetud.</string>
+    <string name="default_calendar_none_own">Sellel kontol pole ühtegi oma aktiivset kalendrit, mis saaks olla vaikekalendriks. Jagatud, tellitud ja pühade kalendrid ei saa olla vaikekalendriks.</string>
+    <string name="default_calendar_incomplete">Kõiki selle konto kalendreid ei õnnestunud lugeda, seega ei saa selle vaikekalendrit siin muuta.</string>
+    <string name="notification_new_event_hold_title">Uus sündmus jagatud kalendris</string>
+    <string name="notification_new_event_hold_body">%1$s lisas sündmuse „%2$s“ kalendrisse %3$s. Teised, kellel on sellele kalendrile juurdepääs, näeksid seda.</string>
+    <string name="notification_new_event_hold_body_unknown_app">Üks rakendus lisas sündmuse „%1$s“ kalendrisse %2$s. Teised, kellel on sellele kalendrile juurdepääs, näeksid seda.</string>
+    <string name="action_new_event_move">Teisalda kalendrisse %1$s</string>
+    <string name="action_new_event_publish">Avalda</string>
+    <plurals name="label_new_event_holds">
+        <item quantity="one">%d sündmus ootab teie valikut</item>
+        <item quantity="other">%d sündmust ootab teie valikut</item>
+    </plurals>
+    <plurals name="label_new_event_kept">
+        <item quantity="one">%d sündmus on säilitatud ainult selles telefonis</item>
+        <item quantity="other">%d sündmust on säilitatud ainult selles telefonis</item>
+    </plurals>
+    <plurals name="notification_new_event_hold_more">
+        <item quantity="one">Veel %d sündmus ootab teie valikut</item>
+        <item quantity="other">Veel %d sündmust ootab teie valikut</item>
+    </plurals>
+    <string name="info_new_event_holds_body">Kui rakendus, mis ei ole kalendrirakendus, lisab sündmuse kalendrisse, mille keegi on teiega jaganud, ootab sündmus selles telefonis, kuni teete valiku. „Teisalda“ paneb selle hoopis teie vaikekalendrisse. „Avalda“ saadab selle jagatud kalendrisse, kus seda näevad kõik, kellel on sellele kalendrile juurdepääs. „Säilita telefonis“ ei saada seda kunagi Protonisse: seda ei ole Proton Calendaris, veebis, teie teistes seadmetes ega selle rakenduse varukoopiates ning see läheb kaotsi, kui eemaldate selle rakenduse või selle konto. Säilitatud sündmused on jätkuvalt näha selle konto kaardil, kus saate need endiselt teisaldada või avaldada.</string>
     <string name="info_sync_range_window_body">Mitu päeva enne ja pärast tänast sünkroonida, kui on valitud „Kohandatud vahemik\". Suuremad aknad näitavad rohkem teie kalendrist, kuid sünkroonimine võtab kauem. Režiimis „Kõik sündmused\" pole sellel mõju.</string>
     <string name="info_poll_attendee_body">Kui sisse lülitatud, kontrollib rakendus perioodiliselt uuesti sündmusi, millel on osalejaid, et tuvastada vastuseid nõustu/keeldu/esialgne. Protoni muudatuste voog ei teata RSVP muudatustest, seega vajab see lisa-API-päringuid, tasub lubada ainult siis, kui sõltute osalejate vastuste nägemisest oma telefonis.</string>
     <string name="info_send_invites_body">Kui lisate oma telefonis sündmusele osalejaid, saatke neile e-postiga kutse. Vaikimisi väljas: lülitage sisse ainult siis, kui soovite, et rakendus saadaks teie nimel osalejatele e-kirju.</string>
@@ -303,7 +331,7 @@
     <string name="info_send_cancellations_body">Saatke osalejatele e-kiri, kui kustutate sündmuse, millele nad on kutsutud, et ka nende kalendrid selle eemaldaksid. Vaikimisi väljas.</string>
     <string name="info_invite_subject_title_body">Kutse-e-kirjade saatmisel pange sündmuse pealkiri e-kirja teemaritta, et adressaadid selle kohe ära tunneksid. Vaikimisi väljas privaatsuse huvides: e-kirja teemaread ei ole tavalises postiedastuses krüpteeritud, seega oleks pealkiri marsruudil olevatele meiliserveritele nähtav.</string>
     <string name="info_background_sync_body">Android võib aku säästmiseks taustasünkroonimise peatada, mis võib automaatset sünkroonimist edasi lükata või peatada. Selle rakenduse välistamine aku optimeerimisest hoiab ajastatud sünkroonimised usaldusväärselt töötamas. Kasutage nuppu, et avada rakenduse jaoks süsteemi akuseaded.</string>
-    <string name="info_verbose_logging_body">Salvestab logisse täiendavaid diagnostikaandmeid (autentimisolek, võtmete avamine, sünkroonimise sisemine toimimine), kasulik probleemist teatamisel. Rakendus asendab logis olevad e-posti aadressid lühikeste koodidega, kuid logi võib sisaldada kontode ja kalendrite nimesid, seega jagage logisid ainult arendajaga. Tavakasutuseks jätke välja.</string>
+    <string name="info_verbose_logging_body">Salvestab logisse täiendavaid diagnostikaandmeid (autentimisolek, võtmete avamine, sünkroonimise sisemine toimimine), kasulik probleemist teatamisel. Kui see valik on sisse lülitatud, on logis ka teie kalendrite ja neisse sündmusi lisavate rakenduste nimed. Rakendus asendab logis olevad e-posti aadressid lühikeste koodidega, kuid logi võib sisaldada kontode ja kalendrite nimesid, seega jagage logisid ainult arendajaga. Tavakasutuses jätke välja lülitatuks.</string>
     <string name="info_file_logging_body">Kirjutab rakenduse logi ajatempliga tekstifaili (sync-for-proton-log-….txt) teie valitud kausta. Muidu hoiab rakendus logi ainult mälus, seega lülitage see sisse, et jäädvustada raskesti korratav probleem. Iga rakenduse käivitamisel luuakse uus fail. Rakendus asendab failis olevad e-posti aadressid lühikeste koodidega, kuid fail võib sisaldada kontode ja kalendrite nimesid, seega jagage seda ainult arendajaga. Tavakasutuses jätke välja lülitatuks.</string>
     <string name="info_timezone_updates_text">Sündmuste kellaajad sõltuvad ajavööndite reeglitest ja riigid muudavad neid reegleid aeg-ajalt. Android hoiab neid telefoni ajavööndiandmetes, mis tulevad koos süsteemivärskendustega. Telefon, mis neid enam ei saa, näiteks vanema Androidi versiooniga või ilma Google Play süsteemivärskendusteta, jääb vanade reeglite juurde ja sündmused kohtades, kus reeglid on vahepeal muutunud, võivad ilmuda vale kellaajaga.\n\nAjavööndiandmed selles telefonis: versioon %1$s\n\nKui välja lülitatud (vaikimisi), kasutab rakendus telefoni enda ajavööndiandmeid ega saada teenusele www.tzurl.org midagi.\n\nKui sisse lülitatud, laadib rakendus iga teie sündmustes kasutatava ajavööndi kehtivad reeglid alla kolmanda osapoole teenusest www.tzurl.org, iga ajavööndi kohta kõige rohkem ühe korra pärast iga rakenduse käivitamist, ja kasutab neid ainult siis, kui need on telefoni omadest uuemad. www.tzurl.org näeb siis teie IP-aadressi ja nende ajavööndite nimesid, näiteks Europe/Berlin. Muud teavet teie sündmuste ega kontode kohta ei saadeta. Kui www.tzurl.org pole kättesaadav, kasutatakse telefoni andmeid. Korduvaid sündmusi arvutatakse endiselt telefoni andmetega.\n\nPärast muudatust kontrollitakse ja parandatakse telefonis juba olevad sündmused järgmisel sünkroonimisel.</string>
     <string name="tz_data_version_unknown">teadmata</string>
@@ -385,6 +413,8 @@
     <string name="backup_unit_days">päeva tagant</string>
     <string name="backup_retention_label">Säilita viimased</string>
     <string name="backup_unit_runs">varukoopiat</string>
+    <string name="backup_when_auto_sync_off_label">Varunda ka siis, kui automaatne sünkroonimine on väljas</string>
+    <string name="info_backup_when_auto_sync_off_body">Androidi lüliti „Andmete automaatne sünkroonimine“ peatab kõigi rakenduste taustasünkroonimise ja ajastatud varundamine järgib seda: kui lüliti on välja lülitatud, jäetakse ajastatud varundamine vahele ja sellel ekraanil kuvatakse sellest teade nupu „Varunda kohe“ all. Lülitage see valik sisse, et ajastatud varundamine toimuks ikkagi. Iga varundamine laadib Protonist alla kõik teie kalendrid ja kontaktid, mis võib kulutada palju mobiilset andmesidet. „Varunda kohe“ töötab alati.</string>
     <string name="backup_section_contents">Mida varundada</string>
     <string name="backup_include_calendars_label">Kalendrid (.ics)</string>
     <string name="backup_include_contacts_label">Kontaktid (.vcf)</string>
@@ -407,6 +437,7 @@
     <string name="backup_running">Varundamine…</string>
     <string name="backup_last_never">Varukoopiat pole veel.</string>
     <string name="backup_last_run">Viimane varukoopia: %1$s, %2$s</string>
+    <string name="backup_last_skipped_auto_sync_off">Ajastatud varundamine jäeti %1$s vahele: Androidi automaatne sünkroonimine on väljas</string>
     <string name="backup_decrypt_action">Dekrüpteeri varukoopia…</string>
     <string name="backup_decrypt_body">Valige krüpteeritud varukoopia fail (.gpg) ja sisestage selle parool. Sisu salvestatakse dekrüpteerituna teie varukoopiate kausta.</string>
     <string name="backup_decrypting">Dekrüpteerimine…</string>
@@ -463,7 +494,7 @@
     <string name="sfp_group_account">Konto</string>
     <string name="sfp_group_contacts">Kontaktid</string>
     <string name="sfp_group_calendar">Kalender</string>
-    <string name="sfp_event_loop_subtitle">Kui sageli kaugmuudatusi kontrollida</string>
+    <string name="sfp_event_loop_subtitle">Kui sageli kaugmuudatusi kontrollida ajal, mil Androidi automaatne sünkroonimine on sees</string>
     <string name="sfp_show_advanced">Näita e-posti ja täpsemaid valikuid</string>
     <string name="sfp_hide_advanced">Peida e-post ja täpsemad valikud</string>
     <string name="sfp_group_email_attendees">E-kiri osalejatele</string>
@@ -474,6 +505,7 @@
     <string name="sfp_hero_subtitle_ok">Kõik lubatud kontod on ajakohased</string>
     <string name="sfp_hero_subtitle_warn">Üks või mitu kontot vajavad sünkroonimist või sisselogimist</string>
     <string name="sfp_sync_all_now">Sünkrooni kõik kohe</string>
+    <string name="sfp_auto_sync_off">Androidi automaatne sünkroonimine on väljas: kontod sünkroonitakse ainult nupuga Sünkrooni</string>
     <string name="sfp_tile_logs">Sünkroonimise logi</string>
     <string name="sfp_tile_backup">Varukoopia</string>
     <string name="sfp_tile_battery">Aku</string>
@@ -512,6 +544,10 @@
     <string name="notification_contacts_too_large_summary">Need kontaktid kontol %1$s on Androidi kontaktide salvestusruumi jaoks liiga suured. Protonis jäävad need terviklikuks:</string>
     <string name="notification_contacts_too_large_outdated">selles telefonis on vanem versioon</string>
     <string name="notification_contacts_too_large_missing">pole selles telefonis</string>
+    <string name="notification_contacts_delete_refused_title">Mõnda kontakti ei õnnestunud Protonis kustutada</string>
+    <string name="notification_contacts_delete_refused_summary">Need kontaktid kontol %1$s kustutati selles telefonis, kuid Proton keeldus neid kustutamast. Need on endiselt olemas Protonis ja teie teistes seadmetes:</string>
+    <string name="notification_events_delete_refused_title">Mõnda sündmust ei õnnestunud Protonis kustutada</string>
+    <string name="notification_events_delete_refused_summary">Need sündmused kontol %1$s kustutati selles telefonis, kuid Proton keeldus neid kustutamast. Need on endiselt olemas Protonis ja teie teistes seadmetes:</string>
     <string name="notification_conflict_title">Sündmust muudeti kahes kohas</string>
     <string name="notification_conflict_body">„%1$s“ muudeti selles telefonis ja Proton Calendaris. Millist versiooni soovite säilitada?</string>
     <string name="notification_conflict_body_shared">„%1$s“ muudeti selles telefonis ja kasutaja %2$s poolt Proton Calendaris. Oma versiooni säilitamine asendab tema oma.</string>

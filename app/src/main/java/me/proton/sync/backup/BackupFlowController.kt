@@ -21,6 +21,7 @@ import me.proton.sync.SyncLog
 import me.proton.sync.account.AccountSessionManager
 import me.proton.sync.billing.SubscriptionManager
 import me.proton.sync.db.SyncDatabase
+import me.proton.sync.settings.AppDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -163,7 +164,7 @@ class BackupFlowController(
         container.addView(checkbox)
         container.addView(explainer)
 
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.backup_export_title)
             .setView(container)
             .setPositiveButton(R.string.backup_btn_export) { _, _ ->
@@ -192,6 +193,8 @@ class BackupFlowController(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             )
             hint = activity.getString(hintRes)
+            // Material's default is one line, which cut the "(min. 8 characters)" of the hint in several languages.
+            setHintMaxLines(4)
             isErrorEnabled = true
             endIconMode = com.google.android.material.textfield.TextInputLayout.END_ICON_PASSWORD_TOGGLE
         }
@@ -217,7 +220,7 @@ class BackupFlowController(
         container.addView(passphraseLayout)
         container.addView(passphraseConfirmLayout)
 
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = AppDialogBuilder(activity)
             .setTitle(R.string.backup_export_title)
             .setView(container)
             .setPositiveButton(R.string.backup_btn_export, null) // overridden below to validate before dismiss
@@ -263,7 +266,7 @@ class BackupFlowController(
                             Toast.LENGTH_LONG
                         ).show()
                     is ExportManager.Result.Failure ->
-                        AlertDialog.Builder(activity)
+                        AppDialogBuilder(activity)
                             .setTitle(R.string.backup_export_failed_title)
                             .setMessage(activity.getString(R.string.backup_export_failed_body))
                             .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -302,7 +305,7 @@ class BackupFlowController(
             setPadding(pad, (8 * d).toInt(), pad, 0)
             addView(inputLayout)
         }
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.backup_import_passphrase_title)
             .setMessage(R.string.backup_import_passphrase_body)
             .setView(container)
@@ -362,7 +365,7 @@ class BackupFlowController(
             // Same version the backup came from, which carries a subscription id only in the direct one.
             sb.append("\n\n").append(activity.getString(R.string.backup_preflight_subscription))
         }
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.backup_import_title)
             .setMessage(sb.toString())
             .setPositiveButton(R.string.backup_btn_import) { _, _ ->
@@ -380,7 +383,7 @@ class BackupFlowController(
      */
     private fun showCollisionDialog(payload: BackupPayload, collisions: List<String>) {
         val list = collisions.joinToString("\n") { "• $it" }
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.backup_collision_title)
             .setMessage(activity.getString(R.string.backup_collision_body, list))
             .setPositiveButton(R.string.backup_btn_overwrite) { _, _ ->
@@ -435,7 +438,7 @@ class BackupFlowController(
                 // would otherwise leave this dialog to crash on a finishing window. The
                 // settings caller (rebuild cards) is unaffected — the dialog is modal, so
                 // the rebuild simply happens the moment the user taps Dismiss.
-                AlertDialog.Builder(activity)
+                AppDialogBuilder(activity)
                     .setTitle(R.string.backup_import_done_title)
                     .setMessage(message)
                     .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -458,7 +461,7 @@ class BackupFlowController(
             "wrong_passphrase" -> R.string.backup_error_wrong_passphrase
             else -> R.string.backup_error_bad_file
         }
-        AlertDialog.Builder(activity)
+        AppDialogBuilder(activity)
             .setTitle(R.string.backup_import_failed_title)
             .setMessage(bodyRes)
             .setPositiveButton(R.string.btn_info_dismiss, null)

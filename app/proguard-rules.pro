@@ -67,7 +67,6 @@
 -keep class * extends androidx.work.ListenableWorker {
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
--keep class me.proton.sync.EventLoopWorker { *; }
 -keep class me.proton.sync.SyncWorker { *; }
 
 # BouncyCastle, kept for the JCA provider ONLY. GopenPGP does the OpenPGP work since v1.9.1, and

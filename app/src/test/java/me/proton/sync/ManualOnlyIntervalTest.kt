@@ -7,16 +7,16 @@ import org.junit.Test
 /**
  * "Manual only" has to mean no background sync, and once meant the fastest one on offer.
  *
- * The interval preference stores SECONDS, and "Manual only" is the sentinel -1. The schedulers take
- * MINUTES and cancel on a negative value. The settings screen converted with `seconds / 60`, and
- * integer division truncates toward zero: -1 / 60 is 0, not -1. Zero is not negative, so instead of
- * cancelling, the worker took `maxOf(0, MIN_INTERVAL_MINUTES)` and scheduled the event loop every
- * fifteen minutes. Picking the option that promises no automatic syncing gave you the most frequent
- * one the app offers.
+ * The interval preferences store SECONDS, and "Manual only" (or a fallback switched "Off") is the
+ * sentinel -1. The WorkManager schedulers take MINUTES and cancel on a negative value. The settings
+ * screen once converted with `seconds / 60`, and integer division truncates toward zero: -1 / 60 is
+ * 0, not -1. Zero is not negative, so instead of cancelling, the worker took
+ * `maxOf(0, MIN_INTERVAL_MINUTES)` and scheduled a job every fifteen minutes. Picking the option that
+ * promises no automatic syncing gave you the most frequent one the app offers.
  *
  * A user reported that the app kept syncing in the background with the schedule set to manual,
- * which is exactly what it did. The two fallback pickers always branched on the sentinel before
- * dividing; the event-loop picker never did.
+ * which is exactly what it did (then the event loop, removed in 2.2.0). The same conversion now
+ * serves the Fallback full sync watchdog (SyncWorker), whose interval goes through it too.
  *
  * Both halves are pinned here: the conversion must preserve the sentinel, and the guard must treat
  * zero as off so a caller that divides can never arm a job.
@@ -26,9 +26,9 @@ class ManualOnlyIntervalTest {
     // Both call the SHIPPED functions. An earlier version of this test re-implemented them here,
     // which meant reverting every production line left it green. A test that cannot fail is worse
     // than no test, because it is counted as cover.
-    private fun toMinutes(seconds: Long): Long = EventLoopWorker.intervalMinutesFor(seconds)
+    private fun toMinutes(seconds: Long): Long = SyncWorker.intervalMinutesFor(seconds)
 
-    private fun schedules(intervalMinutes: Long): Boolean = EventLoopWorker.schedulesWork(intervalMinutes)
+    private fun schedules(intervalMinutes: Long): Boolean = SyncWorker.schedulesWork(intervalMinutes)
 
     @Test
     fun `the manual sentinel survives the conversion to minutes`() {
@@ -80,7 +80,7 @@ class ManualOnlyIntervalTest {
 
     /** The startup pass cancels exactly when the shipped predicate says there is no work. */
     private fun cancelsOnStartup(storedSeconds: Long): Boolean =
-        !EventLoopWorker.schedulesWork(EventLoopWorker.intervalMinutesFor(storedSeconds))
+        !SyncWorker.schedulesWork(SyncWorker.intervalMinutesFor(storedSeconds))
 
     /**
      * A periodic sync is armed only for an enabled type on a real interval: the shipped rule of the single

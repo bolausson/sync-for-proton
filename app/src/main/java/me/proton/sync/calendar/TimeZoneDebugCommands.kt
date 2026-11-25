@@ -6,13 +6,13 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.os.Bundle
 import android.provider.CalendarContract
 import androidx.preference.PreferenceManager
 import me.proton.sync.ProtonSyncApp
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
 import me.proton.sync.SyncPreferences
+import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 import me.proton.sync.db.daos.CalendarEventSyncDao
 import java.time.LocalDateTime
@@ -121,10 +121,7 @@ internal object TimeZoneDebugCommands {
     fun retimeRun(context: Context, account: Account) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
             .remove(SyncPreferences.timeZoneRetimeKey(account.name)).apply()
-        ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-        })
+        ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, SyncScheduling.userSyncExtras(context, account.name))
         SyncLog.i(TAG, "retime run '${account.name}': calendar sync requested; the pass runs at its start")
     }
 

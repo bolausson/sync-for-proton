@@ -32,6 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.sync.FileLogController
+import me.proton.sync.FullResyncHold
 import me.proton.sync.LogRedaction
 import me.proton.sync.SyncConstants
 import me.proton.sync.SyncLog
@@ -40,10 +41,12 @@ import me.proton.sync.SyncPreferences
 import me.proton.sync.SyncScheduling
 import me.proton.sync.SyncUtils
 import me.proton.sync.SyncWorker
-import me.proton.sync.EventLoopWorker
 import me.proton.sync.R
 import me.proton.sync.calendar.ChurnFixture
+import me.proton.sync.calendar.DefaultCalendarService
 import me.proton.sync.calendar.IcalTimeZoneUpdates
+import me.proton.sync.calendar.PrimaryCalendarDebug
+import me.proton.sync.calendar.PrimaryCalendarMemory
 import me.proton.sync.calendar.TimeZoneDebugCommands
 import me.proton.sync.calendar.TimeZoneRuleSource
 import me.proton.sync.calendar.TzDataFreshness
@@ -77,6 +80,12 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     /** "Remove older events from this phone", per calendar: the row's dialog and the offer when the range narrows. */
     private val rangeTrimDialog by lazy { RangeTrimDialog(this, syncDatabase) }
+
+    /** The "Default calendar" row's waiting dialog, list and change of Proton's default. */
+    private val defaultCalendarPicker by lazy { DefaultCalendarPicker(this, syncDatabase) }
+
+    /** The decision dialog about a new event an app wrote into a calendar someone else shared with the account. */
+    private val newEventHoldDialog by lazy { NewEventHoldDialog(this, syncDatabase) }
     @Inject lateinit var subscriptionManager: SubscriptionManager
     @Inject lateinit var photoSizeCalibrator: me.proton.sync.contacts.PhotoSizeCalibrator
     @Inject lateinit var keyManager: me.proton.sync.crypto.KeyManager
@@ -153,6 +162,12 @@ class SyncSettingsActivity : AppCompatActivity() {
     private var syncStatusObserverHandle: Any? = null
 
     /**
+     * The SYNC_OBSERVER_TYPE_SETTINGS listener that keeps the hero's automatic-sync line ([refreshAutoSyncNotice]) in
+     * step with Android's switch while the screen is in front; null when unregistered (onPause).
+     */
+    private var autoSyncObserverHandle: Any? = null
+
+    /**
      * Safety-net poll for the sync indicators. The SYNC_OBSERVER_TYPE_ACTIVE listener can fire
      * just BEFORE [ContentResolver.isSyncActive] reflects the final inactive transition, so the
      * LAST account to finish syncing could keep a stuck spinner until the screen is reopened.
@@ -193,6 +208,9 @@ class SyncSettingsActivity : AppCompatActivity() {
         /** savedInstanceState key: the outdated-time-zone-data notice was up, unanswered, when the screen went. */
         const val KEY_TZ_NOTICE_SHOWING = "tz_outdated_notice_showing"
 
+        /** savedInstanceState key: the screen was opened for a new event held in a shared calendar ([openedForNewEventHold]). */
+        const val KEY_OPENED_FOR_NEW_EVENT_HOLD = "opened_for_new_event_hold"
+
         /** Re-check interval for the sync-indicator safety poll (clears a stuck last-account spinner). */
         const val SYNC_POLL_INTERVAL_MS = 1200L
     }
@@ -206,6 +224,12 @@ class SyncSettingsActivity : AppCompatActivity() {
     /** The battery dialog went up in this onCreate: the next start-up dialog follows when it is dismissed. */
     private var batteryDialogShown = false
 
+    /**
+     * Opened from the prompt about a new event in a shared calendar ([handleNewEventHoldIntent]), or by the debug verb
+     * that opens its dialog: only the decision dialog shows, no battery dialog, time zone notice or backup reminder.
+     */
+    private var openedForNewEventHold = false
+
     /** The outdated-time-zone-data notice, while it is up: kept to re-show it after a re-creation, and to close it. */
     private var tzNoticeDialog: AlertDialog? = null
 
@@ -217,6 +241,8 @@ class SyncSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         restoredInstance = savedInstanceState != null
         resumeTzNotice = savedInstanceState?.getBoolean(KEY_TZ_NOTICE_SHOWING, false) == true
+        // Opened for the decision about a new event in a shared calendar: still no other start-up dialog once re-created.
+        openedForNewEventHold = savedInstanceState?.getBoolean(KEY_OPENED_FOR_NEW_EVENT_HOLD, false) == true
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // Every control on this screen is drawn from the stored settings (the account cards again on every resume), so
@@ -297,9 +323,10 @@ class SyncSettingsActivity : AppCompatActivity() {
         // Start-up dialogs one at a time, posted so they show after layout: the battery dialog (shown
         // synchronously below) goes first, and its dismissal brings the next; then the outdated-time-zone-data
         // notice, otherwise the first-run nudge to set up backups. The battery dialog comes on every open while
-        // the app is not exempt, so the notice used to wait behind it for good.
+        // the app is not exempt, so the notice used to wait behind it for good. None of them on a screen opened for the
+        // decision about a new event in a shared calendar: that dialog is what the user came for.
         binding.root.post {
-            if (batteryDialogShown) return@post
+            if (batteryDialogShown || openedForNewEventHold) return@post
             showNextStartupNotice()
         }
         bindInfo(binding.infoBackup, R.string.backup_section_title, R.string.info_backup_body)
@@ -318,13 +345,18 @@ class SyncSettingsActivity : AppCompatActivity() {
         // Debug builds only: run a command passed by adb through DebugCommandActivity. Never on a restore:
         // the system keeps the original intent, extras and all.
         handleDebugCommand(intent, restored = savedInstanceState != null)
+        // Tapped from the prompt about a new event in a shared calendar: its decision dialog, and no other start-up dialog.
+        handleNewEventHoldIntent(intent, restored = savedInstanceState != null, fromCreate = true)
+        // Re-created while that dialog was up (rotation, dark mode, a language change): it comes back, alone.
+        val accounts = { name: String -> accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE).firstOrNull { it.name == name } }
+        if (newEventHoldDialog.restoreState(savedInstanceState, accounts) { refreshNewEventHolds(it) }) openedForNewEventHold = true
 
         setupVerboseLoggingToggle()
         setupFileLoggingToggle()
         refreshTimeZoneUpdatesUi()
 
         // Request battery optimization exemption if not already granted
-        batteryDialogShown = requestBatteryOptimizationIfNeeded()
+        batteryDialogShown = if (openedForNewEventHold) false else requestBatteryOptimizationIfNeeded()
 
         binding.btnBatterySettings.setOnClickListener {
             try {
@@ -377,7 +409,7 @@ class SyncSettingsActivity : AppCompatActivity() {
      * on the server.
      */
     private fun repairInventedNames(account: android.accounts.Account) {
-        val progress = androidx.appcompat.app.AlertDialog.Builder(this)
+        val progress = AppDialogBuilder(this)
             .setTitle(R.string.label_name_repair)
             .setMessage(R.string.name_repair_scanning)
             .setCancelable(false)
@@ -409,7 +441,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             }
             progress.dismiss()
             if (findings.isEmpty()) {
-                androidx.appcompat.app.AlertDialog.Builder(this@SyncSettingsActivity)
+                AppDialogBuilder(this@SyncSettingsActivity)
                     .setTitle(R.string.label_name_repair)
                     .setMessage(R.string.name_repair_none)
                     .setPositiveButton(android.R.string.ok, null)
@@ -419,7 +451,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             val preview = findings.joinToString(LINE_BREAK) {
                 it.displayName + "  ->  " + it.inventedName
             }
-            androidx.appcompat.app.AlertDialog.Builder(this@SyncSettingsActivity)
+            AppDialogBuilder(this@SyncSettingsActivity)
                 .setTitle(R.string.label_name_repair)
                 .setMessage(
                     Plurals.text(this@SyncSettingsActivity, R.plurals.name_repair_found, findings.size, findings.size) +
@@ -491,7 +523,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             android.text.SpannableString(text)
         }.toTypedArray<CharSequence>()
         val current = ContactNameMode.of(this, accountName)
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.name_mode_title)
             .setSingleChoiceItems(labels, modes.indexOf(current)) { dialog, which ->
                 val chosen = modes[which]
@@ -523,7 +555,7 @@ class SyncSettingsActivity : AppCompatActivity() {
      */
     private fun bindInfo(icon: View, @androidx.annotation.StringRes titleRes: Int, @androidx.annotation.StringRes bodyRes: Int) {
         icon.setOnClickListener {
-            AlertDialog.Builder(this)
+            AppDialogBuilder(this)
                 .setTitle(titleRes)
                 .setMessage(bodyRes)
                 .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -538,6 +570,9 @@ class SyncSettingsActivity : AppCompatActivity() {
         backupController.saveState(outState, KEY_PENDING_EXPORT_INCLUDE)
         // A notice still waiting for its answer comes back on the re-created screen.
         outState.putBoolean(KEY_TZ_NOTICE_SHOWING, tzNoticeDialog?.isShowing == true)
+        // So does the decision dialog about a new event in a shared calendar, and the screen opened for it stays so.
+        outState.putBoolean(KEY_OPENED_FOR_NEW_EVENT_HOLD, openedForNewEventHold)
+        newEventHoldDialog.saveState(outState)
     }
 
     override fun onDestroy() {
@@ -594,7 +629,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         }
 
         var engaged = false
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AppDialogBuilder(this)
             .setTitle(R.string.backup_reminder_title)
             .setView(container)
             .setPositiveButton(R.string.backup_reminder_enable) { _, _ ->
@@ -629,7 +664,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             R.string.sync_contacts to "https://proton.me/support/proton-contacts",
             R.string.sync_calendar to "https://proton.me/support/protoncalendar-calendars"
         )
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_reminder_proton_export)
             .setItems(pages.map { getString(it.first) }.toTypedArray()) { _, which ->
                 try {
@@ -641,7 +676,7 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     /** Second, deliberate confirmation before we stop reminding about backups for good. */
     private fun confirmBackupReminderOptOut() {
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.backup_reminder_optout_title)
             .setMessage(R.string.backup_reminder_optout_body)
             .setPositiveButton(R.string.backup_reminder_optout_confirm) { _, _ ->
@@ -660,12 +695,15 @@ class SyncSettingsActivity : AppCompatActivity() {
      */
     private fun bindAccountCardInfoIcons(c: SettingsAccountCardBinding) {
         bindInfo(c.infoDisplayName, R.string.label_display_name, R.string.info_display_name_body)
-        bindInfo(c.infoEventLoop, R.string.label_event_loop_interval, R.string.info_event_loop_body)
+        bindInfo(c.infoEventLoop, R.string.sync_interval_title, R.string.info_event_loop_body)
         bindInfo(c.infoNotifyInProgress, R.string.label_notify_in_progress, R.string.info_notify_in_progress_body)
         bindInfo(c.infoSyncContacts, R.string.sync_contacts, R.string.info_sync_contacts_body)
         bindInfo(c.infoContactsFallback, R.string.dialog_title_contacts_fallback, R.string.info_fallback_full_sync_body)
         bindInfo(c.infoNotifyContacts, R.string.label_notify_on_failure, R.string.info_notify_on_failure_body)
         bindInfo(c.infoSyncCalendar, R.string.sync_calendar, R.string.info_sync_calendar_body)
+        bindInfo(c.infoDefaultCalendar, R.string.label_default_calendar, R.string.info_default_calendar_body)
+        bindInfo(c.infoNewEventHolds, R.string.notification_new_event_hold_title, R.string.info_new_event_holds_body)
+        bindInfo(c.infoNewEventKept, R.string.notification_new_event_hold_title, R.string.info_new_event_holds_body)
         bindInfo(c.infoIncludeExternal, R.string.label_include_external_calendars, R.string.info_include_external_calendars_body)
         bindInfo(c.infoSyncModeAll, R.string.calendar_timeframe_title, R.string.info_sync_mode_body)
         bindInfo(c.infoSyncModeCustom, R.string.calendar_timeframe_title, R.string.info_sync_mode_body)
@@ -694,19 +732,24 @@ class SyncSettingsActivity : AppCompatActivity() {
     private var paymentMessages: Job? = null
 
     /**
-     * Keeps each card's "Remove older events from this phone" row true while the screen is open: the choices, the
-     * "Include external calendars" switch and the calendar types each sync notes can change under it (a sync forgetting a
-     * choice, "Remove synced data" finishing after the screen was re-created). The calendar mappings it also counts are
-     * caught when the account's calendar sync ends (refreshSyncIndicators). A field: SharedPreferences holds its
-     * listeners only weakly. Called on the main thread.
+     * Keeps the card rows that show a stored value true while the screen is open. Each card's "Remove older events from
+     * this phone" row: the choices, the "Include external calendars" switch and the calendar types each sync notes can
+     * change under it (a sync forgetting a choice, "Remove synced data" finishing after the screen was re-created); the
+     * calendar mappings it also counts are caught when the account's calendar sync ends (refreshSyncIndicators). Each
+     * card's "Default calendar" row: the record a calendar sync or a change made on the row writes, also a change that
+     * completes after a rotation re-created the screen. Each card's header line and rows about new events held in shared
+     * calendars: the entries a sync holds or drops, and every answer, wherever it was given (the notification, the
+     * dialog, a debug verb). A field: SharedPreferences holds its listeners only weakly. Called on the main thread.
      */
-    private val trimRowListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+    private val cardRowListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == null) return@OnSharedPreferenceChangeListener
         for (handle in accountCardHandles.toList()) {
             val name = handle.parentAccount.name
             if (key == SyncPreferences.calendarTrimPastKey(name) || key == SyncPreferences.includeExternalCalendarsKey(name) ||
                 (key.endsWith("_external") && key.startsWith(SyncPreferences.lastSyncRangeKey(name, "")))
             ) refreshTrimValue(handle.parentAccount)
+            if (key == SyncPreferences.primaryCalendarLastKey(name)) refreshDefaultCalendarValue(handle.parentAccount)
+            if (key == SyncPreferences.newEventHoldsKey(name)) refreshNewEventHolds(handle.parentAccount)
         }
     }
 
@@ -738,8 +781,15 @@ class SyncSettingsActivity : AppCompatActivity() {
         }
         updateSubscriptionBanner()
         // Before the cards are built, so no change between a card's read and the registration goes unseen.
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(trimRowListener)
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(cardRowListener)
         buildAccountCards()
+        // New events held in shared calendars: drop the ones deleted, moved or synced meanwhile, and post their prompts
+        // again (silently), off the main thread. The cards follow through cardRowListener.
+        val app = applicationContext
+        for (account in accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)) {
+            if (me.proton.sync.calendar.NewEventHoldStore.snapshot(PreferenceManager.getDefaultSharedPreferences(this), account.name).isEmpty()) continue
+            lifecycleScope.launch(Dispatchers.IO) { me.proton.sync.calendar.NewEventHolds.refreshOutsideSync(app, account, syncDatabase) }
+        }
         maybeOfferDisplayNameRecovery()
         // The log viewer offers the same verbose toggle, so this screen has to re-read it on
         // the way back rather than trusting what it drew when it was created.
@@ -758,11 +808,21 @@ class SyncSettingsActivity : AppCompatActivity() {
             }
         }
         refreshSyncIndicators()
+        // Android's own automatic sync switch, changed while this screen is in front (the quick settings tile, for
+        // one): the hero's line follows at once. Android fires this on a binder thread for any sync setting.
+        if (autoSyncObserverHandle == null) {
+            autoSyncObserverHandle = ContentResolver.addStatusChangeListener(
+                ContentResolver.SYNC_OBSERVER_TYPE_SETTINGS
+            ) {
+                mainHandler.post { if (!isFinishing && !isDestroyed) refreshAutoSyncNotice() }
+            }
+        }
+        refreshAutoSyncNotice()
     }
 
     override fun onPause() {
         super.onPause()
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(trimRowListener)
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(cardRowListener)
         licenceRecheck?.cancel()
         licenceRecheck = null
         paymentMessages?.cancel()
@@ -776,6 +836,26 @@ class SyncSettingsActivity : AppCompatActivity() {
             try { ContentResolver.removeStatusChangeListener(it) } catch (_: Throwable) {}
         }
         syncStatusObserverHandle = null
+        autoSyncObserverHandle?.let {
+            try { ContentResolver.removeStatusChangeListener(it) } catch (_: Throwable) {}
+        }
+        autoSyncObserverHandle = null
+    }
+
+    /**
+     * The hero's line while Android's own automatic sync switch ("Auto sync data") is off: then no account syncs by
+     * itself, not at its interval, not a Fallback full sync, not a setting's sync, only what the user starts
+     * (SyncScheduling's background rule, the owner's rule since 2.2.0). Hidden while the subscription lets no sync
+     * start, which the hero says instead. Only reads the switch. On every resume, with every hero update and when
+     * Android reports a change of its sync settings ([autoSyncObserverHandle]). Main thread.
+     */
+    private fun refreshAutoSyncNotice() {
+        val off = try {
+            !ContentResolver.getMasterSyncAutomatically()
+        } catch (e: Exception) {
+            false
+        }
+        binding.textAutoSyncOff.visibility = if (off && subscriptionManager.isSyncAllowed()) View.VISIBLE else View.GONE
     }
 
     /**
@@ -804,7 +884,8 @@ class SyncSettingsActivity : AppCompatActivity() {
         // about "any account in flight".
         var anyActive = false
         var anyPending = false
-        val anyResyncInFlight = fullResyncInFlightAccounts.isNotEmpty()
+        val resyncInFlight = fullResyncInFlightAccounts
+        val anyResyncInFlight = resyncInFlight.isNotEmpty()
 
         for (handle in accountCardHandles) {
             var calendarActive = false
@@ -816,9 +897,13 @@ class SyncSettingsActivity : AppCompatActivity() {
                 false
             }
             // A calendar sync changes what the "Remove older events" row counts, the calendar mappings above all, which
-            // no preference reports (trimRowListener sees the rest): its end redraws the row.
+            // no preference reports (cardRowListener sees the rest): its end redraws the row. It redraws the "Default
+            // calendar" row too, whose name is read from those mappings: a rename on Proton, or the chosen calendar's
+            // first sync, leaves the record, which holds ids only, as it was.
+            val calendarSyncEnded = !calendarActive && handle.parentAccount.name in calendarSyncSeen
             if (calendarActive) calendarSyncSeen.add(handle.parentAccount.name)
             else if (calendarSyncSeen.remove(handle.parentAccount.name)) refreshTrimValue(handle.parentAccount)
+            if (calendarSyncEnded) refreshDefaultCalendarValue(handle.parentAccount)
             if (active) anyActive = true
             // Once a sync becomes active, it's no longer "queued" — drop the marker.
             if (active) userRequestedAccounts.remove(handle.parentAccount.name)
@@ -844,7 +929,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             // Per-card disable: only this account's force-resync state matters here.
             // A force-resync of a different account is allowed to proceed in parallel
             // (different rows / tables / calendars).
-            val cardResyncInFlight = handle.parentAccount.name in fullResyncInFlightAccounts
+            val cardResyncInFlight = handle.parentAccount.name in resyncInFlight
             val cardEnabled = !cardResyncInFlight && !active && !pending
             handle.binding.btnSyncContacts.isEnabled = cardEnabled
             handle.binding.btnSyncCalendar.isEnabled = cardEnabled
@@ -872,9 +957,10 @@ class SyncSettingsActivity : AppCompatActivity() {
 
         // Safety-net poll: the ACTIVE observer can fire before isSyncActive() settles, which would
         // otherwise leave the last-finishing account's spinner stuck until the screen is reopened.
-        // Re-arm a short re-check while anything is still active or queued; stop once everything is idle.
+        // Re-arm a short re-check while anything is still active or queued, or a full re-sync is being
+        // prepared (one an earlier screen started ends without telling this one); stop once everything is idle.
         mainHandler.removeCallbacks(syncPollRunnable)
-        if (anyActive || anyPending) {
+        if (anyActive || anyPending || anyResyncInFlight) {
             mainHandler.postDelayed(syncPollRunnable, SYNC_POLL_INTERVAL_MS)
         }
     }
@@ -883,6 +969,66 @@ class SyncSettingsActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleDebugCommand(intent, restored = false)
+        handleNewEventHoldIntent(intent, restored = false, fromCreate = false)
+    }
+
+    /**
+     * The prompt about a new event in a shared calendar was tapped (SyncNotificationHelper.showNewEventHoldPrompt): its
+     * decision dialog for that account and event. Or the summary of the waiting events past the prompts' limit was
+     * (SyncNotificationHelper.showNewEventHoldSummary, [me.proton.sync.calendar.NewEventHolds.EXTRA_WALK]): the walk
+     * through them ([openNewEventHoldWalk]). Never on a restore or from Recents, where Android hands the old intent
+     * back; the extras are removed either way. [fromCreate]: in onCreate, where no other start-up dialog may then show
+     * ([openedForNewEventHold]). It only opens a dialog for an event that is really waiting or kept, and nothing is
+     * decided without a button press, so the exported screen gives another app nothing.
+     */
+    private fun handleNewEventHoldIntent(intent: Intent?, restored: Boolean, fromCreate: Boolean) {
+        if (intent == null) return
+        val name = intent.getStringExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_ACCOUNT) ?: return
+        val eventId = intent.getLongExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_EVENT, -1L)
+        val walk = intent.getBooleanExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_WALK, false)
+        intent.removeExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_ACCOUNT)
+        intent.removeExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_EVENT)
+        intent.removeExtra(me.proton.sync.calendar.NewEventHolds.EXTRA_WALK)
+        val fromHistory = intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0
+        if (walk && !restored && !fromHistory) {
+            openNewEventHoldWalk(name, fromCreate)
+            return
+        }
+        if (restored || fromHistory || eventId <= 0) return
+        val account = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE).firstOrNull { it.name == name } ?: return
+        if (fromCreate) openedForNewEventHold = true
+        newEventHoldDialog.show(account, eventId) { refreshNewEventHolds(account) }
+    }
+
+    /**
+     * The summary's tap: the walk through the waiting events of the account [name], oldest first, as the account
+     * card's waiting row opens it, and like that row not while a full re-sync of the account is being prepared (an
+     * answer would wait with its sync for the re-sync's own request, and the rows it reads may be half wiped).
+     */
+    private fun openNewEventHoldWalk(name: String, fromCreate: Boolean) {
+        val account = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE).firstOrNull { it.name == name } ?: return
+        if (fromCreate) openedForNewEventHold = true
+        if (account.name in fullResyncInFlightAccounts) {
+            Toast.makeText(this, getString(R.string.toast_resync_in_flight), Toast.LENGTH_SHORT).show()
+            return
+        }
+        newEventHoldDialog.show(account, walk = NewEventHoldDialog.Walk.WAITING) { refreshNewEventHolds(account) }
+    }
+
+    /**
+     * Debug builds, the verb auto-sync: Android's own automatic sync switch (Settings, Accounts, Auto sync data). It is
+     * device-wide, so it covers every account on the phone, other apps' too, not only this app's. [state] `show` only
+     * reads it; `on` and `off` set it as that switch does. Nothing else in the app ever changes it (pinned by
+     * BackgroundSyncRuleTest): the app's rule is to obey it. Returns the log line.
+     */
+    private fun debugAutoSync(state: String): String {
+        val before = ContentResolver.getMasterSyncAutomatically()
+        if (state != "show") ContentResolver.setMasterSyncAutomatically(state == "on")
+        val after = ContentResolver.getMasterSyncAutomatically()
+        return "auto_sync $state: Android's automatic sync was ${if (before) "on" else "off"}, is ${if (after) "on" else "off"} " +
+            "(device-wide: while it is on, every account on the phone syncs by itself, except this app's accounts on " +
+            "Manual only: the sync Android starts when the switch turns on ends at its start there, logged as not run, " +
+            "and only Android's upload after an edit and a Fallback full sync that is on still run)"
     }
 
     /**
@@ -961,19 +1107,28 @@ class SyncSettingsActivity : AppCompatActivity() {
      *                   billing_offers | plan_picker | billing_start | billing_sheet (plan = monthly | yearly) |
      *                   billing_manage | billing_update_payment | licences | logs | backup_settings | debug_log (file) |
      *                   log_redaction_probe | email_code (address) |
-     *                   backup_reminder (part = export) | srp_modulus (username) | signin_probe (username) |
+     *                   backup_reminder (part = export) | backup_scheduled |
+     *                   srp_modulus (username) | signin_probe (username) |
      *                   license_fixture (status) | license_enter (text or text_file, offline) |
      *                   tz_updates (state = on | off) | tz_info |
      *                   tz_probe (tzid, local) | tz_warning (mode, version) | schedule_info |
-     *                   interval (seconds = a picker value | manual) |
+     *                   auto_sync (state = on | off | show; Android's own switch, device-wide, and the one place the
+     *                   app writes it, through debugAutoSync) |
+     *                   interval (seconds = a picker value | manual) | watchdog |
      *                   range (mode = all | custom, past, future) | external (state = on | off) | sweep_reset |
      *                   card_switch (switch = contacts | calendar | poll_attendees | external | notify_progress |
      *                   notify_contacts | notify_calendar | invites | updates | cancellations | invite_title,
      *                   state = on | off) |
      *                   trim (mode = check | on | off | interrupt, calendar = a name part | all) |
      *                   trim_dialog (offer, press = positive | negative) |
+     *                   default_calendar (mode = list | open | cancel | pick, calendar = a name part, fixture = none |
+     *                   offline | offline_save | timeout_save | refuse | auth | incomplete | none_own) |
      *                   retime_check | retime_run | retime_fixture (event_id, minutes, mode) |
-     *                   churn_fixture (calendar)
+     *                   churn_fixture (calendar) | calendar_picks (account optional) |
+     *                   default_calendar_fixture (mode = fail | null | real | name, calendar = a name part) |
+     *                   event_holds | event_hold (event_id, choice = move | keep | publish, expected_target, nosync) |
+     *                   event_hold_dialog (event_id or -1, list = waiting | kept, press = move | keep | publish | none,
+     *                   nosync)
      *   account       = the account name as shown on its card
      *   section       = contacts | calendar | all   (default all)
      *
@@ -1053,6 +1208,18 @@ class SyncSettingsActivity : AppCompatActivity() {
                     } catch (e: Exception) {
                         SyncLog.w(tag, "debug_log: failed: ${e.javaClass.simpleName}")
                     }
+                }
+                return
+            }
+            // Every dialog title in every language of the app, measured on this phone (DialogTitleDebug; the list comes
+            // from tools/debug/dialog_title_list.py), or one title shown in a dialog that stays open, for a screenshot.
+            "dialog_titles" -> {
+                val show = intent.getStringExtra("show")
+                if (show != null) {
+                    DialogTitleDebug.show(this, show, intent.getStringExtra("body"))
+                } else {
+                    val name = fileName?.takeIf { it.matches(Regex("[A-Za-z0-9._-]+")) } ?: "dialog-titles.txt"
+                    DialogTitleDebug.run(this, java.io.File(getExternalFilesDir("debug"), name))
                 }
                 return
             }
@@ -1157,6 +1324,34 @@ class SyncSettingsActivity : AppCompatActivity() {
                 SyncLog.i(tag, "backup_reminder: ${if (part == "export") "the Proton web export chooser" else "the reminder"} shown")
                 return
             }
+            // The scheduled backup's job body, now (BackupScheduleWorker.runScheduled): its own decision (automatic
+            // backups on, Android's automatic sync switch, "Back up even when automatic sync is off"), then, when it
+            // decides to run, its own backup, which DOWNLOADS every calendar and contact from Proton, records the result
+            // and posts its notification. A skip records its own line only, under the last backup's. Logs both lines as
+            // the Backups screen shows them, the skip line only while a scheduled backup would still be skipped (the
+            // screen's rule, BackupResultLines.skipsNow). Reads Android's switch, never changes it.
+            "backup_scheduled" -> {
+                val app = applicationContext
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val line = try {
+                        val run = me.proton.sync.backup.BackupScheduleWorker.runScheduled(app)
+                        val prefs = PreferenceManager.getDefaultSharedPreferences(app)
+                        val whenOff = prefs.getBoolean(
+                            SyncPreferences.KEY_BACKUP_WHEN_AUTO_SYNC_OFF, SyncPreferences.DEFAULT_BACKUP_WHEN_AUTO_SYNC_OFF
+                        )
+                        val master = ContentResolver.getMasterSyncAutomatically()
+                        val (last, skipped) = me.proton.sync.backup.BackupResultLines.of(prefs, master)
+                        "${run.name.lowercase()}; Android's automatic sync ${if (master) "on" else "off"}, " +
+                            "\"Back up even when automatic sync is off\" ${if (whenOff) "on" else "off"}; " +
+                            "the screen's lines: \"${last.text(app)}\" " +
+                            (skipped?.let { "and \"${it.text(app)}\"" } ?: "and no skip line")
+                    } catch (e: Exception) {
+                        "failed: ${e.javaClass.simpleName}"
+                    }
+                    SyncLog.i(tag, "backup_scheduled: $line")
+                }
+                return
+            }
             // Read-only probe: the first step of a sign-in for one username, and the check of Proton's
             // signature on the SRP modulus that a sign-in makes next. No proof is computed or sent.
             "srp_modulus" -> {
@@ -1224,12 +1419,39 @@ class SyncSettingsActivity : AppCompatActivity() {
                 }
                 return
             }
-            // Read-only: per account, the subscription gate, the interval, the switches, the periodic syncs
-            // and the event loop's and watchdogs' WorkManager states (their names are not in dumpsys).
+            // Read-only: per account, the subscription gate, the interval, the switches, the periodic syncs and the
+            // watchdogs' WorkManager states (their names are not in dumpsys), and what is left of the removed event
+            // loop's jobs.
             "schedule_info" -> {
                 lifecycleScope.launch(Dispatchers.IO) {
                     try { SyncScheduling.debugLogSchedules(applicationContext) } catch (e: Exception) {
                         SyncLog.w(tag, "schedule_info failed: ${e.message}")
+                    }
+                }
+                return
+            }
+            // Android's own automatic sync switch, device-wide (debugAutoSync); show is read-only.
+            "auto_sync" -> {
+                val state = intent.getStringExtra("state").orEmpty()
+                intent.removeExtra("state")
+                if (state != "on" && state != "off" && state != "show") {
+                    SyncLog.w(tag, "auto_sync ignored: state must be on, off or show, not '$state'")
+                    return
+                }
+                try { SyncLog.i(tag, debugAutoSync(state)) } catch (e: SecurityException) {
+                    SyncLog.w(tag, "auto_sync $state failed: ${e.message}")
+                }
+                return
+            }
+            // Read-only, no network: every calendar row on the phone (every account's, as a third-party picker sees
+            // them), its IS_PRIMARY as stored and as read, each account's last primary-calendar decision, and the row
+            // each common pick rule would choose. Display names only for this app's rows (of account, when given).
+            "calendar_picks" -> {
+                val only = intent.getStringExtra("account")?.takeIf { it.isNotBlank() && it != "all" }
+                intent.removeExtra("account")
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try { PrimaryCalendarDebug.logPicks(applicationContext, only) } catch (e: Exception) {
+                        SyncLog.w(tag, "calendar_picks failed: ${e.message}")
                     }
                 }
                 return
@@ -1319,15 +1541,17 @@ class SyncSettingsActivity : AppCompatActivity() {
                 } else {
                     PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putString(SyncPreferences.eventLoopIntervalKey(account.name), v).apply()
-                    applyEventLoopInterval(account)
+                    applySyncInterval(account)
                     buildAccountCards()
                     SyncLog.i(tag, "interval: '${account.name}' set to $v")
                 }
             }
-            // The calendar range, as the All / Custom radios and the Past / Future pickers store it, with the same
-            // dirty flag, so the event loop's next run syncs the calendar. Any positive day counts, as the custom
-            // dialog allows. It never opens the "Remove older events" offer the radios and pickers open when the
-            // range narrows; trim_dialog with offer shows that.
+            // The calendar range, as the All / Custom radios and the Past / Future pickers store it, then the
+            // calendar sync request they send when no offer is due (afterRangeStored; none while Android's automatic
+            // sync is off). Any positive day counts, as the custom dialog allows. It never opens the "Remove older
+            // events" offer the radios and pickers open when the range narrows (trim_dialog with offer shows that),
+            // so with automatic sync on, a narrowed range's sync removes older events from the calendars removal is
+            // on for without asking.
             "range" -> {
                 val mode = intent.getStringExtra("mode")
                 val past = intent.getStringExtra("past")?.toLongOrNull()
@@ -1350,9 +1574,10 @@ class SyncSettingsActivity : AppCompatActivity() {
                     else -> false
                 }
                 if (stored) {
-                    editor.putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+                    editor.apply()
                     buildAccountCards()
                     SyncLog.i(tag, "range: '${account.name}' set to $mode" + if (mode == "custom") " $past $future" else "")
+                    afterRangeStored(account, offerTrim = false)
                 } else {
                     SyncLog.w(tag, "range ignored: give all, or custom with two positive day counts")
                 }
@@ -1407,7 +1632,8 @@ class SyncSettingsActivity : AppCompatActivity() {
             }
             // "Remove older events from this phone": check logs what it would take from each calendar (read-only);
             // on and off set it for the large calendars whose name contains the extra, or all, as the dialog's Save
-            // does (on asks for the calendar sync that removes them).
+            // does, then run the row's own handler (afterTrimSaved), which asks for the calendar sync for the
+            // calendars it switched on.
             "trim" -> {
                 val mode = intent.getStringExtra("mode")
                 val namePart = intent.getStringExtra("calendar").orEmpty().ifBlank { "all" }
@@ -1415,8 +1641,8 @@ class SyncSettingsActivity : AppCompatActivity() {
                 intent.removeExtra("calendar")
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        RangeTrimDebug.run(applicationContext, account, syncDatabase, mode, namePart, tag) {
-                            requestManualSync(account, abAccount, "calendar")
+                        RangeTrimDebug.run(applicationContext, account, syncDatabase, mode, namePart, tag) { newlyOn ->
+                            runOnUiThread { afterTrimSaved(account, newlyOn, offered = false) }
                         }
                     } catch (e: Exception) {
                         SyncLog.w(tag, "trim failed: ${e.message}")
@@ -1425,7 +1651,8 @@ class SyncSettingsActivity : AppCompatActivity() {
             }
             // The same dialog the row opens (offer = as when the range was narrowed), to look at without a tap, and
             // press = positive or negative answers it through that button's own handler. The dialog logs what it
-            // showed, or why nothing; an answer refreshes the cards as the row's own does.
+            // showed, or why nothing; an answer refreshes the cards and asks for the sync as the row's or the offer's
+            // own does. Nothing is asked when no dialog is shown: the verb changed no range.
             "trim_dialog" -> {
                 val offer = intent.getBooleanExtra("offer", false)
                 val press = when (intent.getStringExtra("press")) {
@@ -1439,7 +1666,122 @@ class SyncSettingsActivity : AppCompatActivity() {
                     if (press != null) ", pressing ${if (press == android.content.DialogInterface.BUTTON_POSITIVE) "positive" else "negative"}" else "")
                 rangeTrimDialog.show(account, offer = offer, press = press) { newlyOn ->
                     buildAccountCards()
-                    if (newlyOn.isNotEmpty()) requestManualSync(account, abAccount, "calendar")
+                    afterTrimSaved(account, newlyOn, offered = offer)
+                }
+            }
+            // The "Default calendar" row, through the row's own entry point (DefaultCalendarPicker.show): list is its
+            // load without a dialog (Proton read and logged; it brings the phone's flag in line when that differs from
+            // Proton), open is the row's tap, cancel the tap with the waiting dialog's Cancel pressed through its own
+            // listener as soon as it shows, and pick the tap with the one offered calendar whose name matches pressed
+            // through the list's own item listener (one PUT settings/calendar, unless Proton already stores that id;
+            // when Proton confirms a calendar that has no row on this phone yet, also the ordinary calendar sync that
+            // brings it down, none while Android's automatic sync is off). A fixture stands in for Proton, and none
+            // sends a change.
+            "default_calendar" -> {
+                val mode = intent.getStringExtra("mode")
+                val namePart = intent.getStringExtra("calendar")
+                val fixture = intent.getStringExtra("fixture")
+                intent.removeExtra("mode")
+                intent.removeExtra("calendar")
+                intent.removeExtra("fixture")
+                val debug = DefaultCalendarPicker.Debug.parse(mode, namePart, fixture)
+                if (debug == null) {
+                    SyncLog.w(
+                        tag,
+                        "default_calendar ignored: mode must be list, open, cancel or pick <name part>; fixture none, " +
+                            "offline, offline_save, timeout_save, refuse, auth, incomplete or none_own"
+                    )
+                } else {
+                    SyncLog.i(
+                        tag,
+                        "default_calendar: $mode for '${account.name}'" +
+                            (if (debug.namePart != null && debug.mode == DefaultCalendarPicker.Debug.Mode.PICK) " '${debug.namePart}'" else "") +
+                            if (debug.fixture != DefaultCalendarService.Fixture.NONE) ", fixture ${debug.fixture.name.lowercase()}" else ""
+                    )
+                    defaultCalendarPicker.show(account, debug)
+                }
+            }
+            // Read-only, no network: the calendar editors this phone has, and per held new event in a shared calendar its
+            // state, row, buttons, prompt and what the next upload does with it (NewEventHoldDebug). Never sweeps;
+            // opening the screen runs its own refresh as on every resume.
+            "event_holds" -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        me.proton.sync.calendar.NewEventHoldDebug.log(applicationContext, account, syncDatabase, tag)
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "event_holds failed: ${e.message}")
+                    }
+                }
+            }
+            // The prompt's buttons, through the same handler (NewEventHoldActions.answer, origin debug): move and publish
+            // on a waiting or kept event, keep on a waiting one. Move and publish then ask for the calendar sync as the
+            // user's own, as the buttons do; nosync skips only that request, and while Android's automatic sync is on
+            // Android still syncs after a Move (a provider change) and any later sync sends a published event. Keep
+            // sends nothing anywhere. expected_target is the calendar a Move button named, as the notification's
+            // carries it: another than the default now gives FAILED and the prompt again with the new name.
+            "event_hold" -> {
+                val eventId = intent.getLongExtra("event_id", -1L)
+                val choice = debugHoldChoice(intent.getStringExtra("choice"))
+                val nosync = intent.getBooleanExtra("nosync", false)
+                val expectedTarget = intent.getLongExtra("expected_target", -1L).takeIf { it >= 0 }
+                intent.removeExtra("event_id")
+                intent.removeExtra("choice")
+                intent.removeExtra("nosync")
+                intent.removeExtra("expected_target")
+                if (eventId <= 0 || choice == null) {
+                    SyncLog.w(tag, "event_hold ignored: give an event id and move, keep or publish")
+                } else {
+                    val app = applicationContext
+                    me.proton.sync.calendar.NewEventHoldActions.scope.launch {
+                        try {
+                            val outcome = me.proton.sync.calendar.NewEventHoldActions.answer(
+                                app, syncDatabase, account, eventId, choice, expectedTargetCalendarId = expectedTarget,
+                                origin = "debug", requestSync = !nosync
+                            )
+                            SyncLog.i(tag, "event_hold: ${choice.name.lowercase()} on event $eventId for '${account.name}': $outcome" +
+                                (expectedTarget?.let { " (expected target $it)" } ?: "") +
+                                if (nosync) " (nosync: no sync requested)" else "")
+                            withContext(Dispatchers.Main) { if (!isFinishing && !isDestroyed) refreshNewEventHolds(account) }
+                        } catch (e: Exception) {
+                            SyncLog.w(tag, "event_hold failed: ${e.message}")
+                        }
+                    }
+                }
+            }
+            // The decision dialog: event_id as the notification opens it, else list = waiting (default) or kept as the
+            // card's rows open their walk; press = move, keep or publish presses the button carrying it through its own
+            // listener (none: look only). nosync skips only an answer's sync request (with Android's automatic sync on,
+            // Android still syncs after a Move, and any later sync sends a published event). No other start-up dialog
+            // follows, as when the notification opens it.
+            "event_hold_dialog" -> {
+                val eventId = intent.getLongExtra("event_id", -1L).takeIf { it > 0 }
+                val walk = if (intent.getStringExtra("list") == "kept") NewEventHoldDialog.Walk.KEPT else NewEventHoldDialog.Walk.WAITING
+                val pressed = intent.getStringExtra("press")
+                val press = debugHoldChoice(pressed)
+                val nosync = intent.getBooleanExtra("nosync", false)
+                intent.removeExtra("event_id")
+                intent.removeExtra("list")
+                intent.removeExtra("press")
+                intent.removeExtra("nosync")
+                if (press == null && pressed != null && pressed != "none") {
+                    SyncLog.w(tag, "event_hold_dialog ignored: press must be move, keep, publish or none, not '$pressed'")
+                } else {
+                    openedForNewEventHold = true
+                    SyncLog.i(tag, "event_hold_dialog: requested for '${account.name}', " +
+                        (eventId?.let { "event $it" } ?: "the ${walk.name.lowercase()} list") +
+                        (press?.let { ", pressing ${it.name.lowercase()}" } ?: "") + if (nosync) " (nosync)" else "")
+                    newEventHoldDialog.show(account, eventId, walk, press, requestSync = !nosync) { refreshNewEventHolds(account) }
+                }
+            }
+            // The Fallback full sync job's body, once, now (SyncWorker.runOnce, what the job runs): per type an
+            // ordinary sync request, or a SyncWorker line saying why not. Nothing while Android's automatic sync is off.
+            "watchdog" -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        SyncWorker.runOnce(applicationContext, account.name, if (section == "all") "both" else section)
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "watchdog failed: ${e.message}")
+                    }
                 }
             }
             // The re-time pass: "check" plans without writing, "run" makes the next sync run it.
@@ -1469,6 +1811,23 @@ class SyncSettingsActivity : AppCompatActivity() {
                     }
                 }
             }
+            // Test fixture, not a user action: what this account's next calendar syncs take as Proton's calendar settings
+            // (mode = fail, null for DefaultCalendarID null, name with calendar = a part of one calendar's name for its
+            // Proton id) instead of asking, or real to ask Proton again. Nothing is sent to Proton and no sync is
+            // requested (see PrimaryCalendarDebug).
+            "default_calendar_fixture" -> {
+                val mode = intent.getStringExtra("mode")
+                val namePart = intent.getStringExtra("calendar")
+                intent.removeExtra("mode")
+                intent.removeExtra("calendar")
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        PrimaryCalendarDebug.setFixture(applicationContext, account, syncDatabase.calendarSyncDao(), mode, namePart)
+                    } catch (e: Exception) {
+                        SyncLog.w(tag, "default_calendar_fixture failed: ${e.message}")
+                    }
+                }
+            }
             // Test fixture: a read-only external calendar made to look re-imported under new ids (see ChurnFixture).
             "churn_fixture" -> {
                 val namePart = intent.getStringExtra("calendar").orEmpty()
@@ -1492,6 +1851,14 @@ class SyncSettingsActivity : AppCompatActivity() {
         }
     }
 
+    /** The event_hold and event_hold_dialog debug verbs' move, keep or publish; null for anything else. */
+    private fun debugHoldChoice(text: String?): me.proton.sync.calendar.NewEventHoldActions.Choice? = when (text) {
+        "move" -> me.proton.sync.calendar.NewEventHoldActions.Choice.MOVE
+        "keep" -> me.proton.sync.calendar.NewEventHoldActions.Choice.KEEP
+        "publish" -> me.proton.sync.calendar.NewEventHoldActions.Choice.PUBLISH
+        else -> null
+    }
+
     /** What a manual sync request actually started. requestSync ignores setSyncAutomatically. */
     private data class ManualSyncResult(val contacts: Boolean, val calendar: Boolean)
 
@@ -1504,13 +1871,13 @@ class SyncSettingsActivity : AppCompatActivity() {
      *
      * Any section that includes contacts clears the skipped contact-conflict decisions, because that is
      * what the prompt recording them promises. Only "all" marks the account as awaiting a sync.
+     *
+     * The extras are a user's tap's (SyncScheduling.userSyncExtras): while Android's automatic sync is off or the
+     * account is on Manual only, a sync that fails is not retried in the background; the card shows the failure,
+     * and the next tap tries again.
      */
     private fun requestManualSync(account: Account, abAccount: Account, section: String): ManualSyncResult {
-        val bundle = Bundle().apply {
-            putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-            putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-            putBoolean(SyncConstants.EXTRA_USER_SYNC_NOW, true)
-        }
+        val bundle = SyncScheduling.userSyncExtras(this, account.name, userSyncNow = true)
         // Whenever contacts are in scope, not only on "everything". These decisions are contact
         // conflicts and nothing else, and the prompt that records them tells the user both versions
         // stay "until your next manual sync". Asking for a contacts sync is that sync, and it did not
@@ -1848,6 +2215,31 @@ class SyncSettingsActivity : AppCompatActivity() {
                 if (!checked) offerToRemoveSyncedData(account, abAccount, calendar = true)
             }
 
+            // --- Default calendar: Proton's default for this account, shown from the stored decision, changed on Proton
+            // through the row's list (DefaultCalendarPicker). Shown whether calendar sync is on or off. ---
+            refreshDefaultCalendarValue(account)
+            cardBinding.rowDefaultCalendar.setOnClickListener { defaultCalendarPicker.show(account) }
+
+            // --- New events an app wrote into a calendar someone shared with the account: the header line while any
+            // waits, and the rows that walk the waiting and the kept ones one decision dialog at a time. ---
+            // Like the sync buttons, both refuse while a full re-sync of the account is being prepared: an answer then
+            // waits with its sync for the re-sync's own request (FullResyncHold), and the rows it reads may be half wiped.
+            refreshNewEventHolds(account)
+            cardBinding.rowNewEventHolds.setOnClickListener {
+                if (account.name in fullResyncInFlightAccounts) {
+                    Toast.makeText(this, getString(R.string.toast_resync_in_flight), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                newEventHoldDialog.show(account, walk = NewEventHoldDialog.Walk.WAITING) { refreshNewEventHolds(account) }
+            }
+            cardBinding.rowNewEventKept.setOnClickListener {
+                if (account.name in fullResyncInFlightAccounts) {
+                    Toast.makeText(this, getString(R.string.toast_resync_in_flight), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                newEventHoldDialog.show(account, walk = NewEventHoldDialog.Walk.KEPT) { refreshNewEventHolds(account) }
+            }
+
             val pollAttendeeKey = SyncPreferences.pollAttendeeStatusKey(account.name)
             cardBinding.switchPollAttendeeStatus.isChecked = prefs.getBoolean(pollAttendeeKey, false)
             cardBinding.switchPollAttendeeStatus.setOnCheckedChangeListener { _, checked ->
@@ -1893,8 +2285,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             // Through the live card: a rebuild on resume, with the dialog open across it, replaces this one.
             fun showTrimValue() = refreshTrimValue(account)
             val afterTrimChoice: (Set<me.proton.sync.calendar.RangeTrimRunner.Choice>) -> Unit = { newlyOn ->
-                showTrimValue()
-                if (newlyOn.isNotEmpty()) requestManualSync(account, abAccount, "calendar")
+                afterTrimSaved(account, newlyOn, offered = false)
             }
             showTrimValue()
             cardBinding.rowTrimOldEvents.setOnClickListener { rangeTrimDialog.show(account, offer = false, onSaved = afterTrimChoice) }
@@ -1918,14 +2309,12 @@ class SyncSettingsActivity : AppCompatActivity() {
                 defaultValue = "180",
                 prefs = prefs,
                 formatLabel = { v -> formatDaysLabel(v, pastEntries, pastValues) },
-                onChanged = {
-                    prefs.edit().putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
-                },
                 // Shortened against the value the picker opened with, the stored one, never one this card read at build;
                 // both read as the sync and the removal read them (not a whole number: the default; below 1: 1).
+                // Nothing when the picker re-selects the value it opened with.
                 onChangedFrom = { before, chosen ->
                     fun days(v: String) = (v.toLongOrNull() ?: SyncPreferences.DEFAULT_PAST_DAYS).coerceAtLeast(1)
-                    if (days(chosen) < days(before)) rangeTrimDialog.show(account, offer = true, onSaved = afterTrimChoice)
+                    if (chosen != before) afterRangeStored(account, offerTrim = days(chosen) < days(before))
                 }
             )
 
@@ -1941,9 +2330,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 defaultValue = "365",
                 prefs = prefs,
                 formatLabel = { v -> formatDaysLabel(v, futureEntries, futureValues) },
-                onChanged = {
-                    prefs.edit().putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
-                }
+                onChangedFrom = { before, chosen -> if (chosen != before) afterRangeStored(account, offerTrim = false) }
             )
 
             // Apply current sync mode to the radios + custom group, and wire toggles.
@@ -1954,22 +2341,21 @@ class SyncSettingsActivity : AppCompatActivity() {
                 cardBinding.groupCustomRange.visibility = if (isAll) android.view.View.GONE else android.view.View.VISIBLE
             }
             applySyncMode(prefs.getString(syncModeKey, SyncPreferences.DEFAULT_SYNC_MODE) ?: SyncPreferences.DEFAULT_SYNC_MODE)
+            // Each sends its calendar sync request only when it changes the mode, as the sync reads it (anything but
+            // All is the custom range).
             cardBinding.rowSyncModeAll.setOnClickListener {
-                prefs.edit()
-                    .putString(syncModeKey, SyncPreferences.SYNC_MODE_ALL)
-                    .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true)
-                    .apply()
+                val wasCustom = (prefs.getString(syncModeKey, SyncPreferences.DEFAULT_SYNC_MODE) ?: SyncPreferences.DEFAULT_SYNC_MODE) !=
+                    SyncPreferences.SYNC_MODE_ALL
+                prefs.edit().putString(syncModeKey, SyncPreferences.SYNC_MODE_ALL).apply()
                 applySyncMode(SyncPreferences.SYNC_MODE_ALL)
+                if (wasCustom) afterRangeStored(account, offerTrim = false)
             }
             cardBinding.rowSyncModeCustom.setOnClickListener {
                 val wasAll = (prefs.getString(syncModeKey, SyncPreferences.DEFAULT_SYNC_MODE) ?: SyncPreferences.DEFAULT_SYNC_MODE) ==
                     SyncPreferences.SYNC_MODE_ALL
-                prefs.edit()
-                    .putString(syncModeKey, SyncPreferences.SYNC_MODE_CUSTOM)
-                    .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true)
-                    .apply()
+                prefs.edit().putString(syncModeKey, SyncPreferences.SYNC_MODE_CUSTOM).apply()
                 applySyncMode(SyncPreferences.SYNC_MODE_CUSTOM)
-                if (wasAll) rangeTrimDialog.show(account, offer = true, onSaved = afterTrimChoice)
+                if (wasAll) afterRangeStored(account, offerTrim = true)
             }
 
             // --- Per-account sync settings ---
@@ -1978,19 +2364,19 @@ class SyncSettingsActivity : AppCompatActivity() {
             val fallbackOptions = arrayOf(getString(R.string.label_off)) + intervalEntries
             val fallbackOptionValues = arrayOf("-1") + intervalValues
 
-            // Event loop interval (per account, applies to both contacts + calendar)
-            val eventLoopKey = SyncPreferences.eventLoopIntervalKey(account.name)
+            // Sync interval (per account, both contacts and calendar): the period of Android's periodic syncs
+            val syncIntervalKey = SyncPreferences.eventLoopIntervalKey(account.name)
             bindDropdownPref(
                 labelView = cardBinding.valueEventLoop,
                 clickableRow = cardBinding.rowEventLoop,
-                dialogTitle = getString(R.string.dialog_title_event_loop_interval),
+                dialogTitle = getString(R.string.sync_interval_title),
                 entries = intervalEntries,
                 values = intervalValues,
-                prefKey = eventLoopKey,
+                prefKey = syncIntervalKey,
                 defaultValue = "3600",
                 prefs = prefs,
                 formatLabel = { v -> formatIntervalLabel(v, intervalEntries, intervalValues) },
-                onChanged = { applyEventLoopInterval(account) }
+                onChanged = { applySyncInterval(account) }
             )
 
             // "Show notification while syncing" — gates the IMPORTANCE_MIN ongoing notif.
@@ -2430,6 +2816,8 @@ class SyncSettingsActivity : AppCompatActivity() {
      * "everything's synced".
      */
     private fun updateHeroStatus(accounts: List<Account>) {
+        // Before the branches below, each of which may return: the line follows the subscription with them.
+        refreshAutoSyncNotice()
         val am = AccountManager.get(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val needsAttention = accounts.any { account ->
@@ -2548,7 +2936,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             addView(input)
         }
 
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_display_name))
             .setMessage(getString(R.string.dialog_message_display_name))
             .setView(container)
@@ -2589,7 +2977,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             .putBoolean(SyncPreferences.displayNameRecoveryOfferedKey(candidate.name), true)
             .apply()
 
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_display_name_recovery))
             .setMessage(getString(R.string.dialog_message_display_name_recovery))
             .setPositiveButton(getString(R.string.btn_set_display_name)) { _, _ ->
@@ -2651,7 +3039,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             if (it < 0) values.indexOf("custom").coerceAtLeast(0) else it
         }
 
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(title)
             .setSingleChoiceItems(entries, checkedItem) { dialog, which ->
                 if (values[which] == "custom") {
@@ -2683,7 +3071,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
 
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(title + getString(R.string.label_custom_suffix))
             .setMessage(getString(R.string.dialog_message_enter_value, unit))
             .setView(input)
@@ -2778,7 +3166,7 @@ class SyncSettingsActivity : AppCompatActivity() {
     }
 
     private fun showRemoveDialog(account: Account, abAccount: Account) {
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_remove_account))
             .setMessage(getString(R.string.dialog_message_remove_account, getDisplayName(accountManager, account)))
             .setPositiveButton(getString(R.string.dialog_title_remove_account)) { _, _ ->
@@ -2789,11 +3177,57 @@ class SyncSettingsActivity : AppCompatActivity() {
             .show()
     }
 
-    /** The "Include external calendars" switch: stored with the dirty flag, so the event loop's next run syncs the calendar. */
+    /**
+     * The "Include external calendars" switch (and the external and card_switch debug verbs): stored, then the calendar
+     * sync that applies it is asked for ([onCalendarSettingStored]); none while Android's automatic sync is off, and the
+     * next sync applies it then.
+     */
     private fun setIncludeExternalCalendars(account: Account, include: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-            .putBoolean(SyncPreferences.includeExternalCalendarsKey(account.name), include)
-            .putBoolean(SyncPreferences.calendarSettingsDirtyKey(account.name), true).apply()
+            .putBoolean(SyncPreferences.includeExternalCalendarsKey(account.name), include).apply()
+        onCalendarSettingStored(account, "external calendars")
+    }
+
+    /**
+     * A calendar setting of [account] was stored ([change] names it for the log): ask for the calendar sync that applies
+     * it (SyncScheduling.requestSettingsSync, which logs whether it asked and why not). While a full re-sync of the
+     * account's calendar is being prepared, started on this screen or on an earlier one, requestSettingsSync holds it
+     * (FullResyncHold) until [markResyncEnd]: a sync started inside the preparation would upload the rows it marks, with
+     * invitation emails.
+     */
+    private fun onCalendarSettingStored(account: Account, change: String) {
+        SyncScheduling.requestSettingsSync(applicationContext, account, change)
+    }
+
+    /**
+     * The calendar range of [account] was stored (a radio, a picker, the range debug verb). [offerTrim] when it narrowed:
+     * the "Remove older events" offer opens, and the range's sync waits for its answer, because a narrower range takes
+     * more from the calendars removal is already on for, and Keep them switches removal off for those first. When no
+     * offer is due or none is shown, the sync is asked for at once.
+     */
+    private fun afterRangeStored(account: Account, offerTrim: Boolean) {
+        if (offerTrim) {
+            rangeTrimDialog.show(account, offer = true, onNotShown = { onCalendarSettingStored(account, "range") }) { newlyOn ->
+                afterTrimSaved(account, newlyOn, offered = true)
+            }
+        } else {
+            onCalendarSettingStored(account, "range")
+        }
+    }
+
+    /**
+     * "Remove older events" was saved for [account] ([newlyOn]: the calendars the answer switched on): the row shows the
+     * stored choices again, and the calendar sync is asked for. [offered]: the answer to a narrowed range's offer, which
+     * sends the range's own request. From the row, only when a calendar was switched on: switched off, nothing is
+     * removed, so nothing needs a sync.
+     */
+    private fun afterTrimSaved(account: Account, newlyOn: Set<me.proton.sync.calendar.RangeTrimRunner.Choice>, offered: Boolean) {
+        refreshTrimValue(account)
+        if (offered) {
+            onCalendarSettingStored(account, "range")
+        } else if (newlyOn.isNotEmpty()) {
+            onCalendarSettingStored(account, "remove older events")
+        }
     }
 
     /**
@@ -2814,6 +3248,63 @@ class SyncSettingsActivity : AppCompatActivity() {
     /** The redraw of each account's "Remove older events" row still running ([refreshTrimValue]). */
     private val trimValueJobs = HashMap<String, Job>()
 
+    /**
+     * The "Default calendar" row of [account]'s card as it is on screen now (a rebuild on resume replaces the cards): the
+     * calendar the stored decision names (PrimaryCalendarMemory), which a calendar sync and a change made on the row
+     * write, under the name its calendar mapping holds now. The record keeps the calendar's id only, never its name, so
+     * the name is read live, off the main thread, from the app's own database. The name line is hidden while no calendar
+     * is known: before the first calendar sync with this version or the first opening of the list, when the account has
+     * no active calendar of its own, and while the chosen calendar has no mapping on this phone (calendar sync off, or
+     * not synced yet). The end of the account's calendar sync redraws it too ([refreshSyncIndicators]), so a rename on
+     * Proton, or the chosen calendar's first sync, shows while the screen is open.
+     */
+    private fun refreshDefaultCalendarValue(account: Account) {
+        val last = PrimaryCalendarMemory.decode(
+            PreferenceManager.getDefaultSharedPreferences(this).getString(SyncPreferences.primaryCalendarLastKey(account.name), null)
+        )
+        val chosenId = last?.protonCalendarId
+        defaultCalendarValueJobs.remove(account.name)?.cancel()
+        defaultCalendarValueJobs[account.name] = lifecycleScope.launch {
+            val name = if (chosenId == null) null else withContext(Dispatchers.IO) {
+                try {
+                    syncDatabase.calendarSyncDao().getByProtonId(account.name, chosenId)?.displayName
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    null
+                }
+            }?.removePrefix("${account.name} - ")
+            val card = accountCardHandles.firstOrNull { it.parentAccount == account }?.binding ?: return@launch
+            card.valueDefaultCalendar.text = name.orEmpty()
+            card.valueDefaultCalendar.visibility = if (name.isNullOrBlank()) View.GONE else View.VISIBLE
+        }
+    }
+
+    /** The redraw of each account's "Default calendar" row still running ([refreshDefaultCalendarValue]). */
+    private val defaultCalendarValueJobs = HashMap<String, Job>()
+
+    /**
+     * The header line and the two Calendar rows of [account]'s card as they are on screen now, from the held new events
+     * (NewEventHoldStore): "N events waiting for your choice" in the header and in the first row, "N events kept only on
+     * this phone" in the second, each shown only while its count is above 0. Main thread; the store is a preference, so
+     * nothing is read from the database or the provider.
+     */
+    private fun refreshNewEventHolds(account: Account) {
+        val card = accountCardHandles.firstOrNull { it.parentAccount == account }?.binding ?: return
+        val counts = me.proton.sync.calendar.NewEventHoldStore.counts(PreferenceManager.getDefaultSharedPreferences(this), account.name)
+        val waiting = counts.waiting
+        val kept = counts.kept
+        val waitingText = if (waiting > 0) Plurals.text(this, R.plurals.label_new_event_holds, waiting, waiting) else ""
+        card.accountHoldsStatus.text = waitingText
+        card.accountHoldsRow.visibility = if (waiting > 0) View.VISIBLE else View.GONE
+        card.labelNewEventHolds.text = waitingText
+        card.rowNewEventHolds.visibility = if (waiting > 0) View.VISIBLE else View.GONE
+        card.hairlineNewEventHolds.visibility = if (waiting > 0) View.VISIBLE else View.GONE
+        card.labelNewEventKept.text = if (kept > 0) Plurals.text(this, R.plurals.label_new_event_kept, kept, kept) else ""
+        card.rowNewEventKept.visibility = if (kept > 0) View.VISIBLE else View.GONE
+        card.hairlineNewEventKept.visibility = if (kept > 0) View.VISIBLE else View.GONE
+    }
+
     /** Accounts whose calendar sync this screen saw running, so its end redraws their "Remove older events" row. */
     private val calendarSyncSeen = HashSet<String>()
 
@@ -2821,63 +3312,43 @@ class SyncSettingsActivity : AppCompatActivity() {
 
     /**
      * The sync interval picker's handler, run once it has stored the new value (and by the "interval"
-     * debug command): the event loop and both periodic syncs follow the stored interval.
+     * debug command): both periodic syncs follow the stored interval.
      */
-    private fun applyEventLoopInterval(account: Account) {
+    private fun applySyncInterval(account: Account) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val seconds = SyncPreferences.getLongFromStringPref(prefs, SyncPreferences.eventLoopIntervalKey(account.name), 3600)
         val abAcct = Account(
             SyncUtils.addressBookAccountName(accountManager, account),
             ProtonSyncApp.ACCOUNT_TYPE_ADDRESS_BOOK
         )
-        if (seconds < 0) {
-            // "Manual only". The sentinel is -1 SECONDS, and this used to hand
-            // scheduleForAccount `seconds / 60`, which truncates -1 to 0. The worker
-            // cancels on a NEGATIVE interval, so 0 fell through to
-            // maxOf(0, MIN_INTERVAL_MINUTES) and scheduled the event loop every 15
-            // minutes - the fastest the app offers, from the option that promises none.
-            // The two fallback pickers always branched on the sentinel; this one never
-            // did.
-            EventLoopWorker.scheduleForAccount(this, account.name, -1)
-            // And manual has to mean manual. This is the only schedule control in the
-            // UI, but the hourly ContentResolver periodic sync armed at provisioning
-            // is what actually runs the adapter, and nothing here ever touched it - so
-            // "Manual only" left a background sync running every hour regardless.
-            SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
-            SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
-            SyncLog.i("SyncSettings", "Event loop set to manual for '${account.name}': event loop cancelled and both periodic syncs removed")
-        } else {
-            // Armed only while the subscription lets sync run, like the periodic syncs below (gated
-            // inside applyPeriodicSync). The subscription observer arms it from the stored value when
-            // the subscription turns active.
-            val allowed = SubscriptionGate.isSyncAllowedCached(this)
-            if (allowed) {
-                EventLoopWorker.scheduleForAccount(this, account.name, EventLoopWorker.intervalMinutesFor(seconds))
-            }
-            // The chosen interval now governs the periodic sync too, for whichever
-            // types are actually switched on. Arming one for a type the user has
-            // turned off would resurrect exactly what the switch is meant to stop.
-            SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
-            SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
-            if (allowed) {
-                SyncLog.i("SyncSettings", "Event loop for '${account.name}' set to ${seconds}s; periodic syncs re-armed to match")
-            } else {
-                SyncLog.i("SyncSettings", "Event loop for '${account.name}' set to ${seconds}s; not armed while the subscription is inactive")
-            }
+        // "Manual only" is the sentinel -1 SECONDS, and manual has to mean manual: applyPeriodicSync removes both
+        // periodic syncs for it, the hourly ones armed at provisioning included, which are what actually run the
+        // adapter. Any other value re-arms them at that period, for whichever types are switched on (arming one for
+        // a type the user turned off would bring back what the switch stops), and nothing while the subscription is
+        // inactive; the subscription observer arms them from the stored value when it turns active.
+        SyncUtils.applyPeriodicSync(this, abAcct, SyncConstants.AUTHORITY_CONTACTS, account.name)
+        SyncUtils.applyPeriodicSync(this, account, SyncConstants.AUTHORITY_CALENDAR, account.name)
+        val outcome = when {
+            seconds < 0 -> "set to Manual only: both periodic syncs removed"
+            SubscriptionGate.isSyncAllowedCached(this) -> "set to ${seconds}s; periodic syncs re-armed to match"
+            else -> "set to ${seconds}s; not armed while the subscription is inactive"
         }
+        SyncLog.i("SyncSettings", "Sync interval for '${account.name}' $outcome")
     }
 
     /**
      * Tap-to-explain dialog for the red ✗ failure date row. Shows the localized
      * failure timestamp and the friendly reason mapped from the stored raw error
      * via [SyncNotificationHelper.friendlyMessage]. Offers a shortcut to the
-     * in-app log viewer for users who want the raw stack trace.
+     * in-app log viewer for users who want the raw stack trace. Whether it says the sync
+     * retries by itself or asks for a tap on Sync follows the account's state as the
+     * dialog opens (SyncScheduling.userSyncRetriesFor).
      */
     private fun showSyncFailureDialog(accountName: String, syncType: String, failureMillis: Long) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val rawError = prefs.getString(SyncPreferences.lastSyncErrorMsgKey(syncType, accountName), null)
             .orEmpty()
-        val friendly = SyncNotificationHelper.friendlyMessage(this, rawError)
+        val friendly = SyncNotificationHelper.friendlyMessage(this, rawError, SyncScheduling.userSyncRetriesFor(this, accountName))
         val dateText = if (failureMillis > 0L) {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, java.util.Locale.getDefault())
                 .format(Date(failureMillis))
@@ -2888,7 +3359,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             append("\n")
             append(getString(R.string.dialog_label_sync_reason, friendly))
         }
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_sync_failed))
             .setMessage(message)
             .setPositiveButton(getString(R.string.btn_ok), null)
@@ -2912,7 +3383,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             "calendar" -> getString(R.string.label_calendar_lower)
             else -> getString(R.string.label_all_data)
         }
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(getString(R.string.dialog_title_full_resync, sectionLabel))
             .setMessage(getString(R.string.dialog_message_full_resync, sectionLabel, sectionLabel))
             .setPositiveButton(getString(R.string.btn_remote_to_local)) { _, _ ->
@@ -2933,22 +3404,51 @@ class SyncSettingsActivity : AppCompatActivity() {
      * buttons (B is independent — different rows, different calendar IDs, different
      * DB tables; Android's SyncManager already serializes per-authority).
      *
-     * Mutated only on the Main thread (dialog confirm increments, finally-block
-     * decrements via withContext(Main)). Every change re-runs
-     * [refreshSyncIndicators] so the affected card greys out the moment the resync
-     * starts — before Android promotes the requestSync to "active" — and re-enables
-     * the moment all four type-bucket coroutines complete. v1.4.22.
+     * Read from FullResyncHold, process-wide: the coroutine outlives this screen, and a screen built again meanwhile
+     * (a rotation, a language change, leaving and coming back) has to refuse the sync buttons too, whichever type the
+     * re-sync covers, and hold a calendar setting change while it covers the calendar. Marked on the main thread ([markResyncStart], [markResyncEnd] from the coroutine's finally via
+     * withContext(Main)); every mark re-runs [refreshSyncIndicators] so the affected card greys out the moment the
+     * resync starts, before Android promotes the requestSync to "active", and re-enables the moment the preparation
+     * ends. A screen built during another screen's preparation re-checks it on its poll until it ends. v1.4.22.
      */
-    private val fullResyncInFlightAccounts: MutableSet<String> = mutableSetOf()
+    private val fullResyncInFlightAccounts: Set<String>
+        get() = FullResyncHold.preparing()
 
-    private fun markResyncStart(accountName: String) {
-        fullResyncInFlightAccounts.add(accountName)
+    /** [section] is the narrowed one the preparation acts on: only that type's background requests are held. */
+    private fun markResyncStart(accountName: String, section: String) {
+        FullResyncHold.start(accountName, section)
         refreshSyncIndicators()
     }
 
+    /**
+     * Also asks for the sync of a calendar setting changed during the preparation (held by
+     * SyncScheduling.requestSettingsSync), and the one calendar sync that the answers given meanwhile in the app's
+     * notifications asked for (held by FullResyncHold.holdAnswerIfPreparing, [requestHeldAnswerSync]): this runs after
+     * the re-sync's own request is posted, or after its preparation failed, on whichever screen started it.
+     */
     private fun markResyncEnd(accountName: String) {
-        fullResyncInFlightAccounts.remove(accountName)
+        val held = FullResyncHold.end(accountName)
         refreshSyncIndicators()
+        if (held != null) SyncScheduling.requestSettingsSync(applicationContext, Account(accountName, ProtonSyncApp.ACCOUNT_TYPE), held)
+        FullResyncHold.takeHeldAnswer(accountName)?.let { requestHeldAnswerSync(Account(accountName, ProtonSyncApp.ACCOUNT_TYPE), it) }
+    }
+
+    /**
+     * The calendar sync that answers in the app's notifications asked for while [account]'s calendar full re-sync was
+     * being prepared, asked for now, after the re-sync's own request, as those answers ask for it: the user's own sync,
+     * answering the account's own sync, with [userSyncNow] when one of them was a collision's answer. Their decisions
+     * are stored already. A forced Local to Remote run uploads them too, but a forced Remote to Local run uploads nothing
+     * (rows made on the phone stay pending for the next sync), and a failed preparation starts no run: then this sync is
+     * the one that sends them, so it is asked for whatever the re-sync's direction or outcome.
+     */
+    private fun requestHeldAnswerSync(account: Account, userSyncNow: Boolean) {
+        val bundle = SyncScheduling.userSyncExtras(applicationContext, account.name, userSyncNow = userSyncNow, answering = account)
+        val asked = requestSyncIfEnabled(account, SyncConstants.AUTHORITY_CALENDAR, bundle)
+        SyncLog.i(
+            "UserAction",
+            "Answers given while the full re-sync of '${account.name}' was being prepared: " +
+                if (asked) "calendar sync requested" else "no calendar sync requested, calendar sync is switched off"
+        )
     }
 
 
@@ -3012,7 +3512,7 @@ class SyncSettingsActivity : AppCompatActivity() {
      * exactly the sentence a user would fear means the opposite.
      */
     private fun offerToRemoveSyncedData(account: Account, abAccount: Account, calendar: Boolean) {
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(if (calendar) R.string.remove_synced_calendar_title else R.string.remove_synced_contacts_title)
             .setMessage(if (calendar) R.string.remove_synced_calendar_body else R.string.remove_synced_contacts_body)
             .setNegativeButton(R.string.remove_synced_keep, null)
@@ -3098,7 +3598,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             return
         }
         SyncLog.i("UserAction", "Force Remote→Local resync requested for '${account.name}' (section=$section)")
-        markResyncStart(account.name)
+        markResyncStart(account.name, section)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 if (section == "contacts" || section == "all") {
@@ -3228,11 +3728,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    val bundle = Bundle().apply {
-                        putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                        putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                        putBoolean(me.proton.sync.SyncConstants.EXTRA_FORCE_REMOTE_TO_LOCAL, true)
-                    }
+                    val bundle = SyncScheduling.forcedResyncExtras(SyncConstants.EXTRA_FORCE_REMOTE_TO_LOCAL)
                     if (section == "contacts" || section == "all") {
                         ContentResolver.requestSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, bundle)
                     }
@@ -3265,7 +3761,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             return
         }
         SyncLog.i("UserAction", "Force Local→Remote resync requested for '${account.name}' (section=$section)")
-        markResyncStart(account.name)
+        markResyncStart(account.name, section)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 if (section == "contacts" || section == "all") {
@@ -3287,11 +3783,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                     )
 
                     // Trigger contact sync (will upload all dirty contacts)
-                    val contactBundle = Bundle().apply {
-                        putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                        putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                        putBoolean(me.proton.sync.SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE, true)
-                    }
+                    val contactBundle = SyncScheduling.forcedResyncExtras(SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE)
                     ContentResolver.requestSync(abAccount, SyncConstants.AUTHORITY_CONTACTS, contactBundle)
                 }
 
@@ -3336,11 +3828,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                     }
 
                     // Trigger calendar sync (will upload all dirty events)
-                    val calBundle = Bundle().apply {
-                        putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                        putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                        putBoolean(me.proton.sync.SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE, true)
-                    }
+                    val calBundle = SyncScheduling.forcedResyncExtras(SyncConstants.EXTRA_FORCE_LOCAL_TO_REMOTE)
                     ContentResolver.requestSync(account, android.provider.CalendarContract.AUTHORITY, calBundle)
                 }
 
@@ -3367,7 +3855,7 @@ class SyncSettingsActivity : AppCompatActivity() {
      *
      * Replaces the boilerplate "read pref → format label → setOnClickListener {
      * re-read → showListDialog → on-select update label }" pattern that buildAccountCards
-     * repeats for the past-events, future-events, and event-loop-interval rows.
+     * repeats for the past-events, future-events, and sync interval rows.
      *
      * Live re-read inside the click handler matters because the user may have changed
      * the value via another path (e.g. a different card on the same activity) before
@@ -3528,11 +4016,11 @@ class SyncSettingsActivity : AppCompatActivity() {
             return
         }
         val labels = cals.map { "${it.name}  (${it.account})" }.toTypedArray()
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle("Simulate vanished events")
             .setItems(labels) { _, i ->
                 val cal = cals[i]
-                AlertDialog.Builder(this)
+                AppDialogBuilder(this)
                     .setTitle("Simulate vanished events")
                     .setMessage(
                         "Hard-delete ALL local events of '${cal.name}' WITHOUT tombstones (mimics a " +
@@ -3570,11 +4058,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-            val bundle = Bundle().apply {
-                putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
-                putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-                putBoolean(SyncConstants.EXTRA_USER_SYNC_NOW, true)
-            }
+            val bundle = SyncScheduling.userSyncExtras(this@SyncSettingsActivity, accountName, userSyncNow = true)
             ContentResolver.requestSync(account, SyncConstants.AUTHORITY_CALENDAR, bundle)
         }
     }
@@ -3596,7 +4080,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         // Multi-account: pick the first; user can re-run for others.
         val account = accounts.first()
 
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(R.string.dialog_calibrate_photo_title)
             .setMessage(getString(R.string.dialog_calibrate_photo_message))
             .setPositiveButton(android.R.string.ok) { _, _ -> runPhotoSizeCalibration(account.name) }
@@ -3632,7 +4116,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                     }
                 } ?: "Calibration failed - see Sync Log."
 
-                AlertDialog.Builder(this@SyncSettingsActivity)
+                AppDialogBuilder(this@SyncSettingsActivity)
                     .setTitle(R.string.dialog_calibrate_photo_done_title)
                     .setMessage(message)
                     .setPositiveButton("Copy") { _, _ ->
@@ -3704,7 +4188,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         }
         val accounts = accountManager.getAccountsByType(ProtonSyncApp.ACCOUNT_TYPE)
         if (accounts.isEmpty()) return
-        AlertDialog.Builder(this)
+        AppDialogBuilder(this)
             .setTitle(Plurals.text(this@SyncSettingsActivity, R.plurals.dialog_title_full_resync_all, accounts.size, accounts.size))
             .setMessage(getString(R.string.dialog_message_full_resync_all))
             .setPositiveButton(getString(R.string.btn_remote_to_local)) { _, _ ->
@@ -3769,8 +4253,9 @@ class SyncSettingsActivity : AppCompatActivity() {
     /**
      * "Update time zones online" (device-wide, default off). One path for the switch, the notice's "Turn on",
      * the debug verb and an import, so they cannot drift: the preference, which the next sync reads as its rule
-     * source (TimeZoneRuleSource.snapshot), then a calendar sync request for every account, whose re-time pass
-     * corrects the events already on the phone. Nothing is fetched here; ical4j's own updater stays off for good.
+     * source (TimeZoneRuleSource.snapshot), then a calendar sync request for each account the background rule allows
+     * (TimeZoneRuleSource.requestRetimeSyncs), whose re-time pass corrects the events already on the phone; every
+     * other account re-times at its next sync. Nothing is fetched here; ical4j's own updater stays off for good.
      */
     private fun setTimeZoneUpdates(enabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -3819,7 +4304,7 @@ class SyncSettingsActivity : AppCompatActivity() {
         binding.infoTimezoneUpdates.setOnClickListener {
             val version = TimeZoneRuleSource.displayedTzdataVersion(PreferenceManager.getDefaultSharedPreferences(this))
                 ?: getString(R.string.tz_data_version_unknown)
-            AlertDialog.Builder(this)
+            AppDialogBuilder(this)
                 .setTitle(R.string.label_timezone_updates_title)
                 .setMessage(getString(R.string.info_timezone_updates_text, version))
                 .setPositiveButton(R.string.btn_info_dismiss, null)
@@ -3859,7 +4344,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 if (!anyAccountSyncsCalendar()) return false
             }
         }
-        tzNoticeDialog = AlertDialog.Builder(this)
+        tzNoticeDialog = AppDialogBuilder(this)
             .setCancelable(false)
             .setTitle(R.string.tz_outdated_title)
             .setMessage(
@@ -3999,7 +4484,7 @@ class SyncSettingsActivity : AppCompatActivity() {
                 else androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().get(0)?.toLanguageTag() ?: ""
             ).coerceAtLeast(0)
 
-            AlertDialog.Builder(this)
+            AppDialogBuilder(this)
                 .setTitle(getString(R.string.label_language))
                 .setSingleChoiceItems(languageNames, checkedIdx) { dialog, which ->
                     val tag = languageTags[which]
@@ -4027,7 +4512,7 @@ class SyncSettingsActivity : AppCompatActivity() {
             val pm = getSystemService(android.os.PowerManager::class.java)
             if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName)) {
                 // Show a dialog explaining the issue and offer to open settings
-                AlertDialog.Builder(this)
+                AppDialogBuilder(this)
                     .setTitle(getString(R.string.dialog_title_battery))
                     .setMessage(getString(R.string.dialog_message_battery))
                     .setPositiveButton(getString(R.string.btn_open_settings)) { _, _ ->
