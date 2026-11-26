@@ -641,8 +641,14 @@ object ContactsMapper {
      * Map a vCard date property (BDAY/ANNIVERSARY) to Android's Event.START_DATE string.
      *
      * Handles all four wire forms seen on Proton contacts (v1.6.23):
-     *  - text values (our own uploads: "--02-15" or "1990-02-15") — passed through verbatim;
-     *  - real dates (BDAY:19900215) — formatted as yyyy-MM-dd;
+     *  - text values: our own uploads are text "19900215" (the upload strips the dashes) or "--02-15". Since 2.2.1 a
+     *    basic-form date is spelled the extended way here ("1990-02-15", "--02-15", see [ContactDates]), because
+     *    several calendar and birthday apps skip the basic form; any other text is passed through verbatim;
+     *  - real dates (BDAY:19900215) — formatted as yyyy-MM-dd; a date-time in UTC (BDAY:19900215T000000Z) reaches
+     *    us as an Instant, which has no calendar date of its own, so its UTC date is taken. Before 2.2.1 such a date
+     *    was dropped. It reaches the phone when 2.2.1 or later downloads the contact (a new contact, a change on Proton,
+     *    a Remote-to-Local reload); a contact an older version wrote without it keeps no row until then, and its next
+     *    edit on the phone still removes the date on Proton, as before;
      *  - Apple's omit-year convention (BDAY;X-APPLE-OMIT-YEAR=1604:16040215) — the sentinel
      *    year is stripped to Android's native year-less "--MM-dd" instead of leaking a
      *    literal year-1604 birthday;
@@ -660,10 +666,14 @@ object ContactsMapper {
      */
     internal fun parseDateProperty(prop: ezvcard.property.DateOrTimeProperty?): String? {
         if (prop == null) return null
-        prop.text?.let { return it }
+        prop.text?.let { return ContactDates.toExtended(it) ?: it }
         prop.date?.let { date ->
             return try {
-                val localDate = java.time.LocalDate.from(date)
+                val localDate = if (date is java.time.Instant) {
+                    date.atOffset(java.time.ZoneOffset.UTC).toLocalDate()
+                } else {
+                    java.time.LocalDate.from(date)
+                }
                 val omitYear = prop.getParameter("X-APPLE-OMIT-YEAR")?.toIntOrNull()
                 if (omitYear != null && omitYear == localDate.year) {
                     String.format(Locale.ROOT, "--%02d-%02d", localDate.monthValue, localDate.dayOfMonth)

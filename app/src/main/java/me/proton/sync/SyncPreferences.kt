@@ -172,6 +172,23 @@ object SyncPreferences {
     fun timeZoneRetimeKey(accountName: String) = "tz_retime_$accountName"
 
     /**
+     * The versionCode in which the contact-date pass (contacts.ContactDateRewrite) halted for this account: a contact
+     * it re-spelled was found edited in the step just checked, or a further one after its second wait, or it stopped on
+     * an earlier step's contact a second time ([contactDateRewriteLateKey]). Most likely this phone's provider marks such writes as edits, though
+     * an edit made at the same moment does the same. The pass skips the account until the app is updated. Ends with
+     * the account name, so a rename carries it. Not exported: it describes this phone, not a choice.
+     */
+    fun contactDateRewriteHaltedKey(accountName: String) = "contact_date_rewrite_halted_$accountName"
+
+    /**
+     * The versionCode with which the contact-date pass last stopped because a contact it had re-spelled earlier in the
+     * run was found edited: a user's edit, or a provider that marks contacts late. The next such stop in the same
+     * version halts the pass ([contactDateRewriteHaltedKey]). Ends with the account name, so a rename carries it. Not
+     * exported, like the halt.
+     */
+    fun contactDateRewriteLateKey(accountName: String) = "contact_date_rewrite_late_$accountName"
+
+    /**
      * The calendars of this account that "Remove older events from this phone" is on for: RangeTrimRunner.Choice texts,
      * "<Android calendar id>|<Proton calendar id>", and an entry in any other form is ignored. Both ids, because the
      * provider reuses the id of a deleted calendar, so a new calendar never inherits removal: one re-created on Proton
@@ -691,7 +708,8 @@ object SyncPreferences {
         "primary_calendar_last_", "debug_default_calendar_fixture_", "new_event_holds_",
         "contact_filter_rules_", "contact_filter_dirty_", "contact_filter_kept_local_",
         "contact_create_strikes_", "contact_create_refused_", "contact_create_reasons_",
-        "contact_delete_strikes_", "contact_delete_noticed_", "contact_download_too_large_", "event_delete_strikes_",
+        "contact_delete_strikes_", "contact_delete_noticed_", "contact_download_too_large_", "contact_date_rewrite_halted_",
+        "contact_date_rewrite_late_", "event_delete_strikes_",
         "event_delete_noticed_", "event_delete_pass_strikes_", "event_delete_pass_rejects_",
         "contacts_rejected_repost_", "contacts_too_large_repost_",
         "conflict_held_", "conflict_local_wins_",

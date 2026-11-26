@@ -1,5 +1,7 @@
 package me.proton.sync.contacts.filter
 
+import me.proton.sync.contacts.ContactDates
+
 /**
  * Decides whether one contact should sync, given a rule set.
  *
@@ -148,24 +150,32 @@ class FilterEvaluator(private val ruleSet: FilterRuleSet) {
         }
 
         val values = view.values(field) ?: return Tri.UNKNOWN
+        // A birthday or anniversary is compared in both spellings. Since 2.2.1 the readers give the extended one
+        // ("1990-02-15", ContactDates), while before that every full date this app had uploaded read "19900215", so a
+        // rule written against either spelling keeps its meaning. Presence and counts stay one entry per date.
+        val spelled = if (field == RuleField.BIRTHDAY || field == RuleField.ANNIVERSARY) {
+            values.flatMap { v -> listOfNotNull(v, ContactDates.toBasic(v.trim())) }.distinct()
+        } else {
+            values
+        }
         return when (condition.op) {
             RuleOp.EXISTS -> Tri.of(values.isNotEmpty())
             RuleOp.COUNT_EQ -> Tri.of(condition.number != null && values.size.toLong() == condition.number)
             RuleOp.COUNT_GTE -> Tri.of(condition.number != null && values.size.toLong() >= condition.number)
             RuleOp.COUNT_LTE -> Tri.of(condition.number != null && values.size.toLong() <= condition.number)
-            RuleOp.IN_SET, RuleOp.CONTAINS_ALL -> setOperator(condition, values, condition.values)
-            RuleOp.EQUALS -> anyValue(values) { v -> condition.values.any { it.eqi(v) } }
+            RuleOp.IN_SET, RuleOp.CONTAINS_ALL -> setOperator(condition, spelled, condition.values)
+            RuleOp.EQUALS -> anyValue(spelled) { v -> condition.values.any { it.eqi(v) } }
             // Requires a value to be present. "Email address is not boss@example.com" read as a
             // sentence is about a contact who has an address, and it used to be true of every
             // contact with no address at all, which over an exclude rule quietly swept in everyone
             // the user had never thought about.
             RuleOp.NOT_EQUALS -> Tri.of(
-                values.isNotEmpty() && values.none { v -> condition.values.any { it.eqi(v) } }
+                values.isNotEmpty() && spelled.none { v -> condition.values.any { it.eqi(v) } }
             )
-            RuleOp.CONTAINS -> anyValue(values) { v -> condition.values.any { v.containsi(it) } }
-            RuleOp.STARTS_WITH -> anyValue(values) { v -> condition.values.any { v.trim().startsWith(it.trim(), true) } }
-            RuleOp.ENDS_WITH -> anyValue(values) { v -> condition.values.any { v.trim().endsWith(it.trim(), true) } }
-            RuleOp.MATCHES_REGEX -> anyValue(values) { v ->
+            RuleOp.CONTAINS -> anyValue(spelled) { v -> condition.values.any { v.containsi(it) } }
+            RuleOp.STARTS_WITH -> anyValue(spelled) { v -> condition.values.any { v.trim().startsWith(it.trim(), true) } }
+            RuleOp.ENDS_WITH -> anyValue(spelled) { v -> condition.values.any { v.trim().endsWith(it.trim(), true) } }
+            RuleOp.MATCHES_REGEX -> anyValue(spelled) { v ->
                 condition.values.any { pattern -> regex(pattern)?.containsMatchIn(v) == true }
             }
             RuleOp.ONLY, RuleOp.EXACTLY -> Tri.FALSE

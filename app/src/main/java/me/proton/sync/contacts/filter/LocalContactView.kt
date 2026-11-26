@@ -3,6 +3,7 @@ package me.proton.sync.contacts.filter
 import android.content.Context
 import android.provider.ContactsContract
 import me.proton.sync.ProtonSyncApp
+import me.proton.sync.contacts.ContactDates
 import me.proton.sync.contacts.ContactsSyncAdapter
 import me.proton.sync.db.daos.ContactSyncDao
 
@@ -326,7 +327,10 @@ object ContactFilterPreview {
                             ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY -> RuleField.ANNIVERSARY
                             else -> RuleField.CUSTOM_DATE
                         }
-                        put(field, c.getString(D1))
+                        // A row still in the basic form ("19900215", from before 2.2.1 and not rewritten yet) is
+                        // read the way the download spells it now, so a rule sees one spelling either way.
+                        val date = c.getString(D1)?.trim()
+                        put(field, if (field == RuleField.CUSTOM_DATE || date == null) date else ContactDates.toExtended(date) ?: date)
                     }
                     @Suppress("DEPRECATION")
                     ContactsContract.CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE ->

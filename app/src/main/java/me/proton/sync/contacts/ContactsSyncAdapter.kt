@@ -560,6 +560,7 @@ class ContactsSyncAdapter(
                     "would reach Proton and stay there"
             )
         } else {
+            rewriteBasicFormContactDates(account, parentAccountName, provider, allContacts, activeConflictIds)
             uploadDirtyContacts(account, parentAccountName, provider, syncResult, activeConflictIds, existingLabelNames, filterSession)
         }
 
@@ -568,6 +569,107 @@ class ContactsSyncAdapter(
         // next one re-evaluates rather than trusting half-applied verdicts.
         if (filterSession?.rulesChanged == true) {
             me.proton.sync.contacts.filter.ContactFilterStore.clearDirty(context, parentAccountName)
+        }
+    }
+
+    /**
+     * Re-spells this account's birthdays and anniversaries still in the basic form ("19900215") to the extended one the
+     * download writes since 2.2.1, in place and as the sync adapter ([ContactDateRewrite]). Called just before the
+     * upload, so a provider that marks such a contact as edited after all sends it in this same run, rather than
+     * holding it for a later conflict check. Skipped in a forced Remote-to-Local run (which rewrites every row anyway)
+     * and while uploads are held. Never fails the sync: what is left is tried again next time, and a halt recorded for
+     * this app version waits for an update.
+     *
+     * Only contacts whose phone copy is Proton's current one ([headers] through [ContactDateRewrite.isCurrent]) and that
+     * are in no open conflict ([activeConflictIds]) are re-spelled: should one upload because of the provider, it then
+     * sends what Proton already has, never an older copy over a newer edit. That holds while the phone's clock is
+     * within [ContactDateRewrite.CURRENT_SLACK_S] of Proton's and no edit reaches Proton during this sync, as for any
+     * upload.
+     */
+    private suspend fun rewriteBasicFormContactDates(
+        account: Account,
+        parentAccountName: String,
+        provider: ContentProviderClient,
+        headers: List<ContactMeta>,
+        activeConflictIds: Set<String>,
+    ) {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+        val version = me.proton.sync.BuildConfig.VERSION_CODE
+        val haltKey = SyncPreferences.contactDateRewriteHaltedKey(parentAccountName)
+        val lateKey = SyncPreferences.contactDateRewriteLateKey(parentAccountName)
+        try {
+            if (prefs.getInt(haltKey, 0) == version) {
+                SyncLog.i(
+                    TAG,
+                    "Contact dates for $parentAccountName: not tried in this app version, because a contact it " +
+                        "re-spelled read as edited; tried again after an app update"
+                )
+                return
+            }
+            val rows = ContactDateRewrite.candidates(provider, account)
+            if (rows.isEmpty()) return
+            val serverTimes = headers.associate { it.id to it.modifyTime }
+            val current = contactSyncDao.getAllByAccount(parentAccountName).mapNotNullTo(HashSet()) { m ->
+                val rawId = m.androidRawContactId
+                val serverTime = serverTimes[m.protonContactId]
+                val isCurrent = serverTime != null && ContactDateRewrite.isCurrent(m.lastModified, serverTime)
+                if (rawId != null && isCurrent && m.protonContactId !in activeConflictIds) rawId else null
+            }
+            val plan = ContactDateRewrite.plan(rows, current)
+            // The rows plan() left out: their contact is in an open conflict, waits for a download or an upload, or has
+            // a record the phone's clock cannot vouch for.
+            val held = rows.size - plan.size
+            val heldText = "$held held while the phone's copy is not Proton's current one"
+            if (plan.isEmpty()) {
+                SyncLog.d(TAG, "Contact dates for $parentAccountName: none re-spelled ($heldText)")
+                return
+            }
+            val outcome = ContactDateRewrite.apply(
+                ContactDateRewrite.ProviderStore(provider, account),
+                plan,
+                struck = prefs.getInt(lateKey, 0) == version,
+                strike = { prefs.edit().putInt(lateKey, version).commit() },
+                halt = { prefs.edit().putInt(haltKey, version).commit() },
+            )
+            val counts = "(${outcome.waiting} wait for an unsent edit, ${outcome.changed} changed meanwhile, $heldText)"
+            when {
+                outcome.halted -> SyncLog.w(
+                    TAG,
+                    "Contact dates for $parentAccountName: stopped after ${outcome.written} re-spelled, because a contact " +
+                        "it re-spelled reads as edited (by this phone, or by an edit at the same moment); tried again " +
+                        "after an app update $counts"
+                )
+                outcome.late -> SyncLog.i(
+                    TAG,
+                    "Contact dates for $parentAccountName: ${outcome.written} re-spelled with dashes, the rest at a later " +
+                        "sync, because a contact re-spelled earlier in this pass reads as edited; a second time in this " +
+                        "app version stops the pass until an update $counts"
+                )
+                outcome.stopped -> SyncLog.i(
+                    TAG,
+                    "Contact dates for $parentAccountName: ${outcome.written} re-spelled with dashes, the rest at a later " +
+                        "sync, because a contact changed at the same moment $counts"
+                )
+                outcome.deferred -> SyncLog.i(
+                    TAG,
+                    "Contact dates for $parentAccountName: ${outcome.written} re-spelled with dashes, the rest at the next " +
+                        "sync (each sync's pass stays under a minute) $counts"
+                )
+                outcome.written + outcome.changed > 0 -> SyncLog.i(
+                    TAG,
+                    "Contact dates for $parentAccountName: ${outcome.written} birthday and anniversary dates re-spelled " +
+                        "with dashes $counts"
+                )
+                else -> SyncLog.d(TAG, "Contact dates for $parentAccountName: none re-spelled $counts")
+            }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            SyncLog.w(
+                TAG,
+                "Contact dates for $parentAccountName: stopped early (${e.javaClass.simpleName}); dates already " +
+                    "re-spelled stay, the rest at a later sync"
+            )
         }
     }
 
@@ -3380,7 +3482,9 @@ class ContactsSyncAdapter(
             if ((sn.family ?: "").length > SyncConstants.MAX_CONTACT_NAME_PART_LENGTH) sn.family = sn.family?.take(SyncConstants.MAX_CONTACT_NAME_PART_LENGTH)
         }
 
-        // Normalize birthday/anniversary dates to yyyyMMdd format
+        // Birthday/anniversary dates go to Proton as text yyyyMMdd, as they always have. The phone spells them with
+        // dashes since 2.2.1 (ContactDates); stripping them here sends a re-spelled full date as the very text Proton
+        // already stores. Pinned by ContactDateRewriteTest.
         vCard.birthday?.let { bday ->
             val text = bday.text
             if (text != null) {

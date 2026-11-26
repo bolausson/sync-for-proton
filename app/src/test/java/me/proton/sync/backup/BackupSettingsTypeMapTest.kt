@@ -179,6 +179,9 @@ class BackupSettingsTypeMapTest {
         SyncPreferences.contactCreateRefusedKey(account),
         SyncPreferences.contactCreateReasonsKey(account),
         SyncPreferences.contactDownloadTooLargeKey(account),
+        // Whether this phone's provider marks a contact as edited when its date is re-spelled: about the device.
+        SyncPreferences.contactDateRewriteHaltedKey(account),
+        SyncPreferences.contactDateRewriteLateKey(account),
         SyncPreferences.eventAttendeesKey("evt1"),
         SyncPreferences.syncPausedUntilKey(account),
         "upload_reject_count_42",
