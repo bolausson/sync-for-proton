@@ -7,11 +7,14 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import me.proton.sync.ProtonSyncApp
 
+/**
+ * The authenticator of the app's main account type (me.proton.sync). It adds accounts through LoginActivity and hands
+ * out no tokens: the app reads its own session directly (AccountSessionManager, peekAuthToken), never through
+ * getAuthToken.
+ */
 class ProtonAccountAuthenticator(
     private val context: Context,
-    private val sessionManager: AccountSessionManager
 ) : AbstractAccountAuthenticator(context) {
 
     override fun addAccount(
@@ -29,30 +32,22 @@ class ProtonAccountAuthenticator(
         }
     }
 
+    /**
+     * Refuses every caller. authenticator.xml sets customTokens="true", so Android passes each app's getAuthToken
+     * request straight here, without its own permission prompt, and leaves checking the caller to the authenticator.
+     * Up to 2.2.1 this returned the access token to any app that named the account. That was of low severity: the token
+     * is useless on its own, because Proton's API also requires the session ID, which this never handed out (without it
+     * Proton answers 401). customTokens stays true, so getAuthToken never hands out the copy Android stores for the app
+     * (setAuthToken, wrapped by SecureStorage) either.
+     */
     override fun getAuthToken(
         response: AccountAuthenticatorResponse,
         account: Account,
         authTokenType: String,
         options: Bundle?
-    ): Bundle {
-        val session = sessionManager.getSession(account)
-        if (session.accessToken.isNotEmpty()) {
-            return Bundle().apply {
-                putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
-                putString(AccountManager.KEY_ACCOUNT_TYPE, ProtonSyncApp.ACCOUNT_TYPE)
-                putString(AccountManager.KEY_AUTHTOKEN, session.accessToken)
-            }
-        }
-
-        // Token not available — need to re-authenticate
-        val intent = Intent(context, LoginActivity::class.java).apply {
-            putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
-            putExtra(LoginActivity.EXTRA_ACCOUNT_NAME, account.name)
-            putExtra(me.proton.sync.SyncConstants.EXTRA_REAUTH, true)
-        }
-        return Bundle().apply {
-            putParcelable(AccountManager.KEY_INTENT, intent)
-        }
+    ): Bundle = Bundle().apply {
+        putInt(AccountManager.KEY_ERROR_CODE, AccountManager.ERROR_CODE_UNSUPPORTED_OPERATION)
+        putString(AccountManager.KEY_ERROR_MESSAGE, "Sync for Proton does not hand out its tokens")
     }
 
     override fun editProperties(response: AccountAuthenticatorResponse, accountType: String): Bundle {
